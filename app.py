@@ -9,8 +9,9 @@ st.set_page_config(page_title="ZenLearn: Decision Risk Measurement", layout="wid
 # High-contrast brand blues (strictly avoiding muddy tones/charcoals)
 BRAND_BLUES = ['#0033A0', '#0055D4', '#3388FF', '#80BFFF']
 
-@st.cache_data
+# CACHE REMOVED: This prevents the app from hanging on the initial load
 def load_and_process_data(file):
+    # Read the file
     df = pd.read_csv(file) if file.name.endswith('.csv') else pd.read_excel(file)
     
     # 1. Filter Target Months
@@ -45,7 +46,7 @@ def load_and_process_data(file):
 
 def trigger_workflow_alert(hit_list_df):
     """
-    Placeholder for webhook integration to push alerts directly into the workflow.
+    Webhook integration to push alerts directly into Teams/Slack.
     """
     webhook_url = "YOUR_SLACK_OR_TEAMS_WEBHOOK_URL"
     payload = {
@@ -61,12 +62,12 @@ st.sidebar.header("Data Ingestion")
 uploaded_file = st.sidebar.file_uploader("Upload Monthly Service Data (.csv or .xlsx)", type=['csv', 'xlsx'])
 
 if uploaded_file is not None:
+    # Process data immediately upon upload
     data = load_and_process_data(uploaded_file)
     
     st.sidebar.header("Navigation")
     view_mode = st.sidebar.radio("Select View Level", ["Supervisor/CXO View", "Individual (ASP) View"])
     
-    # Context: "Supervisor" applies to all management layers (ASM, BUSM, CXO)
     if view_mode == "Supervisor/CXO View":
         st.header("Supervisor Overview")
         
@@ -93,7 +94,6 @@ if uploaded_file is not None:
         # Trend Chart
         st.subheader("Monthly Risk Trend")
         trend_data = filtered_data.groupby('Month_Clean')[['Process_Score', 'Skill_Score', 'Audit_Score']].mean().reset_index()
-        # Sort months logically
         trend_data['Month_Clean'] = pd.Categorical(trend_data['Month_Clean'], categories=['Feb', 'Mar', 'Apr'], ordered=True)
         trend_data = trend_data.sort_values('Month_Clean')
         
