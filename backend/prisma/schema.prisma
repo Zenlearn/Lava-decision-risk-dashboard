@@ -1,0 +1,274 @@
+// Lava Decision Risk — Prisma Schema
+// Provider: PostgreSQL (chosen for relational/hierarchical data model)
+//
+// Convention (from ZenLearn CLAUDE.md):
+//   - Every foreign-key field has a corresponding @@index([field])
+//   - Run: prisma generate && prisma db push
+//
+// Tables deferred to Phase 3 (NOT modelled here):
+//   - training_assignments
+//   - training_results
+//
+// No local `users` table — user identity comes from the shared JWT.
+// Lava only stores role/org membership locally.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────────────────────
+// RBAC — Roles
+// ─────────────────────────────────────────────────────────────
+
+model Role {
+  id          String   @id @default(cuid())
+  name        String   @unique // Admin | MD | ServiceHead | RegionalHead | BUSM | ASM | Dealer | ASP | Trainer
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  userRoles   UserRole[]
+}
+
+// Binds a ZenLearn user (external JWT id) to a Lava role + optional org scope
+model UserRole {
+  id              String   @id @default(cuid())
+  zenlearnUserId  String   // JWT `sub` / `id` from PathwaysBackend — no FK, external source of truth
+  roleId          String
+  dealerId        String?  // scoped to dealer, if applicable
+  regionId        String?  // scoped to region, if applicable
+
+  role            Role     @relation(fields: [roleId], references: [id])
+  dealer          Dealer?  @relation(fields: [dealerId], references: [id])
+  region          Region?  @relation(fields: [regionId], references: [id])
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([zenlearnUserId])
+  @@index([roleId])
+  @@index([dealerId])
+  @@index([regionId])
+  @@unique([zenlearnUserId, roleId, dealerId, regionId])
+}
+
+// ─────────────────────────────────────────────────────────────
+// Org Hierarchy — Region → Dealer → Service Centre (ASP) → Technician
+// ─────────────────────────────────────────────────────────────
+
+model Region {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  code        String?
+
+  dealers     Dealer[]
+  userRoles   UserRole[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Dealer {
+  id          String   @id @default(cuid())
+  name        String
+  code        String?
+  regionId    String
+
+  region      Region           @relation(fields: [regionId], references: [id])
+  serviceCentres ServiceCentre[]
+  userRoles   UserRole[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([regionId])
+}
+
+model ServiceCentre {
+  id          String   @id @default(cuid())
+  name        String
+  code        String?  // ASP code
+  dealerId    String
+
+  dealer      Dealer       @relation(fields: [dealerId], references: [id])
+  technicians Technician[]
+  workOrders  WorkOrder[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([dealerId])
+}
+
+model Technician {
+  id              String   @id @default(cuid())
+  name            String
+  employeeCode    String?
+  serviceCentreId String
+
+  serviceCentre   ServiceCentre @relation(fields: [serviceCentreId], references: [id])
+  workOrders      WorkOrder[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([serviceCentreId])
+}
+
+// ─────────────────────────────────────────────────────────────
+// Import — tracks each uploaded data file
+// ─────────────────────────────────────────────────────────────
+
+model MonthlyImport {
+  id             String   @id @default(cuid())
+  filename       String
+  importedBy     String   // zenlearnUserId
+  rowCount       Int
+  rejectedCount  Int      @default(0)
+  status         ImportStatus @default(PENDING)
+  errorSummary   Json?    // Zod rejection details for failed rows
+
+  workOrders     WorkOrder[]
+  auditLogs      AuditLog[]
+
+  importedAt     DateTime @default(now())
+  completedAt    DateTime?
+
+  @@index([importedBy])
+  @@index([status])
+}
+
+enum ImportStatus {
+  PENDING
+  PROCESSING
+  COMPLETE
+  FAILED
+}
+
+// ─────────────────────────────────────────────────────────────
+// Work Orders — one row per imported service record
+// ─────────────────────────────────────────────────────────────
+
+model WorkOrder {
+  id              String   @id @default(cuid())
+  importId        String
+  serviceCentreId String
+  technicianId    String?
+
+  // Raw fields — stored as ingested (column names may evolve across imports)
+  // Phase 1 will populate these from validated CSV rows.
+  // NOTE: Column mapping lives in Phase 1 importService — NOT hardcoded here.
+  rawData         Json     // full original row, for auditability
+
+  // Derived risk fields (populated by rule engine in Phase 1)
+  skillScore      Float?
+  auditScore      Float?
+  processScore    Float?
+  totalAnomalies  Int?
+
+  import          MonthlyImport  @relation(fields: [importId], references: [id])
+  serviceCentre   ServiceCentre  @relation(fields: [serviceCentreId], references: [id])
+  technician      Technician?    @relation(fields: [technicianId], references: [id])
+  riskFlags       RiskFlag[]
+  judgementScores JudgementScore[]
+
+  createdAt       DateTime @default(now())
+
+  @@index([importId])
+  @@index([serviceCentreId])
+  @@index([technicianId])
+  @@index([totalAnomalies])
+}
+
+// ─────────────────────────────────────────────────────────────
+// Risk Engine Output
+// ─────────────────────────────────────────────────────────────
+
+model RiskFlag {
+  id            String   @id @default(cuid())
+  workOrderId   String
+  ruleKey       String   // e.g. "REPEAT_IMEI" | "SUSPICIOUS_PHONE" | "PROCESS_BREAKDOWN"
+  severity      Severity
+  evidence      Json     // rule-specific evidence payload
+  recommendation String?
+
+  workOrder     WorkOrder @relation(fields: [workOrderId], references: [id])
+
+  createdAt     DateTime @default(now())
+
+  @@index([workOrderId])
+  @@index([ruleKey])
+}
+
+enum Severity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+model JudgementScore {
+  id            String        @id @default(cuid())
+  workOrderId   String
+  dimension     ScoreDimension // SKILL | AUDIT | PROCESS
+  score         Float          // 0-100, starts at 100 baseline, clipped at 0
+  penalty       Float          // total penalty applied
+
+  workOrder     WorkOrder @relation(fields: [workOrderId], references: [id])
+
+  createdAt     DateTime @default(now())
+
+  @@index([workOrderId])
+  @@index([dimension])
+}
+
+enum ScoreDimension {
+  SKILL
+  AUDIT
+  PROCESS
+}
+
+// ─────────────────────────────────────────────────────────────
+// Dashboard Cache — stores pre-computed dashboard blobs per role scope
+// ─────────────────────────────────────────────────────────────
+
+model DashboardCache {
+  id          String   @id @default(cuid())
+  cacheKey    String   @unique // e.g. "executive" | "region:clxxx" | "dealer:clyyy"
+  payload     Json
+  importId    String?  // null means stale/manually busted
+
+  createdAt   DateTime @default(now())
+  expiresAt   DateTime
+
+  @@index([expiresAt])
+}
+
+// ─────────────────────────────────────────────────────────────
+// Audit Log — server-side action log (not user-facing yet in Phase 0)
+// ─────────────────────────────────────────────────────────────
+
+model AuditLog {
+  id             String   @id @default(cuid())
+  zenlearnUserId String
+  action         String   // e.g. "IMPORT_UPLOAD" | "DASHBOARD_VIEW" | "AUDIT_EXPORT"
+  resourceType   String?
+  resourceId     String?
+  importId       String?
+  metadata       Json?
+  ipAddress      String?
+
+  import         MonthlyImport? @relation(fields: [importId], references: [id])
+
+  createdAt      DateTime @default(now())
+
+  @@index([zenlearnUserId])
+  @@index([action])
+  @@index([importId])
+  @@index([createdAt])
+}
