@@ -38,6 +38,7 @@ export interface ExecutiveDashboardData {
   metrics:  DashboardMetrics;
   trends:   MonthlyTrend[];
   hitList:  HitListPreviewItem[];
+  hitListCount: number;
   filters: {
     busms: string[];
     asms:  string[];
@@ -99,6 +100,7 @@ export async function getExecutiveDashboard(filters?: {
       metrics: { avgProcessScore: 0, avgSkillScore: 0, avgAuditScore: 0, totalWorkOrders: 0, totalAnomalies: 0 },
       trends: [],
       hitList: [],
+      hitListCount: 0,
       filters: { busms: [], asms: [], asps: [] },
     };
   }
@@ -222,12 +224,21 @@ export async function getExecutiveDashboard(filters?: {
     orderBy: { name: 'asc' },
   }).then((res) => res.map((s) => s.name));
 
+  // Count total items on hit list matching query criteria
+  const hitListCount = await prisma.workOrder.count({
+    where: {
+      ...workOrderFilter,
+      totalAnomalies: { gte: 2 },
+    },
+  });
+
   return {
     importId,
     filename: latestImport.filename,
     metrics,
     trends,
     hitList,
+    hitListCount,
     filters: { busms, asms, asps },
   };
 }
