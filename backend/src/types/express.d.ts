@@ -3,9 +3,17 @@
  *
  * Extends Express's Request with `req.user` (set by auth.middleware.ts)
  * and Response with `res.success()` / `res.error()` convenience methods.
+ *
+ * NOTE: This file must have `export {}` at the top to be treated as a module
+ * (required for `declare global` to work). Named exports have been intentionally
+ * removed to avoid ts-node-dev "Debug Failure" errors with .d.ts files.
+ * The interfaces are file-private — they don't need to be imported anywhere
+ * since they augment the global Express namespace directly.
  */
 
-export interface LavaAuthenticatedUser {
+export {};
+
+interface LavaAuthenticatedUser {
 	/** ZenLearn user id (JWT `id` or `sub` claim) */
 	id: string;
 	/** ZenLearn role string from JWT (e.g. 'user', 'admin') */
@@ -22,12 +30,12 @@ export interface LavaAuthenticatedUser {
 	[key: string]: unknown;
 }
 
-export interface ApiResponseSuccess<T = unknown> {
+interface ApiResponseSuccess<T = unknown> {
 	message: string;
 	result: T;
 }
 
-export interface ApiResponseError {
+interface ApiResponseError {
 	message: string;
 	error?: unknown;
 }
