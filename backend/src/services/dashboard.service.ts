@@ -1,6 +1,6 @@
 import prisma from '../configs/prisma.config';
 import logger from '../configs/logger.config';
-import { FIELD_MAP } from '../configs/fieldMap.config';
+import { FIELD_MAP, TARGET_MONTHS } from '../configs/fieldMap.config';
 
 export interface DashboardMetrics {
   avgProcessScore: number;
@@ -386,6 +386,57 @@ function getPercentile(values: number[], percentile: number): number {
   return sorted[Math.max(0, index)] ?? 0;
 }
 
+// ─── Robust Date Parsing Helpers ──────────────────────────────────────────────
+function parseDateRobust(val: any): Date | null {
+  if (!val) return null;
+  if (val instanceof Date) return isNaN(val.getTime()) ? null : val;
+  const str = String(val).trim();
+  if (!str) return null;
+
+  // 1. First check DD-MM-YYYY (e.g. 13-02-2026)
+  let m = str.match(/^(\d{1,2})-(\d{1,2})-(\d{4})$/);
+  if (m) {
+    const day = parseInt(m[1]!, 10);
+    const month = parseInt(m[2]!, 10) - 1;
+    const year = parseInt(m[3]!, 10);
+    const d = new Date(year, month, day);
+    if (!isNaN(d.getTime())) return d;
+  }
+
+  // 2. Check M/D/YY or DD/MM/YYYY with slashes
+  m = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
+  if (m) {
+    const p1 = parseInt(m[1]!, 10);
+    const p2 = parseInt(m[2]!, 10);
+    let year = parseInt(m[3]!, 10);
+    if (year < 100) year += year < 50 ? 2000 : 1900;
+    if (p1 > 12) {
+      return new Date(year, p2 - 1, p1);
+    } else {
+      return new Date(year, p1 - 1, p2);
+    }
+  }
+
+  const d = new Date(str);
+  if (!isNaN(d.getTime())) return d;
+  return null;
+}
+
+function getDaysDiff(cStr: any, dStr: any): number | null {
+  const cDate = parseDateRobust(cStr);
+  const dDate = parseDateRobust(dStr);
+  if (!cDate || !dDate) return null;
+  const cTime = new Date(cDate.getFullYear(), cDate.getMonth(), cDate.getDate()).getTime();
+  const dTime = new Date(dDate.getFullYear(), dDate.getMonth(), dDate.getDate()).getTime();
+  return Math.max(0, Math.round((dTime - cTime) / (1000 * 60 * 60 * 24)));
+}
+
+function matchesField(val1: any, val2: any, keyword: string): boolean {
+  const s1 = String(val1 || '').toLowerCase();
+  const s2 = String(val2 || '').toLowerCase();
+  return s1.includes(keyword) || s2.includes(keyword);
+}
+
 /**
  * Dynamically computes the full multi-tab dashboard dataset structure
  * matching original mockup 'Lava_Decision_Risk_Dashboard.html'.
@@ -411,8 +462,13 @@ export async function getFullDashboardData(): Promise<any> {
   }
 
   // Fetch all completed workorders
+  const whereClause: any = { importId: latestImport.id };
+  if (TARGET_MONTHS && TARGET_MONTHS.length > 0) {
+    whereClause.month = { in: TARGET_MONTHS };
+  }
+
   const workOrders = await prisma.workOrder.findMany({
-    where: { importId: latestImport.id },
+    where: whereClause,
     select: {
       id: true,
       month: true,
@@ -479,28 +535,17 @@ export async function getFullDashboardData(): Promise<any> {
     const busm = wo.serviceCentre.dealer.region.name;
     const model = String(raw[FIELD_MAP.model] || '');
     const symptomRaw = String(raw[FIELD_MAP.symptomDesc] || '');
-    const actionRaw = String(raw['Action Taken'] || '');
+    const actionRaw = String(raw['Action Code Desc'] || raw['Action Taken'] || '');
     const partRaw = String(raw['Part Name'] || raw['Part Description'] || '');
     const city = String(raw[FIELD_MAP.customerCity] || '');
 
-    const creationDate = raw[FIELD_MAP.creationDate];
-    const deliveryDate = raw[FIELD_MAP.deliveryDate];
-    
-    let tat: number | null = null;
-    if (creationDate && deliveryDate) {
-      const cDate = new Date(creationDate);
-      const dDate = new Date(deliveryDate);
-      if (!isNaN(cDate.getTime()) && !isNaN(dDate.getTime())) {
-        const diff = dDate.getTime() - cDate.getTime();
-        tat = Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
-      }
-    }
+    const tat = getDaysDiff(raw[FIELD_MAP.creationDate], raw[FIELD_MAP.deliveryDate]);
     const isSameDay = tat === 0;
 
-    const isWalkIn = String(raw[FIELD_MAP.callType] || raw[FIELD_MAP.callCategory] || '').toLowerCase().includes('walk-in') || 
-                     String(raw[FIELD_MAP.callType] || '').toLowerCase().includes('walk in');
+    const isWalkIn = matchesField(raw[FIELD_MAP.callType], raw[FIELD_MAP.callCategory], 'walk-in') || 
+                     matchesField(raw[FIELD_MAP.callType], raw[FIELD_MAP.callCategory], 'walk in');
     
-    const isHome = String(raw[FIELD_MAP.callType] || raw[FIELD_MAP.callCategory] || '').toLowerCase().includes('home');
+    const isHome = matchesField(raw[FIELD_MAP.callType], raw[FIELD_MAP.callCategory], 'home');
     
     const partUpper = partRaw.toUpperCase();
     const isPCBA = partUpper.includes('PCBA') || partUpper.includes('MOTHERBOARD');
@@ -531,9 +576,10 @@ export async function getFullDashboardData(): Promise<any> {
     const isMismatchBounced = isMismatch && isBounce;
 
     const nps = String(raw[FIELD_MAP.npsRating] || '');
-    const isDetractor = nps.includes('No Response') || (nps !== '' && parseInt(nps, 10) <= 3);
-    const isDOA = String(raw[FIELD_MAP.callType] || raw[FIELD_MAP.callCategory] || '').toUpperCase().includes('DOA') || 
-                  String(raw[FIELD_MAP.symptomDesc] || '').toUpperCase().includes('DOA');
+    const npsVal = parseInt(nps, 10);
+    const isDetractor = !isNaN(npsVal) && npsVal >= 1 && npsVal <= 3;
+    const isDOA = matchesField(raw[FIELD_MAP.callType], raw[FIELD_MAP.callCategory], 'doa') || 
+                  String(raw[FIELD_MAP.symptomDesc] || '').toLowerCase().includes('doa');
 
     let flagType = '';
     if (isGhost) flagType = 'Same-day board swap (walk-in)';
@@ -551,6 +597,23 @@ export async function getFullDashboardData(): Promise<any> {
       else if (mStr === 'apr' || mStr === 'april') mClean = 'Apr';
       else if (mStr === 'may' || mStr === 'may') mClean = 'May';
     }
+
+    // Dynamic scores calculation based on mockup rules
+    let auditScore = 100;
+    if (isGhost) auditScore -= 35;
+    if (isCrossAsp) auditScore -= 35;
+    if (isHomeBoard) auditScore -= 30;
+    auditScore = Math.max(0, auditScore);
+
+    let skillScore = 100;
+    if (isBounce) skillScore -= 20;
+    if (isMismatchBounced) skillScore -= 25;
+    skillScore = Math.max(0, skillScore);
+
+    let processScore = 100;
+    if (tat !== null && tat > 7) processScore -= 15;
+    if (isDetractor) processScore -= 20;
+    processScore = Math.max(0, processScore);
 
     return {
       row: index + 2,
@@ -570,6 +633,7 @@ export async function getFullDashboardData(): Promise<any> {
       flag: flagType,
       isGhost,
       isHomeBoard,
+      isHome,
       isBounce,
       isCrossAsp,
       isMismatch,
@@ -578,9 +642,9 @@ export async function getFullDashboardData(): Promise<any> {
       isDOA,
       isPCBA,
       isLCD,
-      processScore: wo.processScore ?? 100,
-      skillScore: wo.skillScore ?? 100,
-      auditScore: wo.auditScore ?? 100,
+      processScore,
+      skillScore,
+      auditScore,
       rawData: raw,
     };
   });
@@ -671,8 +735,9 @@ export async function getFullDashboardData(): Promise<any> {
     // Board parts in ghost/home swaps
     const pcbaParts = mRows.filter((r) => r.isPCBA && (r.isGhost || r.isHomeBoard)).length;
     const lcdParts = mRows.filter((r) => r.isLCD && (r.isGhost || r.isHomeBoard)).length;
+    const travelCount = mRows.filter((r) => r.isHome && r.isBounce).length;
 
-    const leak = pcbaParts * 3000 + lcdParts * 2000 + bounceCount * 150;
+    const leak = pcbaParts * 1800 + lcdParts * 1200 + travelCount * 750;
 
     return {
       month: m,
@@ -683,7 +748,7 @@ export async function getFullDashboardData(): Promise<any> {
       diag,
       leak,
       _leakparts: { pcba: pcbaParts, lcd: lcdParts },
-      _leaktravel: bounceCount,
+      _leaktravel: travelCount,
       bounce: bounceCount,
       detractor: detractorCount,
       d: { ftfr: 0, mttr: 0, csat: 0, diag: 0, leak: 0 } as any, // populated below
@@ -731,7 +796,8 @@ export async function getFullDashboardData(): Promise<any> {
 
   const overallPcbaParts = processedRows.filter((r) => r.isPCBA && (r.isGhost || r.isHomeBoard)).length;
   const overallLcdParts = processedRows.filter((r) => r.isLCD && (r.isGhost || r.isHomeBoard)).length;
-  const overallLeak = overallPcbaParts * 3000 + overallLcdParts * 2000 + overallBounce * 150;
+  const overallTravelCount = processedRows.filter((r) => r.isHome && r.isBounce).length;
+  const overallLeak = overallPcbaParts * 1800 + overallLcdParts * 1200 + overallTravelCount * 750;
 
   const kpi = {
     months: kpiMonths,
@@ -742,7 +808,7 @@ export async function getFullDashboardData(): Promise<any> {
       diag: overallDiag,
       leak: overallLeak,
       _leakparts: { pcba: overallPcbaParts, lcd: overallLcdParts },
-      _leaktravel: overallBounce,
+      _leaktravel: overallTravelCount,
       bounce: overallBounce,
       detractor: overallDetractor,
     },
