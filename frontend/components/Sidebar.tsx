@@ -2,7 +2,7 @@ import React from 'react';
 import { 
   LayoutDashboard, ShieldAlert, UploadCloud, ChevronRight, 
   MapPin, CheckCircle, AlertTriangle, RefreshCw, Send, LogOut, FileSpreadsheet,
-  Settings, BookOpen, AlertCircle, TrendingUp, Info, HelpCircle, User, Activity
+  Settings, BookOpen, AlertCircle, TrendingUp, Info, HelpCircle, User, Activity, Clock
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -37,6 +37,14 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
   const userEmail = user?.email || 'praveen@jaispring.com';
   const userInitials = userName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
 
+  const handleProfileClick = () => {
+    alert(`User Profile details:\nName: ${userName}\nEmail: ${userEmail}\nRole: Administrator`);
+  };
+
+  const handleActivitiesClick = () => {
+    alert(`Audit Activities Log:\nLogged in to Decision Risk Dashboard\nSession: Active`);
+  };
+
   return (
     <aside className="zen-sidebar" style={{
       width: '260px',
@@ -63,7 +71,7 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
           <img
             src="/logo_144.png"
             alt="ZenLearn"
-            style={{ height: '36px', width: '36px', objectFit: 'contain', display: 'block', borderRadius: '4px' }}
+            style={{ height: '36px', width: 'auto', maxWidth: '100px', objectFit: 'contain', display: 'block', borderRadius: '4px' }}
           />
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <span style={{ fontSize: '15px', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.3px', lineHeight: '1.2' }}>
@@ -131,12 +139,15 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
         gap: '14px'
       }}>
         {/* Profile Header */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div 
+          onClick={handleProfileClick}
+          style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}
+        >
           <div style={{
             width: '36px',
             height: '36px',
             borderRadius: '50%',
-            background: '#3b82f6',
+            background: '#2563eb',
             color: '#fff',
             display: 'flex',
             alignItems: 'center',
@@ -159,6 +170,7 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
         {/* Profile Action Links */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
           <button 
+            onClick={handleProfileClick}
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -179,6 +191,7 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
             <span>Profile</span>
           </button>
           <button 
+            onClick={handleActivitiesClick}
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -195,7 +208,7 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
             onMouseEnter={(e) => (e.currentTarget.style.color = '#fff')}
             onMouseLeave={(e) => (e.currentTarget.style.color = '#8094ae')}
           >
-            <Activity size={15} />
+            <Clock size={15} />
             <span>Your Activities</span>
           </button>
           <button
@@ -203,7 +216,6 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '10px',
               padding: '6px 8px',
               border: 'none',
               background: 'transparent',
