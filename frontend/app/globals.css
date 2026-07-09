@@ -7,10 +7,24 @@
   /* Harmonious high-contrast brand color palette */
   --color-bg: #f8fafc;
   --color-card: #ffffff;
-  --color-primary: #0033a0;      /* Pure Lava Brand Blue */
-  --color-primary-light: #0055d4;
-  --color-primary-hover: #3388ff;
-  --color-accent: #80bfff;
+  
+  /* Softer Royal Blue to replace the harsh cobalt blue */
+  --deep: #1e293b;
+  --mid: #2563eb;
+  --cobalt: #2563eb;
+  --ice: #f1f5f9;
+  --ink: #0f172a;
+  --muted: #64748b;
+  --line: #e2e8f0;
+  --paper: #f8fafc;
+  --bad: #ef4444;
+  --warn: #f59e0b;
+  --good: #10b981;
+  
+  --color-primary: #151e3d;      /* Softer deep slate blue */
+  --color-primary-light: #2563eb;
+  --color-primary-hover: #3b82f6;
+  --color-accent: #60a5fa;
   --color-text-main: #0f172a;
   --color-text-muted: #64748b;
   --color-border: #e2e8f0;
@@ -26,6 +40,13 @@
   --shadow-lg: 0 10px 30px -5px rgba(0, 35, 120, 0.06);
   --transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-normal: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mockup-dashboard {
+  font-family: var(--font-sans);
+  color: var(--ink);
+  background-color: var(--paper);
+  width: 100%;
 }
 
 /* Reset & Core Setup */
@@ -629,26 +650,7 @@ body {
 }
 
 /* ─── Mockup Dashboard Styles ─── */
-:root {
-  --deep: #1B264F;
-  --mid: #27476E;
-  --cobalt: #4E67EB;
-  --ice: #F0F4FD;
-  --ink: #111;
-  --muted: #66758c;
-  --line: #dbe3f0;
-  --paper: #f8fafc;
-  --bad: #C0392B;
-  --warn: #D98A1F;
-  --good: #1F9E6B;
-}
 
-.mockup-dashboard {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  color: var(--ink);
-  background-color: var(--paper);
-  width: 100%;
-}
 
 .mockup-dashboard h1, 
 .mockup-dashboard h2, 
@@ -792,7 +794,7 @@ body {
 .kc {
   background: #fff;
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: 16px;
   padding: 18px 18px 16px;
 }
 
@@ -856,7 +858,7 @@ body {
 .panel {
   background: #fff;
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: 16px;
   padding: 20px 22px;
 }
 
@@ -1063,7 +1065,6 @@ body {
 .k3 {
   grid-template-columns: repeat(3, 1fr);
 }
-
 .k2 {
   grid-template-columns: 1fr 1fr;
 }
@@ -1071,7 +1072,7 @@ body {
 .card-mock {
   background: #fff;
   border: 1px solid var(--line);
-  border-radius: 13px;
+  border-radius: 16px; /* Rounded card layout matching Zenlearn */
   padding: 20px 22px;
   box-shadow: 0 1px 3px rgba(20,30,60,.04);
 }
@@ -1079,13 +1080,12 @@ body {
 .card-mock h3 {
   font-size: 13px;
   color: var(--muted);
-  font-family: inherit;
+  font-family: var(--font-sans);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: .05em;
   margin-bottom: 12px;
 }
-
 .kpi-mock .big {
   font-size: 29px;
   font-weight: 800;
@@ -1230,7 +1230,7 @@ body {
   margin-bottom: 18px;
   background: #fff;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: 16px;
   padding: 16px 18px;
 }
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { 
   LayoutDashboard, ShieldAlert, UploadCloud, ChevronRight, 
   MapPin, CheckCircle, AlertTriangle, RefreshCw, Send, LogOut, FileSpreadsheet,
-  Settings, BookOpen, AlertCircle, TrendingUp, Info, HelpCircle
+  Settings, BookOpen, AlertCircle, TrendingUp, Info, HelpCircle, User, Activity
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -10,9 +10,13 @@ interface SidebarProps {
   setActiveTab: (tab: string) => void;
   nominatedCount: number;
   handleSignOut: () => void;
+  user?: {
+    name: string;
+    email: string;
+  };
 }
 
-export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handleSignOut }: SidebarProps) {
+export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handleSignOut, user }: SidebarProps) {
   const menuItems = [
     { id: 'exec', label: 'Executive One-Pager', icon: LayoutDashboard },
     { id: 'deep', label: 'Score Card', icon: CheckCircle },
@@ -28,11 +32,16 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
     { id: 'upload', label: 'Ingest Data', icon: UploadCloud },
   ];
 
+  // Default fallback user details
+  const userName = user?.name || 'Praveen Lakhera';
+  const userEmail = user?.email || 'praveen@jaispring.com';
+  const userInitials = userName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+
   return (
     <aside className="zen-sidebar" style={{
       width: '260px',
-      background: '#0f172a',
-      borderRight: '1px solid rgba(255,255,255,0.1)',
+      background: '#151e3d', // Harmonious deep slate blue to match screenshot 2
+      borderRight: '1px solid rgba(255,255,255,0.06)',
       display: 'flex',
       flexDirection: 'column',
       height: '100vh',
@@ -45,20 +54,25 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
       {/* Brand Header */}
       <div className="brand-header" style={{
         padding: '24px 20px',
-        borderBottom: '1px solid rgba(255,255,255,0.1)',
+        borderBottom: '1px solid rgba(255,255,255,0.08)',
         display: 'flex',
         flexDirection: 'column',
         gap: '6px'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <img
             src="/logo_144.png"
             alt="ZenLearn"
-            style={{ height: '32px', width: 'auto', display: 'block', borderRadius: '4px' }}
+            style={{ height: '36px', width: '36px', objectFit: 'contain', display: 'block', borderRadius: '4px' }}
           />
-          <span style={{ fontSize: '11px', color: '#c5d1ee', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>
-            Decision Intel
-          </span>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <span style={{ fontSize: '15px', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.3px', lineHeight: '1.2' }}>
+              ZenLearn
+            </span>
+            <span style={{ fontSize: '10px', color: '#8094ae', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>
+              Decision Intel
+            </span>
+          </div>
         </div>
       </div>
 
@@ -79,8 +93,8 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
                 padding: '12px 16px',
                 borderRadius: '8px',
                 border: 'none',
-                background: isActive ? 'rgba(255,255,255,0.1)' : 'transparent',
-                color: isActive ? '#fff' : '#94a3b8',
+                background: isActive ? 'rgba(255,255,255,0.08)' : 'transparent',
+                color: isActive ? '#fff' : '#8094ae',
                 textAlign: 'left',
                 fontSize: '14px',
                 fontWeight: isActive ? 600 : 500,
@@ -108,35 +122,107 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
         })}
       </nav>
 
-      {/* Footer / Logout */}
+      {/* User Context bottom section replicating the ZenLearn application layout */}
       <div style={{
-        padding: '16px 12px',
-        borderTop: '1px solid rgba(255,255,255,0.1)'
+        borderTop: '1px solid rgba(255,255,255,0.08)',
+        padding: '16px 20px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '14px'
       }}>
-        <button
-          onClick={handleSignOut}
-          style={{
+        {/* Profile Header */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{
+            width: '36px',
+            height: '36px',
+            borderRadius: '50%',
+            background: '#3b82f6',
+            color: '#fff',
             display: 'flex',
             alignItems: 'center',
-            gap: '12px',
-            padding: '12px 16px',
-            borderRadius: '8px',
-            border: 'none',
-            background: 'transparent',
-            color: '#94a3b8',
-            textAlign: 'left',
-            fontSize: '14px',
-            cursor: 'pointer',
-            width: '100%',
-            transition: 'color 0.2s'
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = '#fff')}
-          onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}
-        >
-          <LogOut size={18} />
-          <span>Logout</span>
-        </button>
+            justifyContent: 'center',
+            fontWeight: 700,
+            fontSize: '14px'
+          }}>
+            {userInitials}
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+            <span style={{ fontSize: '13.5px', fontWeight: 700, color: '#ffffff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              {userName}
+            </span>
+            <span style={{ fontSize: '11px', color: '#8094ae', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              {userEmail}
+            </span>
+          </div>
+        </div>
+
+        {/* Profile Action Links */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+          <button 
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              padding: '6px 8px',
+              border: 'none',
+              background: 'transparent',
+              color: '#8094ae',
+              fontSize: '13px',
+              cursor: 'pointer',
+              textAlign: 'left',
+              width: '100%'
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = '#fff')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = '#8094ae')}
+          >
+            <User size={15} />
+            <span>Profile</span>
+          </button>
+          <button 
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              padding: '6px 8px',
+              border: 'none',
+              background: 'transparent',
+              color: '#8094ae',
+              fontSize: '13px',
+              cursor: 'pointer',
+              textAlign: 'left',
+              width: '100%'
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = '#fff')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = '#8094ae')}
+          >
+            <Activity size={15} />
+            <span>Your Activities</span>
+          </button>
+          <button
+            onClick={handleSignOut}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              padding: '6px 8px',
+              border: 'none',
+              background: 'transparent',
+              color: '#8094ae',
+              fontSize: '13px',
+              cursor: 'pointer',
+              textAlign: 'left',
+              width: '100%'
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = '#fff')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = '#8094ae')}
+          >
+            <LogOut size={15} />
+            <span>Sign out</span>
+          </button>
+        </div>
       </div>
     </aside>
+  );
+}
   );
 }
