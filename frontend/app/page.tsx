@@ -332,7 +332,7 @@ export default function DashboardPage() {
                   <div className="metric-card total">
                     <span className="metric-label">Scored Records</span>
                     <div className="metric-val-row">
-                      <span className="metric-value">{executiveData.metrics.totalWorkOrders.toLocaleString()}</span>
+                      <span className="metric-value">{(executiveData.metrics?.totalWorkOrders ?? 0).toLocaleString()}</span>
                     </div>
                   </div>
                 </div>
@@ -399,7 +399,7 @@ export default function DashboardPage() {
                     <div>
                       <h3 className="chart-title">Action Center: High-Risk Exception Workorders</h3>
                       <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>
-                        Displaying {executiveData.hitListCount.toLocaleString()} anomalies flagging at least 2 risk criteria.
+                        Displaying {(executiveData.hitListCount ?? 0).toLocaleString()} anomalies flagging at least 2 risk criteria.
                       </p>
                     </div>
 
@@ -704,11 +704,11 @@ export default function DashboardPage() {
                           </div>
                           <div className="success-item">
                             <span className="success-item-label">Processed Workorders</span>
-                            <span className="success-item-val">{uploadResult.validCount.toLocaleString()}</span>
+                            <span className="success-item-val">{(uploadResult?.validCount ?? 0).toLocaleString()}</span>
                           </div>
                           <div className="success-item">
                             <span className="success-item-label">High-Risk Anomalies</span>
-                            <span className="success-item-val" style={{ color: 'var(--color-danger)' }}>{uploadResult.hitListCount.toLocaleString()}</span>
+                            <span className="success-item-val" style={{ color: 'var(--color-danger)' }}>{(uploadResult?.hitListCount ?? 0).toLocaleString()}</span>
                           </div>
                           <div className="success-item">
                             <span className="success-item-label">Total Execution Time</span>
