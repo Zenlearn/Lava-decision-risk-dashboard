@@ -1,5 +1,5 @@
 import path from 'path';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 import { parse as parseCsv } from 'csv-parse/sync';
 import prisma from '../configs/prisma.config';
 import logger from '../configs/logger.config';
@@ -44,7 +44,7 @@ export interface RejectedRow {
 // ─── File parsing ─────────────────────────────────────────────────────────────
 
 /** Parse a buffer into an array of raw objects (one per data row). */
-function parseFile(buffer: Buffer, filename: string): Record<string, unknown>[] {
+async function parseFile(buffer: Buffer, filename: string): Promise<Record<string, unknown>[]> {
   const ext = filename.split('.').pop()?.toLowerCase();
 
   if (ext === 'csv') {
@@ -57,13 +57,61 @@ function parseFile(buffer: Buffer, filename: string): Record<string, unknown>[] 
     return records;
   }
 
-  // XLSX / XLS
-  const wb = XLSX.read(buffer, { type: 'buffer', cellDates: true });
-  const sheetName = wb.SheetNames[0];
-  if (!sheetName) throw new Error('XLSX file has no sheets');
-  const ws = wb.Sheets[sheetName];
-  if (!ws) throw new Error(`Worksheet "${sheetName}" not found in workbook`);
-  return XLSX.utils.sheet_to_json(ws, { raw: false, defval: null }) as Record<string, unknown>[];
+  // XLSX / XLS - Use ExcelJS
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.load(buffer as any);
+  
+  const worksheet = workbook.worksheets[0];
+  if (!worksheet) throw new Error('Excel file has no worksheets');
+
+  const records: Record<string, unknown>[] = [];
+  
+  // Extract headers from the first row
+  const headers: string[] = [];
+  const headerRow = worksheet.getRow(1);
+  headerRow.eachCell({ includeEmpty: false }, (cell, colNumber) => {
+    headers[colNumber] = cell.text ? cell.text.trim() : '';
+  });
+
+  // Parse remaining rows
+  worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
+    if (rowNumber === 1) return; // skip header row
+    const record: Record<string, unknown> = {};
+    let hasData = false;
+
+    // ExcelJS cell numbers are 1-based
+    row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+      const header = headers[colNumber];
+      if (header) {
+        let val: any = cell.value;
+        // Handle formula values, rich text, objects, dates
+        if (val && typeof val === 'object') {
+          if (val.formula) {
+            val = val.result !== undefined ? val.result : null;
+          } else if (val.richText) {
+            val = val.richText.map((t: any) => t.text || '').join('');
+          } else if (val instanceof Date) {
+            // Keep date objects
+          } else if (val.text !== undefined) {
+            val = val.text;
+          } else {
+            val = String(val);
+          }
+        }
+        
+        record[header] = val !== undefined ? val : null;
+        if (val !== null && val !== '') {
+          hasData = true;
+        }
+      }
+    });
+
+    if (hasData) {
+      records.push(record);
+    }
+  });
+
+  return records;
 }
 
 /** Map a raw row's spreadsheet column names → logical field names via FIELD_MAP. */
@@ -188,7 +236,7 @@ export async function processImport(
   logger.info('Import pipeline started', { filename: safeFilename });
 
   // 1. Parse file
-  const rawRows = parseFile(buffer, safeFilename);
+  const rawRows = await parseFile(buffer, safeFilename);
   logger.info('File parsed', { rowsParsed: rawRows.length });
 
 
