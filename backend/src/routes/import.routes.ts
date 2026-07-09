@@ -1,24 +1,49 @@
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
+import multer from 'multer';
+import { uploadImportHandler } from '../controllers/import.controller';
+import { asyncHandler } from '../configs/async.config';
 
 const importRouter = Router();
 
+// Configure Multer for file uploads in memory (since we parse in-request)
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10 MB limit
+  },
+  fileFilter: (_req, file, cb) => {
+    // Accept CSV and Excel mime types
+    const allowedMimeTypes = [
+      'text/csv',
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    ];
+
+    if (allowedMimeTypes.includes(file.mimetype) || 
+        file.originalname.endsWith('.csv') || 
+        file.originalname.endsWith('.xlsx') || 
+        file.originalname.endsWith('.xls')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only CSV, XLS, and XLSX file formats are supported.'));
+    }
+  },
+});
+
 /**
  * POST /api/v1/imports
- *
- * Phase 1 stub — full implementation in Phase 1 (import pipeline + rule engine).
- * Returns 501 Not Implemented until Phase 1 is complete.
- *
- * Phase 1 will:
- *   - Accept CSV/XLSX multipart upload
- *   - Validate rows with Zod (schema-driven, not hardcoded columns)
- *   - Run the rule engine
- *   - Persist WorkOrders, RiskFlags, JudgementScores
- *   - Refresh DashboardCache
+ * 
+ * Ingests a monthly master service data file (CSV or XLSX), validates it,
+ * runs the anomaly detection rule engine, and persists the generated
+ * workorders, risk flags, and judgement scores in Postgres.
+ * 
+ * Access control is handled by the parent router mounting (app.ts/index.ts)
+ * where AuthMiddleware is already applied.
  */
-importRouter.post('/', (_req: Request, res: Response) => {
-	res.status(501).json({
-		message: 'Import pipeline not yet implemented (Phase 1)',
-	});
-});
+importRouter.post(
+  '/',
+  upload.single('file'),
+  asyncHandler(uploadImportHandler)
+);
 
 export default importRouter;

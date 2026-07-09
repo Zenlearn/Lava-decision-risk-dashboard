@@ -164,6 +164,7 @@ model WorkOrder {
   // Phase 1 will populate these from validated CSV rows.
   // NOTE: Column mapping lives in Phase 1 importService — NOT hardcoded here.
   rawData         Json     // full original row, for auditability
+  month           String?  // derived month for fast dashboard querying (e.g., 'Feb')
 
   // Derived risk fields (populated by rule engine in Phase 1)
   skillScore      Float?
