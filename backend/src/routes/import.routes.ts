@@ -3,7 +3,13 @@ import multer from 'multer';
 import { uploadImportHandler } from '../controllers/import.controller';
 import { asyncHandler } from '../configs/async.config';
 
+import { requireAnyLavaRole } from '../middlewares/rbac.middleware';
+
 const importRouter = Router();
+
+// Only top management and admin roles can upload data files
+const importAllowedRoles: any[] = ['Admin', 'MD', 'ServiceHead', 'RegionalHead'];
+
 
 // Configure Multer for file uploads in memory (since we parse in-request)
 const upload = multer({
@@ -42,6 +48,7 @@ const upload = multer({
  */
 importRouter.post(
   '/',
+  requireAnyLavaRole(importAllowedRoles),
   upload.single('file'),
   asyncHandler(uploadImportHandler)
 );
