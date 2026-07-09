@@ -1,15 +1,22 @@
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
+import { getAuditLogsHandler } from '../controllers/audit.controller';
+import { requireAnyLavaRole } from '../middlewares/rbac.middleware';
+import { asyncHandler } from '../configs/async.config';
 
 const auditRouter = Router();
+
+// Only admin and top management can query action audit logs
+const auditAllowedRoles: any[] = ['Admin', 'MD', 'ServiceHead', 'RegionalHead'];
 
 /**
  * GET /api/v1/audit
  *
- * Phase 3 stub — real audit log query with RBAC scoping.
- * Returns 501 until Phase 3.
+ * Query system audit logs with limit, offset, and action/userId filters.
  */
-auditRouter.get('/', (_req: Request, res: Response) => {
-	res.status(501).json({ message: 'Audit endpoint not yet implemented (Phase 3)' });
-});
+auditRouter.get(
+  '/', 
+  requireAnyLavaRole(auditAllowedRoles),
+  asyncHandler(getAuditLogsHandler)
+);
 
 export default auditRouter;
