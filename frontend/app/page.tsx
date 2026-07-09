@@ -24,6 +24,7 @@ export default function UnifiedMockupDashboard() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [user, setUser] = useState<{ name: string; email: string } | undefined>(undefined);
 
   // Active navigation tab — default is 'exec' (Executive Dashboard)
   const [activeTab, setActiveTab] = useState('exec');
@@ -77,6 +78,28 @@ export default function UnifiedMockupDashboard() {
         console.error(e);
       }
     }
+
+    // Read and parse JWT token client-side to extract user name and email
+    const cookies = document.cookie.split(';');
+    const tokenCookie = cookies.find(c => c.trim().startsWith('token='));
+    if (tokenCookie) {
+      const token = tokenCookie.split('=')[1];
+      if (token) {
+        try {
+          const parts = token.split('.');
+          if (parts.length === 3) {
+            const decoded = JSON.parse(atob(parts[1]!.replace(/-/g, '+').replace(/_/g, '/')));
+            setUser({
+              name: decoded.name || decoded.username || 'Praveen Lakhera',
+              email: decoded.email || decoded.email_id || 'praveen@jaispring.com'
+            });
+          }
+        } catch (err) {
+          console.error('Error decoding JWT token cookie:', err);
+        }
+      }
+    }
+
     fetchDashboardPayload();
   }, []);
 
@@ -312,6 +335,7 @@ export default function UnifiedMockupDashboard() {
           setActiveTab={setActiveTab} 
           nominatedCount={nominated.size} 
           handleSignOut={handleSignOut} 
+          user={user}
         />
         <div style={{ flex: 1, marginLeft: '260px', padding: '40px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box' }}>
           <div className="card-mock" style={{ maxWidth: '600px', textAlign: 'center', padding: '40px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
@@ -366,6 +390,7 @@ export default function UnifiedMockupDashboard() {
         setActiveTab={setActiveTab} 
         nominatedCount={nominated.size} 
         handleSignOut={handleSignOut} 
+        user={user}
       />
 
       {/* Main panel content area offset by sidebar width (260px) */}
