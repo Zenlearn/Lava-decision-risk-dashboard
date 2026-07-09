@@ -48,7 +48,7 @@ export type FieldMapKey = keyof typeof FIELD_MAP;
 //
 // app.py filtered to ['Feb', 'Mar', 'Apr'] but the actual file now includes May.
 // Default: null (accept all) — the user uploads "last 3 months" manually.
-export const TARGET_MONTHS: string[] | null = null;
+export const TARGET_MONTHS: string[] | null = ['Feb', 'Mar', 'Apr'];
 
 // ─── Rule thresholds (must match app.py exactly until explicitly updated) ─────
 export const RULES = {

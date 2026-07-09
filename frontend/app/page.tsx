@@ -106,13 +106,13 @@ export default function UnifiedMockupDashboard() {
 
   // Part cost configuration states (editable master)
   const [costs, setCosts] = useState({
-    pcba: 3000,
-    lcd: 2000,
-    battery: 800,
-    camera: 1200,
-    speaker: 300,
-    charger: 400,
-    travel: 150,
+    pcba: 1800,
+    lcd: 1200,
+    battery: 600,
+    camera: 400,
+    speaker: 250,
+    charger: 300,
+    travel: 750,
   });
 
   // Score Card navigation / controls state
@@ -413,10 +413,11 @@ export default function UnifiedMockupDashboard() {
       <header className="mockup-header">
         <div className="wrap">
           <div className="brand-title">
-            <div className="logo-mock">
-              <span className="a">LAVA</span>
-              <span className="b">RISK</span>
-            </div>
+            <img
+              src="/logo_144.png"
+              alt="ZenLearn"
+              style={{ height: '38px', width: 'auto', display: 'block', borderRadius: '4px' }}
+            />
             <span style={{ fontSize: '11px', color: '#C5D1EE', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>Decision Intelligence</span>
           </div>
 
@@ -1701,7 +1702,7 @@ export default function UnifiedMockupDashboard() {
       
       <footer>
         <div className="wrap">
-          <p>© 2026 LAVA Decision Risk Dashboard. Connected to PostgreSQL backend.</p>
+          <p>© 2026 LAVA Decision Risk Dashboard — powered by ZenLearn.</p>
         </div>
       </footer>
     </div>
