@@ -15,7 +15,6 @@ import logger from './src/configs/logger.config';
 import { responseMiddleware } from './src/middlewares/response.middleware';
 import { errorHandler } from './src/middlewares/errorHandler.middleware';
 import { AuthMiddleware } from './src/middlewares/auth.middleware';
-import './src/types/express.d'; // ensure type augmentations are loaded
 
 import healthRouter from './src/routes/health.routes';
 import importRouter from './src/routes/import.routes';
