@@ -386,6 +386,16 @@ function getPercentile(values: number[], percentile: number): number {
   return sorted[Math.max(0, index)] ?? 0;
 }
 
+/**
+ * Safe integer division — returns 0 instead of NaN or Infinity when denominator is 0.
+ * Rounds to given decimal places (default 1).
+ */
+function safeDivide(numerator: number, denominator: number, decimals = 1): number {
+  if (denominator === 0 || !isFinite(denominator)) return 0;
+  const factor = Math.pow(10, decimals);
+  return Math.round((numerator / denominator) * factor) / factor;
+}
+
 // ─── Robust Date Parsing Helpers ──────────────────────────────────────────────
 function parseDateRobust(val: any): Date | null {
   if (!val) return null;
@@ -689,9 +699,9 @@ export async function getFullDashboardData(): Promise<any> {
     return {
       month: m,
       wo: woCount,
-      process: Math.round((totalProcess / woCount) * 10) / 10,
-      skill: Math.round((totalSkill / woCount) * 10) / 10,
-      audit: Math.round((totalAudit / woCount) * 10) / 10,
+      process: safeDivide(totalProcess, woCount),
+      skill:   safeDivide(totalSkill,   woCount),
+      audit:   safeDivide(totalAudit,   woCount),
       ghost,
       home_board,
       cross_dev: crossDevIMEIs.size,
@@ -715,7 +725,7 @@ export async function getFullDashboardData(): Promise<any> {
     const detractorCount = mRows.filter((r) => r.isDetractor).length;
     const mismatchBouncedCount = mRows.filter((r) => r.isMismatchBounced).length;
 
-    const ftfr = Math.round((1 - bounceCount / woCount) * 1000) / 10;
+    const ftfr = woCount > 0 ? Math.round((1 - bounceCount / woCount) * 1000) / 10 : 0;
     
     const tatRows = mRows.filter((r) => r.tat !== null);
     const mttr = tatRows.length > 0 ? Math.round((tatRows.reduce((sum, r) => sum + r.tat!, 0) / tatRows.length) * 100) / 100 : 0;
@@ -730,7 +740,7 @@ export async function getFullDashboardData(): Promise<any> {
     }).length;
     const csat = surveyRows.length > 0 ? Math.round((satResponders45 / surveyRows.length) * 1000) / 10 : 0;
 
-    const diag = Math.round((1 - mismatchBouncedCount / woCount) * 1000) / 10;
+    const diag = woCount > 0 ? Math.round((1 - mismatchBouncedCount / woCount) * 1000) / 10 : 0;
 
     // Board parts in ghost/home swaps
     const pcbaParts = mRows.filter((r) => r.isPCBA && (r.isGhost || r.isHomeBoard)).length;
@@ -777,7 +787,7 @@ export async function getFullDashboardData(): Promise<any> {
   const overallDetractor = processedRows.filter((r) => r.isDetractor).length;
   const overallMismatchBounced = processedRows.filter((r) => r.isMismatchBounced).length;
 
-  const overallFtfr = Math.round((1 - overallBounce / overallWo) * 1000) / 10;
+  const overallFtfr = overallWo > 0 ? Math.round((1 - overallBounce / overallWo) * 1000) / 10 : 0;
   
   const overallTatRows = processedRows.filter((r) => r.tat !== null);
   const overallMttr = overallTatRows.length > 0 ? Math.round((overallTatRows.reduce((sum, r) => sum + r.tat!, 0) / overallTatRows.length) * 100) / 100 : 0;
@@ -792,7 +802,7 @@ export async function getFullDashboardData(): Promise<any> {
   }).length;
   const overallCsat = overallSurveyRows.length > 0 ? Math.round((overallSatResponders45 / overallSurveyRows.length) * 1000) / 10 : 0;
 
-  const overallDiag = Math.round((1 - overallMismatchBounced / overallWo) * 1000) / 10;
+  const overallDiag = overallWo > 0 ? Math.round((1 - overallMismatchBounced / overallWo) * 1000) / 10 : 0;
 
   const overallPcbaParts = processedRows.filter((r) => r.isPCBA && (r.isGhost || r.isHomeBoard)).length;
   const overallLcdParts = processedRows.filter((r) => r.isLCD && (r.isGhost || r.isHomeBoard)).length;
@@ -875,9 +885,9 @@ export async function getFullDashboardData(): Promise<any> {
         actor,
         month,
         wo: woCount,
-        process: Math.round((totalProcess / woCount) * 10) / 10,
-        skill: Math.round((totalSkill / woCount) * 10) / 10,
-        audit: Math.round((totalAudit / woCount) * 10) / 10,
+        process: safeDivide(totalProcess, woCount),
+        skill:   safeDivide(totalSkill,   woCount),
+        audit:   safeDivide(totalAudit,   woCount),
         ghost,
         cross,
         home_board,
