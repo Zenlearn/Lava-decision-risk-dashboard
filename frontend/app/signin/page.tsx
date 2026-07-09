@@ -32,7 +32,7 @@ function SignInForm() {
     setShowConfirmDialog(false);
 
     try {
-      const response = await fetch('/api/v1/auth/login', {
+      const response = await fetch('/api/v1/auth/sign-in', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -45,8 +45,15 @@ function SignInForm() {
 
       const payload = await response.json();
 
-      if (response.ok && payload.token) {
-        document.cookie = `token=${payload.token}; path=/; max-age=${30 * 24 * 60 * 60}; SameSite=Lax`;
+      if (response.ok) {
+        // PathwaysBackend returns the access token as an HttpOnly cookie 'token' in the Set-Cookie header.
+        // It also returns 'token' or payload properties if needed. If it is HttpOnly, we don't need to manually set it,
+        // but if it is returned in the payload.result (e.g. accessToken/token), we can save it.
+        const token = payload.token || payload.result?.token || payload.result?.accessToken;
+        if (token) {
+          document.cookie = `token=${token}; path=/; max-age=${30 * 24 * 60 * 60}; SameSite=Lax`;
+        }
+        
         router.push(redirectPath);
         router.refresh();
       } else {
