@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
 import { getExecutiveDashboard, getDealerDashboard, getFullDashboardData } from '../services/dashboard.service';
 import { getCachedDashboard, setCachedDashboard } from '../services/cache.service';
+import { createAuditLog } from './audit.controller';
 import logger from '../configs/logger.config';
+
 
 /**
  * Executive Dashboard Handler
@@ -33,6 +35,17 @@ export async function getExecutiveDashboardHandler(req: Request, res: Response):
 
     // 3. Save to cache
     await setCachedDashboard(cacheKey, freshData, freshData.importId);
+
+    // Audit log
+    if (req.user) {
+      await createAuditLog({
+        userId: req.user.id,
+        action: 'DASHBOARD_VIEW',
+        resourceType: 'ExecutiveDashboard',
+        metadata: { busmName, asmName },
+        ipAddress: req.ip,
+      });
+    }
 
     res.success({
       code: 200,
@@ -126,6 +139,16 @@ export async function getFullDashboardDataHandler(req: Request, res: Response): 
 
     // 3. Cache
     await setCachedDashboard(cacheKey, freshData, freshData.summary ? freshData.summary.importId : null);
+
+    // Audit log
+    if (req.user) {
+      await createAuditLog({
+        userId: req.user.id,
+        action: 'DASHBOARD_VIEW',
+        resourceType: 'FullDashboard',
+        ipAddress: req.ip,
+      });
+    }
 
     res.success({
       code: 200,

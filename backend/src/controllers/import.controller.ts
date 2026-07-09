@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { processImport } from '../services/import.service';
+import { createAuditLog } from './audit.controller';
 import logger from '../configs/logger.config';
+
 
 /**
  * Import Controller — Lava Decision Risk
@@ -35,6 +37,17 @@ export async function uploadImportHandler(req: Request, res: Response): Promise<
     );
 
     const summary = await processImport(file.buffer, file.originalname, req.user.id);
+
+    // Write audit log entry
+    await createAuditLog({
+      userId: req.user.id,
+      action: 'IMPORT_UPLOAD',
+      resourceType: 'MonthlyImport',
+      resourceId: summary.importId,
+      importId: summary.importId,
+      metadata: { filename: file.originalname, rowCount: summary.rowCount },
+      ipAddress: req.ip,
+    });
 
     res.success({
       code: 201,
