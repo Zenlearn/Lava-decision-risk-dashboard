@@ -1,6 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Phase 2 will add image domains, rewrites to proxy /api → backend:3010, etc.
+  async rewrites() {
+    return [
+      {
+        source: '/api/v1/:path*',
+        destination: 'http://localhost:3010/api/v1/:path*',
+      },
+    ];
+  },
 };
 
 export default nextConfig;

@@ -5,6 +5,7 @@ import logger from '../configs/logger.config';
 import { FIELD_MAP, TARGET_MONTHS } from '../configs/fieldMap.config';
 import { ImportRowSchema, ImportRow, RowValidationResult } from '../schemas/import.schema';
 import { runRuleEngine, RowRuleResult } from '../rules/engine';
+import { invalidateDashboardCache } from './cache.service';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -320,6 +321,9 @@ export async function processImport(
       where: { id: monthlyImport.id },
       data:  { status: 'COMPLETE', completedAt: new Date() }, // Status enum is COMPLETE
     });
+
+    // Invalidate the cache to force recalculation on next dashboard request
+    await invalidateDashboardCache();
 
     logger.info('Import persisted successfully', { importId: monthlyImport.id });
   } catch (err) {
