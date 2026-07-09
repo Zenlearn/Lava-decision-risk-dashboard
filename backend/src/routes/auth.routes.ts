@@ -31,10 +31,10 @@ const PATHWAYS_BACKEND_URL =
 authRouter.post('/sign-in', async (req: Request, res: Response): Promise<void> => {
 	try {
 		logger.info('Auth proxy: forwarding sign-in to PathwaysBackend', {
-			url: `${PATHWAYS_BACKEND_URL}/api/v1/auth/sign-in`,
+			url: `${PATHWAYS_BACKEND_URL}/auth/sign-in`,
 		});
 
-		const upstreamResponse = await fetch(`${PATHWAYS_BACKEND_URL}/api/v1/auth/sign-in`, {
+		const upstreamResponse = await fetch(`${PATHWAYS_BACKEND_URL}/auth/sign-in`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ authRouter.post('/sign-in', async (req: Request, res: Response): Promise<void> =
  */
 authRouter.post('/login', async (req: Request, res: Response): Promise<void> => {
 	try {
-		const upstreamResponse = await fetch(`${PATHWAYS_BACKEND_URL}/api/v1/auth/sign-in`, {
+		const upstreamResponse = await fetch(`${PATHWAYS_BACKEND_URL}/auth/sign-in`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
