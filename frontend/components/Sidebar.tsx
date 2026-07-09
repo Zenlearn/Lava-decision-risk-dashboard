@@ -224,5 +224,3 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
     </aside>
   );
 }
-  );
-}
