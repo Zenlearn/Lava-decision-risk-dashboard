@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import {
   getExecutiveDashboardHandler,
   getDealerDashboardHandler,
+  getFullDashboardDataHandler,
 } from '../controllers/dashboard.controller';
 import { asyncHandler } from '../configs/async.config';
 
@@ -14,6 +15,14 @@ const dashboardRouter = Router();
  * action hit-list (top 100 anomalous workorders), and unique hierarchy filter values.
  */
 dashboardRouter.get('/executive', asyncHandler(getExecutiveDashboardHandler));
+
+/**
+ * GET /api/v1/dashboard/full-data
+ * 
+ * Returns the complete aggregated DATA payload (Feb-Apr months, KPIs, BUSMs, ASMs, ASPs,
+ * evidence logs, coaching records, thresholds, etc.) matching the mockup structure.
+ */
+dashboardRouter.get('/full-data', asyncHandler(getFullDashboardDataHandler));
 
 /**
  * GET /api/v1/dashboard/dealer/:aspName

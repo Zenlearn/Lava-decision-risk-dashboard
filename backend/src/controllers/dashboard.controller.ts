@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getExecutiveDashboard, getDealerDashboard } from '../services/dashboard.service';
+import { getExecutiveDashboard, getDealerDashboard, getFullDashboardData } from '../services/dashboard.service';
 import { getCachedDashboard, setCachedDashboard } from '../services/cache.service';
 import logger from '../configs/logger.config';
 
@@ -96,6 +96,47 @@ export async function getDealerDashboardHandler(req: Request, res: Response): Pr
     res.error({
       code: 500,
       message: `Failed to compute dashboard analytics for service centre "${aspName}".`,
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
+}
+
+/**
+ * Full Dashboard Data Handler (mockup structure)
+ * 
+ * GET /api/v1/dashboard/full-data
+ */
+export async function getFullDashboardDataHandler(req: Request, res: Response): Promise<void> {
+  const cacheKey = 'dashboard:full_data';
+
+  try {
+    // 1. Try cache
+    const cachedData = await getCachedDashboard(cacheKey);
+    if (cachedData) {
+      res.success({
+        code: 200,
+        message: 'Full dashboard payload loaded from cache',
+        result: cachedData,
+      });
+      return;
+    }
+
+    // 2. Fetch fresh aggregates
+    const freshData = await getFullDashboardData();
+
+    // 3. Cache
+    await setCachedDashboard(cacheKey, freshData, freshData.summary ? freshData.summary.importId : null);
+
+    res.success({
+      code: 200,
+      message: 'Full dashboard payload computed successfully',
+      result: freshData,
+    });
+  } catch (error) {
+    logger.error('Error in getFullDashboardDataHandler', { error });
+    res.error({
+      code: 500,
+      message: 'Failed to compute full dashboard aggregates.',
       error: error instanceof Error ? error.message : String(error),
     });
   }
