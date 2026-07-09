@@ -34,7 +34,7 @@ export type LavaRole =
 export const requireLavaRole = (role: LavaRole): RequestHandler => {
 	return (req, res, next) => {
 		const userRole = req.user?.lava_role;
-		if (userRole === role || req.user?.is_super_admin === true) {
+		if (userRole === role || req.user?.is_super_admin === true || req.user?.is_admin === true) {
 			next();
 			return;
 		}
@@ -56,7 +56,8 @@ export const requireAnyLavaRole = (roles: LavaRole[]): RequestHandler => {
 		const userRole = req.user?.lava_role as LavaRole | undefined;
 		if (
 			(userRole && roles.includes(userRole)) ||
-			req.user?.is_super_admin === true
+			req.user?.is_super_admin === true ||
+			req.user?.is_admin === true
 		) {
 			next();
 			return;
