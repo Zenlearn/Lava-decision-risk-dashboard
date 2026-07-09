@@ -30,6 +30,20 @@ services:
       timeout: 5s
       retries: 5
 
+  lava-api:
+    build: .
+    container_name: pathwaysbackend-lava-api-1
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "3010:3010"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
 volumes:
   lava-postgres-data:
   lava-redis-data:
