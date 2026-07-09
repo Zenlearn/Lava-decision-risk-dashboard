@@ -385,8 +385,18 @@ export default function UnifiedMockupDashboard() {
     link.click();
   };
 
+  if (loading || !data) {
+    return (
+      <div className="mockup-dashboard wrap" style={{ minHeight: '80vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1rem', padding: '100px 0' }}>
+        <RefreshCw className="animate-spin" size={40} style={{ color: 'var(--cobalt)' }} />
+        <p style={{ fontWeight: 600, color: 'var(--muted)', fontSize: '14px' }}>Loading and compiling database aggregates...</p>
+        {error && <p style={{ color: 'var(--bad)', fontWeight: 600 }}>{error}</p>}
+      </div>
+    );
+  }
+
   // Find unique months in order
-  const uniqueMonths = data ? data.org.map((r: any) => r.month) : [];
+  const uniqueMonths = data.org.map((r: any) => r.month);
 
   // Extract variables for easier markup layout mapping
   const latestKPI = data.kpi.months[data.kpi.months.length - 1];
