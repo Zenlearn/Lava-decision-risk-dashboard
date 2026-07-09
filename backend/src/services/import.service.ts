@@ -1,3 +1,4 @@
+import path from 'path';
 import * as XLSX from 'xlsx';
 import { parse as parseCsv } from 'csv-parse/sync';
 import prisma from '../configs/prisma.config';
@@ -181,11 +182,15 @@ export async function processImport(
   uploadedByUserId: string
 ): Promise<ImportSummary> {
   const startMs = Date.now();
-  logger.info('Import pipeline started', { filename });
+
+  // Sanitise filename: strip path components and unsafe characters before DB storage
+  const safeFilename = path.basename(filename).replace(/[^\w.\-]/g, '_').slice(0, 255);
+  logger.info('Import pipeline started', { filename: safeFilename });
 
   // 1. Parse file
-  const rawRows = parseFile(buffer, filename);
+  const rawRows = parseFile(buffer, safeFilename);
   logger.info('File parsed', { rowsParsed: rawRows.length });
+
 
   // 2. Map column names and apply month filter if configured
   let mappedRows = rawRows.map(mapRow);
@@ -227,7 +232,7 @@ export async function processImport(
   // 5. Create MonthlyImport record
   const monthlyImport = await prisma.monthlyImport.create({
     data: {
-      filename,
+      filename:      safeFilename,
       importedBy:    uploadedByUserId,
       rowCount:      validRows.length,
       rejectedCount: rejectedRows.length,
@@ -357,7 +362,7 @@ export async function processImport(
 
   return {
     importId:      monthlyImport.id,
-    filename,
+    filename:      safeFilename,
     rowCount:      mappedRows.length,
     validCount:    validRows.length,
     rejectedCount: rejectedRows.length,

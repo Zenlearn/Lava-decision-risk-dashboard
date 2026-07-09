@@ -94,6 +94,7 @@ const STD_SCRIPTS = {
 
 export default function UnifiedMockupDashboard() {
   const router = useRouter();
+  // SSR hydration guard — recharts cannot render on the server; only show charts after mount
   const [isMounted, setIsMounted] = useState(false);
 
   // Unified Dashboard Data state
@@ -283,13 +284,13 @@ export default function UnifiedMockupDashboard() {
     }
   };
 
+
   const handleSlackPush = () => {
-    setWebhookStatus('sending');
-    setTimeout(() => {
-      setWebhookStatus('success');
-      setTimeout(() => setWebhookStatus('idle'), 3000);
-    }, 1200);
+    // NOTE: Slack integration is not yet wired up. Alert the user so they
+    // are not misled into thinking a real notification was sent.
+    alert('Slack integration is not yet configured. Please contact your administrator to set up the webhook URL.');
   };
+
 
   // Jumps to Evidence pre-filtered to actor and flag
   const triggerCoachingJump = (flag: string, actor: string) => {
