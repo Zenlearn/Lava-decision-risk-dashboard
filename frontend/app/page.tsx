@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { RefreshCw, LogOut } from 'lucide-react';
+import { RefreshCw, LogOut, UploadCloud } from 'lucide-react';
 
 // Import split subcomponents
 import Sidebar from '../components/Sidebar';
@@ -303,6 +303,51 @@ export default function UnifiedMockupDashboard() {
   // Find unique months in order
   const uniqueMonths = data.org.map((r: any) => r.month);
 
+  // Check if data is completely empty (no imported rows)
+  if (data.summary.total_wo === 0) {
+    return (
+      <div className="mockup-dashboard" style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg, #f8fafc)' }}>
+        <Sidebar 
+          activeTab={activeTab} 
+          setActiveTab={setActiveTab} 
+          nominatedCount={nominated.size} 
+          handleSignOut={handleSignOut} 
+        />
+        <div style={{ flex: 1, marginLeft: '260px', padding: '40px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box' }}>
+          <div className="card-mock" style={{ maxWidth: '600px', textAlign: 'center', padding: '40px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
+            <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(37, 99, 235, 0.1)', color: '#2563eb', display: 'flex', alignItems: 'center', justifyItems: 'center', justifyContent: 'center' }}>
+              <UploadCloud size={32} />
+            </div>
+            <h2 style={{ fontSize: '24px', fontWeight: 800, color: '#0f172a', margin: 0, fontFamily: 'var(--font-sans)' }}>
+              Decision Risk Dashboard is Empty
+            </h2>
+            <p style={{ color: '#64748b', fontSize: '15px', lineHeight: '1.6', margin: 0 }}>
+              No service workorders have been uploaded yet. To visualize metrics, anomalies, and leakage exposures, please ingest your Lava service record spreadsheet.
+            </p>
+            <button 
+              onClick={() => setActiveTab('upload')} 
+              className="btn-primary"
+              style={{
+                background: '#2563eb',
+                color: '#fff',
+                border: 'none',
+                padding: '12px 24px',
+                borderRadius: '8px',
+                fontWeight: 600,
+                fontSize: '14px',
+                cursor: 'pointer',
+                transition: 'background 0.2s',
+                marginTop: '10px'
+              }}
+            >
+              Go to Ingest Data
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // Extract variables for easier markup layout mapping
   const latestKPI = data.kpi.months[data.kpi.months.length - 1];
   const previousKPI = data.kpi.months[data.kpi.months.length - 2];
@@ -333,16 +378,6 @@ export default function UnifiedMockupDashboard() {
             <p style={{ color: '#64748b', margin: 0, fontSize: '14px' }}>
               Continuous monitoring of service centre integrity, technician skill gaps, and billing integrity anomalies.
             </p>
-          </div>
-          <div>
-            <button 
-              onClick={fetchDashboardPayload}
-              className="btn-primary" 
-              style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '10px 16px', borderRadius: '8px' }}
-            >
-              <RefreshCw size={14} />
-              Sync Data
-            </button>
           </div>
         </header>
 
