@@ -46,11 +46,9 @@ function SignInForm() {
       const payload = await response.json();
 
       if (response.ok) {
-        // Extract and store JWT token as a client-side cookie for the middleware gate
-        const token = payload.token || payload.result?.token || payload.result?.accessToken;
-        if (token) {
-          document.cookie = `token=${token}; path=/; max-age=${30 * 24 * 60 * 60}; SameSite=Lax`;
-        }
+        // The Lava backend already set the `token` cookie as HttpOnly on this
+        // response (see backend/src/routes/auth.routes.ts) — it is deliberately
+        // not present in this JSON body, so client JS never touches the raw JWT.
 
         // Store user profile in localStorage so the sidebar shows the correct name/email.
         // PathwaysBackend returns user details in payload.result.user.
@@ -174,7 +172,7 @@ function SignInForm() {
               <img
                 src="/logo_144.png"
                 alt="Logo"
-                style={{ height: '44px', width: 'auto', display: 'block' }}
+                style={{ height: '56px', width: 'auto', display: 'block', flexShrink: 0, objectFit: 'contain' }}
               />
             </div>
             <p style={{ color: '#294d89', marginTop: '12px', fontWeight: 'bold', fontSize: '15px', fontFamily: 'var(--font-sans)', margin: '8px 0 0 0' }}>

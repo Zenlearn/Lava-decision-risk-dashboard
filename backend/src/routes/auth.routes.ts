@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import logger from '../configs/logger.config';
+import { getEnvVar } from '../helpers/env';
 
 /**
  * Auth Proxy Routes
@@ -17,8 +18,9 @@ import logger from '../configs/logger.config';
 
 const authRouter = Router();
 
-const PATHWAYS_BACKEND_URL =
-	process.env.PATHWAYS_BACKEND_URL || 'http://app3001:3001';
+const PATHWAYS_BACKEND_URL = getEnvVar('PATHWAYS_BACKEND_URL', 'http://app3001:3001');
+
+const TOKEN_COOKIE_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
 /**
  * PathwaysBackend sets the JWT as an HttpOnly cookie via Set-Cookie header only —
@@ -26,14 +28,43 @@ const PATHWAYS_BACKEND_URL =
  * Since the Lava frontend is on a different domain (Vercel), the HttpOnly cookie
  * cannot be read or forwarded cross-domain.
  *
- * This helper extracts the raw JWT string from the Set-Cookie header so we can
- * inject it into the JSON response body for the frontend to store as its own cookie.
+ * This helper extracts the raw JWT string from the upstream Set-Cookie header(s) so
+ * the Lava backend can re-issue its own HttpOnly cookie on its own (same-origin,
+ * via the Next.js rewrite) response — the token itself never has to touch client JS.
+ *
+ * Uses `getSetCookie()` (Node 18.16+/undici), which returns each Set-Cookie header
+ * as a separate array entry. Falls back to `.get('set-cookie')` on older runtimes,
+ * where multiple Set-Cookie headers get comma-joined by the Fetch spec — a real risk
+ * if PathwaysBackend ever sets more than one cookie, but the best available fallback.
  */
-function extractTokenFromSetCookie(setCookieHeader: string | null): string | null {
-	if (!setCookieHeader) return null;
-	// Set-Cookie: token=<jwt>; Path=/; HttpOnly; Secure; SameSite=Lax
-	const match = setCookieHeader.match(/(?:^|,)\s*token=([^;,\s]+)/i);
-	return match?.[1] ?? null;
+function extractTokenFromSetCookie(headers: Headers): string | null {
+	const cookieStrings: string[] =
+		typeof (headers as any).getSetCookie === 'function'
+			? (headers as any).getSetCookie()
+			: [headers.get('set-cookie') ?? ''];
+
+	for (const cookieString of cookieStrings) {
+		const match = cookieString.match(/(?:^|;\s*)token=([^;]+)/i);
+		if (match?.[1]) return match[1];
+	}
+	return null;
+}
+
+/**
+ * Re-issues the extracted JWT as our own HttpOnly cookie on the Lava backend's
+ * response. Because the browser only ever talks to the frontend's own origin
+ * (Next.js proxies /api/v1/* to this backend server-side), a Set-Cookie header
+ * from this response is treated by the browser as first-party — no client JS
+ * ever needs to read or set the token, so it can stay HttpOnly end to end.
+ */
+function issueTokenCookie(res: Response, token: string): void {
+	res.cookie('token', token, {
+		httpOnly: true,
+		secure: process.env.NODE_ENV === 'production',
+		sameSite: 'lax',
+		maxAge: TOKEN_COOKIE_MAX_AGE_MS,
+		path: '/',
+	});
 }
 
 /**
@@ -42,7 +73,8 @@ function extractTokenFromSetCookie(setCookieHeader: string | null): string | nul
  * Proxies login requests to PathwaysBackend.
  * PathwaysBackend endpoint: POST /auth/sign-in
  * Accepts: { email: string, password: string }
- * Returns: JWT token injected into response body as data.token + data.result.token
+ * On success, re-issues the JWT as our own first-party HttpOnly cookie — the
+ * raw token is never included in the JSON response body (see issueTokenCookie).
  */
 authRouter.post('/sign-in', async (req: Request, res: Response): Promise<void> => {
 	try {
@@ -62,21 +94,15 @@ authRouter.post('/sign-in', async (req: Request, res: Response): Promise<void> =
 		const data = await upstreamResponse.json() as any;
 
 		// PathwaysBackend sets JWT only as HttpOnly Set-Cookie — not in JSON body.
-		// Extract token and inject into response so the Vercel frontend can set
-		// its own cookie on the correct domain.
-		const setCookieHeader = upstreamResponse.headers.get('set-cookie');
-		const jwtToken = extractTokenFromSetCookie(setCookieHeader);
+		// Extract it and re-issue as our own first-party HttpOnly cookie; never
+		// forward the raw token into the JSON body (client JS doesn't need it).
+		const jwtToken = extractTokenFromSetCookie(upstreamResponse.headers);
 
 		if (jwtToken && upstreamResponse.ok) {
-			data.token = jwtToken;
-			if (data.result && typeof data.result === 'object') {
-				data.result.token = jwtToken;
-			}
-			logger.info('Auth proxy: token extracted from Set-Cookie and injected into response');
+			issueTokenCookie(res, jwtToken);
+			logger.info('Auth proxy: token extracted from Set-Cookie and re-issued as first-party cookie');
 		} else if (upstreamResponse.ok && !jwtToken) {
-			logger.warn('Auth proxy: login succeeded but no token found in Set-Cookie header', {
-				setCookieHeader: setCookieHeader ?? 'none',
-			});
+			logger.warn('Auth proxy: login succeeded but no token found in Set-Cookie header');
 		}
 
 		res.status(upstreamResponse.status).json(data);
@@ -109,14 +135,10 @@ authRouter.post('/login', async (req: Request, res: Response): Promise<void> => 
 
 		const data = await upstreamResponse.json() as any;
 
-		const setCookieHeader = upstreamResponse.headers.get('set-cookie');
-		const jwtToken = extractTokenFromSetCookie(setCookieHeader);
+		const jwtToken = extractTokenFromSetCookie(upstreamResponse.headers);
 
 		if (jwtToken && upstreamResponse.ok) {
-			data.token = jwtToken;
-			if (data.result && typeof data.result === 'object') {
-				data.result.token = jwtToken;
-			}
+			issueTokenCookie(res, jwtToken);
 		}
 
 		res.status(upstreamResponse.status).json(data);
@@ -129,6 +151,20 @@ authRouter.post('/login', async (req: Request, res: Response): Promise<void> => 
 			message: 'Authentication service temporarily unavailable. Please try again.',
 		});
 	}
+});
+
+/**
+ * POST /api/v1/auth/sign-out
+ *
+ * Clears the first-party `token` cookie issued by /sign-in. Because that
+ * cookie is HttpOnly (see issueTokenCookie), client JS cannot clear it by
+ * writing `document.cookie` directly — this endpoint is the only way to log
+ * out. `clearCookie` must be called with the same path used when the cookie
+ * was set, or the browser won't match and remove it.
+ */
+authRouter.post('/sign-out', (_req: Request, res: Response): void => {
+	res.clearCookie('token', { path: '/' });
+	res.status(200).json({ message: 'Signed out' });
 });
 
 export default authRouter;

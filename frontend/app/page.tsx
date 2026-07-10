@@ -146,8 +146,16 @@ export default function UnifiedMockupDashboard() {
   };
 
   // Sign out helper
-  const handleSignOut = () => {
-    document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+  // The `token` cookie is HttpOnly (set by the backend on /sign-in), so client
+  // JS can't clear it via document.cookie — /api/v1/auth/sign-out does that
+  // server-side via clearCookie.
+  const handleSignOut = async () => {
+    try {
+      await fetch('/api/v1/auth/sign-out', { method: 'POST' });
+    } catch {
+      // Best-effort — still clear local profile data and redirect below.
+    }
+    localStorage.removeItem('lava_user');
     router.push('/signin');
   };
 

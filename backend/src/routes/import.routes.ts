@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import multer from 'multer';
+import rateLimit from 'express-rate-limit';
 import { uploadImportHandler } from '../controllers/import.controller';
 import { asyncHandler } from '../configs/async.config';
 
@@ -9,6 +10,18 @@ const importRouter = Router();
 
 // Only top management and admin roles can upload data files
 const importAllowedRoles: any[] = ['Admin', 'MD', 'ServiceHead', 'RegionalHead'];
+
+// Per-route limiter on top of the global one — uploads are parsed/scored
+// synchronously (see ARCHITECTURE.md §7), so this is the endpoint most exposed
+// to abuse-driven CPU/memory pressure. Matches PathwaysBackend's uploadLimiter
+// convention (per-route limiter on upload/AI endpoints).
+const uploadLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: { message: 'Too many import uploads from this IP, please try again later.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 
 // Configure Multer for file uploads in memory (since we parse in-request)
@@ -48,6 +61,7 @@ const upload = multer({
  */
 importRouter.post(
   '/',
+  uploadLimiter,
   requireAnyLavaRole(importAllowedRoles),
   upload.single('file'),
   asyncHandler(uploadImportHandler)
