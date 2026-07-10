@@ -9,11 +9,12 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "framer-motion": "^12.42.2",
+    "lucide-react": "^0.395.0",
     "next": "^15.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "recharts": "^2.12.7",
-    "lucide-react": "^0.395.0"
+    "recharts": "^2.12.7"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

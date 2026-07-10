@@ -13,6 +13,8 @@ import TabInsights from '../components/TabInsights';
 import TabEvidence from '../components/TabEvidence';
 import TabPartCosts from '../components/TabPartCosts';
 import TabIngest from '../components/TabIngest';
+import TabProfile from '../components/TabProfile';
+import TabActivities from '../components/TabActivities';
 
 export default function UnifiedMockupDashboard() {
   const router = useRouter();
@@ -488,6 +490,15 @@ export default function UnifiedMockupDashboard() {
             triggerUpload={triggerUpload}
             setActiveTab={setActiveTab}
           />
+        )}
+
+
+        {activeTab === 'profile' && (
+          <TabProfile user={user} />
+        )}
+
+        {activeTab === 'activities' && (
+          <TabActivities />
         )}
 
         <footer style={{ marginTop: '64px', paddingTop: '24px', borderTop: '1px solid #e2e8f0', color: '#94a3b8', fontSize: '13px' }}>

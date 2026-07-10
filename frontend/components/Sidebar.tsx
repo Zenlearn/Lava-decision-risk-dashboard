@@ -40,11 +40,11 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
     : '?';
 
   const handleProfileClick = () => {
-    alert(`User Profile details:\nName: ${userName}\nEmail: ${userEmail}\nRole: Administrator`);
+    setActiveTab('profile');
   };
 
   const handleActivitiesClick = () => {
-    alert(`Audit Activities Log:\nLogged in to Decision Risk Dashboard\nSession: Active`);
+    setActiveTab('activities');
   };
 
   return (
