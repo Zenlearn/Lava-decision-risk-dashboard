@@ -38,15 +38,22 @@ dashboardRouter.get(
 
 /**
  * GET /api/v1/dashboard/dealer/:aspName
- * 
+ *
  * Returns performance snapshots, anomaly incident count breakdowns, and
  * a complete list of flagged workorders for a specific Service Centre (ASP).
- * 
- * Scoped ASP centres can view their own, and higher roles can view any ASP.
+ *
+ * TODO (Phase 3): Dealer/ASP roles are intentionally NOT granted here yet.
+ * The JWT carries no scope claim identifying which ASP a Dealer/ASP user
+ * belongs to (see express.d.ts / jwt.config.ts) — without it there is no way
+ * to verify a Dealer/ASP account is requesting *their own* aspName rather than
+ * an arbitrary one, which would let any Dealer/ASP account view any other
+ * service centre's data via the URL param (IDOR). Add a `lava_scope.aspName`
+ * (or serviceCentreId) claim to the shared JWT first, then re-add Dealer/ASP
+ * here with a `req.user.lava_scope.aspName === aspName` check.
  */
 dashboardRouter.get(
-  '/dealer/:aspName', 
-  requireAnyLavaRole([...executiveRoles, 'Dealer', 'ASP']),
+  '/dealer/:aspName',
+  requireAnyLavaRole(executiveRoles),
   asyncHandler(getDealerDashboardHandler)
 );
 
@@ -61,8 +68,11 @@ dashboardRouter.get('/region/:id', requireAnyLavaRole(executiveRoles), (req: Req
 /**
  * GET /api/v1/dashboard/technician/:id
  * (Phase 2 stub)
+ *
+ * TODO (Phase 3): same scope-claim gap as /dealer/:aspName above — Dealer/ASP
+ * excluded until the JWT carries a verifiable ownership claim.
  */
-dashboardRouter.get('/technician/:id', requireAnyLavaRole([...executiveRoles, 'Dealer', 'ASP']), (req: Request, res: Response) => {
+dashboardRouter.get('/technician/:id', requireAnyLavaRole(executiveRoles), (req: Request, res: Response) => {
   res.status(501).json({ message: `Individual Technician ID dashboard not yet implemented.` });
 });
 

@@ -413,20 +413,28 @@ function parseDateRobust(val: any): Date | null {
     if (!isNaN(d.getTime())) return d;
   }
 
-  // 2. Check DD/MM/YYYY or M/D/YY with slashes
+  // 2. Check DD/MM/YYYY or MM/DD/YYYY with slashes.
+  //
+  // NOTE: when both parts are <=12 (e.g. "05/06/2024"), this is genuinely
+  // ambiguous from the digits alone — no parser can recover the true day/month
+  // without knowing the source locale. We default to DD/MM/YYYY because Lava's
+  // service data is India-sourced (the standard local format), and only fall
+  // back to MM/DD/YYYY when the second part is >12, which unambiguously means
+  // it must be the year... i.e. the first part can't be a day, so p1 is the
+  // month. This changes the interpretation of every ambiguous date compared to
+  // the previous MM/DD-default behavior — if TAT/MTTR figures look shifted by
+  // a matter of days after this change, this default is the reason why.
   m = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
   if (m) {
     const p1 = parseInt(m[1]!, 10);
     const p2 = parseInt(m[2]!, 10);
     let year = parseInt(m[3]!, 10);
     if (year < 100) year += year < 50 ? 2000 : 1900;
-    
-    // Default to DD/MM/YYYY format
-    // If p2 > 12, it must be MM/DD/YYYY
+
     if (p2 > 12) {
-      return new Date(year, p1 - 1, p2); // p1 is month, p2 is day
+      return new Date(year, p1 - 1, p2); // p2 can't be a month -> p1 is month, p2 is day
     } else {
-      return new Date(year, p2 - 1, p1); // p2 is month, p1 is day
+      return new Date(year, p2 - 1, p1); // default DD/MM -> p1 is day, p2 is month
     }
   }
 
