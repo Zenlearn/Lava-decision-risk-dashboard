@@ -21,6 +21,8 @@ import importRouter from './src/routes/import.routes';
 import dashboardRouter from './src/routes/dashboard.routes';
 import auditRouter from './src/routes/audit.routes';
 import authRouter from './src/routes/auth.routes';
+import userRouter from './src/routes/user.routes';
+import analyticsRouter from './src/routes/analytics.routes';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Boot validation — fail fast if required env vars are missing
@@ -96,8 +98,10 @@ app.set('trust proxy', 1);
 // Public routes (no auth required)
 app.use('/api/v1/health', healthRouter);
 
-// Auth proxy — forwards to PathwaysBackend on internal Docker network (public, no JWT required)
+// Proxies — forwards to PathwaysBackend on internal Docker network
 app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/user', userRouter);
+app.use('/api/v1/analytics', analyticsRouter);
 
 // Protected routes — all require a valid JWT
 const protectedRouter = express.Router();
