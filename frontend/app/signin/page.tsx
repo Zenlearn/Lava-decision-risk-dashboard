@@ -46,14 +46,20 @@ function SignInForm() {
       const payload = await response.json();
 
       if (response.ok) {
-        // PathwaysBackend returns the access token as an HttpOnly cookie 'token' in the Set-Cookie header.
-        // It also returns 'token' or payload properties if needed. If it is HttpOnly, we don't need to manually set it,
-        // but if it is returned in the payload.result (e.g. accessToken/token), we can save it.
+        // Extract and store JWT token as a client-side cookie for the middleware gate
         const token = payload.token || payload.result?.token || payload.result?.accessToken;
         if (token) {
           document.cookie = `token=${token}; path=/; max-age=${30 * 24 * 60 * 60}; SameSite=Lax`;
         }
-        
+
+        // Store user profile in localStorage so the sidebar shows the correct name/email.
+        // PathwaysBackend returns user details in payload.result.user.
+        const u = payload.result?.user;
+        if (u) {
+          const name = [u.first_name, u.last_name].filter(Boolean).join(' ').trim() || u.email || '';
+          localStorage.setItem('lava_user', JSON.stringify({ name, email: u.email || '' }));
+        }
+
         router.push(redirectPath);
         router.refresh();
       } else {

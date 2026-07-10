@@ -79,25 +79,16 @@ export default function UnifiedMockupDashboard() {
       }
     }
 
-    // Read and parse JWT token client-side to extract user name and email
-    const cookies = document.cookie.split(';');
-    const tokenCookie = cookies.find(c => c.trim().startsWith('token='));
-    if (tokenCookie) {
-      const token = tokenCookie.split('=')[1];
-      if (token) {
-        try {
-          const parts = token.split('.');
-          if (parts.length === 3) {
-            const decoded = JSON.parse(atob(parts[1]!.replace(/-/g, '+').replace(/_/g, '/')));
-            setUser({
-              name: decoded.name || decoded.username || 'Praveen Lakhera',
-              email: decoded.email || decoded.email_id || 'praveen@jaispring.com'
-            });
-          }
-        } catch (err) {
-          console.error('Error decoding JWT token cookie:', err);
-        }
+    // Read user profile stored at login time (set by signin/page.tsx after successful auth).
+    // PathwaysBackend's JWT does not include first_name/last_name in its claims,
+    // so we store the full profile at login and read it back here.
+    try {
+      const savedUser = localStorage.getItem('lava_user');
+      if (savedUser) {
+        setUser(JSON.parse(savedUser));
       }
+    } catch (e) {
+      console.error('Error reading user profile from localStorage:', e);
     }
 
     fetchDashboardPayload();
