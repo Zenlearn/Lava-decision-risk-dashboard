@@ -32,10 +32,12 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
     { id: 'upload', label: 'Ingest Data', icon: UploadCloud },
   ];
 
-  // Default fallback user details
-  const userName = user?.name || 'Praveen Lakhera';
-  const userEmail = user?.email || 'praveen@jaispring.com';
-  const userInitials = userName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+  // Default fallback user details — empty string so sidebar shows nothing if user not yet loaded
+  const userName = user?.name || '';
+  const userEmail = user?.email || '';
+  const userInitials = userName
+    ? userName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+    : '?';
 
   const handleProfileClick = () => {
     alert(`User Profile details:\nName: ${userName}\nEmail: ${userEmail}\nRole: Administrator`);
@@ -71,7 +73,7 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
           <img
             src="/logo_144.png"
             alt="ZenLearn"
-            style={{ height: '36px', width: 'auto', maxWidth: '100px', objectFit: 'contain', display: 'block', borderRadius: '4px' }}
+            style={{ height: '36px', width: 'auto', display: 'block', borderRadius: '4px', flexShrink: 0 }}
           />
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <span style={{ fontSize: '15px', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.3px', lineHeight: '1.2' }}>
