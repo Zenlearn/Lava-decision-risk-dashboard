@@ -413,17 +413,20 @@ function parseDateRobust(val: any): Date | null {
     if (!isNaN(d.getTime())) return d;
   }
 
-  // 2. Check M/D/YY or DD/MM/YYYY with slashes
+  // 2. Check DD/MM/YYYY or M/D/YY with slashes
   m = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
   if (m) {
     const p1 = parseInt(m[1]!, 10);
     const p2 = parseInt(m[2]!, 10);
     let year = parseInt(m[3]!, 10);
     if (year < 100) year += year < 50 ? 2000 : 1900;
-    if (p1 > 12) {
-      return new Date(year, p2 - 1, p1);
+    
+    // Default to DD/MM/YYYY format
+    // If p2 > 12, it must be MM/DD/YYYY
+    if (p2 > 12) {
+      return new Date(year, p1 - 1, p2); // p1 is month, p2 is day
     } else {
-      return new Date(year, p1 - 1, p2);
+      return new Date(year, p2 - 1, p1); // p2 is month, p1 is day
     }
   }
 
