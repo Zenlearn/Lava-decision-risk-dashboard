@@ -12,7 +12,7 @@ import logger from '../configs/logger.config';
  * within the shared app-network Docker network.
  *
  * Flow:
- *   Browser → Vercel Next.js → Lava API /api/v1/auth/* → PathwaysBackend /api/v1/auth/*
+ *   Browser → Vercel Next.js → Lava API /api/v1/auth/* → PathwaysBackend /auth/sign-in
  */
 
 const authRouter = Router();
@@ -21,12 +21,28 @@ const PATHWAYS_BACKEND_URL =
 	process.env.PATHWAYS_BACKEND_URL || 'http://app3001:3001';
 
 /**
+ * PathwaysBackend sets the JWT as an HttpOnly cookie via Set-Cookie header only —
+ * it does NOT include the token in the JSON response body.
+ * Since the Lava frontend is on a different domain (Vercel), the HttpOnly cookie
+ * cannot be read or forwarded cross-domain.
+ *
+ * This helper extracts the raw JWT string from the Set-Cookie header so we can
+ * inject it into the JSON response body for the frontend to store as its own cookie.
+ */
+function extractTokenFromSetCookie(setCookieHeader: string | null): string | null {
+	if (!setCookieHeader) return null;
+	// Set-Cookie: token=<jwt>; Path=/; HttpOnly; Secure; SameSite=Lax
+	const match = setCookieHeader.match(/(?:^|,)\s*token=([^;,\s]+)/i);
+	return match?.[1] ?? null;
+}
+
+/**
  * POST /api/v1/auth/sign-in
  *
  * Proxies login requests to PathwaysBackend.
- * PathwaysBackend endpoint: POST /api/v1/auth/login
+ * PathwaysBackend endpoint: POST /auth/sign-in
  * Accepts: { email: string, password: string }
- * Returns: JWT token (in response body and/or Set-Cookie header)
+ * Returns: JWT token injected into response body as data.token + data.result.token
  */
 authRouter.post('/sign-in', async (req: Request, res: Response): Promise<void> => {
 	try {
@@ -38,7 +54,6 @@ authRouter.post('/sign-in', async (req: Request, res: Response): Promise<void> =
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				// Forward client IP for PathwaysBackend audit logs
 				...(req.ip ? { 'X-Forwarded-For': req.ip } : {}),
 			},
 			body: JSON.stringify(req.body),
@@ -46,10 +61,22 @@ authRouter.post('/sign-in', async (req: Request, res: Response): Promise<void> =
 
 		const data = await upstreamResponse.json() as any;
 
-		// Forward any Set-Cookie headers (PathwaysBackend may set HttpOnly token cookie)
+		// PathwaysBackend sets JWT only as HttpOnly Set-Cookie — not in JSON body.
+		// Extract token and inject into response so the Vercel frontend can set
+		// its own cookie on the correct domain.
 		const setCookieHeader = upstreamResponse.headers.get('set-cookie');
-		if (setCookieHeader) {
-			res.setHeader('Set-Cookie', setCookieHeader);
+		const jwtToken = extractTokenFromSetCookie(setCookieHeader);
+
+		if (jwtToken && upstreamResponse.ok) {
+			data.token = jwtToken;
+			if (data.result && typeof data.result === 'object') {
+				data.result.token = jwtToken;
+			}
+			logger.info('Auth proxy: token extracted from Set-Cookie and injected into response');
+		} else if (upstreamResponse.ok && !jwtToken) {
+			logger.warn('Auth proxy: login succeeded but no token found in Set-Cookie header', {
+				setCookieHeader: setCookieHeader ?? 'none',
+			});
 		}
 
 		res.status(upstreamResponse.status).json(data);
@@ -83,8 +110,13 @@ authRouter.post('/login', async (req: Request, res: Response): Promise<void> => 
 		const data = await upstreamResponse.json() as any;
 
 		const setCookieHeader = upstreamResponse.headers.get('set-cookie');
-		if (setCookieHeader) {
-			res.setHeader('Set-Cookie', setCookieHeader);
+		const jwtToken = extractTokenFromSetCookie(setCookieHeader);
+
+		if (jwtToken && upstreamResponse.ok) {
+			data.token = jwtToken;
+			if (data.result && typeof data.result === 'object') {
+				data.result.token = jwtToken;
+			}
 		}
 
 		res.status(upstreamResponse.status).json(data);
