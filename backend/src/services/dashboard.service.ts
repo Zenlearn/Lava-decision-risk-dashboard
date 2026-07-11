@@ -26,9 +26,9 @@ export interface HitListPreviewItem {
   symptomDesc:    string;
   totalAnomalies: number;
   flags: {
-    repeatImei:       boolean;
-    suspiciousPhone:  boolean;
-    processBreakdown: boolean;
+    repeatImei:      boolean;
+    doa:             boolean;
+    suspiciousPhone: boolean;
   };
 }
 
@@ -51,9 +51,9 @@ export interface DealerDashboardData {
   aspName:         string;
   metrics:         DashboardMetrics;
   incidentSummary: {
-    repeatImei:       number;
-    suspiciousPhone:  number;
-    processBreakdown: number;
+    repeatImei:      number;
+    doa:             number;
+    suspiciousPhone: number;
   };
   flaggedWorkOrders: HitListPreviewItem[];
 }
@@ -109,6 +109,7 @@ export async function getExecutiveDashboard(filters?: {
 
   // Build prisma query conditions based on hierarchy filters
   const workOrderFilter: any = { importId };
+  const serviceCentreFilter: any = {};
 
   if (filters?.busmName && filters.busmName !== 'All') {
     workOrderFilter.serviceCentre = {
@@ -118,6 +119,7 @@ export async function getExecutiveDashboard(filters?: {
         }
       }
     };
+    serviceCentreFilter.dealer = { region: { name: filters.busmName } };
   }
 
   if (filters?.asmName && filters.asmName !== 'All') {
@@ -128,53 +130,61 @@ export async function getExecutiveDashboard(filters?: {
         name: filters.asmName
       }
     };
+    serviceCentreFilter.dealer = { ...(serviceCentreFilter.dealer ?? {}), name: filters.asmName };
   }
 
-  // 1. Fetch aggregate scores
-  const aggregations = await prisma.workOrder.aggregate({
+  // 1. Fetch aggregate scores from AspMetricRollup — NOT live-recomputed from
+  // WorkOrder.rawData on every request. Skill/Audit/Process are ASP-month
+  // aggregates (see rules/engine.ts computeAspMonthRollup); scoping by
+  // BUSM/ASM hierarchy means first resolving which ServiceCentres match, then
+  // averaging their rollup rows.
+  const matchingServiceCentres = Object.keys(serviceCentreFilter).length > 0
+    ? await prisma.serviceCentre.findMany({ where: serviceCentreFilter, select: { id: true } })
+    : null;
+  const rollupFilter: any = matchingServiceCentres ? { serviceCentreId: { in: matchingServiceCentres.map((s) => s.id) } } : {};
+
+  const rollupRows = await prisma.aspMetricRollup.findMany({ where: rollupFilter });
+
+  const avg = (vals: (number | null)[]): number => {
+    const nonNull = vals.filter((v): v is number => v !== null);
+    return nonNull.length > 0 ? Math.round((nonNull.reduce((a, b) => a + b, 0) / nonNull.length) * 10) / 10 : 0;
+  };
+
+  // totalWorkOrders / totalAnomalies still come from WorkOrder — they're
+  // per-workorder counts, not ASP-month aggregates.
+  const woAggregations = await prisma.workOrder.aggregate({
     where: workOrderFilter,
-    _avg: {
-      processScore: true,
-      skillScore:   true,
-      auditScore:   true,
-    },
-    _sum: {
-      totalAnomalies: true,
-    },
-    _count: {
-      id: true,
-    },
+    _sum: { totalAnomalies: true },
+    _count: { id: true },
   });
 
   const metrics: DashboardMetrics = {
-    avgProcessScore: Math.round((aggregations._avg.processScore ?? 0) * 10) / 10,
-    avgSkillScore:   Math.round((aggregations._avg.skillScore ?? 0) * 10) / 10,
-    avgAuditScore:   Math.round((aggregations._avg.auditScore ?? 0) * 10) / 10,
-    totalWorkOrders: aggregations._count.id,
-    totalAnomalies:  aggregations._sum.totalAnomalies ?? 0,
+    avgProcessScore: avg(rollupRows.map((r) => r.processScore)),
+    avgSkillScore:   avg(rollupRows.map((r) => r.skillScore)),
+    avgAuditScore:   avg(rollupRows.map((r) => r.auditScore)),
+    totalWorkOrders: woAggregations._count.id,
+    totalAnomalies:  woAggregations._sum.totalAnomalies ?? 0,
   };
 
-  // 2. Fetch monthly trend data
-  const monthlyGroups = await prisma.workOrder.groupBy({
-    by: ['month'],
-    where: workOrderFilter,
-    _avg: {
-      processScore: true,
-      skillScore:   true,
-      auditScore:   true,
-    },
-  });
+  // 2. Monthly trend data — group AspMetricRollup by month
+  const rollupsByMonth = new Map<string, typeof rollupRows>();
+  for (const r of rollupRows) {
+    if (!rollupsByMonth.has(r.month)) rollupsByMonth.set(r.month, []);
+    rollupsByMonth.get(r.month)!.push(r);
+  }
 
   const trends: MonthlyTrend[] = sortTrends(
-    monthlyGroups.map((g) => ({
-      month:        g.month ?? 'Unknown',
-      processScore: Math.round((g._avg.processScore ?? 0) * 10) / 10,
-      skillScore:   Math.round((g._avg.skillScore ?? 0) * 10) / 10,
-      auditScore:   Math.round((g._avg.auditScore ?? 0) * 10) / 10,
+    Array.from(rollupsByMonth.entries()).map(([month, rows]) => ({
+      month,
+      processScore: avg(rows.map((r) => r.processScore)),
+      skillScore:   avg(rows.map((r) => r.skillScore)),
+      auditScore:   avg(rows.map((r) => r.auditScore)),
     }))
   );
 
-  // 3. Fetch Action Center Hit List (Total Anomalies >= 2)
+  // 3. Fetch Action Center Hit List (Total Anomalies >= 2) — still row-level,
+  // sourced from WorkOrder/RiskFlag (Skill-only flags: Repeat IMEI, DOA, plus
+  // the standalone Suspicious Phone signal — see rules/engine.ts).
   const hitListRaw = await prisma.workOrder.findMany({
     where: {
       ...workOrderFilter,
@@ -196,14 +206,14 @@ export async function getExecutiveDashboard(filters?: {
       id:             wo.id,
       workorder:      String(rawData[FIELD_MAP.workorder] ?? wo.id),
       aspName:        wo.serviceCentre.name,
-      customerCity:   String(rawData[FIELD_MAP.customerCity] ?? ''),
+      customerCity:   '', // Customer City column dropped from Master Data in the Jul 2026 drop
       imei:           String(rawData[FIELD_MAP.imei] ?? ''),
       symptomDesc:    String(rawData[FIELD_MAP.symptomDesc] ?? ''),
       totalAnomalies: wo.totalAnomalies ?? 0,
       flags: {
-        repeatImei:       wo.riskFlags.some((rf) => rf.ruleKey === 'repeatImei'),
-        suspiciousPhone:  wo.riskFlags.some((rf) => rf.ruleKey === 'suspiciousPhone'),
-        processBreakdown: wo.riskFlags.some((rf) => rf.ruleKey === 'processBreakdown'),
+        repeatImei:      wo.riskFlags.some((rf) => rf.ruleKey === 'repeatImei'),
+        doa:             wo.riskFlags.some((rf) => rf.ruleKey === 'doa'),
+        suspiciousPhone: wo.riskFlags.some((rf) => rf.ruleKey === 'suspiciousPhone'),
       },
     };
   });
@@ -255,7 +265,7 @@ export async function getDealerDashboard(aspName: string): Promise<DealerDashboa
       importId: null,
       aspName,
       metrics: { avgProcessScore: 0, avgSkillScore: 0, avgAuditScore: 0, totalWorkOrders: 0, totalAnomalies: 0 },
-      incidentSummary: { repeatImei: 0, suspiciousPhone: 0, processBreakdown: 0 },
+      incidentSummary: { repeatImei: 0, doa: 0, suspiciousPhone: 0 },
       flaggedWorkOrders: [],
     };
   }
@@ -275,50 +285,40 @@ export async function getDealerDashboard(aspName: string): Promise<DealerDashboa
   const serviceCentreId = serviceCentre.id;
   const filterClause = { importId, serviceCentreId };
 
-  // 1. Fetch aggregates
-  const aggregations = await prisma.workOrder.aggregate({
+  // 1. Fetch category scores from AspMetricRollup (all months for this ASP) —
+  // Skill/Audit/Process are ASP-month aggregates, not per-workorder columns.
+  const rollupRows = await prisma.aspMetricRollup.findMany({ where: { serviceCentreId } });
+  const avg = (vals: (number | null)[]): number => {
+    const nonNull = vals.filter((v): v is number => v !== null);
+    return nonNull.length > 0 ? Math.round((nonNull.reduce((a, b) => a + b, 0) / nonNull.length) * 10) / 10 : 0;
+  };
+
+  const woAggregations = await prisma.workOrder.aggregate({
     where: filterClause,
-    _avg: {
-      processScore: true,
-      skillScore:   true,
-      auditScore:   true,
-    },
-    _sum: {
-      totalAnomalies: true,
-    },
-    _count: {
-      id: true,
-    },
+    _sum: { totalAnomalies: true },
+    _count: { id: true },
   });
 
   const metrics: DashboardMetrics = {
-    avgProcessScore: Math.round((aggregations._avg.processScore ?? 0) * 10) / 10,
-    avgSkillScore:   Math.round((aggregations._avg.skillScore ?? 0) * 10) / 10,
-    avgAuditScore:   Math.round((aggregations._avg.auditScore ?? 0) * 10) / 10,
-    totalWorkOrders: aggregations._count.id,
-    totalAnomalies:  aggregations._sum.totalAnomalies ?? 0,
+    avgProcessScore: avg(rollupRows.map((r) => r.processScore)),
+    avgSkillScore:   avg(rollupRows.map((r) => r.skillScore)),
+    avgAuditScore:   avg(rollupRows.map((r) => r.auditScore)),
+    totalWorkOrders: woAggregations._count.id,
+    totalAnomalies:  woAggregations._sum.totalAnomalies ?? 0,
   };
 
-  // 2. Incident Summary Count (Repeat IMEI, Suspicious Contact, NPS Detractors)
+  // 2. Incident Summary Count — row-level Skill flags (Repeat IMEI, DOA) plus
+  // the standalone Suspicious Phone signal.
   const repeatImeiCount = await prisma.riskFlag.count({
-    where: {
-      workOrder: filterClause,
-      ruleKey:   'repeatImei',
-    },
+    where: { workOrder: filterClause, ruleKey: 'repeatImei' },
+  });
+
+  const doaCount = await prisma.riskFlag.count({
+    where: { workOrder: filterClause, ruleKey: 'doa' },
   });
 
   const suspiciousPhoneCount = await prisma.riskFlag.count({
-    where: {
-      workOrder: filterClause,
-      ruleKey:   'suspiciousPhone',
-    },
-  });
-
-  const processBreakdownCount = await prisma.riskFlag.count({
-    where: {
-      workOrder: filterClause,
-      ruleKey:   'processBreakdown',
-    },
+    where: { workOrder: filterClause, ruleKey: 'suspiciousPhone' },
   });
 
   // 3. Flagged Workorders (anomalies > 0)
@@ -342,14 +342,14 @@ export async function getDealerDashboard(aspName: string): Promise<DealerDashboa
       id:             wo.id,
       workorder:      String(rawData[FIELD_MAP.workorder] ?? wo.id),
       aspName:        wo.serviceCentre.name,
-      customerCity:   String(rawData[FIELD_MAP.customerCity] ?? ''),
+      customerCity:   '', // Customer City column dropped from Master Data in the Jul 2026 drop
       imei:           String(rawData[FIELD_MAP.imei] ?? ''),
       symptomDesc:    String(rawData[FIELD_MAP.symptomDesc] ?? ''),
       totalAnomalies: wo.totalAnomalies ?? 0,
       flags: {
-        repeatImei:       wo.riskFlags.some((rf) => rf.ruleKey === 'repeatImei'),
-        suspiciousPhone:  wo.riskFlags.some((rf) => rf.ruleKey === 'suspiciousPhone'),
-        processBreakdown: wo.riskFlags.some((rf) => rf.ruleKey === 'processBreakdown'),
+        repeatImei:      wo.riskFlags.some((rf) => rf.ruleKey === 'repeatImei'),
+        doa:             wo.riskFlags.some((rf) => rf.ruleKey === 'doa'),
+        suspiciousPhone: wo.riskFlags.some((rf) => rf.ruleKey === 'suspiciousPhone'),
       },
     };
   });
@@ -359,9 +359,9 @@ export async function getDealerDashboard(aspName: string): Promise<DealerDashboa
     aspName,
     metrics,
     incidentSummary: {
-      repeatImei:       repeatImeiCount,
-      suspiciousPhone:  suspiciousPhoneCount,
-      processBreakdown: processBreakdownCount,
+      repeatImei:      repeatImeiCount,
+      doa:             doaCount,
+      suspiciousPhone: suspiciousPhoneCount,
     },
     flaggedWorkOrders,
   };
@@ -558,7 +558,7 @@ export async function getFullDashboardData(): Promise<any> {
     const symptomRaw = String(raw[FIELD_MAP.symptomDesc] || '');
     const actionRaw = String(raw['Action Code Desc'] || raw['Action Taken'] || '');
     const partRaw = String(raw['Part Name'] || raw['Part Description'] || '');
-    const city = String(raw[FIELD_MAP.customerCity] || '');
+    const city = ''; // Customer City column dropped from Master Data in the Jul 2026 drop
 
     const tat = getDaysDiff(raw[FIELD_MAP.creationDate], raw[FIELD_MAP.deliveryDate]);
     const isSameDay = tat === 0;

@@ -92,17 +92,25 @@ model Dealer {
 model ServiceCentre {
   id          String   @id @default(cuid())
   name        String
-  code        String?  // ASP code
+  code        String?  // ASP code — primary cross-file join key (see fieldMap.config.ts)
   dealerId    String
 
   dealer      Dealer       @relation(fields: [dealerId], references: [id])
   technicians Technician[]
   workOrders  WorkOrder[]
 
+  qcRecords          ComplianceQcRecord[]
+  elsDoaRecords      ComplianceElsDoaRecord[]
+  defectiveSpares    ComplianceDefectiveSpareRecord[]
+  sahAppointments    ServiceAtHomeAppointment[]
+  msmDailyRecords    MsmDailyRecord[]
+  metricRollups      AspMetricRollup[]
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   @@index([dealerId])
+  @@index([code])
 }
 
 model Technician {
@@ -127,6 +135,7 @@ model Technician {
 model MonthlyImport {
   id             String   @id @default(cuid())
   filename       String
+  datasetType    DatasetType @default(MASTER_DATA)
   importedBy     String   // zenlearnUserId
   rowCount       Int
   rejectedCount  Int      @default(0)
@@ -136,11 +145,29 @@ model MonthlyImport {
   workOrders     WorkOrder[]
   auditLogs      AuditLog[]
 
+  qcRecords          ComplianceQcRecord[]
+  elsDoaRecords      ComplianceElsDoaRecord[]
+  defectiveSpares    ComplianceDefectiveSpareRecord[]
+  sahAppointments    ServiceAtHomeAppointment[]
+  msmDailyRecords    MsmDailyRecord[]
+
   importedAt     DateTime @default(now())
   completedAt    DateTime?
 
   @@index([importedBy])
   @@index([status])
+}
+
+// Which of the 6 Lava data files this import came from — determines which
+// parser/field-map/persistence path the import pipeline takes.
+enum DatasetType {
+  MASTER_DATA
+  COMPLIANCE_QC
+  COMPLIANCE_ELS_DOA
+  COMPLIANCE_DEFECTIVE_SPARE
+  SERVICE_AT_HOME
+  MSM_ACHIEVEMENT
+  SPARE_PRICE_CATALOG
 }
 
 enum ImportStatus {
@@ -176,7 +203,6 @@ model WorkOrder {
   serviceCentre   ServiceCentre  @relation(fields: [serviceCentreId], references: [id])
   technician      Technician?    @relation(fields: [technicianId], references: [id])
   riskFlags       RiskFlag[]
-  judgementScores JudgementScore[]
 
   createdAt       DateTime @default(now())
 
@@ -213,25 +239,199 @@ enum Severity {
   CRITICAL
 }
 
-model JudgementScore {
-  id            String        @id @default(cuid())
-  workOrderId   String
-  dimension     ScoreDimension // SKILL | AUDIT | PROCESS
-  score         Float          // 0-100, starts at 100 baseline, clipped at 0
-  penalty       Float          // total penalty applied
+// NOTE: JudgementScore (per-row Skill/Audit/Process persistence) was removed.
+// It duplicated what dashboard.service.ts recomputed live from WorkOrder.rawData
+// on every request — neither approach scales past 100K+ rows across 6 datasets.
+// AspMetricRollup (below) is the single source of truth for aggregate scoring now;
+// row-level detail for evidence/hit-list drill-down stays in WorkOrder.rawData + RiskFlag.
 
-  workOrder     WorkOrder @relation(fields: [workOrderId], references: [id])
+// ─────────────────────────────────────────────────────────────
+// Compliance datasets — audit sources for the Audit Score
+// ─────────────────────────────────────────────────────────────
 
-  createdAt     DateTime @default(now())
+// IMEI QC sheet — SRN (Service Receipt Note) reconciliation: does the returned
+// IMEI/Serial/Software match what was recorded on receipt.
+model ComplianceQcRecord {
+  id               String   @id @default(cuid())
+  importId         String
+  serviceCentreId  String
+  workorderNumber  String
+  complianceStatus String   // "Compliance" | "Non-Com" | "Non-com" (source data is inconsistent-cased)
+  qcStatus         String?  // "Completed" | "Faulty" | "QC Not Done"
+  month            String?
+  rawData          Json
 
-  @@index([workOrderId])
-  @@index([dimension])
+  import           MonthlyImport @relation(fields: [importId], references: [id])
+  serviceCentre    ServiceCentre @relation(fields: [serviceCentreId], references: [id])
+
+  createdAt        DateTime @default(now())
+
+  @@index([importId])
+  @@index([serviceCentreId])
+  @@index([workorderNumber])
+  @@index([month])
 }
 
-enum ScoreDimension {
-  SKILL
-  AUDIT
-  PROCESS
+// ELS DOA REP sheet — was a claimed Dead-On-Arrival fault actually genuine.
+model ComplianceElsDoaRecord {
+  id                  String   @id @default(cuid())
+  importId            String
+  serviceCentreId     String
+  workorderNumber     String
+  complianceStatus    String   // "Compliance" | "Non-Compliance"
+  nonComplianceReason String?
+  value               Float?
+  handsetCategory     String?  // "Smart phone" | "Feature phone"
+  month               String?
+  rawData             Json
+
+  import              MonthlyImport @relation(fields: [importId], references: [id])
+  serviceCentre       ServiceCentre @relation(fields: [serviceCentreId], references: [id])
+
+  createdAt           DateTime @default(now())
+
+  @@index([importId])
+  @@index([serviceCentreId])
+  @@index([workorderNumber])
+  @@index([month])
+}
+
+// DEF(S+D) sheet — defective/damaged spare-parts returns (challan-based).
+// partCode is a soft-reference to SparePriceCatalog.materialCode (~82% coverage,
+// not enforced as a DB-level FK since the catalog doesn't cover every part).
+model ComplianceDefectiveSpareRecord {
+  id               String   @id @default(cuid())
+  importId         String
+  serviceCentreId  String
+  challanNo        String?
+  workOrderNumber  String?
+  partCode         String?
+  category         String?  // "SPARE-Defective" | "Fresh Faulty" | "Damaged"
+  complianceStatus String   // "Compliance" | "Non-Compliance"
+  amount           Float?
+  debitQty         Int?
+  month            String?
+  rawData          Json
+
+  import           MonthlyImport @relation(fields: [importId], references: [id])
+  serviceCentre    ServiceCentre @relation(fields: [serviceCentreId], references: [id])
+
+  createdAt        DateTime @default(now())
+
+  @@index([importId])
+  @@index([serviceCentreId])
+  @@index([partCode])
+  @@index([month])
+}
+
+// ─────────────────────────────────────────────────────────────
+// Service at Home — home-visit appointment lifecycle (Process Score input)
+// ─────────────────────────────────────────────────────────────
+
+model ServiceAtHomeAppointment {
+  id                String    @id @default(cuid())
+  importId          String
+  serviceCentreId   String
+  appointmentId     String
+  workOrderNumber   String?   // different WO series from Master Data — ~65% overlap, join is best-effort
+  appointmentStatus String?   // "Closed" | "In Process" | "Reject/Cancel" | "Request For Cancel" | ...
+  appointmentDate   DateTime?
+  cancelReason      String?
+  month             String?
+  rawData           Json
+
+  import            MonthlyImport @relation(fields: [importId], references: [id])
+  serviceCentre     ServiceCentre @relation(fields: [serviceCentreId], references: [id])
+
+  createdAt         DateTime @default(now())
+
+  @@index([importId])
+  @@index([serviceCentreId])
+  @@index([workOrderNumber])
+  @@index([month])
+}
+
+// ─────────────────────────────────────────────────────────────
+// MSM Achievement — daily ASP deposit/stock compliance (financial exposure,
+// Process Score input). Source sheet is a pivot (one column per calendar day) —
+// melted into one row per (ASP, day) at import time.
+// ─────────────────────────────────────────────────────────────
+
+model MsmDailyRecord {
+  id               String    @id @default(cuid())
+  importId         String
+  serviceCentreId  String
+  date             DateTime
+  complianceStatus String?   // "Compliance" | "Non Compliance" | null (non-working day, source uses "-")
+  balanceValue     Float?
+  msmTarget        Float?
+  month            String?
+
+  import           MonthlyImport @relation(fields: [importId], references: [id])
+  serviceCentre    ServiceCentre @relation(fields: [serviceCentreId], references: [id])
+
+  createdAt        DateTime @default(now())
+
+  @@unique([serviceCentreId, date])
+  @@index([importId])
+  @@index([serviceCentreId])
+  @@index([date])
+}
+
+// ─────────────────────────────────────────────────────────────
+// ZPRP Spare Price Catalog — reference table, no serviceCentre link.
+// Re-upserted (not appended) on each import since it's a point-in-time price list.
+// ─────────────────────────────────────────────────────────────
+
+model SparePriceCatalog {
+  id                  String    @id @default(cuid())
+  materialCode        String    @unique
+  materialDescription String?
+  basicPrice          Float?
+  distributorPrice    Float?
+  taxRate             Float?
+  validFrom           DateTime?
+  validTo             DateTime?
+
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+}
+
+// ─────────────────────────────────────────────────────────────
+// ASP Metric Rollup — the single source of truth for dashboard reads.
+// One row per (ServiceCentre, month), computed by the rule engine after each
+// import completes. Replaces per-request live recomputation from WorkOrder.rawData.
+// ─────────────────────────────────────────────────────────────
+
+model AspMetricRollup {
+  id              String   @id @default(cuid())
+  serviceCentreId String
+  month           String
+
+  // 5 fixed Executive Dashboard tiles — definitions unchanged from the current UI
+  ftfr            Float?   // First-time fix rate (%)
+  csat            Float?   // Customer satisfaction (%) — nullable: dormant, no NPS/VOC data in this drop
+  mttr            Float?   // Mean time to repair (days)
+  diag            Float?   // Diagnostic accuracy (%)
+  leak            Float?   // Estimated monthly leakage exposure (₹)
+
+  // 3 category scores (0-100, baseline 100 clipped at 0 — same convention as before)
+  skillScore      Float?
+  auditScore      Float?
+  processScore    Float?
+
+  // Deep-dive child metrics per category — kept as JSON since the exact child-metric
+  // set will keep evolving as signals are validated against real data; see rules/engine.ts
+  // for the current shape of skill/audit/process child breakdowns.
+  childMetrics    Json?
+
+  serviceCentre   ServiceCentre @relation(fields: [serviceCentreId], references: [id])
+
+  computedAt      DateTime @default(now())
+
+  @@unique([serviceCentreId, month])
+  @@index([serviceCentreId])
+  @@index([month])
 }
 
 // ─────────────────────────────────────────────────────────────
