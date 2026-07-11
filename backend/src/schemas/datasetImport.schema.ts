@@ -40,7 +40,7 @@ export const DefRowSchema = z.object({
   challanNo:        z.union([z.number(), z.string()]).nullable().optional(),
   workOrderNumber:  z.union([z.number(), z.string()]).nullable().optional(),
   aspCode:          numOrStr,
-  partCode:         z.string().nullable().optional(),
+  partCode:         numOrStr,
   category:         z.string().nullable().optional(),
   complianceStatus: z.string().nullable().optional(),
   amount:           numOrStr,

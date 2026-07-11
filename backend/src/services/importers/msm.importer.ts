@@ -53,8 +53,16 @@ export async function importMsmAchievement(
     if (['Total Working Days', 'MSM Achievement', '% MSM Achievement', 'Remarks', 'MSM Adherence', 'SD Adherence', 'Exlude'].includes(text)) {
       return; // trailing summary columns — not dates, not needed for daily records
     }
-    // Anything else in the header row is expected to be a date (Excel stores it as a Date cell value)
-    const cellValue = cell.value;
+    // Anything else in the header row is expected to be a date. Most of these
+    // cells are FORMULAS (the sheet auto-increments from the first date via
+    // "=E1+1" / shared formulas), not plain Date values — ExcelJS represents
+    // those as { formula, result } (or { result, sharedFormula } for shared
+    // formula cells), so the formula result must be unwrapped before checking
+    // instanceof Date. Only the very first date column is a literal Date.
+    let cellValue: any = cell.value;
+    if (cellValue && typeof cellValue === 'object' && 'result' in cellValue) {
+      cellValue = cellValue.result;
+    }
     const asDate = cellValue instanceof Date ? cellValue : new Date(String(cellValue));
     if (!isNaN(asDate.getTime())) {
       dateCols.push({ colNumber, date: asDate });

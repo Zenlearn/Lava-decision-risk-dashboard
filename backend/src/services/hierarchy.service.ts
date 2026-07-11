@@ -25,8 +25,20 @@ export function newHierarchyCaches(): HierarchyCaches {
   return { regionCache: new Map(), dealerCache: new Map(), scCache: new Map() };
 }
 
+/**
+ * Treats null, undefined, and whitespace-only strings uniformly as "missing" —
+ * a blank source cell (e.g. `""`) previously bypassed the `?? 'Unknown ...'`
+ * fallback (which only guards null/undefined), creating a Region/Dealer
+ * literally named "" instead of falling back cleanly.
+ */
+function blankToNull(s: string | null | undefined): string | null {
+  if (s == null) return null;
+  const trimmed = s.trim();
+  return trimmed === '' ? null : trimmed;
+}
+
 async function upsertRegion(busmName: string | null): Promise<string> {
-  const name = busmName ?? 'Unknown Region';
+  const name = blankToNull(busmName) ?? 'Unknown Region';
   const region = await prisma.region.upsert({
     where:  { name },
     create: { name },
@@ -37,7 +49,7 @@ async function upsertRegion(busmName: string | null): Promise<string> {
 }
 
 async function upsertDealer(asmName: string | null, regionId: string): Promise<string> {
-  const name = asmName ?? 'Unknown Dealer';
+  const name = blankToNull(asmName) ?? 'Unknown Dealer';
 
   const existing = await prisma.dealer.findFirst({ where: { name, regionId }, select: { id: true } });
   if (existing) return existing.id;
@@ -52,7 +64,7 @@ async function upsertServiceCentre(
   dealerId: string
 ): Promise<string> {
   const code = aspCode != null ? String(aspCode) : null;
-  const name = aspName ?? code ?? 'Unknown Service Centre';
+  const name = blankToNull(aspName) ?? code ?? 'Unknown Service Centre';
 
   const whereClause = [];
   if (code) whereClause.push({ code, dealerId });
@@ -77,17 +89,17 @@ export async function resolveServiceCentre(
   aspCode: string | number | null,
   aspName: string | null
 ): Promise<string> {
-  const regionKey = busmName ?? 'UNKNOWN';
+  const regionKey = blankToNull(busmName) ?? 'UNKNOWN';
   if (!caches.regionCache.has(regionKey)) {
     caches.regionCache.set(regionKey, await upsertRegion(busmName));
   }
 
-  const dealerKey = asmName ?? 'UNKNOWN';
+  const dealerKey = blankToNull(asmName) ?? 'UNKNOWN';
   if (!caches.dealerCache.has(dealerKey)) {
     caches.dealerCache.set(dealerKey, await upsertDealer(asmName, caches.regionCache.get(regionKey)!));
   }
 
-  const scKey = aspCode != null ? String(aspCode) : (aspName ?? 'UNKNOWN');
+  const scKey = aspCode != null ? String(aspCode) : (blankToNull(aspName) ?? 'UNKNOWN');
   if (!caches.scCache.has(scKey)) {
     caches.scCache.set(scKey, await upsertServiceCentre(aspCode, aspName, caches.dealerCache.get(dealerKey)!));
   }

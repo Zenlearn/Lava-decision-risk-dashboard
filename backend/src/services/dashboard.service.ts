@@ -59,9 +59,17 @@ export interface DealerDashboardData {
 }
 
 /** Get the latest successful import record. */
+/**
+ * Latest COMPLETE Master Data import specifically — NOT the latest import
+ * across any dataset type. WorkOrder-based metrics (totalWorkOrders,
+ * totalAnomalies, hit list) only ever come from Master Data; if this picked
+ * up the latest import regardless of type, uploading e.g. Service at Home
+ * after Master Data would point `importId` at a dataset with zero WorkOrders,
+ * silently zeroing every WorkOrder-derived field.
+ */
 async function getLatestImportId(): Promise<{ id: string; filename: string } | null> {
   const latest = await prisma.monthlyImport.findFirst({
-    where:   { status: 'COMPLETE' },
+    where:   { status: 'COMPLETE', datasetType: 'MASTER_DATA' },
     orderBy: { importedAt: 'desc' },
     select:  { id: true, filename: true },
   });
