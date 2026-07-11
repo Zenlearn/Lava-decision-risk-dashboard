@@ -84,7 +84,7 @@ export async function persistComplianceDef(
             serviceCentreId: scId,
             challanNo: data.challanNo != null ? String(data.challanNo) : null,
             workOrderNumber: data.workOrderNumber != null ? String(data.workOrderNumber) : null,
-            partCode: data.partCode ?? null,
+            partCode: data.partCode != null ? String(data.partCode) : null,
             category: data.category ?? null,
             complianceStatus: data.complianceStatus ?? 'Unknown',
             amount: toNumber(data.amount),

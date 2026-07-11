@@ -55,7 +55,7 @@ export const ImportRowSchema = z.object({
   callType:     z.string().nullable().optional(),
   callCategory: z.string().nullable().optional(),
   customerName: z.string().nullable().optional(),
-  deliveryDate: z.string().nullable().optional(),
+  deliveryDate: z.union([z.date(), z.string()]).nullable().optional(),
   creationDate: z.union([z.date(), z.string()]).nullable().optional(),
   warranty:     z.string().nullable().optional(),
 

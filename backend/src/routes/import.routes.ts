@@ -39,10 +39,13 @@ const upload = multer({
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     ];
 
-    if (allowedMimeTypes.includes(file.mimetype) || 
-        file.originalname.endsWith('.csv') || 
-        file.originalname.endsWith('.xlsx') || 
-        file.originalname.endsWith('.xls')) {
+    // Case-insensitive extension check — real Lava filenames are inconsistently
+    // cased (e.g. "S@H Apr to Jun26.XLSX" with an uppercase extension).
+    const lowerName = file.originalname.toLowerCase();
+    if (allowedMimeTypes.includes(file.mimetype) ||
+        lowerName.endsWith('.csv') ||
+        lowerName.endsWith('.xlsx') ||
+        lowerName.endsWith('.xls')) {
       cb(null, true);
     } else {
       cb(new Error('Only CSV, XLS, and XLSX file formats are supported.'));

@@ -34,14 +34,28 @@ function extractSheetRows(worksheet: ExcelJS.Worksheet): Record<string, unknown>
         let val: any = cell.value;
         if (val && typeof val === 'object') {
           if (val.formula) {
+            // A formula's result can itself be a Date (including an invalid
+            // one) — fall through to the same instanceof-Date validity check
+            // below rather than assigning it directly.
             val = val.result !== undefined ? val.result : null;
-          } else if (val.richText) {
+          }
+          if (val && typeof val === 'object' && val.richText) {
             val = val.richText.map((t: any) => t.text || '').join('');
           } else if (val instanceof Date) {
-            // keep date objects
-          } else if (val.text !== undefined) {
+            // Keep valid date objects; some source cells (directly, or via a
+            // formula result — e.g. a "Remarks" column with a stray date-like
+            // formula) produce an Invalid Date, which Prisma's Json
+            // serialization rejects outright — null it instead of letting
+            // the whole row's persist fail.
+            if (isNaN(val.getTime())) val = null;
+          } else if (val && typeof val === 'object' && val.text !== undefined) {
             val = val.text;
-          } else {
+          } else if (val && typeof val === 'object' && 'error' in val) {
+            // Formula-error cells (#N/A, #REF!, etc.) — ExcelJS represents these
+            // as { error: string }. Treat as blank rather than stringifying the
+            // object (which silently produced the literal string "[object Object]").
+            val = null;
+          } else if (val && typeof val === 'object') {
             val = String(val);
           }
         }
@@ -133,11 +147,24 @@ export function toNumber(v: unknown): number | null {
 }
 
 /** Coerce a value (Date object, Excel serial, or date string) to a Date, or null. */
+// A malformed/blank source cell can parse to a technically-valid but absurd
+// Date (e.g. year 1) rather than throwing — reject anything outside a
+// plausible reporting-data range instead of letting it silently corrupt
+// month-based joins (see rollup.service.ts / normalizeMonth).
+const PLAUSIBLE_YEAR_MIN = 2000;
+const PLAUSIBLE_YEAR_MAX = 2100;
+
+function isPlausibleDate(d: Date): boolean {
+  if (isNaN(d.getTime())) return false;
+  const year = d.getUTCFullYear();
+  return year >= PLAUSIBLE_YEAR_MIN && year <= PLAUSIBLE_YEAR_MAX;
+}
+
 export function toDate(v: unknown): Date | null {
   if (v === null || v === undefined || v === '') return null;
-  if (v instanceof Date) return isNaN(v.getTime()) ? null : v;
+  if (v instanceof Date) return isPlausibleDate(v) ? v : null;
   const d = new Date(String(v));
-  return isNaN(d.getTime()) ? null : d;
+  return isPlausibleDate(d) ? d : null;
 }
 
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
