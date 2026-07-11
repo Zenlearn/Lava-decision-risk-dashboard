@@ -25,10 +25,11 @@ const uploadLimiter = rateLimit({
 
 
 // Configure Multer for file uploads in memory (since we parse in-request)
+// 25 MB — the Jul 2026 Master Data file alone is ~15.4 MB.
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 10 * 1024 * 1024, // 10 MB limit
+    fileSize: 25 * 1024 * 1024,
   },
   fileFilter: (_req, file, cb) => {
     // Accept CSV and Excel mime types
@@ -51,11 +52,14 @@ const upload = multer({
 
 /**
  * POST /api/v1/imports
- * 
- * Ingests a monthly master service data file (CSV or XLSX), validates it,
- * runs the anomaly detection rule engine, and persists the generated
- * workorders, risk flags, and judgement scores in Postgres.
- * 
+ *
+ * Ingests any of the 6 Lava data files (CSV or XLSX): Master Data, Compliance
+ * IMEI QC / DEF(S+D) / ELS DOA REP, Service at Home, MSM Achievement, or ZPRP
+ * Spare Cost. The client must send a `datasetType` form field alongside the
+ * file (see DATASET_IMPORTERS in import.controller.ts for valid values) —
+ * dataset type is never auto-detected from headers, since column names have
+ * already changed once in this project and will again.
+ *
  * Access control is handled by the parent router mounting (app.ts/index.ts)
  * where AuthMiddleware is already applied.
  */

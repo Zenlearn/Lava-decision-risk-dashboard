@@ -36,26 +36,44 @@ export const ImportRowSchema = z.object({
 
   // Rule inputs — optional (missing → rule skipped for this row)
   phone:        z.string().nullable().optional(),
-  npsRating:    npsRatingSchema,
+  npsRating:    npsRatingSchema, // absent from current file — always undefined until VOC/NPS data returns
+  doaType:      z.string().nullable().optional(),
+  actionDesc:   z.string().nullable().optional(),
 
-  // Org hierarchy — optional (missing → will be created as 'Unknown')
-  busmCode:     z.string().nullable().optional(),
+  // Org hierarchy — optional (missing → will be created as 'Unknown').
+  // aspCode (Service Centre Code) is the primary hierarchy join key.
   busmName:     z.string().nullable().optional(),
-  asmCode:      z.string().nullable().optional(),
   asmName:      z.string().nullable().optional(),
   aspName:      z.string().nullable().optional(),
-  serviceCentreId: z.union([z.number(), z.string()]).nullable().optional(),
+  aspCode:      z.union([z.number(), z.string()]).nullable().optional(),
 
   // Display fields
   workorder:    z.union([z.number(), z.string()]).nullable().optional(),
-  customerCity: z.string().nullable().optional(),
   symptomDesc:  z.string().nullable().optional(),
   model:        z.string().nullable().optional(),
+  modelType:    z.string().nullable().optional(),
   callType:     z.string().nullable().optional(),
   callCategory: z.string().nullable().optional(),
   customerName: z.string().nullable().optional(),
   deliveryDate: z.string().nullable().optional(),
   creationDate: z.union([z.date(), z.string()]).nullable().optional(),
+  warranty:     z.string().nullable().optional(),
+
+  // Skill Score inputs — part consumption/value breakdown ("CPC data")
+  pcbaConsumption:        z.union([z.number(), z.string()]).nullable().optional(),
+  pcbaValue:              z.union([z.number(), z.string()]).nullable().optional(),
+  tpLcdConsumption:       z.union([z.number(), z.string()]).nullable().optional(),
+  tpLcdValue:             z.union([z.number(), z.string()]).nullable().optional(),
+  batteryConsumption:     z.union([z.number(), z.string()]).nullable().optional(),
+  batteryValue:           z.union([z.number(), z.string()]).nullable().optional(),
+  subPcbaConsumption:     z.union([z.number(), z.string()]).nullable().optional(),
+  subPcbaValue:           z.union([z.number(), z.string()]).nullable().optional(),
+  accessoriesConsumption: z.union([z.number(), z.string()]).nullable().optional(),
+  accessoriesValue:       z.union([z.number(), z.string()]).nullable().optional(),
+  othersConsumption:      z.union([z.number(), z.string()]).nullable().optional(),
+  othersValue:            z.union([z.number(), z.string()]).nullable().optional(),
+  handsetValue:           z.union([z.number(), z.string()]).nullable().optional(),
+  totalPartValue:         z.union([z.number(), z.string()]).nullable().optional(),
 });
 
 export type ImportRow = z.infer<typeof ImportRowSchema>;
