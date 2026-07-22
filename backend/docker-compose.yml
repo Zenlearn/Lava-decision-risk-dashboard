@@ -4,7 +4,11 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      # Sourced from the server-local .env (see DEPLOYMENT.md) — never hardcode
+      # a real password into this committed file. Docker Compose reads .env
+      # in this same directory automatically for ${...} substitution here,
+      # separate from the app container's own env_file: below.
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env}
       POSTGRES_DB: lava
     ports:
       # Host port 5433, not 5432 — defensive against anything else on the box

@@ -44,17 +44,32 @@ This file is gitignored — it's created once on the server, not committed.
 cp .env.example .env   # if no .example exists yet, create from scratch with the keys below
 ```
 
+First, generate a real Postgres password (don't use a word — this guards a
+database reachable on the box's network, not just from the app container):
+
+```bash
+openssl rand -base64 24
+```
+
 Required keys:
 
 ```
 PORT=3010
 JWT_SECRET=<the SAME secret PathwaysBackend uses to sign tokens>
-DATABASE_URL=postgresql://postgres:postgres@postgres:5432/lava
+POSTGRES_PASSWORD=<the password you just generated>
+DATABASE_URL=postgresql://postgres:<same password>@postgres:5432/lava
 REDIS_HOST=redis
 REDIS_PORT=6379
 NODE_ENV=production
 ALLOWED_ORIGINS=https://lava.zenlearn.ai,https://pathways.zenlearn.ai
 ```
+
+`POSTGRES_PASSWORD` must appear **twice** — once standalone (Docker Compose
+reads it from this file to configure the Postgres container itself, via the
+`${POSTGRES_PASSWORD}` substitution in `docker-compose.yml`) and once inline
+inside `DATABASE_URL` (the app's Prisma client uses the full connection
+string, not the bare variable). Both must match, or the app container will
+fail to authenticate against its own database.
 
 **`JWT_SECRET` is the critical one** — it must exactly match whatever
 PathwaysBackend is configured with (check PathwaysBackend's own server-side
@@ -66,10 +81,6 @@ authenticated request will 401. Do not invent a new value.
 internal network, which is why `docker-compose.yml` doesn't need to expose
 Postgres/Redis to the host at all except for the Postgres port (5433) kept
 open for manual `psql`/backup access.
-
-Change the Postgres password from the `docker-compose.yml` default
-(`POSTGRES_PASSWORD: postgres`) before going live — update it in both
-`docker-compose.yml` and this `.env`'s `DATABASE_URL`.
 
 ## 3. Build and start
 
