@@ -44,7 +44,12 @@ export async function uploadImportHandler(req: Request, res: Response): Promise<
     return;
   }
 
-  if (!req.user || !req.user.id) {
+  // auth.middleware.ts deliberately lets a super-admin token through even
+  // without a conventional id/sub/_id/user_id claim (req.user.id ends up ''
+  // in that case) — this check must recognize the same exception, or every
+  // super-admin upload (no ordinary userId in the token) 401s here even
+  // though authentication itself succeeded.
+  if (!req.user || (!req.user.id && req.user.is_super_admin !== true)) {
     res.error({
       code: 401,
       message: 'Unauthorized. User information is missing from the request.',
