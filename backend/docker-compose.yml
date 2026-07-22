@@ -7,7 +7,11 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: lava
     ports:
-      - "5432:5432"
+      # Host port 5433, not 5432 — defensive against anything else on the box
+      # (this VM already runs PathwaysBackend + MongoDB tooling). Internal
+      # container port stays 5432; Lava's own app reaches it via the Docker
+      # network as "postgres:5432" regardless of the host-side mapping.
+      - "5433:5432"
     volumes:
       - lava-postgres-data:/var/lib/postgresql/data
     healthcheck:
@@ -19,8 +23,11 @@ services:
   redis:
     image: redis:7-alpine
     restart: unless-stopped
-    ports:
-      - "6379:6379"
+    # NOTE: no host port published. PathwaysBackend's docker-compose.yml
+    # already binds host port 6379 for its own Redis container on this same
+    # VM — publishing 6379 here too would collide and fail to start. Lava's
+    # app container reaches this one internally via the Docker network as
+    # "redis:6379"; nothing outside Docker needs to reach it directly.
     volumes:
       - lava-redis-data:/data
     command: redis-server --appendonly yes
