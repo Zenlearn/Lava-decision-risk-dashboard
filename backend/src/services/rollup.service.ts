@@ -27,10 +27,6 @@ import { MasterDataRuleRow, SparePriceLookup, AspMonthRollupResult } from '../ru
  * into roughly 6 per month.
  */
 
-export interface AspMonthKey {
-  serviceCentreId: string;
-  month: string;
-}
 
 function workOrderToRuleRow(wo: { rawData: unknown }, rowIndex: number): Omit<MasterDataRuleRow, 'isCrossAsp'> {
   const raw = wo.rawData as Record<string, unknown>;
@@ -106,16 +102,49 @@ async function writeRollupBatch(rollups: AspMonthRollupResult[]): Promise<void> 
   `;
 }
 
-export async function recomputeAspMonthRollups(pairs: AspMonthKey[]): Promise<void> {
-  if (pairs.length === 0) return;
+/** All distinct serviceCentreIds that currently have ANY record for a month, across the 6 source tables. */
+async function serviceCentreIdsWithDataForMonth(month: string): Promise<string[]> {
+  const [wo, qc, els, def, sah, msm] = await Promise.all([
+    prisma.workOrder.findMany({ where: { month }, select: { serviceCentreId: true }, distinct: ['serviceCentreId'] }),
+    prisma.complianceQcRecord.findMany({ where: { month }, select: { serviceCentreId: true }, distinct: ['serviceCentreId'] }),
+    prisma.complianceElsDoaRecord.findMany({ where: { month }, select: { serviceCentreId: true }, distinct: ['serviceCentreId'] }),
+    prisma.complianceDefectiveSpareRecord.findMany({ where: { month }, select: { serviceCentreId: true }, distinct: ['serviceCentreId'] }),
+    prisma.serviceAtHomeAppointment.findMany({ where: { month }, select: { serviceCentreId: true }, distinct: ['serviceCentreId'] }),
+    prisma.msmDailyRecord.findMany({ where: { month }, select: { serviceCentreId: true }, distinct: ['serviceCentreId'] }),
+  ]);
+  const set = new Set<string>();
+  for (const list of [wo, qc, els, def, sah, msm]) for (const r of list) set.add(r.serviceCentreId);
+  return Array.from(set);
+}
 
-  const uniquePairs = Array.from(new Map(pairs.map((p) => [`${p.serviceCentreId}::${p.month}`, p])).values());
-  const monthsAffected = Array.from(new Set(uniquePairs.map((p) => p.month)));
+/**
+ * Fully rebuilds AspMetricRollup for the given months. For each month it:
+ *   1. deletes ALL existing rollups for that month,
+ *   2. gathers every ASP that currently has data for that month (across all 6
+ *      source tables), and
+ *   3. recomputes each from current state.
+ *
+ * Full-rebuild (not upsert-only) is deliberate: under delete-then-replace
+ * imports, an ASP present in a month's old data may be absent from the new
+ * upload. Upsert alone would leave that ASP's now-orphaned rollup behind —
+ * deleting the month's rollups first guarantees no staleness.
+ */
+export async function recomputeAspMonthRollups(months: string[]): Promise<void> {
+  const uniqueMonths = Array.from(new Set(months)).filter(Boolean);
+  if (uniqueMonths.length === 0) return;
+
   const lookupSparePrice = await buildSparePriceLookup();
 
-  for (const month of monthsAffected) {
-    const touchedForMonth = uniquePairs.filter((p) => p.month === month);
-    const touchedScIds = Array.from(new Set(touchedForMonth.map((p) => p.serviceCentreId)));
+  for (const month of uniqueMonths) {
+    // 1. Clear this month's rollups — rebuilt fresh from current data below.
+    await prisma.aspMetricRollup.deleteMany({ where: { month } });
+
+    // 2. Which ASPs have any data for this month now (post-replace).
+    const scIds = await serviceCentreIdsWithDataForMonth(month);
+    if (scIds.length === 0) {
+      logger.info('Rollup recompute: no data for month, cleared rollups', { month });
+      continue;
+    }
 
     // Load ALL workorders for this month (all ASPs) — needed for correct
     // cross-ASP-IMEI detection, which requires global visibility per month.
@@ -125,39 +154,37 @@ export async function recomputeAspMonthRollups(pairs: AspMonthKey[]): Promise<vo
     });
 
     const rawRows = allWorkOrdersThisMonth.map((wo, i) => workOrderToRuleRow(wo, i));
-    const scIds = allWorkOrdersThisMonth.map((wo) => wo.serviceCentreId);
-    const markedRows = markCrossAspRows(rawRows, scIds);
+    const woScIds = allWorkOrdersThisMonth.map((wo) => wo.serviceCentreId);
+    const markedRows = markCrossAspRows(rawRows, woScIds);
 
-    const touchedScIdSet = new Set(touchedScIds);
     const masterRowsByServiceCentre = new Map<string, MasterDataRuleRow[]>();
     markedRows.forEach((row, i) => {
-      const scId = scIds[i]!;
-      if (!touchedScIdSet.has(scId)) return; // only recompute rollups we were asked to
+      const scId = woScIds[i]!;
       if (!masterRowsByServiceCentre.has(scId)) masterRowsByServiceCentre.set(scId, []);
       masterRowsByServiceCentre.get(scId)!.push(row);
     });
 
     // Batch-fetch each of the 5 datasets ONCE for the whole month, across all
-    // touched ASPs — not one query per ASP.
+    // ASPs with data — not one query per ASP.
     const [qcAll, elsAll, defAll, sahAll, msmAll] = await Promise.all([
       prisma.complianceQcRecord.findMany({
-        where: { serviceCentreId: { in: touchedScIds }, month },
+        where: { serviceCentreId: { in: scIds }, month },
         select: { serviceCentreId: true, complianceStatus: true, qcStatus: true },
       }),
       prisma.complianceElsDoaRecord.findMany({
-        where: { serviceCentreId: { in: touchedScIds }, month },
+        where: { serviceCentreId: { in: scIds }, month },
         select: { serviceCentreId: true, complianceStatus: true, nonComplianceReason: true, value: true, handsetCategory: true },
       }),
       prisma.complianceDefectiveSpareRecord.findMany({
-        where: { serviceCentreId: { in: touchedScIds }, month },
+        where: { serviceCentreId: { in: scIds }, month },
         select: { serviceCentreId: true, complianceStatus: true, amount: true, debitQty: true, partCode: true, category: true },
       }),
       prisma.serviceAtHomeAppointment.findMany({
-        where: { serviceCentreId: { in: touchedScIds }, month },
+        where: { serviceCentreId: { in: scIds }, month },
         select: { serviceCentreId: true, appointmentStatus: true, appointmentDate: true },
       }),
       prisma.msmDailyRecord.findMany({
-        where: { serviceCentreId: { in: touchedScIds }, month },
+        where: { serviceCentreId: { in: scIds }, month },
         select: { serviceCentreId: true, date: true, complianceStatus: true, balanceValue: true, msmTarget: true },
       }),
     ]);
@@ -169,7 +196,7 @@ export async function recomputeAspMonthRollups(pairs: AspMonthKey[]): Promise<vo
     const msmByAsp = groupByServiceCentre(msmAll);
 
     // Pure in-memory compute per ASP — cheap, no I/O.
-    const rollups: AspMonthRollupResult[] = touchedScIds.map((serviceCentreId) =>
+    const rollups: AspMonthRollupResult[] = scIds.map((serviceCentreId) =>
       computeAspMonthRollup({
         serviceCentreId,
         month,
@@ -189,6 +216,6 @@ export async function recomputeAspMonthRollups(pairs: AspMonthKey[]): Promise<vo
       await writeRollupBatch(rollups.slice(start, start + WRITE_BATCH_SIZE));
     }
 
-    logger.info('Rollup recompute complete for month', { month, aspCount: touchedScIds.length });
+    logger.info('Rollup recompute complete for month', { month, aspCount: scIds.length });
   }
 }

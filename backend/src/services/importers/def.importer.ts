@@ -7,6 +7,7 @@ import { parseFile, mapRow, toNumber, normalizeMonth } from '../../utils/filePar
 import { newHierarchyCaches, resolveServiceCentreByCode } from '../hierarchy.service';
 import { recomputeAspMonthRollups } from '../rollup.service';
 import { invalidateDashboardCache } from '../cache.service';
+import { sortMonths, splitReplacedAdded } from '../monthReplace.util';
 import { DatasetImportSummary } from './types';
 
 /**
@@ -65,9 +66,22 @@ export async function persistComplianceDef(
   });
 
   const caches = newHierarchyCaches();
-  const touchedPairs = new Map<string, { serviceCentreId: string; month: string }>();
+
+  const fileMonths = sortMonths(
+    validRows.map(({ data }) => normalizeMonth(data.monthLabel ?? data.month)).filter((m): m is string => m !== null)
+  );
+  let replacedMonths: string[] = [];
+  let addedMonths: string[] = fileMonths;
 
   try {
+    if (fileMonths.length > 0) {
+      const existing = await prisma.complianceDefectiveSpareRecord.findMany({
+        where: { month: { in: fileMonths } }, select: { month: true }, distinct: ['month'],
+      });
+      ({ replacedMonths, addedMonths } = splitReplacedAdded(fileMonths, existing.map((r) => r.month!).filter(Boolean)));
+      await prisma.complianceDefectiveSpareRecord.deleteMany({ where: { month: { in: fileMonths } } });
+    }
+
     const BATCH_SIZE = 500;
     for (let start = 0; start < validRows.length; start += BATCH_SIZE) {
       const batch = validRows.slice(start, start + BATCH_SIZE);
@@ -76,7 +90,6 @@ export async function persistComplianceDef(
         // Prefer the string monthLabel ("June'26") over the numeric Month column —
         // both normalize to the same canonical form, but the label is unambiguous.
         const month = normalizeMonth(data.monthLabel ?? data.month);
-        if (month) touchedPairs.set(`${scId}::${month}`, { serviceCentreId: scId, month });
 
         await prisma.complianceDefectiveSpareRecord.create({
           data: {
@@ -97,14 +110,14 @@ export async function persistComplianceDef(
     }
 
     await prisma.monthlyImport.update({ where: { id: monthlyImport.id }, data: { status: 'COMPLETE', completedAt: new Date() } });
-    await recomputeAspMonthRollups(Array.from(touchedPairs.values()));
+    await recomputeAspMonthRollups(fileMonths);
     await invalidateDashboardCache();
   } catch (err) {
     await prisma.monthlyImport.update({ where: { id: monthlyImport.id }, data: { status: 'FAILED' } });
     throw err;
   }
 
-  logger.info('DEF(S+D) import complete', { importId: monthlyImport.id, valid: validRows.length, rejected: rejectedRows.length });
+  logger.info('DEF(S+D) import complete', { importId: monthlyImport.id, valid: validRows.length, rejected: rejectedRows.length, replacedMonths, addedMonths });
 
   return {
     importId: monthlyImport.id,
@@ -113,6 +126,8 @@ export async function persistComplianceDef(
     validCount: validRows.length,
     rejectedCount: rejectedRows.length,
     rejectedRows: rejectedRows.slice(0, 50),
+    replacedMonths,
+    addedMonths,
     processingMs: Date.now() - startMs,
   };
 }

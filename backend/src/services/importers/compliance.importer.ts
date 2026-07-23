@@ -2,6 +2,7 @@ import { persistComplianceQc } from './qc.importer';
 import { persistComplianceEls } from './els.importer';
 import { persistComplianceDef } from './def.importer';
 import { parseWorkbookSheets } from '../../utils/fileParser.util';
+import { sortMonths } from '../monthReplace.util';
 import { DatasetImportSummary } from './types';
 import logger from '../../configs/logger.config';
 
@@ -33,6 +34,17 @@ export async function importComplianceCombined(
   const def = await persistComplianceDef(sheets['DEF(S+D)']!, filename, uploadedByUserId);
 
   const parts = [qc, els, def];
+  // Merge the 3 sheets' month sets. A month is "replaced" for the file if ANY
+  // sheet had prior data for it; "added" only if no sheet did.
+  const replacedSet = new Set<string>([...(qc.replacedMonths ?? []), ...(els.replacedMonths ?? []), ...(def.replacedMonths ?? [])]);
+  const allMonths = new Set<string>([
+    ...(qc.replacedMonths ?? []), ...(qc.addedMonths ?? []),
+    ...(els.replacedMonths ?? []), ...(els.addedMonths ?? []),
+    ...(def.replacedMonths ?? []), ...(def.addedMonths ?? []),
+  ]);
+  const replacedMonths = sortMonths(replacedSet);
+  const addedMonths = sortMonths([...allMonths].filter((m) => !replacedSet.has(m)));
+
   const merged: DatasetImportSummary = {
     importId: qc.importId,
     filename: qc.filename,
@@ -45,6 +57,8 @@ export async function importComplianceCombined(
       ...els.rejectedRows.map((r) => ({ rowIndex: r.rowIndex, errors: r.errors.map((e) => `[ELS DOA REP] ${e}`) })),
       ...def.rejectedRows.map((r) => ({ rowIndex: r.rowIndex, errors: r.errors.map((e) => `[DEF(S+D)] ${e}`) })),
     ].slice(0, 50),
+    replacedMonths,
+    addedMonths,
     processingMs: Date.now() - startMs,
   };
 

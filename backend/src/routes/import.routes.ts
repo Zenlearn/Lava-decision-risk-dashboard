@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import multer from 'multer';
 import rateLimit from 'express-rate-limit';
-import { uploadImportHandler } from '../controllers/import.controller';
+import { uploadImportHandler, importStatusHandler } from '../controllers/import.controller';
 import { asyncHandler } from '../configs/async.config';
 
 import { requireAnyLavaRole } from '../middlewares/rbac.middleware';
@@ -75,6 +75,20 @@ importRouter.post(
   requireAnyLavaRole(importAllowedRoles),
   upload.single('file'),
   asyncHandler(uploadImportHandler)
+);
+
+/**
+ * GET /api/v1/imports/status
+ *
+ * Which months currently hold data per dataset (+ row counts), for the upload
+ * panel's "Currently loaded: …" display. Same role gate as uploads. Small
+ * read — goes through the normal /lava-api proxy, not the direct-upload path.
+ * Auth is applied by the parent protectedRouter mount (see index.ts).
+ */
+importRouter.get(
+  '/status',
+  requireAnyLavaRole(importAllowedRoles),
+  asyncHandler(importStatusHandler)
 );
 
 export default importRouter;
