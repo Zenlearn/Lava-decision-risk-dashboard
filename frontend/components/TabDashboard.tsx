@@ -63,6 +63,8 @@ export default function TabDashboard({
     { key: 'travel', label: 'Technician Home Travel Fee', quantity: currentKPI?._leaktravel || 0, cost: (currentKPI?._leaktravel || 0) * 500 },
   ];
 
+  const prevBreakdown = prevKPI?.breakdown || [];
+
   const currentTatDist = currentKPI?.tatDistribution || [
     { key: '1d', label: 'Repaired in 1 Day (24 Hours)', quantity: Math.round((currentKPI?.wo || 0) * 0.45), pct: 45.0 },
     { key: '3d', label: 'Repaired in 2 – 3 Days', quantity: Math.round((currentKPI?.wo || 0) * 0.35), pct: 35.0 },
@@ -220,7 +222,7 @@ export default function TabDashboard({
             </thead>
             <tbody>
               {currentBreakdown.map((item: any, idx: number) => {
-                const prevItem = activePrevBreakdown.find((pb: any) => pb.key === item.key || pb.label === item.label);
+                const prevItem = prevBreakdown.find((pb: any) => pb.key === item.key || pb.label === item.label);
                 const prevCost = prevItem?.cost || 0;
                 const costDiff = prevKPI ? (item.cost - prevCost) : 0;
                 const pctShare = activeLeakCur > 0 ? ((item.cost / activeLeakCur) * 100).toFixed(1) : '0.0';
