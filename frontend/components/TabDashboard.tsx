@@ -306,7 +306,7 @@ export default function TabDashboard({
                 <tr style={{ borderBottom: '2px solid #e2e8f0', color: '#64748b', textAlign: 'left', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em', background: '#f8fafc' }}>
                   <th style={{ padding: '10px 12px' }}>Turnaround Bracket</th>
                   <th style={{ padding: '10px 12px', textAlign: 'center' }}>Work Orders</th>
-                  <th style={{ padding: '10px 12px', textAlign: 'right' }}>% Share</th>
+                  <th style={{ padding: '10px 12px', textAlign: 'right' }}>% of Total</th>
                   <th style={{ padding: '10px 12px', textAlign: 'center' }}>MoM Trend</th>
                 </tr>
               </thead>
@@ -345,6 +345,40 @@ export default function TabDashboard({
                     </tr>
                   );
                 })}
+
+                {/* Total Work Orders Summary Row */}
+                {(() => {
+                  const totalCurrentWo = currentTatDist.reduce((sum: number, i: any) => sum + (i.quantity || 0), 0);
+                  const totalPrevWo = prevTatDist.reduce((sum: number, i: any) => sum + (i.quantity || 0), 0);
+                  const totalWoDiff = prevKPI ? (totalCurrentWo - totalPrevWo) : 0;
+
+                  return (
+                    <tr style={{ borderTop: '2px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
+                      <td style={{ padding: '12px', color: '#0f172a' }}>
+                        Total Work Orders
+                      </td>
+                      <td style={{ padding: '12px', textAlign: 'center', color: '#0f172a', fontSize: '14px' }}>
+                        {totalCurrentWo.toLocaleString('en-IN')}
+                      </td>
+                      <td style={{ padding: '12px', textAlign: 'right', color: '#0f172a', fontSize: '14px' }}>
+                        100.0%
+                      </td>
+                      <td style={{ padding: '12px', textAlign: 'center', fontWeight: 700 }}>
+                        {prevKPI ? (
+                          <span style={{
+                            color: totalWoDiff > 0 ? '#dc2626' : totalWoDiff < 0 ? '#16a34a' : '#64748b',
+                            background: totalWoDiff > 0 ? '#fef2f2' : totalWoDiff < 0 ? '#f0fdf4' : '#f8fafc',
+                            padding: '2px 8px', borderRadius: '4px', fontSize: '11px'
+                          }}>
+                            {totalWoDiff > 0 ? `↑ +${totalWoDiff.toLocaleString()}` : totalWoDiff < 0 ? `↓ -${Math.abs(totalWoDiff).toLocaleString()}` : '• Stable'}
+                          </span>
+                        ) : (
+                          <span style={{ color: '#64748b', fontSize: '11px' }}>• Baseline</span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })()}
               </tbody>
             </table>
           </div>
