@@ -8,8 +8,11 @@ import { requireAnyLavaRole } from '../middlewares/rbac.middleware';
 
 const importRouter = Router();
 
-// Only top management and admin roles can upload data files
-const importAllowedRoles: any[] = ['Admin', 'MD', 'ServiceHead', 'RegionalHead'];
+// Only top management and admin roles can upload data files.
+// Exported so auth.routes.ts's /upload-token endpoint (minted for direct,
+// Netlify-bypassing uploads — see JWTConfig.generateUploadToken) grants the
+// exact same access, not a separately-maintained copy of this list.
+export const importAllowedRoles: any[] = ['Admin', 'MD', 'ServiceHead', 'RegionalHead'];
 
 // Per-route limiter on top of the global one — uploads are parsed/scored
 // synchronously (see ARCHITECTURE.md §7), so this is the endpoint most exposed

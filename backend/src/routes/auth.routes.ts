@@ -1,6 +1,10 @@
 import { Router, Request, Response } from 'express';
 import logger from '../configs/logger.config';
 import { getEnvVar } from '../helpers/env';
+import { AuthMiddleware } from '../middlewares/auth.middleware';
+import { requireAnyLavaRole } from '../middlewares/rbac.middleware';
+import { JWTConfig } from '../configs/jwt.config';
+import { importAllowedRoles } from './import.routes';
 
 /**
  * Auth Proxy Routes
@@ -166,5 +170,37 @@ authRouter.post('/sign-out', (_req: Request, res: Response): void => {
 	res.clearCookie('token', { path: '/' });
 	res.status(200).json({ message: 'Signed out' });
 });
+
+/**
+ * POST /api/v1/auth/upload-token
+ *
+ * Mints a short-lived (15 min) upload-scoped token for direct-to-backend file
+ * uploads that bypass Netlify's proxy — see JWTConfig.generateUploadToken for
+ * why this exists. This route sits in the public authRouter group (see
+ * index.ts — authRouter isn't behind the global protectedRouter), so unlike
+ * import.routes.ts it must apply AuthMiddleware itself before the role check.
+ *
+ * Called via the normal /lava-api/* Netlify proxy (this request is tiny —
+ * no file body — so it isn't affected by the size ceiling this token exists
+ * to work around). The returned token is then attached as an Authorization
+ * header on ONE subsequent direct POST to the real lava-api.zenlearn.ai
+ * /api/v1/imports, which the browser sends directly, skipping Netlify.
+ */
+authRouter.post(
+	'/upload-token',
+	AuthMiddleware.authMiddleware,
+	requireAnyLavaRole(importAllowedRoles),
+	(req: Request, res: Response): void => {
+		const token = JWTConfig.generateUploadToken({
+			id: req.user!.id,
+			role: req.user!.role,
+			is_admin: req.user!.is_admin,
+			is_super_admin: req.user!.is_super_admin,
+			organization_id: req.user!.organization_id,
+			lava_role: req.user!.lava_role,
+		});
+		res.success({ message: 'Upload token issued', result: { token, expiresInSeconds: 15 * 60 } });
+	}
+);
 
 export default authRouter;
