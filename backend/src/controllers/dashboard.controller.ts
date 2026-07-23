@@ -120,7 +120,10 @@ export async function getDealerDashboardHandler(req: Request, res: Response): Pr
  * GET /api/v1/dashboard/full-data
  */
 export async function getFullDashboardDataHandler(req: Request, res: Response): Promise<void> {
-  const cacheKey = 'dashboard:full_data';
+  const busmName = (req.query.busmName as string) || 'All';
+  const asmName = (req.query.asmName as string) || 'All';
+
+  const cacheKey = `dashboard:full_data:busm_${busmName.replace(/\s+/g, '_')}:asm_${asmName.replace(/\s+/g, '_')}`;
 
   try {
     // 1. Try cache
@@ -135,7 +138,7 @@ export async function getFullDashboardDataHandler(req: Request, res: Response): 
     }
 
     // 2. Fetch fresh aggregates
-    const freshData = await getFullDashboardData();
+    const freshData = await getFullDashboardData({ busmName, asmName });
 
     // 3. Cache
     await setCachedDashboard(cacheKey, freshData, freshData.summary ? freshData.summary.importId : null);

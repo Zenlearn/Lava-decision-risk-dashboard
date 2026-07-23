@@ -470,7 +470,10 @@ function matchesField(val1: any, val2: any, keyword: string): boolean {
  * Dynamically computes the full multi-tab dashboard dataset structure
  * matching original mockup 'Lava_Decision_Risk_Dashboard.html'.
  */
-export async function getFullDashboardData(): Promise<any> {
+export async function getFullDashboardData(filters?: {
+  busmName?: string;
+  asmName?: string;
+}): Promise<any> {
   const latestImport = await prisma.monthlyImport.findFirst({
     where: { status: 'COMPLETE' },
     orderBy: { importedAt: 'desc' },
@@ -494,6 +497,26 @@ export async function getFullDashboardData(): Promise<any> {
   const whereClause: any = { importId: latestImport.id };
   if (TARGET_MONTHS && TARGET_MONTHS.length > 0) {
     whereClause.month = { in: TARGET_MONTHS };
+  }
+
+  if (filters?.busmName && filters.busmName !== 'All') {
+    whereClause.serviceCentre = {
+      dealer: {
+        region: {
+          name: filters.busmName
+        }
+      }
+    };
+  }
+
+  if (filters?.asmName && filters.asmName !== 'All') {
+    whereClause.serviceCentre = {
+      ...(whereClause.serviceCentre ?? {}),
+      dealer: {
+        ...(whereClause.serviceCentre?.dealer ?? {}),
+        name: filters.asmName
+      }
+    };
   }
 
   const workOrders = await prisma.workOrder.findMany({

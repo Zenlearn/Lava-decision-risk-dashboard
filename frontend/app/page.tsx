@@ -472,6 +472,7 @@ export default function UnifiedMockupDashboard() {
             costs={costs}
             handleCostChange={handleCostChange}
             latestKPI={latestKPI}
+            kpiMonths={data.kpi?.months}
             leakCur={leakCur}
             annualLeakRunRate={annualLeakRunRate}
             fmtINR={fmtINR}
