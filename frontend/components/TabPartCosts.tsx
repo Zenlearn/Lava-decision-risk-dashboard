@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface TabPartCostsProps {
   costs: {
@@ -29,6 +29,31 @@ export default function TabPartCosts({
 }: TabPartCostsProps) {
   // If kpiMonths is available, use all trailing months, else fallback to latestKPI
   const monthsList = (kpiMonths && kpiMonths.length > 0) ? kpiMonths : [latestKPI].filter(Boolean);
+  const allMonthNames = monthsList.map((m: any) => m.month);
+
+  // Month selectors state for the 3 columns (Col1: latest, Col2: -1 month, Col3: -2 months)
+  const [col1Month, setCol1Month] = useState<string>('');
+  const [col2Month, setCol2Month] = useState<string>('');
+  const [col3Month, setCol3Month] = useState<string>('');
+
+  useEffect(() => {
+    if (monthsList.length > 0) {
+      const latestIdx = monthsList.length - 1;
+      if (!col1Month) setCol1Month(monthsList[latestIdx]?.month || 'Jun');
+      if (!col2Month) setCol2Month(monthsList[Math.max(0, latestIdx - 1)]?.month || 'May');
+      if (!col3Month) setCol3Month(monthsList[Math.max(0, latestIdx - 2)]?.month || 'Apr');
+    }
+  }, [monthsList]);
+
+  const col1Data = monthsList.find((m: any) => m.month === col1Month) || monthsList[monthsList.length - 1];
+  const col2Data = monthsList.find((m: any) => m.month === col2Month) || monthsList[Math.max(0, monthsList.length - 2)];
+  const col3Data = monthsList.find((m: any) => m.month === col3Month) || monthsList[Math.max(0, monthsList.length - 3)];
+
+  const activeCols = [
+    { month: col1Month || col1Data?.month || 'Jun', data: col1Data, setMonth: setCol1Month },
+    { month: col2Month || col2Data?.month || 'May', data: col2Data, setMonth: setCol2Month },
+    { month: col3Month || col3Data?.month || 'Apr', data: col3Data, setMonth: setCol3Month },
+  ];
 
   const itemDefinitions = [
     { key: 'pcba', label: 'Motherboard (PCBA)' },
@@ -41,11 +66,12 @@ export default function TabPartCosts({
     { key: 'travel', label: 'Technician Home Travel Fee' },
   ];
 
-  // Compute grand totals across all months
+  // Compute grand totals across the 3 selected columns
   let grandTotalQty = 0;
   let grandTotalCost = 0;
 
-  monthsList.forEach((m: any) => {
+  activeCols.forEach((col) => {
+    const m = col.data;
     if (m?.breakdown) {
       m.breakdown.forEach((b: any) => {
         grandTotalQty += b.quantity || 0;
@@ -64,31 +90,52 @@ export default function TabPartCosts({
     <div className="view-mock on" style={{ padding: '0 0 40px 0', marginTop: '-16px' }}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
         
-        {/* ACTIVE & TRAILING MULTI-MONTH EXPOSURE SUMMARY TABLE */}
+        {/* MULTI-MONTH EXPOSURE SUMMARY TABLE */}
         <div className="card-mock">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
             <div>
               <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 800, color: '#0f172a' }}>
-                Active & Trailing Multi-Month Exposure Summary
+                Multi-Month Exposure Summary
               </h3>
               <span style={{ fontSize: '12px', color: '#64748b' }}>
-                Itemized quantities (Units / Visits) and leakage exposure costs across trailing months
+                Itemized quantities (Units / Visits) and leakage exposure costs across selected months
               </span>
             </div>
             <span style={{ background: '#f1f5f9', color: '#475569', padding: '4px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 700 }}>
-              Months: {monthsList.map((m: any) => m.month).join(', ')}
+              Selected: {[col1Month, col2Month, col3Month].filter(Boolean).join(', ')}
             </span>
           </div>
 
-          {/* Trailing 3-Month Matrix Table */}
+          {/* Multi-Month Matrix Table */}
           <div style={{ overflowX: 'auto', marginBottom: '16px' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                  <th rowSpan={2} style={{ padding: '12px', textAlign: 'left', borderRight: '1px solid #e2e8f0', minWidth: '220px' }}>Item Type / Component</th>
-                  {monthsList.map((m: any) => (
-                    <th key={m.month} colSpan={2} style={{ padding: '8px', textAlign: 'center', borderRight: '1px solid #e2e8f0' }}>
-                      {m.month}
+                  <th rowSpan={2} style={{ padding: '12px', textAlign: 'left', borderRight: '1px solid #e2e8f0', whiteSpace: 'nowrap', width: '1%' }}>Item Type / Component</th>
+                  {activeCols.map((col, idx) => (
+                    <th key={`col-hdr-${idx}`} colSpan={2} style={{ padding: '6px 8px', textAlign: 'center', borderRight: '1px solid #e2e8f0' }}>
+                      <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        <span style={{ fontSize: '10px', color: '#64748b', textTransform: 'uppercase' }}>Month:</span>
+                        <select
+                          value={col.month}
+                          onChange={(e) => col.setMonth(e.target.value)}
+                          style={{
+                            background: '#ffffff',
+                            border: '1px solid #cbd5e1',
+                            borderRadius: '6px',
+                            padding: '3px 8px',
+                            fontSize: '12px',
+                            fontWeight: 700,
+                            color: '#0f172a',
+                            cursor: 'pointer',
+                            outline: 'none'
+                          }}
+                        >
+                          {allMonthNames.map((mName) => (
+                            <option key={mName} value={mName}>{mName}</option>
+                          ))}
+                        </select>
+                      </div>
                     </th>
                   ))}
                   <th colSpan={2} style={{ padding: '8px', textAlign: 'center', background: '#eff6ff', color: '#1d4ed8' }}>
@@ -96,8 +143,8 @@ export default function TabPartCosts({
                   </th>
                 </tr>
                 <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f1f5f9', color: '#64748b', fontSize: '11px', textTransform: 'uppercase' }}>
-                  {monthsList.map((m: any) => (
-                    <React.Fragment key={`sub-${m.month}`}>
+                  {activeCols.map((col, idx) => (
+                    <React.Fragment key={`sub-hdr-${idx}`}>
                       <th style={{ padding: '6px 8px', textAlign: 'center' }}>Qty</th>
                       <th style={{ padding: '6px 8px', textAlign: 'right', borderRight: '1px solid #e2e8f0' }}>Cost (₹)</th>
                     </React.Fragment>
@@ -113,10 +160,11 @@ export default function TabPartCosts({
 
                   return (
                     <tr key={itemDef.key} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                      <td style={{ padding: '10px 12px', fontWeight: 600, color: '#1e293b', borderRight: '1px solid #f1f5f9' }}>
+                      <td style={{ padding: '10px 12px', fontWeight: 600, color: '#1e293b', borderRight: '1px solid #f1f5f9', whiteSpace: 'nowrap' }}>
                         {itemDef.label}
                       </td>
-                      {monthsList.map((m: any) => {
+                      {activeCols.map((col, idx) => {
+                        const m = col.data;
                         let q = 0;
                         let c = 0;
                         if (m?.breakdown) {
@@ -134,7 +182,7 @@ export default function TabPartCosts({
                         rowTotalCost += c;
 
                         return (
-                          <React.Fragment key={`${itemDef.key}-${m.month}`}>
+                          <React.Fragment key={`${itemDef.key}-col-${idx}`}>
                             <td style={{ padding: '10px 8px', textAlign: 'center', color: '#475569', fontWeight: 500 }}>
                               {q ? q.toLocaleString('en-IN') : 0}
                             </td>
@@ -156,10 +204,11 @@ export default function TabPartCosts({
 
                 {/* Total Monthly Leakage Exposure Row */}
                 <tr style={{ borderTop: '2px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
-                  <td style={{ padding: '12px', color: '#0f172a', borderRight: '1px solid #e2e8f0' }}>
+                  <td style={{ padding: '12px', color: '#0f172a', borderRight: '1px solid #e2e8f0', whiteSpace: 'nowrap' }}>
                     Total Monthly Leakage Exposure
                   </td>
-                  {monthsList.map((m: any) => {
+                  {activeCols.map((col, idx) => {
+                    const m = col.data;
                     let mQty = 0;
                     let mCost = 0;
                     if (m?.breakdown) {
@@ -174,7 +223,7 @@ export default function TabPartCosts({
                     }
 
                     return (
-                      <React.Fragment key={`tot-${m.month}`}>
+                      <React.Fragment key={`tot-col-${idx}`}>
                         <td style={{ padding: '12px 8px', textAlign: 'center', color: 'var(--bad)', fontSize: '13px' }}>
                           {mQty.toLocaleString('en-IN')}
                         </td>
@@ -203,7 +252,7 @@ export default function TabPartCosts({
           </div>
 
           <div className="note-mock" style={{ borderTop: '1px solid var(--line)', paddingTop: '10px', marginTop: '16px' }}>
-            Breakdown includes quantities and actual component values calculated across trailing months. Run-rate calculations align dynamically.
+            Breakdown includes quantities and actual component values calculated across selected months. Run-rate calculations align dynamically.
           </div>
         </div>
 
