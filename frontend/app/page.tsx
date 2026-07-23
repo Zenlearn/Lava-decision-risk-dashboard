@@ -66,7 +66,7 @@ export default function UnifiedMockupDashboard() {
     camera: 450,
     speaker: 150,
     charger: 250,
-    travel: 750,
+    travel: 500,
   });
 
   useEffect(() => {
