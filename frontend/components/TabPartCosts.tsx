@@ -1,5 +1,4 @@
 import React from 'react';
-import { DASHBOARD_DEFINITIONS } from '../constants/definitions';
 
 interface TabPartCostsProps {
   costs: {
@@ -65,12 +64,7 @@ export default function TabPartCosts({
     <div className="view-mock on" style={{ padding: '0 0 40px 0', marginTop: '-16px' }}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
         
-        {/* Notice Disclaimer Box */}
-        <div className="pwarn" style={{ margin: 0 }}>
-          {DASHBOARD_DEFINITIONS.costMaster.disclaimer}
-        </div>
-        
-        {/* 1. TRAILING MULTI-MONTH EXPOSURE SUMMARY TABLE (MOVED TO TOP) */}
+        {/* ACTIVE & TRAILING MULTI-MONTH EXPOSURE SUMMARY TABLE */}
         <div className="card-mock">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
             <div>
@@ -203,10 +197,6 @@ export default function TabPartCosts({
 
           <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
             <div className="expo-row">
-              <span style={{ fontWeight: 700, fontSize: '15px' }}>Latest Month Leakage Exposure ({latestKPI?.month || 'Jun'})</span>
-              <span className="v" style={{ fontSize: '20px', fontWeight: 800, color: 'var(--bad)' }}>{fmtINR(leakCur)}</span>
-            </div>
-            <div className="expo-row">
               <span style={{ fontWeight: 700, fontSize: '15px' }}>Estimated Annual Leakage Exposure</span>
               <span className="v" style={{ fontSize: '20px', fontWeight: 800, color: 'var(--bad)' }}>{fmtINR(annualLeakRunRate)}</span>
             </div>
@@ -214,41 +204,6 @@ export default function TabPartCosts({
 
           <div className="note-mock" style={{ borderTop: '1px solid var(--line)', paddingTop: '10px', marginTop: '16px' }}>
             Breakdown includes quantities and actual component values calculated across trailing months. Run-rate calculations align dynamically.
-          </div>
-        </div>
-
-        {/* 2. PLACEHOLDER UNIT COST MASTER */}
-        <div className="card-mock">
-          <h3 style={{ margin: '0 0 16px 0', fontSize: '15px', fontWeight: 800, color: '#0f172a' }}>Placeholder Unit Cost Master</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px' }}>
-            {[
-              { label: 'Motherboard (PCBA)', key: 'pcba', suffix: 'per component' },
-              { label: 'Display Screen (LCD)', key: 'lcd', suffix: 'per component' },
-              { label: 'Battery Unit', key: 'battery', suffix: 'per component' },
-              { label: 'Camera Module', key: 'camera', suffix: 'per component' },
-              { label: 'Speaker Assembly', key: 'speaker', suffix: 'per component' },
-              { label: 'Charger Adapter', key: 'charger', suffix: 'per component' },
-              { label: 'Technician Home Travel Fee', key: 'travel', suffix: 'per return visit' },
-            ].map((x) => (
-              <div className="expo-row" key={x.key} style={{ alignItems: 'center', background: '#f8fafc', padding: '12px 14px', borderRadius: '10px', border: '1px solid #f1f5f9' }}>
-                <div>
-                  <b style={{ color: '#1e293b' }}>{x.label}</b>
-                  <span style={{ fontSize: '11px', color: 'var(--muted)', display: 'block' }}>{x.suffix}</span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <span style={{ marginRight: '6px', fontWeight: 700, color: '#475569' }}>₹</span>
-                  <input 
-                    type="number" 
-                    className="cost-input-mock" 
-                    value={costs[x.key as keyof typeof costs]}
-                    onChange={(e) => handleCostChange(x.key as keyof typeof costs, parseInt(e.target.value) || 0)}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="note-mock" style={{ borderTop: '1px solid var(--line)', paddingTop: '12px', marginTop: '16px', fontSize: '11.5px', color: '#64748b' }}>
-            {DASHBOARD_DEFINITIONS.costMaster.exposureLogic}
           </div>
         </div>
 
