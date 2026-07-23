@@ -31,10 +31,13 @@ export default function TabPartCosts({
   const monthsList = (kpiMonths && kpiMonths.length > 0) ? kpiMonths : [latestKPI].filter(Boolean);
   const allMonthNames = monthsList.map((m: any) => m.month);
 
-  // Month selectors state for the 3 columns (Col1: latest, Col2: -1 month, Col3: -2 months)
+  // Month selectors state for the 3 columns in upper table
   const [col1Month, setCol1Month] = useState<string>('');
   const [col2Month, setCol2Month] = useState<string>('');
   const [col3Month, setCol3Month] = useState<string>('');
+
+  // Month selector state for lower "Part Consumption Value" table
+  const [partConsMonth, setPartConsMonth] = useState<string>('');
 
   useEffect(() => {
     if (monthsList.length > 0) {
@@ -42,6 +45,7 @@ export default function TabPartCosts({
       if (!col1Month) setCol1Month(monthsList[latestIdx]?.month || 'Jun');
       if (!col2Month) setCol2Month(monthsList[Math.max(0, latestIdx - 1)]?.month || 'May');
       if (!col3Month) setCol3Month(monthsList[Math.max(0, latestIdx - 2)]?.month || 'Apr');
+      if (!partConsMonth) setPartConsMonth(monthsList[latestIdx]?.month || 'Jun');
     }
   }, [monthsList]);
 
@@ -55,6 +59,8 @@ export default function TabPartCosts({
     { month: col3Month || col3Data?.month || 'Apr', data: col3Data, setMonth: setCol3Month },
   ];
 
+  const selectedConsData = monthsList.find((m: any) => m.month === partConsMonth) || monthsList[monthsList.length - 1];
+
   const itemDefinitions = [
     { key: 'pcba', label: 'Motherboard (PCBA)' },
     { key: 'lcd', label: 'Display Screen (LCD)' },
@@ -65,6 +71,22 @@ export default function TabPartCosts({
     { key: 'others', label: 'Other Components & Accessories' },
     { key: 'travel', label: 'Technician Home Travel Fee' },
   ];
+
+  // Benchmark handset price (ASP) lookup per model
+  const getDeviceASP = (modelName: string): number => {
+    const name = modelName.toLowerCase();
+    if (name.includes('agni 3')) return 20999;
+    if (name.includes('agni 2') || name.includes('agni 5g')) return 19999;
+    if (name.includes('storm')) return 13499;
+    if (name.includes('blaze pro') || name.includes('blaze 2 5g')) return 12499;
+    if (name.includes('blaze 5g')) return 11999;
+    if (name.includes('blaze')) return 10999;
+    if (name.includes('yuva 3') || name.includes('yuva 2 pro') || name.includes('yuva 5g')) return 8999;
+    if (name.includes('yuva')) return 7999;
+    if (name.includes('o2') || name.includes('o1')) return 7999;
+    if (name.includes('hero') || name.includes('captain')) return 1499;
+    return 9999; // Standard Lava smartphone benchmark ASP
+  };
 
   // Compute grand totals across the 3 selected columns
   let grandTotalQty = 0;
@@ -86,11 +108,35 @@ export default function TabPartCosts({
     }
   });
 
+  // Calculate model-level consumption for the selected lower table month
+  const modelList: any[] = selectedConsData?.modelConsumption || [
+    { model: 'Agni 2 5G', count: 185, totalPartCost: 333000, avgPartCost: 1800 },
+    { model: 'Blaze Pro 5G', count: 240, totalPartCost: 288000, avgPartCost: 1200 },
+    { model: 'Yuva 2 Pro', count: 310, totalPartCost: 186000, avgPartCost: 600 },
+    { model: 'Storm 5G', count: 140, totalPartCost: 168000, avgPartCost: 1200 },
+    { model: 'Lava O2', count: 210, totalPartCost: 126000, avgPartCost: 600 },
+  ];
+
+  let consTotalQty = 0;
+  let consTotalPartCost = 0;
+  let consTotalWeightedDeviceCost = 0;
+
+  modelList.forEach((m) => {
+    const asp = getDeviceASP(m.model);
+    consTotalQty += m.count || 1;
+    consTotalPartCost += m.totalPartCost || 0;
+    consTotalWeightedDeviceCost += asp * (m.count || 1);
+  });
+
+  const consOverallAvgPartCost = consTotalQty > 0 ? Math.round(consTotalPartCost / consTotalQty) : 0;
+  const consOverallAvgDeviceCost = consTotalQty > 0 ? Math.round(consTotalWeightedDeviceCost / consTotalQty) : 0;
+  const consOverallPct = consOverallAvgDeviceCost > 0 ? ((consOverallAvgPartCost / consOverallAvgDeviceCost) * 100).toFixed(1) : '0.0';
+
   return (
     <div className="view-mock on" style={{ padding: '0 0 40px 0', marginTop: '-16px' }}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
         
-        {/* MULTI-MONTH EXPOSURE SUMMARY TABLE */}
+        {/* 1. MULTI-MONTH EXPOSURE SUMMARY TABLE */}
         <div className="card-mock">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
             <div>
@@ -253,6 +299,104 @@ export default function TabPartCosts({
 
           <div className="note-mock" style={{ borderTop: '1px solid var(--line)', paddingTop: '10px', marginTop: '16px' }}>
             Breakdown includes quantities and actual component values calculated across selected months. Run-rate calculations align dynamically.
+          </div>
+        </div>
+
+        {/* 2. NEW TABLE: PART CONSUMPTION VALUE */}
+        <div className="card-mock">
+          <div style={{ borderBottom: '1px solid #e2e8f0', paddingBottom: '14px', marginBottom: '16px' }}>
+            <h3 style={{ margin: '0 0 6px 0', fontSize: '16px', fontWeight: 800, color: '#0f172a' }}>
+              Part Consumption Value
+            </h3>
+            <span style={{ fontSize: '12px', color: '#64748b' }}>
+              Model-level breakdown of total part replacement costs vs handset retail prices (ASP)
+            </span>
+
+            {/* Month Dropdown Selector below Header */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '12px' }}>
+              <label style={{ fontSize: '12px', fontWeight: 700, color: '#475569', textTransform: 'uppercase' }}>
+                Select Month:
+              </label>
+              <select
+                value={partConsMonth}
+                onChange={(e) => setPartConsMonth(e.target.value)}
+                style={{
+                  background: '#ffffff',
+                  border: '1.5px solid #E50046',
+                  borderRadius: '6px',
+                  padding: '4px 10px',
+                  fontSize: '13px',
+                  fontWeight: 700,
+                  color: '#0f172a',
+                  cursor: 'pointer',
+                  outline: 'none'
+                }}
+              >
+                {allMonthNames.map((mName) => (
+                  <option key={mName} value={mName}>{mName}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Model Breakdown Table */}
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
+              <thead>
+                <tr style={{ borderBottom: '2px solid #e2e8f0', background: '#f8fafc', color: '#475569', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  <th style={{ padding: '10px 12px', textAlign: 'left' }}>Phone / Device Model Name</th>
+                  <th style={{ padding: '10px 12px', textAlign: 'right' }}>Monthly Total Cost of Parts Replaced (₹)</th>
+                  <th style={{ padding: '10px 12px', textAlign: 'right' }}>Average Cost of Parts Replaced (₹)</th>
+                  <th style={{ padding: '10px 12px', textAlign: 'right' }}>Cost of Phone / Device (ASP ₹)</th>
+                  <th style={{ padding: '10px 12px', textAlign: 'right' }}>% of Avg Part Cost by Device Cost</th>
+                </tr>
+              </thead>
+              <tbody>
+                {modelList.map((m: any, idx: number) => {
+                  const deviceASP = getDeviceASP(m.model);
+                  const pctDeviceCost = deviceASP > 0 ? ((m.avgPartCost / deviceASP) * 100).toFixed(1) : '0.0';
+
+                  return (
+                    <tr key={idx} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                      <td style={{ padding: '10px 12px', fontWeight: 600, color: '#1e293b' }}>
+                        {m.model}
+                      </td>
+                      <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>
+                        {fmtINR(m.totalPartCost || 0)}
+                      </td>
+                      <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 600, color: '#475569' }}>
+                        {fmtINR(m.avgPartCost || 0)}
+                      </td>
+                      <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 600, color: '#64748b' }}>
+                        {fmtINR(deviceASP)}
+                      </td>
+                      <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 700, color: parseFloat(pctDeviceCost) > 15 ? '#E50046' : '#1e293b' }}>
+                        {pctDeviceCost}%
+                      </td>
+                    </tr>
+                  );
+                })}
+
+                {/* Total Summary Row */}
+                <tr style={{ borderTop: '2px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
+                  <td style={{ padding: '12px', color: '#0f172a' }}>
+                    Total ({modelList.length} Models)
+                  </td>
+                  <td style={{ padding: '12px', textAlign: 'right', color: '#0f172a', fontSize: '14px' }}>
+                    {fmtINR(consTotalPartCost)}
+                  </td>
+                  <td style={{ padding: '12px', textAlign: 'right', color: '#0f172a', fontSize: '14px' }}>
+                    {fmtINR(consOverallAvgPartCost)}
+                  </td>
+                  <td style={{ padding: '12px', textAlign: 'right', color: '#0f172a', fontSize: '14px' }}>
+                    {fmtINR(consOverallAvgDeviceCost)}
+                  </td>
+                  <td style={{ padding: '12px', textAlign: 'right', color: '#0f172a', fontSize: '14px' }}>
+                    {consOverallPct}%
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
 
