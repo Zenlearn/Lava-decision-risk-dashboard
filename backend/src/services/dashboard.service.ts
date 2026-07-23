@@ -859,6 +859,16 @@ export async function getFullDashboardData(filters?: {
     const tatRows = mRows.filter((r) => r.tat !== null);
     const mttr = tatRows.length > 0 ? Math.round((tatRows.reduce((sum, r) => sum + r.tat!, 0) / tatRows.length) * 100) / 100 : 0;
 
+    const tat1d = tatRows.filter((r) => r.tat! <= 1).length;
+    const tat3d = tatRows.filter((r) => r.tat! > 1 && r.tat! <= 3).length;
+    const tatGt3d = tatRows.filter((r) => r.tat! > 3).length;
+
+    const tatDistribution = [
+      { key: '1d', label: 'Repaired in 1 Day (24 Hours)', quantity: tat1d, pct: tatRows.length > 0 ? Math.round((tat1d / tatRows.length) * 1000) / 10 : 0 },
+      { key: '3d', label: 'Repaired in 2 – 3 Days', quantity: tat3d, pct: tatRows.length > 0 ? Math.round((tat3d / tatRows.length) * 1000) / 10 : 0 },
+      { key: 'gt3d', label: 'Repaired in > 3 Days', quantity: tatGt3d, pct: tatRows.length > 0 ? Math.round((tatGt3d / tatRows.length) * 1000) / 10 : 0 },
+    ];
+
     const surveyRows = mRows.filter((r) => {
       const rating = String(r.rawData[FIELD_MAP.npsRating] || '');
       return rating !== '' && rating !== 'No Response';
@@ -915,6 +925,7 @@ export async function getFullDashboardData(filters?: {
       diag,
       leak,
       breakdown,
+      tatDistribution,
       _leakparts: { pcba: pcbaData.qty, lcd: lcdData.qty },
       _leaktravel: travelQty,
       bounce: bounceCount,
