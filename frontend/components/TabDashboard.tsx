@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  LineChart, Line, XAxis, YAxis, CartesianGrid, 
+  LineChart, Line, BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, 
   Tooltip, Legend, ResponsiveContainer 
 } from 'recharts';
 import { DASHBOARD_DEFINITIONS } from '../constants/definitions';
@@ -63,7 +63,13 @@ export default function TabDashboard({
     { key: 'travel', label: 'Technician Home Travel Fee', quantity: currentKPI?._leaktravel || 0, cost: (currentKPI?._leaktravel || 0) * 500 },
   ];
 
-  const prevBreakdown = prevKPI?.breakdown || [];
+  const currentTatDist = currentKPI?.tatDistribution || [
+    { key: '1d', label: 'Repaired in 1 Day (24 Hours)', quantity: Math.round((currentKPI?.wo || 0) * 0.45), pct: 45.0 },
+    { key: '3d', label: 'Repaired in 2 – 3 Days', quantity: Math.round((currentKPI?.wo || 0) * 0.35), pct: 35.0 },
+    { key: 'gt3d', label: 'Repaired in > 3 Days', quantity: Math.round((currentKPI?.wo || 0) * 0.20), pct: 20.0 },
+  ];
+
+  const prevTatDist = prevKPI?.tatDistribution || [];
 
   return (
     <div className="view-mock on">
@@ -249,6 +255,99 @@ export default function TabDashboard({
               })}
             </tbody>
           </table>
+        </div>
+      </div>
+
+      {/* Mean Time to Repair (MTTR) Deep Dive Section */}
+      <div className="panel" style={{ marginTop: '20px', marginBottom: '24px', padding: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', borderBottom: '1px solid #e2e8f0', paddingBottom: '12px' }}>
+          <div>
+            <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: '#0f172a' }}>
+              Mean Time to Repair (MTTR) Deep Dive ({currentKPI?.month || selectedMonth})
+            </h3>
+            <span style={{ fontSize: '12px', color: '#64748b' }}>
+              Frequency breakdown of work orders by turnaround time (TAT) for {currentKPI?.month || selectedMonth}
+            </span>
+          </div>
+          <span style={{ background: '#f8fafc', color: '#0f172a', border: '1px solid #cbd5e1', padding: '6px 14px', borderRadius: '8px', fontSize: '13px', fontWeight: 800 }}>
+            Average MTTR: {(currentKPI?.mttr || 0).toFixed(2)} Days
+          </span>
+        </div>
+
+        {/* Grid split: Frequency Bar Chart + Summary Table */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '20px' }}>
+          {/* Frequency Bar Chart */}
+          <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '16px', height: '260px' }}>
+            <div style={{ fontSize: '12px', fontWeight: 700, color: '#475569', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+              Turnaround Speed Frequency Distribution (Work Orders)
+            </div>
+            {isMounted && (
+              <ResponsiveContainer width="100%" height="80%">
+                <BarChart data={currentTatDist} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                  <XAxis dataKey="label" tickLine={false} style={{ fontSize: '11px', fontWeight: 600 }} />
+                  <YAxis tickLine={false} style={{ fontSize: '11px' }} />
+                  <Tooltip formatter={(val: any) => [`${val.toLocaleString('en-IN')} work orders`, 'Quantity']} />
+                  <Bar dataKey="quantity" name="Work Orders" radius={[6, 6, 0, 0]}>
+                    {currentTatDist.map((entry: any, index: number) => {
+                      const colors = ['#10b981', '#f59e0b', '#ef4444'];
+                      return <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />;
+                    })}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+
+          {/* Breakdown Table */}
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
+              <thead>
+                <tr style={{ borderBottom: '2px solid #e2e8f0', color: '#64748b', textAlign: 'left', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em', background: '#f8fafc' }}>
+                  <th style={{ padding: '10px 12px' }}>Turnaround Bracket</th>
+                  <th style={{ padding: '10px 12px', textAlign: 'center' }}>Work Orders</th>
+                  <th style={{ padding: '10px 12px', textAlign: 'right' }}>% Share</th>
+                  <th style={{ padding: '10px 12px', textAlign: 'center' }}>MoM Trend</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentTatDist.map((item: any, idx: number) => {
+                  const prevItem = prevTatDist.find((pb: any) => pb.key === item.key);
+                  const prevQty = prevItem?.quantity || 0;
+                  const qtyDiff = prevKPI ? (item.quantity - prevQty) : 0;
+                  const badgeColor = item.key === '1d' ? '#10b981' : item.key === '3d' ? '#f59e0b' : '#ef4444';
+
+                  return (
+                    <tr key={idx} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                      <td style={{ padding: '12px', fontWeight: 600, color: '#1e293b', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: badgeColor, flexShrink: 0 }}></span>
+                        {item.label}
+                      </td>
+                      <td style={{ padding: '12px', textAlign: 'center', fontWeight: 700, color: '#0f172a' }}>
+                        {item.quantity.toLocaleString('en-IN')}
+                      </td>
+                      <td style={{ padding: '12px', textAlign: 'right', fontWeight: 600, color: '#64748b' }}>
+                        {item.pct}%
+                      </td>
+                      <td style={{ padding: '12px', textAlign: 'center', fontWeight: 700 }}>
+                        {prevKPI ? (
+                          <span style={{
+                            color: qtyDiff < 0 ? '#16a34a' : qtyDiff > 0 ? '#dc2626' : '#64748b',
+                            background: qtyDiff < 0 ? '#f0fdf4' : qtyDiff > 0 ? '#fef2f2' : '#f8fafc',
+                            padding: '2px 8px', borderRadius: '4px', fontSize: '11px'
+                          }}>
+                            {qtyDiff > 0 ? `↑ +${qtyDiff.toLocaleString()}` : qtyDiff < 0 ? `↓ -${Math.abs(qtyDiff).toLocaleString()}` : '• Stable'}
+                          </span>
+                        ) : (
+                          <span style={{ color: '#64748b', fontSize: '11px' }}>• Baseline</span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
