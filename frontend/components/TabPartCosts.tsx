@@ -124,5 +124,6 @@ export default function TabPartCosts({
         </div>
 
       </div>
-    </div>
   );
+}
+
