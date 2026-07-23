@@ -897,8 +897,8 @@ export async function getFullDashboardData(filters?: {
       diag,
       leak,
       breakdown,
-      _leakparts: { pcba: pcbaParts, lcd: lcdParts },
-      _leaktravel: travelCount,
+      _leakparts: { pcba: pcbaData.qty, lcd: lcdData.qty },
+      _leaktravel: travelQty,
       bounce: bounceCount,
       detractor: detractorCount,
       d: { ftfr: 0, mttr: 0, csat: 0, diag: 0, leak: 0 } as any, // populated below
