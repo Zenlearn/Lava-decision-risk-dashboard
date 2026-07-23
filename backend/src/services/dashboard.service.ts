@@ -577,8 +577,14 @@ export async function getFullDashboardData(): Promise<any> {
     const isHome = matchesField(raw[FIELD_MAP.callType], raw[FIELD_MAP.callCategory], 'home');
     
     const partUpper = partRaw.toUpperCase();
-    const isPCBA = partUpper.includes('PCBA') || partUpper.includes('MOTHERBOARD');
-    const isLCD = partUpper.includes('LCD') || partUpper.includes('DISPLAY');
+    const symptomUpper = symptomRaw.toUpperCase();
+    const isPCBA = partUpper.includes('PCBA') || partUpper.includes('MOTHERBOARD') || partUpper.includes('MAIN BOARD');
+    const isLCD = partUpper.includes('LCD') || partUpper.includes('DISPLAY') || partUpper.includes('TOUCH') || symptomUpper.includes('DISPLAY');
+    const isBattery = partUpper.includes('BATTERY') || partUpper.includes('BATT') || symptomUpper.includes('BATTERY');
+    const isCamera = partUpper.includes('CAMERA') || partUpper.includes('CAM') || symptomUpper.includes('CAMERA');
+    const isSpeaker = partUpper.includes('SPEAKER') || partUpper.includes('MIC') || partUpper.includes('AUDIO') || symptomUpper.includes('SPEAKER');
+    const isCharger = partUpper.includes('CHARGER') || partUpper.includes('CHARGE') || partUpper.includes('CABLE') || symptomUpper.includes('CHARGING');
+
     const isBoard = isPCBA || isLCD;
 
     const isGhost = isWalkIn && isSameDay && isBoard;
@@ -678,6 +684,7 @@ export async function getFullDashboardData(): Promise<any> {
     if (actualPartVal === 0) {
       if (isPCBA) actualPartVal += 1800;
       if (isLCD) actualPartVal += 1200;
+      if (isBattery) actualPartVal += 600;
     }
     let travelVal = 0;
     if (isHome && (isBounce || isGhost || isCrossAsp)) {
@@ -713,6 +720,10 @@ export async function getFullDashboardData(): Promise<any> {
       isDOA,
       isPCBA,
       isLCD,
+      isBattery,
+      isCamera,
+      isSpeaker,
+      isCharger,
       leakageValue,
       processScore,
       skillScore,
@@ -804,12 +815,36 @@ export async function getFullDashboardData(): Promise<any> {
 
     const diag = woCount > 0 ? Math.round((1 - mismatchBouncedCount / woCount) * 1000) / 10 : 0;
 
-    // Board parts in ghost/home swaps, cross-ASP swaps, repeat bounces, and mismatch bounces
-    const pcbaParts = mRows.filter((r) => r.isPCBA && (r.isGhost || r.isHomeBoard || r.isCrossAsp || r.isBounce || r.isMismatchBounced)).length;
-    const lcdParts = mRows.filter((r) => r.isLCD && (r.isGhost || r.isHomeBoard || r.isCrossAsp || r.isBounce || r.isMismatchBounced)).length;
-    const travelCount = mRows.filter((r) => r.isHome && (r.isBounce || r.isGhost || r.isCrossAsp)).length;
+    const pcbaQty = mRows.filter((r) => r.leakageValue > 0 && r.isPCBA).length;
+    const pcbaCost = Math.round(mRows.reduce((sum, r) => sum + (r.isPCBA ? r.leakageValue : 0), 0));
 
-    const leak = Math.round(mRows.reduce((sum, r) => sum + (r.leakageValue || 0), 0));
+    const lcdQty = mRows.filter((r) => r.leakageValue > 0 && r.isLCD).length;
+    const lcdCost = Math.round(mRows.reduce((sum, r) => sum + (r.isLCD ? r.leakageValue : 0), 0));
+
+    const batteryQty = mRows.filter((r) => r.leakageValue > 0 && r.isBattery).length;
+    const batteryCost = Math.round(mRows.reduce((sum, r) => sum + (r.isBattery ? r.leakageValue : 0), 0));
+
+    const cameraQty = mRows.filter((r) => r.leakageValue > 0 && r.isCamera).length;
+    const cameraCost = Math.round(mRows.reduce((sum, r) => sum + (r.isCamera ? r.leakageValue : 0), 0));
+
+    const speakerQty = mRows.filter((r) => r.leakageValue > 0 && r.isSpeaker).length;
+    const speakerCost = Math.round(mRows.reduce((sum, r) => sum + (r.isSpeaker ? r.leakageValue : 0), 0));
+
+    const chargerQty = mRows.filter((r) => r.leakageValue > 0 && r.isCharger).length;
+    const chargerCost = Math.round(mRows.reduce((sum, r) => sum + (r.isCharger ? r.leakageValue : 0), 0));
+
+    const travelQty = mRows.filter((r) => r.isHome && (r.isBounce || r.isGhost || r.isCrossAsp)).length;
+    const travelCost = travelQty * 750;
+
+    const breakdown = [
+      { key: 'pcba', label: 'Motherboard (PCBA)', quantity: pcbaQty, cost: pcbaCost },
+      { key: 'lcd', label: 'Display Screen (LCD)', quantity: lcdQty, cost: lcdCost },
+      { key: 'battery', label: 'Battery Unit', quantity: batteryQty, cost: batteryCost },
+      { key: 'camera', label: 'Camera Module', quantity: cameraQty, cost: cameraCost },
+      { key: 'speaker', label: 'Speaker / Audio Assembly', quantity: speakerQty, cost: speakerCost },
+      { key: 'charger', label: 'Charger / Power Adapter', quantity: chargerQty, cost: chargerCost },
+      { key: 'travel', label: 'Technician Home Travel Fee', quantity: travelQty, cost: travelCost },
+    ];
 
     return {
       month: m,
@@ -819,6 +854,7 @@ export async function getFullDashboardData(): Promise<any> {
       csat,
       diag,
       leak,
+      breakdown,
       _leakparts: { pcba: pcbaParts, lcd: lcdParts },
       _leaktravel: travelCount,
       bounce: bounceCount,

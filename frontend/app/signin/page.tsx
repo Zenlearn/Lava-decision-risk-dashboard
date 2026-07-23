@@ -170,9 +170,9 @@ function SignInForm() {
           <div style={{ textAlign: 'center' }}>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <img
-                src="/logo_144.png"
-                alt="Logo"
-                style={{ height: '56px', width: 'auto', display: 'block', flexShrink: 0, objectFit: 'contain' }}
+                src="/logo_compressed.jpeg"
+                alt="ZenLearn Logo"
+                style={{ width: '160px', height: 'auto', display: 'block', flexShrink: 0, objectFit: 'contain' }}
               />
             </div>
             <p style={{ color: '#294d89', marginTop: '12px', fontWeight: 'bold', fontSize: '15px', fontFamily: 'var(--font-sans)', margin: '8px 0 0 0' }}>
