@@ -28,7 +28,7 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
     },
     { id: 'ins', label: 'Insights', icon: TrendingUp },
     { id: 'eved', label: 'Evidence & Hit-List', icon: ShieldAlert },
-    { id: 'cost', label: 'Part-Cost Assumptions', icon: Settings },
+    { id: 'cost', label: 'Part Exposure', icon: Settings },
     { id: 'upload', label: 'Ingest Data', icon: UploadCloud },
   ];
 

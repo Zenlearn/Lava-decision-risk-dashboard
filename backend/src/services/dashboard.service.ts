@@ -916,6 +916,32 @@ export async function getFullDashboardData(filters?: {
 
     const leak = breakdown.reduce((sum, item) => sum + item.cost, 0);
 
+    // Model-level part consumption aggregation for month m
+    const modelMap = new Map<string, { model: string; count: number; totalPartCost: number }>();
+
+    mRows.forEach((r) => {
+      const rawModel = r.model || String(r.rawData[FIELD_MAP.model] || '').trim();
+      const modelName = rawModel && rawModel !== '' ? rawModel : 'Unspecified Model';
+      const partCost = (r as any).partLeakageVal || r.leakageValue || 0;
+
+      const existing = modelMap.get(modelName) || { model: modelName, count: 0, totalPartCost: 0 };
+      existing.count += 1;
+      existing.totalPartCost += partCost;
+      modelMap.set(modelName, existing);
+    });
+
+    const modelConsumption = Array.from(modelMap.values())
+      .map((item) => {
+        const avgPartCost = item.count > 0 ? Math.round(item.totalPartCost / item.count) : 0;
+        return {
+          model: item.model,
+          count: item.count,
+          totalPartCost: Math.round(item.totalPartCost),
+          avgPartCost,
+        };
+      })
+      .sort((a, b) => b.totalPartCost - a.totalPartCost);
+
     return {
       month: m,
       wo: woCount,
@@ -926,6 +952,7 @@ export async function getFullDashboardData(filters?: {
       leak,
       breakdown,
       tatDistribution,
+      modelConsumption,
       _leakparts: { pcba: pcbaData.qty, lcd: lcdData.qty },
       _leaktravel: travelQty,
       bounce: bounceCount,
