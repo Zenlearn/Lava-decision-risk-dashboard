@@ -398,8 +398,8 @@ export default function UnifiedMockupDashboard() {
       />
 
       {/* Main panel content area offset by sidebar width (260px) */}
-      <div style={{ flex: 1, marginLeft: '260px', padding: '40px', boxSizing: 'border-box', overflowX: 'hidden' }}>
-        <header style={{ marginBottom: '32px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+      <div style={{ flex: 1, marginLeft: '260px', padding: '24px 32px', boxSizing: 'border-box', overflowX: 'hidden' }}>
+        <header style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
             <h1 style={{ fontSize: '28px', fontWeight: 800, color: '#0f172a', margin: '0 0 8px 0' }}>
               Decision Risk & Leakage Dashboard
