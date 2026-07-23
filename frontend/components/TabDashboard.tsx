@@ -3,6 +3,7 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, 
   Tooltip, Legend, ResponsiveContainer 
 } from 'recharts';
+import { DASHBOARD_DEFINITIONS } from '../constants/definitions';
 
 interface TabDashboardProps {
   data: any;
@@ -221,6 +222,27 @@ export default function TabDashboard({
           <b> 3) Coach</b> - open the Coaching Card to pull targeted conversation talk tracks for 1:1 sessions. <b>4) Act</b> - nominate chronic poor performers for technical training. 
           <b> 5) Re-measure</b> next month to verify if score profiles show performance improvement.
         </p>
+      </div>
+
+      {/* How each KPI is calculated Section */}
+      <div className="panel" style={{ marginTop: '20px', marginBottom: '22px' }}>
+        <div className="panel-h" style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', marginBottom: '14px' }}>How each KPI is calculated</div>
+        <div className="formula-grid">
+          {DASHBOARD_DEFINITIONS.kpiCalculations.map((item, idx) => (
+            <div className="fz" key={idx} style={{ marginBottom: '10px' }}>
+              <div className="fz-name" style={{ fontWeight: 700, fontSize: '13px', color: '#1e293b' }}>{item.title}</div>
+              <div className="fz-def" style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.5' }}>{item.definition}</div>
+            </div>
+          ))}
+        </div>
+        <div className="panel-note" style={{ marginTop: '14px', paddingTop: '10px', borderTop: '1px solid var(--line)', fontSize: '11.5px', color: '#64748b' }}>
+          {DASHBOARD_DEFINITIONS.kpiNote}
+        </div>
+      </div>
+
+      {/* Executive Footnote */}
+      <div className="exec-foot" style={{ marginTop: '16px', padding: '12px 16px', background: '#f8fafc', borderRadius: '10px', border: '1px solid #e2e8f0', fontSize: '11.5px', color: '#64748b', lineHeight: '1.6' }}>
+        {DASHBOARD_DEFINITIONS.executiveFootnote}
       </div>
     </div>
   );

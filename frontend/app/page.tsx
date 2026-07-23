@@ -15,6 +15,7 @@ import TabPartCosts from '../components/TabPartCosts';
 import TabIngest from '../components/TabIngest';
 import TabProfile from '../components/TabProfile';
 import TabActivities from '../components/TabActivities';
+import { DASHBOARD_DEFINITIONS } from '../constants/definitions';
 
 export default function UnifiedMockupDashboard() {
   const router = useRouter();
@@ -504,8 +505,8 @@ export default function UnifiedMockupDashboard() {
           <TabActivities />
         )}
 
-        <footer style={{ marginTop: '64px', paddingTop: '24px', borderTop: '1px solid #e2e8f0', color: '#94a3b8', fontSize: '13px' }}>
-          <p>© 2026 LAVA Decision Risk Dashboard — powered by ZenLearn.</p>
+        <footer style={{ marginTop: '64px', paddingTop: '24px', borderTop: '1px solid #e2e8f0', color: '#94a3b8', fontSize: '13px', textAlign: 'center' }}>
+          <p>{DASHBOARD_DEFINITIONS.globalFooter}</p>
         </footer>
       </div>
     </div>

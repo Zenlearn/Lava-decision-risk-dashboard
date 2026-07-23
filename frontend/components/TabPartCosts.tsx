@@ -1,4 +1,5 @@
 import React from 'react';
+import { DASHBOARD_DEFINITIONS } from '../constants/definitions';
 
 interface TabPartCostsProps {
   costs: {
@@ -63,6 +64,11 @@ export default function TabPartCosts({
   return (
     <div className="view-mock on" style={{ padding: '0 0 40px 0', marginTop: '-16px' }}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        
+        {/* Notice Disclaimer Box */}
+        <div className="pwarn" style={{ margin: 0 }}>
+          {DASHBOARD_DEFINITIONS.costMaster.disclaimer}
+        </div>
         
         {/* 1. TRAILING MULTI-MONTH EXPOSURE SUMMARY TABLE (MOVED TO TOP) */}
         <div className="card-mock">
@@ -240,6 +246,9 @@ export default function TabPartCosts({
                 </div>
               </div>
             ))}
+          </div>
+          <div className="note-mock" style={{ borderTop: '1px solid var(--line)', paddingTop: '12px', marginTop: '16px', fontSize: '11.5px', color: '#64748b' }}>
+            {DASHBOARD_DEFINITIONS.costMaster.exposureLogic}
           </div>
         </div>
 
