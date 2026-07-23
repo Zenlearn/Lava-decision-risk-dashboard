@@ -224,19 +224,19 @@ export default function TabPartCosts({
 
                     return (
                       <React.Fragment key={`tot-col-${idx}`}>
-                        <td style={{ padding: '12px 8px', textAlign: 'center', color: 'var(--bad)', fontSize: '13px' }}>
+                        <td style={{ padding: '12px 8px', textAlign: 'center', color: '#0f172a', fontSize: '13px' }}>
                           {mQty.toLocaleString('en-IN')}
                         </td>
-                        <td style={{ padding: '12px 8px', textAlign: 'right', color: 'var(--bad)', fontSize: '14px', borderRight: '1px solid #e2e8f0' }}>
+                        <td style={{ padding: '12px 8px', textAlign: 'right', color: '#0f172a', fontSize: '14px', borderRight: '1px solid #e2e8f0' }}>
                           {fmtINR(mCost)}
                         </td>
                       </React.Fragment>
                     );
                   })}
-                  <td style={{ padding: '12px 8px', textAlign: 'center', background: '#eff6ff', color: 'var(--bad)', fontSize: '14px' }}>
+                  <td style={{ padding: '12px 8px', textAlign: 'center', background: '#f8fafc', color: '#0f172a', fontSize: '14px' }}>
                     {grandTotalQty.toLocaleString('en-IN')}
                   </td>
-                  <td style={{ padding: '12px 8px', textAlign: 'right', background: '#eff6ff', color: 'var(--bad)', fontSize: '15px' }}>
+                  <td style={{ padding: '12px 8px', textAlign: 'right', background: '#f8fafc', color: '#0f172a', fontSize: '15px' }}>
                     {fmtINR(grandTotalCost)}
                   </td>
                 </tr>
@@ -247,7 +247,7 @@ export default function TabPartCosts({
           <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
             <div className="expo-row">
               <span style={{ fontWeight: 700, fontSize: '15px' }}>Estimated Annual Leakage Exposure</span>
-              <span className="v" style={{ fontSize: '20px', fontWeight: 800, color: 'var(--bad)' }}>{fmtINR(annualLeakRunRate)}</span>
+              <span className="v" style={{ fontSize: '20px', fontWeight: 800, color: '#0f172a' }}>{fmtINR(annualLeakRunRate)}</span>
             </div>
           </div>
 
