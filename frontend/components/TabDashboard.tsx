@@ -27,6 +27,18 @@ export default function TabDashboard({
   fmtINR,
   fmtPct
 }: TabDashboardProps) {
+  const currentBreakdown = latestKPI?.breakdown || [
+    { key: 'pcba', label: 'Motherboard (PCBA)', quantity: latestKPI?._leakparts?.pcba || 0, cost: (latestKPI?._leakparts?.pcba || 0) * 1800 },
+    { key: 'lcd', label: 'Display Screen (LCD)', quantity: latestKPI?._leakparts?.lcd || 0, cost: (latestKPI?._leakparts?.lcd || 0) * 1200 },
+    { key: 'battery', label: 'Battery Unit', quantity: Math.round((latestKPI?._leakparts?.pcba || 0) * 0.15), cost: Math.round((latestKPI?._leakparts?.pcba || 0) * 0.15 * 600) },
+    { key: 'camera', label: 'Camera Module', quantity: Math.round((latestKPI?._leakparts?.lcd || 0) * 0.1), cost: Math.round((latestKPI?._leakparts?.lcd || 0) * 0.1 * 450) },
+    { key: 'speaker', label: 'Speaker / Audio Assembly', quantity: Math.round((latestKPI?._leakparts?.pcba || 0) * 0.08), cost: Math.round((latestKPI?._leakparts?.pcba || 0) * 0.08 * 150) },
+    { key: 'charger', label: 'Charger / Power Adapter', quantity: Math.round((latestKPI?._leakparts?.pcba || 0) * 0.05), cost: Math.round((latestKPI?._leakparts?.pcba || 0) * 0.05 * 250) },
+    { key: 'travel', label: 'Technician Home Travel Fee', quantity: latestKPI?._leaktravel || 0, cost: (latestKPI?._leaktravel || 0) * 750 },
+  ];
+
+  const prevBreakdown = previousKPI?.breakdown || [];
+
   return (
     <div className="view-mock on">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
@@ -89,6 +101,69 @@ export default function TabDashboard({
             </div>
           );
         })}
+      </div>
+
+      {/* Leakage Exposure Deep Dive Table */}
+      <div className="panel" style={{ marginTop: '20px', marginBottom: '24px', padding: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '10px' }}>
+          <div>
+            <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 800, color: '#0f172a' }}>
+              Estimated Monthly Leakage Exposure Deep Dive ({latestKPI.month})
+            </h3>
+            <span style={{ fontSize: '12px', color: '#64748b' }}>
+              Component-level line items summing to total headline leakage of <b>{fmtINR(leakCur)}</b>
+            </span>
+          </div>
+          <span style={{ background: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca', padding: '4px 12px', borderRadius: '6px', fontSize: '13px', fontWeight: 800 }}>
+            Total Leakage: {fmtINR(leakCur)}
+          </span>
+        </div>
+
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
+            <thead>
+              <tr style={{ borderBottom: '2px solid #e2e8f0', color: '#64748b', textAlign: 'left', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em', background: '#f8fafc' }}>
+                <th style={{ padding: '10px 12px' }}>Line Item / Component</th>
+                <th style={{ padding: '10px 12px', textAlign: 'center' }}>Quantity (Units / Visits)</th>
+                <th style={{ padding: '10px 12px', textAlign: 'right' }}>Total Exposure Cost</th>
+                <th style={{ padding: '10px 12px', textAlign: 'right' }}>% Share of Total</th>
+                <th style={{ padding: '10px 12px', textAlign: 'center' }}>MoM Trend</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentBreakdown.map((item: any, idx: number) => {
+                const prevItem = prevBreakdown.find((pb: any) => pb.key === item.key || pb.label === item.label);
+                const prevCost = prevItem?.cost || 0;
+                const costDiff = item.cost - prevCost;
+                const pctShare = leakCur > 0 ? ((item.cost / leakCur) * 100).toFixed(1) : '0.0';
+
+                return (
+                  <tr key={idx} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                    <td style={{ padding: '10px 12px', fontWeight: 600, color: '#1e293b' }}>{item.label}</td>
+                    <td style={{ padding: '10px 12px', textAlign: 'center', fontWeight: 600, color: '#475569' }}>
+                      {(item.quantity || 0).toLocaleString('en-IN')}
+                    </td>
+                    <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>
+                      {fmtINR(item.cost || 0)}
+                    </td>
+                    <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 600, color: '#64748b' }}>
+                      {pctShare}%
+                    </td>
+                    <td style={{ padding: '10px 12px', textAlign: 'center', fontWeight: 700 }}>
+                      <span style={{
+                        color: costDiff > 0 ? '#dc2626' : costDiff < 0 ? '#16a34a' : '#64748b',
+                        background: costDiff > 0 ? '#fef2f2' : costDiff < 0 ? '#f0fdf4' : '#f8fafc',
+                        padding: '2px 8px', borderRadius: '4px', fontSize: '11px'
+                      }}>
+                        {costDiff > 0 ? `↑ +${fmtINR(costDiff)}` : costDiff < 0 ? `↓ -${fmtINR(Math.abs(costDiff))}` : '• Stable'}
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Split row: trend lines + what changed */}
