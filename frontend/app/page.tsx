@@ -135,7 +135,9 @@ export default function UnifiedMockupDashboard() {
 
   // Re-calculate monthly leakage exposure client-side
   const getLeakLive = (m: any) => {
-    if (!m || !m._leakparts) return 0;
+    if (!m) return 0;
+    if (typeof m.leak === 'number' && m.leak > 0) return m.leak;
+    if (!m._leakparts) return 0;
     return m._leakparts.pcba * costs.pcba + m._leakparts.lcd * costs.lcd + m._leaktravel * costs.travel;
   };
 
