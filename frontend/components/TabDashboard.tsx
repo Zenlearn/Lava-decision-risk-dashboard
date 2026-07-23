@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   LineChart, Line, XAxis, YAxis, CartesianGrid, 
   Tooltip, Legend, ResponsiveContainer 
@@ -20,56 +20,143 @@ interface TabDashboardProps {
 export default function TabDashboard({
   data,
   isMounted,
-  leakCur,
-  leakDelta,
-  annualLeakRunRate,
-  latestKPI,
-  previousKPI,
+  leakCur: initialLeakCur,
+  leakDelta: initialLeakDelta,
+  annualLeakRunRate: initialAnnualLeakRunRate,
+  latestKPI: initialLatestKPI,
+  previousKPI: initialPreviousKPI,
   fmtINR,
   fmtPct
 }: TabDashboardProps) {
-  const currentBreakdown = latestKPI?.breakdown || [
-    { key: 'pcba', label: 'Motherboard (PCBA)', quantity: latestKPI?._leakparts?.pcba || 0, cost: (latestKPI?._leakparts?.pcba || 0) * 1800 },
-    { key: 'lcd', label: 'Display Screen (LCD)', quantity: latestKPI?._leakparts?.lcd || 0, cost: (latestKPI?._leakparts?.lcd || 0) * 1200 },
-    { key: 'battery', label: 'Battery Unit', quantity: Math.round((latestKPI?._leakparts?.pcba || 0) * 0.15), cost: Math.round((latestKPI?._leakparts?.pcba || 0) * 0.15 * 600) },
-    { key: 'camera', label: 'Camera Module', quantity: Math.round((latestKPI?._leakparts?.lcd || 0) * 0.1), cost: Math.round((latestKPI?._leakparts?.lcd || 0) * 0.1 * 450) },
-    { key: 'speaker', label: 'Speaker / Audio Assembly', quantity: Math.round((latestKPI?._leakparts?.pcba || 0) * 0.08), cost: Math.round((latestKPI?._leakparts?.pcba || 0) * 0.08 * 150) },
-    { key: 'charger', label: 'Charger / Power Adapter', quantity: Math.round((latestKPI?._leakparts?.pcba || 0) * 0.05), cost: Math.round((latestKPI?._leakparts?.pcba || 0) * 0.05 * 250) },
-    { key: 'travel', label: 'Technician Home Travel Fee', quantity: latestKPI?._leaktravel || 0, cost: (latestKPI?._leaktravel || 0) * 750 },
+  const allMonths = data?.kpi?.months || [];
+  const latestMonthName = allMonths[allMonths.length - 1]?.month || initialLatestKPI?.month || 'Jun';
+  
+  const [selectedMonth, setSelectedMonth] = useState<string>(latestMonthName);
+
+  useEffect(() => {
+    if (allMonths.length > 0) {
+      const latestName = allMonths[allMonths.length - 1]?.month;
+      if (latestName) {
+        setSelectedMonth(latestName);
+      }
+    }
+  }, [allMonths]);
+
+  // Find currently selected month's KPI object and its previous month's KPI object
+  const selectedMonthIdx = allMonths.findIndex((m: any) => m.month === selectedMonth);
+  const currentKPI = selectedMonthIdx !== -1 ? allMonths[selectedMonthIdx] : initialLatestKPI;
+  const prevKPI = selectedMonthIdx > 0 ? allMonths[selectedMonthIdx - 1] : null;
+
+  // Active month dynamic calculations
+  const activeLeakCur = currentKPI?.leak || 0;
+  const activeLeakPrev = prevKPI ? (prevKPI.leak || 0) : 0;
+  const activeLeakDelta = prevKPI ? (activeLeakCur - activeLeakPrev) : 0;
+  const activeAnnualLeakRunRate = activeLeakCur * 12;
+
+  const currentBreakdown = currentKPI?.breakdown || [
+    { key: 'pcba', label: 'Motherboard (PCBA)', quantity: currentKPI?._leakparts?.pcba || 0, cost: (currentKPI?._leakparts?.pcba || 0) * 1800 },
+    { key: 'lcd', label: 'Display Screen (LCD)', quantity: currentKPI?._leakparts?.lcd || 0, cost: (currentKPI?._leakparts?.lcd || 0) * 1200 },
+    { key: 'battery', label: 'Battery Unit', quantity: Math.round((currentKPI?._leakparts?.pcba || 0) * 0.15), cost: Math.round((currentKPI?._leakparts?.pcba || 0) * 0.15 * 600) },
+    { key: 'camera', label: 'Camera Module', quantity: Math.round((currentKPI?._leakparts?.lcd || 0) * 0.1), cost: Math.round((currentKPI?._leakparts?.lcd || 0) * 0.1 * 450) },
+    { key: 'speaker', label: 'Speaker / Audio Assembly', quantity: Math.round((currentKPI?._leakparts?.pcba || 0) * 0.08), cost: Math.round((currentKPI?._leakparts?.pcba || 0) * 0.08 * 150) },
+    { key: 'charger', label: 'Charger / Power Adapter', quantity: Math.round((currentKPI?._leakparts?.pcba || 0) * 0.05), cost: Math.round((currentKPI?._leakparts?.pcba || 0) * 0.05 * 250) },
+    { key: 'travel', label: 'Technician Home Travel Fee', quantity: currentKPI?._leaktravel || 0, cost: (currentKPI?._leaktravel || 0) * 500 },
   ];
 
-  const prevBreakdown = previousKPI?.breakdown || [];
+  const prevBreakdown = prevKPI?.breakdown || [];
 
   return (
     <div className="view-mock on">
+
+      {/* Month Dropdown Selector on left-hand side */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
+        <label style={{ fontSize: '13px', fontWeight: 700, color: '#334155', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+          Select Month:
+        </label>
+        <select
+          value={selectedMonth}
+          onChange={(e) => setSelectedMonth(e.target.value)}
+          style={{
+            background: '#ffffff',
+            border: '2px solid #2563eb',
+            borderRadius: '8px',
+            padding: '6px 14px',
+            fontSize: '14px',
+            fontWeight: 700,
+            color: '#0f172a',
+            cursor: 'pointer',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+            outline: 'none'
+          }}
+        >
+          {allMonths.map((m: any) => (
+            <option key={m.month} value={m.month}>
+              {m.month} {m.month === latestMonthName ? '(Latest)' : ''}
+            </option>
+          ))}
+        </select>
+      </div>
 
       {/* Headline exposure box */}
       <div className="headline">
         <div className="hl-main">
           <div className="hl-label">Estimated monthly leakage exposure</div>
-          <div className="hl-value">{fmtINR(leakCur)}</div>
-          <div className={`hl-delta ${leakDelta < 0 ? 'up' : 'down'}`}>
-            {leakDelta < 0 ? '↓ ' : '↑ '}{fmtINR(Math.abs(leakDelta))} vs {previousKPI?.month || 'prior'}
-          </div>
+          <div className="hl-value">{fmtINR(activeLeakCur)}</div>
+          {prevKPI ? (
+            <div className={`hl-delta ${activeLeakDelta < 0 ? 'up' : 'down'}`}>
+              {activeLeakDelta < 0 ? '↓ ' : '↑ '}{fmtINR(Math.abs(activeLeakDelta))} vs {prevKPI.month}
+            </div>
+          ) : (
+            <div className="hl-delta flat">• Baseline Month</div>
+          )}
           <div className="hl-context">
-            Actual part value exposure (Total Part Value + component values logged in Master Data Excel) for all anomalous work orders on <b>{latestKPI.month}</b>. Annualised run-rate &asymp; <b>{fmtINR(annualLeakRunRate)}</b>.
+            Actual part value exposure (Total Part Value + component values logged in Master Data Excel) for all anomalous work orders on <b>{currentKPI?.month || selectedMonth}</b>. Annualised run-rate &asymp; <b>{fmtINR(activeAnnualLeakRunRate)}</b>.
           </div>
         </div>
         <div className="hl-side">
-          <div className="hl-srow"><span className="k">First-time fix rate</span><span className="v">{fmtPct(latestKPI.ftfr)}</span></div>
-          <div className="hl-srow"><span className="k">Customer satisfaction</span><span className="v">{fmtPct(latestKPI.csat)}</span></div>
-          <div className="hl-srow"><span className="k">Mean time to repair</span><span className="v">{latestKPI.mttr.toFixed(2)} days</span></div>
-          <div className="hl-srow"><span className="k">Work orders, {latestKPI.month}</span><span className="v">{(latestKPI.wo).toLocaleString('en-IN')}</span></div>
+          <div className="hl-srow"><span className="k">First-time fix rate</span><span className="v">{fmtPct(currentKPI?.ftfr || 0)}</span></div>
+          <div className="hl-srow"><span className="k">Customer satisfaction</span><span className="v">{fmtPct(currentKPI?.csat || 0)}</span></div>
+          <div className="hl-srow"><span className="k">Mean time to repair</span><span className="v">{(currentKPI?.mttr || 0).toFixed(2)} days</span></div>
+          <div className="hl-srow"><span className="k">Work orders, {currentKPI?.month || selectedMonth}</span><span className="v">{(currentKPI?.wo || 0).toLocaleString('en-IN')}</span></div>
         </div>
       </div>
 
       {/* KPI Cards Strip */}
       <div className="kpi-strip">
         {[
-          { label: 'First-time fix rate', value: latestKPI.ftfr, target: data.kpi.targets.ftfr, delta: latestKPI.d.ftfr, higherBetter: true, driver: 'Fewer repeat bounces lift this' },
-          { label: 'Customer satisfaction', value: latestKPI.csat, target: data.kpi.targets.csat, delta: latestKPI.d.csat, higherBetter: true, driver: 'Fewer detractor ratings lift this' },
-          { label: 'Mean time to repair', value: latestKPI.mttr, target: data.kpi.targets.mttr, delta: latestKPI.d.mttr, higherBetter: false, format: (v: number) => `${v.toFixed(2)} d`, driver: 'Faster doorstep turnaround lowers this' },
-          { label: 'Diagnostic accuracy', value: latestKPI.diag, target: data.kpi.targets.diag, delta: latestKPI.d.diag, higherBetter: true, driver: 'Fewer hardware-software mismatches lift this' },
+          { 
+            label: 'First-time fix rate', 
+            value: currentKPI?.ftfr || 0, 
+            target: data?.kpi?.targets?.ftfr || 85, 
+            delta: prevKPI ? Math.round((currentKPI.ftfr - prevKPI.ftfr) * 10) / 10 : null, 
+            higherBetter: true, 
+            driver: 'Fewer repeat bounces lift this' 
+          },
+          { 
+            label: 'Customer satisfaction', 
+            value: currentKPI?.csat || 0, 
+            target: data?.kpi?.targets?.csat || 95, 
+            delta: prevKPI ? Math.round((currentKPI.csat - prevKPI.csat) * 10) / 10 : null, 
+            higherBetter: true, 
+            driver: 'Fewer detractor ratings lift this' 
+          },
+          { 
+            label: 'Mean time to repair', 
+            value: currentKPI?.mttr || 0, 
+            target: data?.kpi?.targets?.mttr || 2.0, 
+            delta: prevKPI ? Math.round((currentKPI.mttr - prevKPI.mttr) * 100) / 100 : null, 
+            higherBetter: false, 
+            format: (v: number) => `${v.toFixed(2)} d`, 
+            driver: 'Faster doorstep turnaround lowers this' 
+          },
+          { 
+            label: 'Diagnostic accuracy', 
+            value: currentKPI?.diag || 0, 
+            target: data?.kpi?.targets?.diag || 98, 
+            delta: prevKPI ? Math.round((currentKPI.diag - prevKPI.diag) * 10) / 10 : null, 
+            higherBetter: true, 
+            driver: 'Fewer hardware-software mismatches lift this' 
+          },
         ].map((k, i) => {
           const met = k.higherBetter ? k.value >= k.target : k.value <= k.target;
           const barColor = met ? '#1F9E6B' : (Math.abs(k.value - k.target) / k.target < 0.1 ? '#D98A1F' : '#C0392B');
@@ -80,10 +167,12 @@ export default function TabDashboard({
               <div className="kc-label">{k.label}</div>
               <div className="kc-value">{k.format ? k.format(k.value) : fmtPct(k.value)}</div>
               <div className="kc-meta">
-                {k.delta !== null && (
+                {k.delta !== null ? (
                   <span className={`kc-trend ${k.delta >= 0 === k.higherBetter ? 'up' : 'down'}`}>
                     {k.delta >= 0 ? '↑' : '↓'} {k.format ? k.format(Math.abs(k.delta)) : fmtPct(Math.abs(k.delta))}
                   </span>
+                ) : (
+                  <span className="kc-trend flat">• Baseline</span>
                 )}
                 <span className="kc-target">Target {k.format ? k.format(k.target) : fmtPct(k.target)}</span>
               </div>
@@ -98,17 +187,17 @@ export default function TabDashboard({
 
       {/* Leakage Exposure Deep Dive Table */}
       <div className="panel" style={{ marginTop: '20px', marginBottom: '24px', padding: '20px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '10px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', borderBottom: '1px solid #e2e8f0', paddingBottom: '12px' }}>
           <div>
-            <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 800, color: '#0f172a' }}>
-              Estimated Monthly Leakage Exposure Deep Dive ({latestKPI.month})
+            <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: '#0f172a' }}>
+              Estimated Monthly Leakage Exposure Deep Dive ({currentKPI?.month || selectedMonth})
             </h3>
             <span style={{ fontSize: '12px', color: '#64748b' }}>
-              Component-level line items summing to total headline leakage of <b>{fmtINR(leakCur)}</b>
+              Component-level line items summing to total headline leakage of {fmtINR(activeLeakCur)}
             </span>
           </div>
-          <span style={{ background: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca', padding: '4px 12px', borderRadius: '6px', fontSize: '13px', fontWeight: 800 }}>
-            Total Leakage: {fmtINR(leakCur)}
+          <span style={{ background: '#fef2f2', color: '#dc2626', padding: '6px 14px', borderRadius: '8px', fontSize: '13px', fontWeight: 800 }}>
+            Total Leakage: {fmtINR(activeLeakCur)}
           </span>
         </div>
 
@@ -125,10 +214,10 @@ export default function TabDashboard({
             </thead>
             <tbody>
               {currentBreakdown.map((item: any, idx: number) => {
-                const prevItem = prevBreakdown.find((pb: any) => pb.key === item.key || pb.label === item.label);
+                const prevItem = activePrevBreakdown.find((pb: any) => pb.key === item.key || pb.label === item.label);
                 const prevCost = prevItem?.cost || 0;
-                const costDiff = item.cost - prevCost;
-                const pctShare = leakCur > 0 ? ((item.cost / leakCur) * 100).toFixed(1) : '0.0';
+                const costDiff = prevKPI ? (item.cost - prevCost) : 0;
+                const pctShare = activeLeakCur > 0 ? ((item.cost / activeLeakCur) * 100).toFixed(1) : '0.0';
 
                 return (
                   <tr key={idx} style={{ borderBottom: '1px solid #f1f5f9' }}>
@@ -143,13 +232,17 @@ export default function TabDashboard({
                       {pctShare}%
                     </td>
                     <td style={{ padding: '10px 12px', textAlign: 'center', fontWeight: 700 }}>
-                      <span style={{
-                        color: costDiff > 0 ? '#dc2626' : costDiff < 0 ? '#16a34a' : '#64748b',
-                        background: costDiff > 0 ? '#fef2f2' : costDiff < 0 ? '#f0fdf4' : '#f8fafc',
-                        padding: '2px 8px', borderRadius: '4px', fontSize: '11px'
-                      }}>
-                        {costDiff > 0 ? `↑ +${fmtINR(costDiff)}` : costDiff < 0 ? `↓ -${fmtINR(Math.abs(costDiff))}` : '• Stable'}
-                      </span>
+                      {prevKPI ? (
+                        <span style={{
+                          color: costDiff > 0 ? '#dc2626' : costDiff < 0 ? '#16a34a' : '#64748b',
+                          background: costDiff > 0 ? '#fef2f2' : costDiff < 0 ? '#f0fdf4' : '#f8fafc',
+                          padding: '2px 8px', borderRadius: '4px', fontSize: '11px'
+                        }}>
+                          {costDiff > 0 ? `↑ +${fmtINR(costDiff)}` : costDiff < 0 ? `↓ -${fmtINR(Math.abs(costDiff))}` : '• Stable'}
+                        </span>
+                      ) : (
+                        <span style={{ color: '#64748b', fontSize: '11px' }}>• Baseline</span>
+                      )}
                     </td>
                   </tr>
                 );
@@ -184,20 +277,35 @@ export default function TabDashboard({
         </div>
 
         <div className="panel">
-          <div className="panel-h">What Changed in {latestKPI.month}?</div>
+          <div className="panel-h">What Changed in {currentKPI?.month || selectedMonth}?</div>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             {[
-              { title: 'Same-day swaps leakage', diff: (latestKPI._leakparts.pcba + latestKPI._leakparts.lcd) - (previousKPI?._leakparts.pcba + previousKPI?._leakparts.lcd), desc: `Swapped parts: ${latestKPI._leakparts.pcba} PCBAs, ${latestKPI._leakparts.lcd} LCDs.`, negativeBad: true },
-              { title: 'Repeat visit travel charge', diff: latestKPI._leaktravel - (previousKPI?._leaktravel || 0), desc: `${latestKPI._leaktravel} devices bounced back for follow-up repairs.`, negativeBad: true },
-              { title: 'C-SAT / Detractors count', diff: latestKPI.detractor - (previousKPI?.detractor || 0), desc: `Detractors count changed by ${latestKPI.detractor - (previousKPI?.detractor || 0)} cases.`, negativeBad: true }
+              { 
+                title: 'Same-day swaps leakage', 
+                diff: prevKPI ? ((currentKPI._leakparts.pcba + currentKPI._leakparts.lcd) - (prevKPI._leakparts.pcba + prevKPI._leakparts.lcd)) : 0, 
+                desc: `Swapped parts: ${currentKPI._leakparts.pcba} PCBAs, ${currentKPI._leakparts.lcd} LCDs.`, 
+                negativeBad: true 
+              },
+              { 
+                title: 'Repeat visit travel charge', 
+                diff: prevKPI ? (currentKPI._leaktravel - (prevKPI._leaktravel || 0)) : 0, 
+                desc: `${currentKPI._leaktravel} devices bounced back for follow-up repairs.`, 
+                negativeBad: true 
+              },
+              { 
+                title: 'C-SAT / Detractors count', 
+                diff: prevKPI ? (currentKPI.detractor - (prevKPI.detractor || 0)) : 0, 
+                desc: `Detractors count: ${currentKPI.detractor} cases.`, 
+                negativeBad: true 
+              }
             ].map((w, index) => {
-              const colorClass = w.diff === 0 ? 'flat' : (w.diff < 0 === w.negativeBad ? 'up' : 'down');
+              const colorClass = !prevKPI || w.diff === 0 ? 'flat' : (w.diff < 0 === w.negativeBad ? 'up' : 'down');
               return (
                 <div className="wc-row" key={index}>
-                  <div className={`wc-ind ${colorClass}`}>{w.diff < 0 ? '↓' : w.diff > 0 ? '↑' : '•'}</div>
+                  <div className={`wc-ind ${colorClass}`}>{!prevKPI || w.diff === 0 ? '•' : w.diff < 0 ? '↓' : '↑'}</div>
                   <div className="wc-body">
                     <div className="wc-name">{w.title}</div>
-                    <div className="wc-detail">{w.desc} (Changed by {Math.abs(w.diff).toLocaleString()} cases)</div>
+                    <div className="wc-detail">{w.desc} {prevKPI ? `(Changed by ${Math.abs(w.diff).toLocaleString()} cases vs ${prevKPI.month})` : ''}</div>
                   </div>
                 </div>
               );
