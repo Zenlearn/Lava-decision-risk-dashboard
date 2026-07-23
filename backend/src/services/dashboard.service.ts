@@ -600,13 +600,31 @@ export async function getFullDashboardData(filters?: {
     const isHome = matchesField(raw[FIELD_MAP.callType], raw[FIELD_MAP.callCategory], 'home');
     
     const partUpper = partRaw.toUpperCase();
+    const actionUpper = actionRaw.toUpperCase();
     const symptomUpper = symptomRaw.toUpperCase();
-    const isPCBA = partUpper.includes('PCBA') || partUpper.includes('MOTHERBOARD') || partUpper.includes('MAIN BOARD');
-    const isLCD = partUpper.includes('LCD') || partUpper.includes('DISPLAY') || partUpper.includes('TOUCH') || symptomUpper.includes('DISPLAY');
-    const isBattery = partUpper.includes('BATTERY') || partUpper.includes('BATT') || symptomUpper.includes('BATTERY');
-    const isCamera = partUpper.includes('CAMERA') || partUpper.includes('CAM') || symptomUpper.includes('CAMERA');
-    const isSpeaker = partUpper.includes('SPEAKER') || partUpper.includes('MIC') || partUpper.includes('AUDIO') || symptomUpper.includes('SPEAKER');
-    const isCharger = partUpper.includes('CHARGER') || partUpper.includes('CHARGE') || partUpper.includes('CABLE') || symptomUpper.includes('CHARGING');
+
+    const isPCBA = partUpper.includes('PCBA') || partUpper.includes('MOTHERBOARD') || partUpper.includes('MAIN BOARD') ||
+                   actionUpper.includes('PCBA') || actionUpper.includes('MOTHERBOARD') || actionUpper.includes('MAIN BOARD');
+
+    const isLCD = partUpper.includes('LCD') || partUpper.includes('DISPLAY') || partUpper.includes('TOUCH') ||
+                  actionUpper.includes('LCD') || actionUpper.includes('DISPLAY') || actionUpper.includes('TOUCH') ||
+                  symptomUpper.includes('DISPLAY') || symptomUpper.includes('TOUCH');
+
+    const isBattery = partUpper.includes('BATTERY') || partUpper.includes('BATT') ||
+                      actionUpper.includes('BATTERY') || actionUpper.includes('BATT') ||
+                      symptomUpper.includes('BATTERY');
+
+    const isCamera = partUpper.includes('CAMERA') || partUpper.includes('CAM') ||
+                     actionUpper.includes('CAMERA') || actionUpper.includes('CAM') ||
+                     symptomUpper.includes('CAMERA');
+
+    const isSpeaker = partUpper.includes('SPEAKER') || partUpper.includes('MIC') || partUpper.includes('AUDIO') ||
+                      actionUpper.includes('SPEAKER') || actionUpper.includes('MIC') || actionUpper.includes('AUDIO') ||
+                      symptomUpper.includes('SPEAKER');
+
+    const isCharger = partUpper.includes('CHARGER') || partUpper.includes('CHARGE') || partUpper.includes('CABLE') ||
+                      actionUpper.includes('CHARGER') || actionUpper.includes('CHARGE') || actionUpper.includes('CABLE') ||
+                      symptomUpper.includes('CHARGING');
 
     const isBoard = isPCBA || isLCD;
 
@@ -714,7 +732,7 @@ export async function getFullDashboardData(filters?: {
     }
     let travelVal = 0;
     if (isHome && (isBounce || isGhost || isCrossAsp)) {
-      travelVal = 750;
+      travelVal = 500;
     }
     const isAnomalous = isGhost || isHomeBoard || isCrossAsp || isBounce || isMismatchBounced || isMismatch;
     const leakageValue = isAnomalous ? (actualPartVal + travelVal) : 0;
@@ -873,7 +891,7 @@ export async function getFullDashboardData(filters?: {
 
     const travelRows = mRows.filter((r) => r.leakageValue > 0 && r.travelVal > 0);
     const travelQty = travelRows.length;
-    const travelCost = travelQty * 750;
+    const travelCost = travelQty * 500;
 
     const breakdown = [
       { key: 'pcba', label: 'Motherboard (PCBA)', quantity: pcbaData.qty, cost: pcbaData.cost },
