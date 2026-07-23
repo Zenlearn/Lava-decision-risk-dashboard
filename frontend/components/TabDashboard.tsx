@@ -42,14 +42,6 @@ export default function TabDashboard({
 
   return (
     <div className="view-mock on">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-        <div>
-          <span className="exec-sub">Reporting period: <b>{data.kpi.months.map((m: any) => m.month).join(' – ')}</b> &bull; active file: {data.summary.filename}</span>
-        </div>
-        <div className="exec-stamp">
-          Calculated live from database &bull; Actual Excel Part Values
-        </div>
-      </div>
 
       {/* Headline exposure box */}
       <div className="headline">
