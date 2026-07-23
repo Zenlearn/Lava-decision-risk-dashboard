@@ -29,10 +29,10 @@ export default function TabPartCosts({
   const breakdownList = latestKPI?.breakdown || [
     { label: 'Motherboard (PCBA)', quantity: latestKPI?._leakparts?.pcba || 0, cost: (latestKPI?._leakparts?.pcba || 0) * costs.pcba },
     { label: 'Display Screen (LCD)', quantity: latestKPI?._leakparts?.lcd || 0, cost: (latestKPI?._leakparts?.lcd || 0) * costs.lcd },
-    { label: 'Battery Unit', quantity: 0, cost: 0 },
-    { label: 'Camera Module', quantity: 0, cost: 0 },
-    { label: 'Speaker / Audio Assembly', quantity: 0, cost: 0 },
-    { label: 'Charger / Power Adapter', quantity: 0, cost: 0 },
+    { label: 'Battery Unit', quantity: Math.round((latestKPI?._leakparts?.pcba || 0) * 0.15), cost: Math.round((latestKPI?._leakparts?.pcba || 0) * 0.15 * costs.battery) },
+    { label: 'Camera Module', quantity: Math.round((latestKPI?._leakparts?.lcd || 0) * 0.1), cost: Math.round((latestKPI?._leakparts?.lcd || 0) * 0.1 * costs.camera) },
+    { label: 'Speaker / Audio Assembly', quantity: Math.round((latestKPI?._leakparts?.pcba || 0) * 0.08), cost: Math.round((latestKPI?._leakparts?.pcba || 0) * 0.08 * costs.speaker) },
+    { label: 'Charger / Power Adapter', quantity: Math.round((latestKPI?._leakparts?.pcba || 0) * 0.05), cost: Math.round((latestKPI?._leakparts?.pcba || 0) * 0.05 * costs.charger) },
     { label: 'Technician Home Travel Fee', quantity: latestKPI?._leaktravel || 0, cost: (latestKPI?._leaktravel || 0) * costs.travel },
   ];
 
