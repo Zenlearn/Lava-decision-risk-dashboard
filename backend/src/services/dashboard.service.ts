@@ -685,6 +685,9 @@ export async function getFullDashboardData(): Promise<any> {
       if (isPCBA) actualPartVal += 1800;
       if (isLCD) actualPartVal += 1200;
       if (isBattery) actualPartVal += 600;
+      if (isCamera) actualPartVal += 450;
+      if (isSpeaker) actualPartVal += 150;
+      if (isCharger) actualPartVal += 250;
     }
     let travelVal = 0;
     if (isHome && (isBounce || isGhost || isCrossAsp)) {
@@ -692,6 +695,15 @@ export async function getFullDashboardData(): Promise<any> {
     }
     const isAnomalous = isGhost || isHomeBoard || isCrossAsp || isBounce || isMismatchBounced || isMismatch;
     const leakageValue = isAnomalous ? (actualPartVal + travelVal) : 0;
+    const partLeakageVal = isAnomalous ? actualPartVal : 0;
+
+    let partCategory = 'others';
+    if (isPCBA) partCategory = 'pcba';
+    else if (isLCD) partCategory = 'lcd';
+    else if (isBattery) partCategory = 'battery';
+    else if (isCamera) partCategory = 'camera';
+    else if (isSpeaker) partCategory = 'speaker';
+    else if (isCharger) partCategory = 'charger';
 
     return {
       row: index + 2,
@@ -725,6 +737,9 @@ export async function getFullDashboardData(): Promise<any> {
       isSpeaker,
       isCharger,
       leakageValue,
+      partLeakageVal,
+      travelVal,
+      partCategory,
       processScore,
       skillScore,
       auditScore,
@@ -815,36 +830,40 @@ export async function getFullDashboardData(): Promise<any> {
 
     const diag = woCount > 0 ? Math.round((1 - mismatchBouncedCount / woCount) * 1000) / 10 : 0;
 
-    const pcbaQty = mRows.filter((r) => r.leakageValue > 0 && r.isPCBA).length;
-    const pcbaCost = Math.round(mRows.reduce((sum, r) => sum + (r.isPCBA ? r.leakageValue : 0), 0));
+    const calcCat = (catKey: string, filterFn: (r: any) => boolean, fallbackPrice: number) => {
+      const catRows = mRows.filter((r) => r.leakageValue > 0 && filterFn(r));
+      const qty = catRows.length;
+      let cost = Math.round(catRows.reduce((sum, r) => sum + (r.partLeakageVal || 0), 0));
+      if (qty > 0 && cost === 0) {
+        cost = qty * fallbackPrice;
+      }
+      return { qty, cost };
+    };
 
-    const lcdQty = mRows.filter((r) => r.leakageValue > 0 && r.isLCD).length;
-    const lcdCost = Math.round(mRows.reduce((sum, r) => sum + (r.isLCD ? r.leakageValue : 0), 0));
+    const pcbaData = calcCat('pcba', (r) => r.partCategory === 'pcba' || r.isPCBA, 1800);
+    const lcdData = calcCat('lcd', (r) => r.partCategory === 'lcd' || r.isLCD, 1200);
+    const batteryData = calcCat('battery', (r) => r.partCategory === 'battery' || r.isBattery, 600);
+    const cameraData = calcCat('camera', (r) => r.partCategory === 'camera' || r.isCamera, 450);
+    const speakerData = calcCat('speaker', (r) => r.partCategory === 'speaker' || r.isSpeaker, 150);
+    const chargerData = calcCat('charger', (r) => r.partCategory === 'charger' || r.isCharger, 250);
+    const othersData = calcCat('others', (r) => r.partCategory === 'others' && !r.isPCBA && !r.isLCD && !r.isBattery && !r.isCamera && !r.isSpeaker && !r.isCharger, 300);
 
-    const batteryQty = mRows.filter((r) => r.leakageValue > 0 && r.isBattery).length;
-    const batteryCost = Math.round(mRows.reduce((sum, r) => sum + (r.isBattery ? r.leakageValue : 0), 0));
-
-    const cameraQty = mRows.filter((r) => r.leakageValue > 0 && r.isCamera).length;
-    const cameraCost = Math.round(mRows.reduce((sum, r) => sum + (r.isCamera ? r.leakageValue : 0), 0));
-
-    const speakerQty = mRows.filter((r) => r.leakageValue > 0 && r.isSpeaker).length;
-    const speakerCost = Math.round(mRows.reduce((sum, r) => sum + (r.isSpeaker ? r.leakageValue : 0), 0));
-
-    const chargerQty = mRows.filter((r) => r.leakageValue > 0 && r.isCharger).length;
-    const chargerCost = Math.round(mRows.reduce((sum, r) => sum + (r.isCharger ? r.leakageValue : 0), 0));
-
-    const travelQty = mRows.filter((r) => r.isHome && (r.isBounce || r.isGhost || r.isCrossAsp)).length;
+    const travelRows = mRows.filter((r) => r.leakageValue > 0 && r.travelVal > 0);
+    const travelQty = travelRows.length;
     const travelCost = travelQty * 750;
 
     const breakdown = [
-      { key: 'pcba', label: 'Motherboard (PCBA)', quantity: pcbaQty, cost: pcbaCost },
-      { key: 'lcd', label: 'Display Screen (LCD)', quantity: lcdQty, cost: lcdCost },
-      { key: 'battery', label: 'Battery Unit', quantity: batteryQty, cost: batteryCost },
-      { key: 'camera', label: 'Camera Module', quantity: cameraQty, cost: cameraCost },
-      { key: 'speaker', label: 'Speaker / Audio Assembly', quantity: speakerQty, cost: speakerCost },
-      { key: 'charger', label: 'Charger / Power Adapter', quantity: chargerQty, cost: chargerCost },
+      { key: 'pcba', label: 'Motherboard (PCBA)', quantity: pcbaData.qty, cost: pcbaData.cost },
+      { key: 'lcd', label: 'Display Screen (LCD)', quantity: lcdData.qty, cost: lcdData.cost },
+      { key: 'battery', label: 'Battery Unit', quantity: batteryData.qty, cost: batteryData.cost },
+      { key: 'camera', label: 'Camera Module', quantity: cameraData.qty, cost: cameraData.cost },
+      { key: 'speaker', label: 'Speaker / Audio Assembly', quantity: speakerData.qty, cost: speakerData.cost },
+      { key: 'charger', label: 'Charger / Power Adapter', quantity: chargerData.qty, cost: chargerData.cost },
+      { key: 'others', label: 'Other Components & Accessories', quantity: othersData.qty, cost: othersData.cost },
       { key: 'travel', label: 'Technician Home Travel Fee', quantity: travelQty, cost: travelCost },
     ];
+
+    const leak = breakdown.reduce((sum, item) => sum + item.cost, 0);
 
     return {
       month: m,
