@@ -7,4 +7,8 @@ export interface DatasetImportSummary {
   rejectedCount: number;
   rejectedRows:  { rowIndex: number; errors: string[] }[];
   processingMs:  number;
+  /** Months this upload REPLACED (data already existed for them). */
+  replacedMonths?: string[];
+  /** Months this upload ADDED (no prior data). */
+  addedMonths?:    string[];
 }

@@ -7,6 +7,7 @@ import { parseFile, mapRow, normalizeMonth } from '../../utils/fileParser.util';
 import { newHierarchyCaches, resolveServiceCentre } from '../hierarchy.service';
 import { recomputeAspMonthRollups } from '../rollup.service';
 import { invalidateDashboardCache } from '../cache.service';
+import { sortMonths, splitReplacedAdded } from '../monthReplace.util';
 import { DatasetImportSummary } from './types';
 
 /**
@@ -62,16 +63,32 @@ export async function persistComplianceQc(
   });
 
   const caches = newHierarchyCaches();
-  const touchedPairs = new Map<string, { serviceCentreId: string; month: string }>();
+
+  // Months this file covers — the delete-then-replace scope.
+  const fileMonths = sortMonths(
+    validRows.map(({ data }) => normalizeMonth(data.month)).filter((m): m is string => m !== null)
+  );
+
+  let replacedMonths: string[] = [];
+  let addedMonths: string[] = fileMonths;
 
   try {
+    if (fileMonths.length > 0) {
+      // Which of these months already had data (for the replaced/added split),
+      // then wipe them so this upload becomes the complete truth for its months.
+      const existing = await prisma.complianceQcRecord.findMany({
+        where: { month: { in: fileMonths } }, select: { month: true }, distinct: ['month'],
+      });
+      ({ replacedMonths, addedMonths } = splitReplacedAdded(fileMonths, existing.map((r) => r.month!).filter(Boolean)));
+      await prisma.complianceQcRecord.deleteMany({ where: { month: { in: fileMonths } } });
+    }
+
     const BATCH_SIZE = 500;
     for (let start = 0; start < validRows.length; start += BATCH_SIZE) {
       const batch = validRows.slice(start, start + BATCH_SIZE);
       for (const { data, raw } of batch) {
         const scId = await resolveServiceCentre(caches, data.busmName ?? null, data.asmName ?? null, data.aspCode ?? null, data.aspName ?? null);
         const month = normalizeMonth(data.month);
-        if (month) touchedPairs.set(`${scId}::${month}`, { serviceCentreId: scId, month });
 
         await prisma.complianceQcRecord.create({
           data: {
@@ -88,14 +105,14 @@ export async function persistComplianceQc(
     }
 
     await prisma.monthlyImport.update({ where: { id: monthlyImport.id }, data: { status: 'COMPLETE', completedAt: new Date() } });
-    await recomputeAspMonthRollups(Array.from(touchedPairs.values()));
+    await recomputeAspMonthRollups(fileMonths);
     await invalidateDashboardCache();
   } catch (err) {
     await prisma.monthlyImport.update({ where: { id: monthlyImport.id }, data: { status: 'FAILED' } });
     throw err;
   }
 
-  logger.info('IMEI QC import complete', { importId: monthlyImport.id, valid: validRows.length, rejected: rejectedRows.length });
+  logger.info('IMEI QC import complete', { importId: monthlyImport.id, valid: validRows.length, rejected: rejectedRows.length, replacedMonths, addedMonths });
 
   return {
     importId: monthlyImport.id,
@@ -104,6 +121,8 @@ export async function persistComplianceQc(
     validCount: validRows.length,
     rejectedCount: rejectedRows.length,
     rejectedRows: rejectedRows.slice(0, 50),
+    replacedMonths,
+    addedMonths,
     processingMs: Date.now() - startMs,
   };
 }

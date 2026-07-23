@@ -10,6 +10,7 @@ import { invalidateDashboardCache } from './cache.service';
 import { parseFile, mapRow, toNumber, normalizeMonth } from '../utils/fileParser.util';
 import { newHierarchyCaches, resolveServiceCentre } from './hierarchy.service';
 import { recomputeAspMonthRollups } from './rollup.service';
+import { sortMonths, splitReplacedAdded } from './monthReplace.util';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -22,6 +23,8 @@ export interface ImportSummary {
   hitListCount:  number;       // rows with totalAnomalies >= 2
   hitList:       HitListItem[];// first 20 hit-list rows for immediate display
   rejectedRows:  RejectedRow[];
+  replacedMonths?: string[];   // months this upload replaced (had prior data)
+  addedMonths?:    string[];   // months this upload added (no prior data)
   processingMs:  number;
 }
 
@@ -159,18 +162,35 @@ export async function processImport(
   // 5. Resolve org hierarchy + WorkOrders in a single transaction
   const caches = newHierarchyCaches();
   const serviceCentreIdByRow: string[] = [];
-  const touchedPairs = new Map<string, { serviceCentreId: string; month: string }>();
   let ruleResults: RowRuleResult[] = [];
   let hitListResults: RowRuleResult[] = [];
 
+  // Months this file covers — the delete-then-replace scope (row.month is
+  // already normalized to canonical 3-letter form during validation above).
+  const fileMonths = sortMonths(
+    validRows.map((r) => r.month).filter((m): m is string => !!m)
+  );
+  let replacedMonths: string[] = [];
+  let addedMonths: string[] = fileMonths;
+
   try {
+    // Phase 0: clear existing WorkOrders for the file's months (RiskFlags cascade)
+    // so this upload is the complete truth for those months — no duplicates on
+    // re-upload, correct replacement on overlapping-month re-uploads.
+    if (fileMonths.length > 0) {
+      const existing = await prisma.workOrder.findMany({
+        where: { month: { in: fileMonths } }, select: { month: true }, distinct: ['month'],
+      });
+      ({ replacedMonths, addedMonths } = splitReplacedAdded(fileMonths, existing.map((r) => r.month!).filter(Boolean)));
+      await prisma.workOrder.deleteMany({ where: { month: { in: fileMonths } } });
+    }
+
     // Phase 1: Resolve org hierarchy first (outside the big tx to avoid long lock).
     // Runs BEFORE the rule engine because Cross-ASP-IMEI detection needs each
     // row's resolved serviceCentreId.
     for (const row of validRows) {
       const scId = await resolveServiceCentre(caches, row.busmName ?? null, row.asmName ?? null, row.aspCode ?? null, row.aspName ?? null);
       serviceCentreIdByRow.push(scId);
-      if (row.month) touchedPairs.set(`${scId}::${row.month}`, { serviceCentreId: scId, month: row.month });
     }
 
     // Phase 2: Run the rule engine now that every row has a resolved serviceCentreId
@@ -226,8 +246,8 @@ export async function processImport(
       data:  { status: 'COMPLETE', completedAt: new Date() },
     });
 
-    // 7. Recompute AspMetricRollup for every (serviceCentreId, month) this import touched
-    await recomputeAspMonthRollups(Array.from(touchedPairs.values()));
+    // 7. Recompute AspMetricRollup for every month this import touched
+    await recomputeAspMonthRollups(fileMonths);
 
     // Invalidate the cache to force recalculation on next dashboard request
     await invalidateDashboardCache();
@@ -270,6 +290,8 @@ export async function processImport(
     hitListCount:  hitListResults.length,
     hitList,
     rejectedRows:  rejectedRows.slice(0, 50), // cap rejection detail at 50 rows
+    replacedMonths,
+    addedMonths,
     processingMs,
   };
 }

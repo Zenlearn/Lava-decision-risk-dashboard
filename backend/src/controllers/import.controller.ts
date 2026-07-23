@@ -8,6 +8,8 @@ import { importServiceAtHome } from '../services/importers/sah.importer';
 import { importMsmAchievement } from '../services/importers/msm.importer';
 import { importSparePriceCatalog } from '../services/importers/zprp.importer';
 import { createAuditLog } from './audit.controller';
+import prisma from '../configs/prisma.config';
+import { sortMonths } from '../services/monthReplace.util';
 import logger from '../configs/logger.config';
 
 /**
@@ -99,4 +101,55 @@ export async function uploadImportHandler(req: Request, res: Response): Promise<
       error: error instanceof Error ? error.message : String(error),
     });
   }
+}
+
+/**
+ * GET /api/v1/imports/status
+ *
+ * Reports, per dataset the UI exposes, which months currently hold data and the
+ * total row count — so the upload panel can show "Currently loaded: Apr, May,
+ * Jun 2026" per card before the admin uploads. COMPLIANCE_COMBINED unions the 3
+ * compliance tables; SPARE_PRICE_CATALOG is not month-scoped (count only).
+ */
+export async function importStatusHandler(_req: Request, res: Response): Promise<void> {
+  const distinctMonths = async (
+    rows: Promise<{ month: string | null }[]>
+  ): Promise<string[]> => sortMonths((await rows).map((r) => r.month).filter((m): m is string => !!m));
+
+  const [
+    masterMonths, masterCount,
+    qcMonths, qcCount,
+    elsMonths, elsCount,
+    defMonths, defCount,
+    sahMonths, sahCount,
+    msmMonths, msmCount,
+    zprpCount,
+  ] = await Promise.all([
+    distinctMonths(prisma.workOrder.findMany({ select: { month: true }, distinct: ['month'] })),
+    prisma.workOrder.count(),
+    distinctMonths(prisma.complianceQcRecord.findMany({ select: { month: true }, distinct: ['month'] })),
+    prisma.complianceQcRecord.count(),
+    distinctMonths(prisma.complianceElsDoaRecord.findMany({ select: { month: true }, distinct: ['month'] })),
+    prisma.complianceElsDoaRecord.count(),
+    distinctMonths(prisma.complianceDefectiveSpareRecord.findMany({ select: { month: true }, distinct: ['month'] })),
+    prisma.complianceDefectiveSpareRecord.count(),
+    distinctMonths(prisma.serviceAtHomeAppointment.findMany({ select: { month: true }, distinct: ['month'] })),
+    prisma.serviceAtHomeAppointment.count(),
+    distinctMonths(prisma.msmDailyRecord.findMany({ select: { month: true }, distinct: ['month'] })),
+    prisma.msmDailyRecord.count(),
+    prisma.sparePriceCatalog.count(),
+  ]);
+
+  const complianceMonths = sortMonths([...qcMonths, ...elsMonths, ...defMonths]);
+
+  res.success({
+    message: 'Import status',
+    result: {
+      MASTER_DATA:         { months: masterMonths, rowCount: masterCount },
+      COMPLIANCE_COMBINED: { months: complianceMonths, rowCount: qcCount + elsCount + defCount },
+      SERVICE_AT_HOME:     { months: sahMonths, rowCount: sahCount },
+      MSM_ACHIEVEMENT:     { months: msmMonths, rowCount: msmCount },
+      SPARE_PRICE_CATALOG: { months: null, rowCount: zprpCount },
+    },
+  });
 }

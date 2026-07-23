@@ -224,7 +224,9 @@ model RiskFlag {
   evidence      Json     // rule-specific evidence payload
   recommendation String?
 
-  workOrder     WorkOrder @relation(fields: [workOrderId], references: [id])
+  // Cascade: delete-by-month replacement of WorkOrders (see importers) must
+  // clean up their RiskFlags too, or the WorkOrder delete hits a FK violation.
+  workOrder     WorkOrder @relation(fields: [workOrderId], references: [id], onDelete: Cascade)
 
   createdAt     DateTime @default(now())
 

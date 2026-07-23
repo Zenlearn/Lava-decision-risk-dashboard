@@ -6,6 +6,7 @@ import { newHierarchyCaches, resolveServiceCentre } from '../hierarchy.service';
 import { recomputeAspMonthRollups } from '../rollup.service';
 import { invalidateDashboardCache } from '../cache.service';
 import { normalizeMonth } from '../../utils/fileParser.util';
+import { sortMonths, splitReplacedAdded } from '../monthReplace.util';
 import { DatasetImportSummary } from './types';
 
 /**
@@ -127,17 +128,33 @@ export async function importMsmAchievement(
   });
 
   const caches = newHierarchyCaches();
-  const touchedPairs = new Map<string, { serviceCentreId: string; month: string }>();
   let recordCount = 0;
 
+  // Months covered = distinct months across every daily record's date.
+  const fileMonths = sortMonths(
+    parsedRecords.flatMap((rec) => rec.dailyStatuses.map(({ date }) => normalizeMonth(date)))
+      .filter((m): m is string => m !== null)
+  );
+  let replacedMonths: string[] = [];
+  let addedMonths: string[] = fileMonths;
+
   try {
+    if (fileMonths.length > 0) {
+      const existing = await prisma.msmDailyRecord.findMany({
+        where: { month: { in: fileMonths } }, select: { month: true }, distinct: ['month'],
+      });
+      ({ replacedMonths, addedMonths } = splitReplacedAdded(fileMonths, existing.map((r) => r.month!).filter(Boolean)));
+      await prisma.msmDailyRecord.deleteMany({ where: { month: { in: fileMonths } } });
+    }
+
     for (const rec of parsedRecords) {
       const scId = await resolveServiceCentre(caches, rec.busmName, rec.asmName, rec.aspCode, rec.aspName);
 
       for (const { date, status } of rec.dailyStatuses) {
         const month = normalizeMonth(date);
-        if (month) touchedPairs.set(`${scId}::${month}`, { serviceCentreId: scId, month });
 
+        // upsert (not create) guards against the same (ASP, date) appearing
+        // twice within one file — the months were already cleared above.
         await prisma.msmDailyRecord.upsert({
           where: { serviceCentreId_date: { serviceCentreId: scId, date } },
           create: {
@@ -161,14 +178,14 @@ export async function importMsmAchievement(
       where: { id: monthlyImport.id },
       data: { status: 'COMPLETE', completedAt: new Date(), rowCount: recordCount },
     });
-    await recomputeAspMonthRollups(Array.from(touchedPairs.values()));
+    await recomputeAspMonthRollups(fileMonths);
     await invalidateDashboardCache();
   } catch (err) {
     await prisma.monthlyImport.update({ where: { id: monthlyImport.id }, data: { status: 'FAILED' } });
     throw err;
   }
 
-  logger.info('MSM Achievement import complete', { importId: monthlyImport.id, asps: parsedRecords.length, dailyRecords: recordCount });
+  logger.info('MSM Achievement import complete', { importId: monthlyImport.id, asps: parsedRecords.length, dailyRecords: recordCount, replacedMonths, addedMonths });
 
   return {
     importId: monthlyImport.id,
@@ -177,6 +194,8 @@ export async function importMsmAchievement(
     validCount: parsedRecords.length,
     rejectedCount: rejectedRows.length,
     rejectedRows: rejectedRows.slice(0, 50),
+    replacedMonths,
+    addedMonths,
     processingMs: Date.now() - startMs,
   };
 }

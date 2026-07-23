@@ -7,6 +7,7 @@ import { parseFile, mapRow, toDate, normalizeMonth } from '../../utils/fileParse
 import { newHierarchyCaches, resolveServiceCentre } from '../hierarchy.service';
 import { recomputeAspMonthRollups } from '../rollup.service';
 import { invalidateDashboardCache } from '../cache.service';
+import { sortMonths, splitReplacedAdded } from '../monthReplace.util';
 import { DatasetImportSummary } from './types';
 
 /**
@@ -50,9 +51,23 @@ export async function importServiceAtHome(
   });
 
   const caches = newHierarchyCaches();
-  const touchedPairs = new Map<string, { serviceCentreId: string; month: string }>();
+
+  // S@H has no Month column — month is derived per row from Appointment Date.
+  const fileMonths = sortMonths(
+    validRows.map(({ data }) => normalizeMonth(toDate(data.appointmentDate))).filter((m): m is string => m !== null)
+  );
+  let replacedMonths: string[] = [];
+  let addedMonths: string[] = fileMonths;
 
   try {
+    if (fileMonths.length > 0) {
+      const existing = await prisma.serviceAtHomeAppointment.findMany({
+        where: { month: { in: fileMonths } }, select: { month: true }, distinct: ['month'],
+      });
+      ({ replacedMonths, addedMonths } = splitReplacedAdded(fileMonths, existing.map((r) => r.month!).filter(Boolean)));
+      await prisma.serviceAtHomeAppointment.deleteMany({ where: { month: { in: fileMonths } } });
+    }
+
     const BATCH_SIZE = 500;
     for (let start = 0; start < validRows.length; start += BATCH_SIZE) {
       const batch = validRows.slice(start, start + BATCH_SIZE);
@@ -60,7 +75,6 @@ export async function importServiceAtHome(
         const scId = await resolveServiceCentre(caches, data.busmName ?? null, data.asmName ?? null, data.aspCode ?? null, data.aspName ?? null);
         const appointmentDate = toDate(data.appointmentDate);
         const month = normalizeMonth(appointmentDate);
-        if (month) touchedPairs.set(`${scId}::${month}`, { serviceCentreId: scId, month });
 
         await prisma.serviceAtHomeAppointment.create({
           data: {
@@ -79,14 +93,14 @@ export async function importServiceAtHome(
     }
 
     await prisma.monthlyImport.update({ where: { id: monthlyImport.id }, data: { status: 'COMPLETE', completedAt: new Date() } });
-    await recomputeAspMonthRollups(Array.from(touchedPairs.values()));
+    await recomputeAspMonthRollups(fileMonths);
     await invalidateDashboardCache();
   } catch (err) {
     await prisma.monthlyImport.update({ where: { id: monthlyImport.id }, data: { status: 'FAILED' } });
     throw err;
   }
 
-  logger.info('Service at Home import complete', { importId: monthlyImport.id, valid: validRows.length, rejected: rejectedRows.length });
+  logger.info('Service at Home import complete', { importId: monthlyImport.id, valid: validRows.length, rejected: rejectedRows.length, replacedMonths, addedMonths });
 
   return {
     importId: monthlyImport.id,
@@ -95,6 +109,8 @@ export async function importServiceAtHome(
     validCount: validRows.length,
     rejectedCount: rejectedRows.length,
     rejectedRows: rejectedRows.slice(0, 50),
+    replacedMonths,
+    addedMonths,
     processingMs: Date.now() - startMs,
   };
 }
