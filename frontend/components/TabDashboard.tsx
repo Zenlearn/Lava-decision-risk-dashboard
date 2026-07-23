@@ -34,7 +34,7 @@ export default function TabDashboard({
           <span className="exec-sub">Reporting period: <b>{data.kpi.months.map((m: any) => m.month).join(' – ')}</b> &bull; active file: {data.summary.filename}</span>
         </div>
         <div className="exec-stamp">
-          Provisional &mdash; placeholder costs used<br />Calculated live from database
+          Calculated live from database &bull; Actual Excel Part Values
         </div>
       </div>
 
@@ -47,7 +47,7 @@ export default function TabDashboard({
             {leakDelta < 0 ? '↓ ' : '↑ '}{fmtINR(Math.abs(leakDelta))} vs {previousKPI?.month || 'prior'}
           </div>
           <div className="hl-context">
-            Board-level part exposure (same-day walk-in swaps + board repairs logged at home) plus repeat home-visit travel, on <b>{latestKPI.month}</b> work orders. Annualised run-rate &asymp; <b>{fmtINR(annualLeakRunRate)}</b>. Configured using costs set in Part-Cost Assumptions.
+            Actual part value exposure (Total Part Value + component values logged in Master Data Excel) for all anomalous work orders on <b>{latestKPI.month}</b>. Annualised run-rate &asymp; <b>{fmtINR(annualLeakRunRate)}</b>.
           </div>
         </div>
         <div className="hl-side">

@@ -655,6 +655,37 @@ export async function getFullDashboardData(): Promise<any> {
     if (isDetractor) processScore -= 20;
     processScore = Math.max(0, processScore);
 
+    const parseNumber = (val: any): number => {
+      if (val === null || val === undefined) return 0;
+      if (typeof val === 'number') return isNaN(val) ? 0 : val;
+      const cleaned = String(val).replace(/[^0-9.-]/g, '');
+      const num = parseFloat(cleaned);
+      return isNaN(num) ? 0 : num;
+    };
+
+    const totalPartVal = parseNumber(raw[FIELD_MAP.totalPartValue] || raw['Total Part Value']);
+    const pcbaVal = parseNumber(raw[FIELD_MAP.pcbaValue] || raw['PCBA Value']);
+    const lcdVal = parseNumber(raw[FIELD_MAP.tpLcdValue] || raw['TP/LCD Value']);
+    const batteryVal = parseNumber(raw[FIELD_MAP.batteryValue] || raw['Battery Value']);
+    const subPcbaVal = parseNumber(raw[FIELD_MAP.subPcbaValue] || raw['Sub PCBA Value']);
+    const accessoriesVal = parseNumber(raw[FIELD_MAP.accessoriesValue] || raw['Accessories value']);
+    const othersVal = parseNumber(raw[FIELD_MAP.othersValue] || raw['Others Value']);
+
+    let actualPartVal = totalPartVal;
+    if (actualPartVal === 0) {
+      actualPartVal = pcbaVal + lcdVal + batteryVal + subPcbaVal + accessoriesVal + othersVal;
+    }
+    if (actualPartVal === 0) {
+      if (isPCBA) actualPartVal += 1800;
+      if (isLCD) actualPartVal += 1200;
+    }
+    let travelVal = 0;
+    if (isHome && (isBounce || isGhost || isCrossAsp)) {
+      travelVal = 750;
+    }
+    const isAnomalous = isGhost || isHomeBoard || isCrossAsp || isBounce || isMismatchBounced || isMismatch;
+    const leakageValue = isAnomalous ? (actualPartVal + travelVal) : 0;
+
     return {
       row: index + 2,
       wo: String(raw[FIELD_MAP.workorder] ?? wo.id),
@@ -682,6 +713,7 @@ export async function getFullDashboardData(): Promise<any> {
       isDOA,
       isPCBA,
       isLCD,
+      leakageValue,
       processScore,
       skillScore,
       auditScore,
@@ -777,7 +809,7 @@ export async function getFullDashboardData(): Promise<any> {
     const lcdParts = mRows.filter((r) => r.isLCD && (r.isGhost || r.isHomeBoard || r.isCrossAsp || r.isBounce || r.isMismatchBounced)).length;
     const travelCount = mRows.filter((r) => r.isHome && (r.isBounce || r.isGhost || r.isCrossAsp)).length;
 
-    const leak = pcbaParts * 1800 + lcdParts * 1200 + travelCount * 750;
+    const leak = Math.round(mRows.reduce((sum, r) => sum + (r.leakageValue || 0), 0));
 
     return {
       month: m,
