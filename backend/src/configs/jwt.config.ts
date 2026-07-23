@@ -4,12 +4,13 @@ import { getEnvVar } from '../helpers/env';
 /**
  * JWT token validation.
  *
- * IMPORTANT: This module only validates tokens — it does NOT generate them.
- * Token generation lives in PathwaysBackend (the source of truth for identity).
- * Lava only consumes JWTs signed with the shared JWT_SECRET.
+ * IMPORTANT: This module only validates tokens by default — it does NOT
+ * generate them for general identity purposes. Token generation for ZenLearn
+ * identity lives in PathwaysBackend (the source of truth). Lava only consumes
+ * JWTs signed with the shared JWT_SECRET.
  *
  * Copied + adapted from PathwaysBackend/backend/src/configs/jwt.config.ts:
- *   - Removed `generate()` — Lava never issues its own tokens.
+ *   - Removed `generate()` — Lava never issues its own IDENTITY tokens.
  *   - Removed `User` import from @prisma/client — Lava has no `users` table.
  *   - `validate()` is identical.
  *
@@ -17,10 +18,22 @@ import { getEnvVar } from '../helpers/env';
  *   { id, role, is_admin, is_super_admin, is_department_manager, organization_id }
  * Lava additionally reads:
  *   { lava_role } — if present, overrides the default role for Lava-specific RBAC
+ *
+ * ONE deliberate exception — see generateUploadToken() below.
  */
 
 function getJwtSecret(): string {
 	return getEnvVar('JWT_SECRET');
+}
+
+/** Claims copied into a short-lived upload token — a subset of what auth.middleware.ts reads off req.user. */
+export interface UploadTokenClaims {
+	id: string;
+	role?: string;
+	is_admin?: boolean;
+	is_super_admin?: boolean;
+	organization_id?: string;
+	lava_role?: string;
 }
 
 export class JWTConfig {
@@ -39,5 +52,28 @@ export class JWTConfig {
 			throw new Error('Invalid token format');
 		}
 		return decoded as JWT.JwtPayload;
+	}
+
+	/**
+	 * Mints a short-lived (15 min), narrowly-scoped token for the ONE case
+	 * where Lava must issue its own JWT: direct-to-backend uploads that bypass
+	 * Netlify's proxy. Netlify enforces a hard ~7-8MB request body ceiling at
+	 * its edge layer regardless of routing mechanism (proven empirically —
+	 * confirmed identical on both the serverless-function path and the
+	 * netlify.toml edge-redirect path) — far below the ~15.5MB Master Data
+	 * file. The browser can't send the real HttpOnly session cookie
+	 * cross-domain to lava-api.zenlearn.ai (different eTLD+1 from
+	 * PathwaysFrontend's Netlify domain), so the direct upload needs SOME
+	 * token to attach as an Authorization header instead.
+	 *
+	 * This does NOT create a new identity — it only re-signs a copy of an
+	 * already-verified caller's claims (see UploadTokenClaims) with a short
+	 * expiry, using the same shared secret. The minting endpoint itself
+	 * (auth.routes.ts POST /upload-token) requires the normal cookie-based
+	 * AuthMiddleware + requireAnyLavaRole check first — this only ever runs
+	 * for a caller who already passed that.
+	 */
+	public static generateUploadToken(claims: UploadTokenClaims): string {
+		return JWT.sign({ ...claims, purpose: 'lava_direct_upload' }, getJwtSecret(), { expiresIn: '15m' });
 	}
 }
