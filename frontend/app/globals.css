@@ -8,10 +8,13 @@
   --color-bg: #f8fafc;
   --color-card: #ffffff;
   
-  /* Softer Royal Blue to replace the harsh cobalt blue */
-  --deep: #1e293b;
-  --mid: #2563eb;
-  --cobalt: #2563eb;
+  /* Official Lava Crimson & White Brand Palette */
+  --deep: #111827;
+  --mid: #E50046;
+  --cobalt: #E50046;
+  --lava-crimson: #E50046;
+  --lava-crimson-hover: #D0003F;
+  --lava-crimson-light: #FFF1F2;
   --ice: #f1f5f9;
   --ink: #0f172a;
   --muted: #64748b;
@@ -21,10 +24,10 @@
   --warn: #f59e0b;
   --good: #10b981;
   
-  --color-primary: #151e3d;      /* Softer deep slate blue */
-  --color-primary-light: #2563eb;
-  --color-primary-hover: #3b82f6;
-  --color-accent: #60a5fa;
+  --color-primary: #111827;      /* Sleek dark charcoal */
+  --color-primary-light: #E50046; /* Official Lava Crimson */
+  --color-primary-hover: #D0003F;
+  --color-accent: #F43F5E;
   --color-text-main: #0f172a;
   --color-text-muted: #64748b;
   --color-border: #e2e8f0;

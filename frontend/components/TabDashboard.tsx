@@ -196,7 +196,7 @@ export default function TabDashboard({
               Component-level line items summing to total headline leakage of {fmtINR(activeLeakCur)}
             </span>
           </div>
-          <span style={{ background: '#fef2f2', color: '#dc2626', padding: '6px 14px', borderRadius: '8px', fontSize: '13px', fontWeight: 800 }}>
+          <span style={{ background: '#f8fafc', color: '#0f172a', border: '1px solid #cbd5e1', padding: '6px 14px', borderRadius: '8px', fontSize: '13px', fontWeight: 800 }}>
             Total Leakage: {fmtINR(activeLeakCur)}
           </span>
         </div>

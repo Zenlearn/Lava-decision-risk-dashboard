@@ -50,7 +50,7 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
   return (
     <aside className="zen-sidebar" style={{
       width: '260px',
-      background: '#151e3d', // Harmonious deep slate blue to match screenshot 2
+      background: '#111827', // Sleek Obsidian Charcoal
       borderRight: '1px solid rgba(255,255,255,0.06)',
       display: 'flex',
       flexDirection: 'column',
@@ -79,7 +79,7 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
             <span style={{ fontSize: '15px', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.3px', lineHeight: '1.2' }}>
               ZenLearn
             </span>
-            <span style={{ fontSize: '10px', color: '#8094ae', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>
+            <span style={{ fontSize: '10px', color: '#E50046', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px' }}>
               Decision Intel
             </span>
           </div>
@@ -103,21 +103,22 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
                 padding: '12px 16px',
                 borderRadius: '8px',
                 border: 'none',
-                background: isActive ? 'rgba(255,255,255,0.08)' : 'transparent',
-                color: isActive ? '#fff' : '#8094ae',
+                background: isActive ? 'rgba(229, 0, 70, 0.12)' : 'transparent',
+                color: isActive ? '#ffffff' : '#94a3b8',
+                borderLeft: isActive ? '3px solid #E50046' : '3px solid transparent',
                 textAlign: 'left',
                 fontSize: '14px',
-                fontWeight: isActive ? 600 : 500,
+                fontWeight: isActive ? 700 : 500,
                 cursor: 'pointer',
                 transition: 'all 0.2s',
                 width: '100%'
               }}
             >
-              <Icon size={18} style={{ color: isActive ? '#3b82f6' : '#64748b' }} />
+              <Icon size={18} style={{ color: isActive ? '#E50046' : '#64748b' }} />
               <span style={{ flex: 1 }}>{item.label}</span>
               {item.badge !== undefined && (
                 <span style={{
-                  background: 'var(--bad, #ef4444)',
+                  background: '#E50046',
                   color: '#fff',
                   borderRadius: '10px',
                   padding: '2px 8px',
@@ -149,7 +150,7 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
             width: '36px',
             height: '36px',
             borderRadius: '50%',
-            background: '#2563eb',
+            background: '#E50046',
             color: '#fff',
             display: 'flex',
             alignItems: 'center',
