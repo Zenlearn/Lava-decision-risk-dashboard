@@ -621,10 +621,21 @@ export async function getFullDashboardData(): Promise<any> {
     let mClean = 'Unknown';
     if (wo.month) {
       const mStr = wo.month.trim().slice(0, 3).toLowerCase();
-      if (mStr === 'feb' || mStr === 'february') mClean = 'Feb';
-      else if (mStr === 'mar' || mStr === 'march') mClean = 'Mar';
-      else if (mStr === 'apr' || mStr === 'april') mClean = 'Apr';
-      else if (mStr === 'may' || mStr === 'may') mClean = 'May';
+      if (mStr === 'jan') mClean = 'Jan';
+      else if (mStr === 'feb') mClean = 'Feb';
+      else if (mStr === 'mar') mClean = 'Mar';
+      else if (mStr === 'apr') mClean = 'Apr';
+      else if (mStr === 'may') mClean = 'May';
+      else if (mStr === 'jun' || mStr === 'june') mClean = 'Jun';
+      else if (mStr === 'jul' || mStr === 'july') mClean = 'Jul';
+      else if (mStr === 'aug') mClean = 'Aug';
+      else if (mStr === 'sep') mClean = 'Sep';
+      else if (mStr === 'oct') mClean = 'Oct';
+      else if (mStr === 'nov') mClean = 'Nov';
+      else if (mStr === 'dec') mClean = 'Dec';
+      else {
+        mClean = mStr.charAt(0).toUpperCase() + mStr.slice(1);
+      }
     }
 
     // Dynamic scores calculation based on mockup rules
@@ -681,7 +692,7 @@ export async function getFullDashboardData(): Promise<any> {
   const uniqueMonths = [...new Set(processedRows.map((r) => r.month))].filter((m) => m !== 'Unknown');
 
   // Chronological sort order helper
-  const MONTH_ORDER: Record<string, number> = { Feb: 1, Mar: 2, Apr: 3, May: 4 };
+  const MONTH_ORDER: Record<string, number> = { Jan: 1, Feb: 2, Mar: 3, Apr: 4, May: 5, Jun: 6, Jul: 7, Aug: 8, Sep: 9, Oct: 10, Nov: 11, Dec: 12 };
   uniqueMonths.sort((a, b) => (MONTH_ORDER[a] ?? 99) - (MONTH_ORDER[b] ?? 99));
 
   // 3. DATA.org monthly aggregates
@@ -761,10 +772,10 @@ export async function getFullDashboardData(): Promise<any> {
 
     const diag = woCount > 0 ? Math.round((1 - mismatchBouncedCount / woCount) * 1000) / 10 : 0;
 
-    // Board parts in ghost/home swaps
-    const pcbaParts = mRows.filter((r) => r.isPCBA && (r.isGhost || r.isHomeBoard)).length;
-    const lcdParts = mRows.filter((r) => r.isLCD && (r.isGhost || r.isHomeBoard)).length;
-    const travelCount = mRows.filter((r) => r.isHome && r.isBounce).length;
+    // Board parts in ghost/home swaps, cross-ASP swaps, repeat bounces, and mismatch bounces
+    const pcbaParts = mRows.filter((r) => r.isPCBA && (r.isGhost || r.isHomeBoard || r.isCrossAsp || r.isBounce || r.isMismatchBounced)).length;
+    const lcdParts = mRows.filter((r) => r.isLCD && (r.isGhost || r.isHomeBoard || r.isCrossAsp || r.isBounce || r.isMismatchBounced)).length;
+    const travelCount = mRows.filter((r) => r.isHome && (r.isBounce || r.isGhost || r.isCrossAsp)).length;
 
     const leak = pcbaParts * 1800 + lcdParts * 1200 + travelCount * 750;
 
