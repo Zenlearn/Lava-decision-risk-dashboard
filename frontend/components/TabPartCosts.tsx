@@ -340,15 +340,25 @@ export default function TabPartCosts({
           </div>
 
           {/* Model Breakdown Table */}
-          <div style={{ overflowX: 'auto' }}>
+          <div style={{ overflowX: 'auto', maxWidth: '1050px' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
               <thead>
-                <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '12.5px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                  <th style={{ padding: '12px 14px', textAlign: 'left' }}>Phone / Device Model Name</th>
-                  <th style={{ padding: '12px 14px', textAlign: 'right' }}>Monthly Total Cost of Parts Replaced (₹)</th>
-                  <th style={{ padding: '12px 14px', textAlign: 'right' }}>Average Cost of Parts Replaced (₹)</th>
-                  <th style={{ padding: '12px 14px', textAlign: 'right' }}>Cost of Phone / Device (ASP ₹)</th>
-                  <th style={{ padding: '12px 14px', textAlign: 'right' }}>% of Avg Part Cost by Device Cost</th>
+                <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  <th style={{ padding: '10px 14px', textAlign: 'left', width: '26%', whiteSpace: 'normal', lineHeight: '1.3' }}>
+                    Phone / Device<br/>Model Name
+                  </th>
+                  <th style={{ padding: '10px 14px', textAlign: 'right', width: '19%', whiteSpace: 'normal', lineHeight: '1.3' }}>
+                    Monthly Total Cost<br/>of Parts Replaced (₹)
+                  </th>
+                  <th style={{ padding: '10px 14px', textAlign: 'right', width: '18%', whiteSpace: 'normal', lineHeight: '1.3' }}>
+                    Average Cost of<br/>Parts Replaced (₹)
+                  </th>
+                  <th style={{ padding: '10px 14px', textAlign: 'right', width: '18%', whiteSpace: 'normal', lineHeight: '1.3' }}>
+                    Cost of Phone /<br/>Device (ASP ₹)
+                  </th>
+                  <th style={{ padding: '10px 14px', textAlign: 'right', width: '19%', whiteSpace: 'normal', lineHeight: '1.3' }}>
+                    % of Avg Part Cost<br/>by Device Cost
+                  </th>
                 </tr>
               </thead>
               <tbody>
