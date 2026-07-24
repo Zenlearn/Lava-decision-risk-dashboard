@@ -697,7 +697,6 @@ export default function TabDashboard({
                   </tbody>
                 </table>
               </div>
-            </div>ble>
               </div>
             </div>
           </div>
