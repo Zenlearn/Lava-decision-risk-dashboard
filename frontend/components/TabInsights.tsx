@@ -51,7 +51,7 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
               <tr><th>ASP Name</th><th>Supervisor (ASM)</th><th>Doorstep Board Swaps Count</th></tr>
             </thead>
             <tbody>
-              {data.home?.top_asps.map((r: any, i: number) => (
+              {(data.home?.top_asps || []).map((r: any, i: number) => (
                 <tr key={i}>
                   <td><b>{r.asp}</b></td>
                   <td>{r.asm}</td>
@@ -73,7 +73,7 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
               <tr><th>Device Model</th><th>Incident Count</th></tr>
             </thead>
             <tbody>
-              {data.home?.top_models.map((r: any, i: number) => (
+              {(data.home?.top_models || []).map((r: any, i: number) => (
                 <tr key={i}><td>{r.model}</td><td>{r.n}</td></tr>
               ))}
             </tbody>
@@ -85,7 +85,7 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
               <tr><th>Action Recorded</th><th>Incident Count</th></tr>
             </thead>
             <tbody>
-              {data.home?.top_actions.map((r: any, i: number) => (
+              {(data.home?.top_actions || []).map((r: any, i: number) => (
                 <tr key={i}><td>{r.action}</td><td>{r.n}</td></tr>
               ))}
             </tbody>
@@ -243,7 +243,7 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
           {/* Dimension 5: Cancellation & Customer Friction Analysis */}
           <div className="card-mock" style={{ margin: 0 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px', borderBottom: '1px solid #f1f5f9', paddingBottom: '10px' }}>
-              <span style={{ background: '#ffe4e6', color: '#e11d48', width: '24px', height: '24px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight 800 }}>5</span>
+              <span style={{ background: '#ffe4e6', color: '#e11d48', width: '24px', height: '24px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 800 }}>5</span>
               <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 800, color: '#0f172a' }}>Cancellation &amp; Customer Friction</h3>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
