@@ -291,7 +291,7 @@ export default function TabDashboard({
           onClick={() => toggleSection('leakage')}
           style={{
             display: 'flex',
-            justify: 'space-between',
+            justifyContent: 'space-between',
             alignItems: 'center',
             padding: '16px 20px',
             background: '#f8fafc',
@@ -379,7 +379,7 @@ export default function TabDashboard({
           onClick={() => toggleSection('mttr')}
           style={{
             display: 'flex',
-            justify: 'space-between',
+            justifyContent: 'space-between',
             alignItems: 'center',
             padding: '16px 20px',
             background: '#f8fafc',
@@ -516,7 +516,7 @@ export default function TabDashboard({
           onClick={() => toggleSection('csat')}
           style={{
             display: 'flex',
-            justify: 'space-between',
+            justifyContent: 'space-between',
             alignItems: 'center',
             padding: '16px 20px',
             background: '#f8fafc',
@@ -633,7 +633,7 @@ export default function TabDashboard({
           onClick={() => toggleSection('trends')}
           style={{
             display: 'flex',
-            justify: 'space-between',
+            justifyContent: 'space-between',
             alignItems: 'center',
             padding: '16px 20px',
             background: '#f8fafc',
@@ -732,7 +732,7 @@ export default function TabDashboard({
           onClick={() => toggleSection('calc')}
           style={{
             display: 'flex',
-            justify: 'space-between',
+            justifyContent: 'space-between',
             alignItems: 'center',
             padding: '16px 20px',
             background: '#f8fafc',
