@@ -71,6 +71,14 @@ export default function TabDashboard({
     { key: 'gt3d', label: 'Repaired in > 3 Days', quantity: Math.round((currentKPI?.wo || 0) * 0.20), pct: 20.0 },
   ];
 
+  const currentCsatDist = currentKPI?.csatDistribution || [
+    { key: '5', label: 'Rating 5 (5-Star)', quantity: Math.round((currentKPI?.wo || 0) * 0.42), pct: 42.0 },
+    { key: '4', label: 'Rating 4 (4-Star)', quantity: Math.round((currentKPI?.wo || 0) * 0.38), pct: 38.0 },
+    { key: '3', label: 'Rating 3 (3-Star)', quantity: Math.round((currentKPI?.wo || 0) * 0.10), pct: 10.0 },
+    { key: '2', label: 'Rating 2 (2-Star)', quantity: Math.round((currentKPI?.wo || 0) * 0.06), pct: 6.0 },
+    { key: '1', label: 'Rating 1 (1-Star)', quantity: Math.round((currentKPI?.wo || 0) * 0.04), pct: 4.0 },
+  ];
+
   const prevTatDist = prevKPI?.tatDistribution || [];
 
   return (
@@ -352,6 +360,102 @@ export default function TabDashboard({
                     position="top"
                     content={({ x, y, width, index }: any) => {
                       const entry = currentTatDist[index];
+                      if (!entry) return null;
+                      const countStr = entry.quantity.toLocaleString('en-IN');
+                      const pctStr = `${entry.pct}%`;
+                      return (
+                        <text
+                          x={Number(x) + Number(width) / 2}
+                          y={Number(y) - 8}
+                          fill="#0f172a"
+                          textAnchor="middle"
+                          fontSize={13}
+                          fontWeight={800}
+                        >
+                          {countStr} ({pctStr})
+                        </text>
+                      );
+                    }}
+                  />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+      </div>
+
+      {/* Customer Satisfaction (C-SAT) Deep Dive Section */}
+      <div className="panel" style={{ marginTop: '20px', marginBottom: '24px', padding: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', borderBottom: '1px solid #e2e8f0', paddingBottom: '12px' }}>
+          <div>
+            <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: '#0f172a' }}>
+              Customer Satisfaction (C-SAT) Deep Dive ({currentKPI?.month || selectedMonth})
+            </h3>
+            <span style={{ fontSize: '12px', color: '#64748b' }}>
+              Frequency breakdown of post-service rating scores (Rating 1 to Rating 5) for {currentKPI?.month || selectedMonth}
+            </span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span style={{ background: '#fff1f2', color: '#E50046', border: '1px solid #fecdd3', padding: '4px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: 700 }}>
+              Placeholder Data (Detailed C-SAT Feed Pending)
+            </span>
+            <span style={{ background: '#f8fafc', color: '#0f172a', border: '1px solid #cbd5e1', padding: '6px 14px', borderRadius: '8px', fontSize: '13px', fontWeight: 800 }}>
+              C-SAT Score: {fmtPct(currentKPI?.csat || 0)}
+            </span>
+          </div>
+        </div>
+
+        {/* Top Summary Badges Row for Rating 5 to 1 */}
+        <div style={{ display: 'flex', gap: '12px', marginBottom: '20px', flexWrap: 'wrap' }}>
+          {currentCsatDist.map((item: any, idx: number) => {
+            const badgeColor = item.key === '5' ? '#10b981' : item.key === '4' ? '#34d399' : item.key === '3' ? '#f59e0b' : item.key === '2' ? '#f97316' : '#ef4444';
+            const bgTint = item.key === '5' || item.key === '4' ? '#ecfdf5' : item.key === '3' ? '#fffbeb' : '#fef2f2';
+            return (
+              <div key={idx} style={{
+                background: bgTint,
+                border: `1px solid ${badgeColor}40`,
+                borderRadius: '10px',
+                padding: '12px 14px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '2px',
+                flex: 1,
+                minWidth: '150px'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 700, color: '#475569' }}>
+                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: badgeColor, flexShrink: 0 }}></span>
+                  {item.label}
+                </div>
+                <div style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>
+                  {item.quantity.toLocaleString('en-IN')} <span style={{ fontSize: '12px', fontWeight: 700, color: '#64748b' }}>({item.pct}%)</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Full Width Rating Frequency Bar Chart */}
+        <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '20px 20px 10px 20px', height: '300px' }}>
+          <div style={{ fontSize: '12px', fontWeight: 700, color: '#475569', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            Rating Frequency Distribution (Rating 1 to Rating 5 Count &amp; % Share)
+          </div>
+          {isMounted && (
+            <ResponsiveContainer width="100%" height="82%">
+              <BarChart data={currentCsatDist} margin={{ top: 25, right: 30, left: 10, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                <XAxis dataKey="label" tickLine={false} style={{ fontSize: '12px', fontWeight: 700, fill: '#1e293b' }} />
+                <YAxis tickLine={false} style={{ fontSize: '11px', fill: '#64748b' }} />
+                <Tooltip formatter={(val: any) => [`${val.toLocaleString('en-IN')} survey responses`, 'Quantity']} />
+                <Bar dataKey="quantity" name="Responses" radius={[6, 6, 0, 0]}>
+                  {currentCsatDist.map((entry: any, index: number) => {
+                    const colors = ['#10b981', '#34d399', '#f59e0b', '#f97316', '#ef4444'];
+                    return <Cell key={`cell-csat-${index}`} fill={colors[index % colors.length]} />;
+                  })}
+                  <LabelList
+                    dataKey="quantity"
+                    position="top"
+                    content={({ x, y, width, index }: any) => {
+                      const entry = currentCsatDist[index];
                       if (!entry) return null;
                       const countStr = entry.quantity.toLocaleString('en-IN');
                       const pctStr = `${entry.pct}%`;
