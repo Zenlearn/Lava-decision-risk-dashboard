@@ -68,28 +68,31 @@ export async function importServiceAtHome(
       await prisma.serviceAtHomeAppointment.deleteMany({ where: { month: { in: fileMonths } } });
     }
 
-    const BATCH_SIZE = 500;
-    for (let start = 0; start < validRows.length; start += BATCH_SIZE) {
-      const batch = validRows.slice(start, start + BATCH_SIZE);
-      for (const { data, raw } of batch) {
-        const scId = await resolveServiceCentre(caches, data.busmName ?? null, data.asmName ?? null, data.aspCode ?? null, data.aspName ?? null);
-        const appointmentDate = toDate(data.appointmentDate);
-        const month = normalizeMonth(appointmentDate);
+    const recordsToInsert = [];
+    for (const { data, raw } of validRows) {
+      const scId = await resolveServiceCentre(caches, data.busmName ?? null, data.asmName ?? null, data.aspCode ?? null, data.aspName ?? null);
+      const appointmentDate = toDate(data.appointmentDate);
+      const month = normalizeMonth(appointmentDate);
 
-        await prisma.serviceAtHomeAppointment.create({
-          data: {
-            importId: monthlyImport.id,
-            serviceCentreId: scId,
-            appointmentId: String(data.appointmentId),
-            workOrderNumber: data.workOrderNumber != null ? String(data.workOrderNumber) : null,
-            appointmentStatus: data.appointmentStatus ?? null,
-            appointmentDate,
-            cancelReason: data.cancelReason ?? null,
-            month,
-            rawData: raw as object,
-          },
-        });
-      }
+      recordsToInsert.push({
+        importId: monthlyImport.id,
+        serviceCentreId: scId,
+        appointmentId: String(data.appointmentId),
+        workOrderNumber: data.workOrderNumber != null ? String(data.workOrderNumber) : null,
+        appointmentStatus: data.appointmentStatus ?? null,
+        appointmentDate,
+        cancelReason: data.cancelReason ?? null,
+        month,
+        rawData: raw as object,
+      });
+    }
+
+    const BATCH_SIZE = 2000;
+    for (let start = 0; start < recordsToInsert.length; start += BATCH_SIZE) {
+      const batch = recordsToInsert.slice(start, start + BATCH_SIZE);
+      await prisma.serviceAtHomeAppointment.createMany({
+        data: batch,
+      });
     }
 
     await prisma.monthlyImport.update({ where: { id: monthlyImport.id }, data: { status: 'COMPLETE', completedAt: new Date() } });

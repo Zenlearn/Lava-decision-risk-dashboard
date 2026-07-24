@@ -77,27 +77,30 @@ export async function persistComplianceEls(
       await prisma.complianceElsDoaRecord.deleteMany({ where: { month: { in: fileMonths } } });
     }
 
-    const BATCH_SIZE = 500;
-    for (let start = 0; start < validRows.length; start += BATCH_SIZE) {
-      const batch = validRows.slice(start, start + BATCH_SIZE);
-      for (const { data, raw } of batch) {
-        const scId = await resolveServiceCentre(caches, data.busmName ?? null, data.asmName ?? null, data.aspCode ?? null, data.aspName ?? null);
-        const month = normalizeMonth(data.month);
+    const recordsToInsert = [];
+    for (const { data, raw } of validRows) {
+      const scId = await resolveServiceCentre(caches, data.busmName ?? null, data.asmName ?? null, data.aspCode ?? null, data.aspName ?? null);
+      const month = normalizeMonth(data.month);
 
-        await prisma.complianceElsDoaRecord.create({
-          data: {
-            importId: monthlyImport.id,
-            serviceCentreId: scId,
-            workorderNumber: String(data.workorder),
-            complianceStatus: data.complianceStatus ?? 'Unknown',
-            nonComplianceReason: data.nonComplianceReason ?? null,
-            value: toNumber(data.value),
-            handsetCategory: data.handsetCategory ?? null,
-            month,
-            rawData: raw as object,
-          },
-        });
-      }
+      recordsToInsert.push({
+        importId: monthlyImport.id,
+        serviceCentreId: scId,
+        workorderNumber: String(data.workorder),
+        complianceStatus: data.complianceStatus ?? 'Unknown',
+        nonComplianceReason: data.nonComplianceReason ?? null,
+        value: toNumber(data.value),
+        handsetCategory: data.handsetCategory ?? null,
+        month,
+        rawData: raw as object,
+      });
+    }
+
+    const BATCH_SIZE = 2000;
+    for (let start = 0; start < recordsToInsert.length; start += BATCH_SIZE) {
+      const batch = recordsToInsert.slice(start, start + BATCH_SIZE);
+      await prisma.complianceElsDoaRecord.createMany({
+        data: batch,
+      });
     }
 
     await prisma.monthlyImport.update({ where: { id: monthlyImport.id }, data: { status: 'COMPLETE', completedAt: new Date() } });
