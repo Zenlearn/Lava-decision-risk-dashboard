@@ -16,10 +16,34 @@ interface TabInsightsProps {
 
 export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
   const [selectedMonth, setSelectedMonth] = useState<string>('all');
+  const [selectedModelMonth, setSelectedModelMonth] = useState<string>('all');
+  const [selectedBusm, setSelectedBusm] = useState<string>('all');
+  const [selectedAsm, setSelectedAsm] = useState<string>('all');
+  const [sortBy, setSortBy] = useState<'swapsCount' | 'sameDayPct' | 'sameDayCount'>('swapsCount');
 
   const activeHome = selectedMonth === 'all'
     ? data.home
     : (data.home?.by_month?.[selectedMonth] || data.home);
+
+  const activeModelHome = selectedModelMonth === 'all'
+    ? data.home
+    : (data.home?.by_month?.[selectedModelMonth] || data.home);
+
+  const allAspsList: any[] = activeHome?.top_asps || [];
+  const uniqueBusms = Array.from(new Set(allAspsList.map((r) => r.busm))).filter(Boolean).sort();
+  const uniqueAsms = Array.from(new Set(allAspsList.map((r) => r.asm))).filter(Boolean).sort();
+
+  let filteredAsps = allAspsList.filter((r) => {
+    if (selectedBusm !== 'all' && r.busm !== selectedBusm) return false;
+    if (selectedAsm !== 'all' && r.asm !== selectedAsm) return false;
+    return true;
+  });
+
+  filteredAsps.sort((a, b) => {
+    if (sortBy === 'sameDayPct') return (b.sameDayPct || 0) - (a.sameDayPct || 0);
+    if (sortBy === 'sameDayCount') return (b.sameDayCount || 0) - (a.sameDayCount || 0);
+    return (b.n || 0) - (a.n || 0);
+  });
 
   return (
     <div className="view-mock on" style={{ paddingBottom: '40px' }}>
@@ -31,32 +55,6 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
           <span style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>
             Doorstep Board Repair Integrity Panel
           </span>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '13px', fontWeight: 700, color: '#475569' }}>Select Month:</span>
-            <select
-              value={selectedMonth}
-              onChange={(e) => setSelectedMonth(e.target.value)}
-              style={{
-                padding: '6px 14px',
-                borderRadius: '8px',
-                border: '1px solid #cbd5e1',
-                background: '#ffffff',
-                color: '#0f172a',
-                fontSize: '13.5px',
-                fontWeight: 700,
-                cursor: 'pointer',
-                outline: 'none',
-                boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
-              }}
-            >
-              <option value="all">All Months (Apr – Jun 2026)</option>
-              <option value="Apr">April 2026</option>
-              <option value="May">May 2026</option>
-              <option value="Jun">June 2026</option>
-            </select>
-          </div>
         </div>
       </div>
 
@@ -79,85 +77,244 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
         </div>
       </div>
 
-      <div className="grid-mock k2" style={{ marginTop: '16px' }}>
-        <div className="card-mock">
-          <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', marginBottom: '12px' }}>
+      {/* TABLE 1: TOP ASPS WITH DOORSTEP BOARD-LEVEL SWAPS */}
+      <div className="card-mock" style={{ marginTop: '20px', padding: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '16px', borderBottom: '1px solid #f1f5f9', paddingBottom: '12px' }}>
+          <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
             Top ASPs with Doorstep Board-level Swaps
           </h3>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
-            <thead>
-              <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '12.5px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                <th style={{ padding: '10px 12px', textAlign: 'left' }}>ASP Code</th>
-                <th style={{ padding: '10px 12px', textAlign: 'left' }}>ASP Name</th>
-                <th style={{ padding: '10px 12px', textAlign: 'left' }}>Supervisor (ASM)</th>
-                <th style={{ padding: '10px 12px', textAlign: 'right' }}>Doorstep Board Swaps Count</th>
-              </tr>
-            </thead>
-            <tbody>
-              {(activeHome?.top_asps || []).map((r: any, i: number) => (
-                <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                  <td style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 600, color: '#475569', fontFamily: 'monospace' }}>{r.code || '-'}</td>
-                  <td style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 600, color: '#1e293b' }}>{r.asp}</td>
-                  <td style={{ padding: '10px 12px', textAlign: 'left', color: '#475569' }}>{r.asm}</td>
-                  <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>
-                    {(r.n || 0).toLocaleString('en-IN')}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <div className="note-mock" style={{ marginTop: '12px', fontSize: '12px', color: '#64748b' }}>
-            Pull files for these outlying service centers from the Evidence Logs first. Verify motherboard/display billings against parts-return batches.
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ fontSize: '12px', fontWeight: 700, color: '#475569', textTransform: 'uppercase' }}>Month:</span>
+              <select
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(e.target.value)}
+                style={{
+                  padding: '5px 10px',
+                  borderRadius: '6px',
+                  border: '1px solid #cbd5e1',
+                  background: '#ffffff',
+                  color: '#0f172a',
+                  fontSize: '12.5px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  outline: 'none',
+                }}
+              >
+                <option value="all">All Months (Apr – Jun 2026)</option>
+                <option value="Apr">April 2026</option>
+                <option value="May">May 2026</option>
+                <option value="Jun">June 2026</option>
+              </select>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ fontSize: '12px', fontWeight: 700, color: '#475569', textTransform: 'uppercase' }}>BUSM:</span>
+              <select
+                value={selectedBusm}
+                onChange={(e) => setSelectedBusm(e.target.value)}
+                style={{
+                  padding: '5px 10px',
+                  borderRadius: '6px',
+                  border: '1px solid #cbd5e1',
+                  background: '#ffffff',
+                  color: '#0f172a',
+                  fontSize: '12.5px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  outline: 'none',
+                }}
+              >
+                <option value="all">All BUSMs</option>
+                {uniqueBusms.map((b) => (
+                  <option key={b} value={b}>{b}</option>
+                ))}
+              </select>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ fontSize: '12px', fontWeight: 700, color: '#475569', textTransform: 'uppercase' }}>ASM:</span>
+              <select
+                value={selectedAsm}
+                onChange={(e) => setSelectedAsm(e.target.value)}
+                style={{
+                  padding: '5px 10px',
+                  borderRadius: '6px',
+                  border: '1px solid #cbd5e1',
+                  background: '#ffffff',
+                  color: '#0f172a',
+                  fontSize: '12.5px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  outline: 'none',
+                }}
+              >
+                <option value="all">All ASMs</option>
+                {uniqueAsms.map((a) => (
+                  <option key={a} value={a}>{a}</option>
+                ))}
+              </select>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ fontSize: '12px', fontWeight: 700, color: '#475569', textTransform: 'uppercase' }}>Sort By:</span>
+              <select
+                value={sortBy}
+                onChange={(e: any) => setSortBy(e.target.value)}
+                style={{
+                  padding: '5px 10px',
+                  borderRadius: '6px',
+                  border: '1.5px solid #2563eb',
+                  background: '#eff6ff',
+                  color: '#1d4ed8',
+                  fontSize: '12.5px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  outline: 'none',
+                }}
+              >
+                <option value="swapsCount">Highest Total Swaps</option>
+                <option value="sameDayPct">Highest % Same-Day Swaps</option>
+                <option value="sameDayCount">Highest Same-Day Count</option>
+              </select>
+            </div>
           </div>
         </div>
 
-        <div className="card-mock">
-          <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', marginBottom: '12px' }}>
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13.5px' }}>
+            <thead>
+              <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                <th style={{ padding: '10px 12px', textAlign: 'left' }}>ASP Code</th>
+                <th style={{ padding: '10px 12px', textAlign: 'left' }}>ASP Name</th>
+                <th style={{ padding: '10px 12px', textAlign: 'left' }}>Supervisor (ASM)</th>
+                <th style={{ padding: '10px 12px', textAlign: 'left' }}>BUSM</th>
+                <th style={{ padding: '10px 12px', textAlign: 'right' }}>Total Doorstep Board Swaps</th>
+                <th style={{ padding: '10px 12px', textAlign: 'right' }}>Same-Day Swaps (Creation = Delivery)</th>
+                <th style={{ padding: '10px 12px', textAlign: 'right' }}>% Same-Day / Total Swaps</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredAsps.length === 0 ? (
+                <tr>
+                  <td colSpan={7} style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>
+                    No ASPs found matching selected filters.
+                  </td>
+                </tr>
+              ) : (
+                filteredAsps.map((r: any, i: number) => (
+                  <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                    <td style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 600, color: '#475569', fontFamily: 'monospace' }}>{r.code || '-'}</td>
+                    <td style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 600, color: '#1e293b' }}>{r.asp}</td>
+                    <td style={{ padding: '10px 12px', textAlign: 'left', color: '#475569' }}>{r.asm || '-'}</td>
+                    <td style={{ padding: '10px 12px', textAlign: 'left', color: '#475569' }}>{r.busm || '-'}</td>
+                    <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 800, color: '#0f172a' }}>
+                      {(r.n || 0).toLocaleString('en-IN')}
+                    </td>
+                    <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 700, color: '#2563eb' }}>
+                      {(r.sameDayCount || 0).toLocaleString('en-IN')}
+                    </td>
+                    <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 800 }}>
+                      <span style={{
+                        padding: '3px 8px',
+                        borderRadius: '6px',
+                        background: (r.sameDayPct || 0) > 30 ? '#fef2f2' : '#f0fdf4',
+                        color: (r.sameDayPct || 0) > 30 ? '#dc2626' : '#16a34a',
+                        border: `1px solid ${(r.sameDayPct || 0) > 30 ? '#fecaca' : '#bbf7d0'}`,
+                      }}>
+                        {(r.sameDayPct ?? 0).toFixed(1)}%
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+        <div className="note-mock" style={{ marginTop: '12px', fontSize: '12px', color: '#64748b' }}>
+          Pull files for these outlying service centers from the Evidence Logs first. Verify motherboard/display billings against parts-return batches. Same-Day Doorstep Swaps represent jobs where Creation Date and Delivery Date are identical.
+        </div>
+      </div>
+
+      {/* TABLE 2: INSIGHTS: AFFECTED MODEL SERIES AND ACTION CODES (MOVED BELOW TABLE 1) */}
+      <div className="card-mock" style={{ marginTop: '20px', padding: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '16px', borderBottom: '1px solid #f1f5f9', paddingBottom: '12px' }}>
+          <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
             Insights: Affected Model Series and Action Codes
           </h3>
-          <p className="note-mock" style={{ fontSize: '12px', fontWeight: 700, color: '#475569', textTransform: 'uppercase', marginBottom: '8px' }}>
-            Concentration by device model
-          </p>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px', marginBottom: '16px' }}>
-            <thead>
-              <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '12.5px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                <th style={{ padding: '10px 12px', textAlign: 'left' }}>Device Model</th>
-                <th style={{ padding: '10px 12px', textAlign: 'right' }}>Incident Count</th>
-              </tr>
-            </thead>
-            <tbody>
-              {(activeHome?.top_models || []).map((r: any, i: number) => (
-                <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                  <td style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 600, color: '#1e293b' }}>{r.model}</td>
-                  <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>
-                    {(r.n || 0).toLocaleString('en-IN')}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '12px', fontWeight: 700, color: '#475569', textTransform: 'uppercase' }}>Month:</span>
+            <select
+              value={selectedModelMonth}
+              onChange={(e) => setSelectedModelMonth(e.target.value)}
+              style={{
+                padding: '5px 10px',
+                borderRadius: '6px',
+                border: '1px solid #cbd5e1',
+                background: '#ffffff',
+                color: '#0f172a',
+                fontSize: '12.5px',
+                fontWeight: 700,
+                cursor: 'pointer',
+                outline: 'none',
+              }}
+            >
+              <option value="all">All Months (Apr – Jun 2026)</option>
+              <option value="Apr">April 2026</option>
+              <option value="May">May 2026</option>
+              <option value="Jun">June 2026</option>
+            </select>
+          </div>
+        </div>
 
-          <p className="note-mock" style={{ fontSize: '12px', fontWeight: 700, color: '#475569', textTransform: 'uppercase', marginBottom: '8px' }}>
-            Concentration by action codes
-          </p>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
-            <thead>
-              <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '12.5px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                <th style={{ padding: '10px 12px', textAlign: 'left' }}>Action Recorded</th>
-                <th style={{ padding: '10px 12px', textAlign: 'right' }}>Incident Count</th>
-              </tr>
-            </thead>
-            <tbody>
-              {(activeHome?.top_actions || []).map((r: any, i: number) => (
-                <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                  <td style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 600, color: '#1e293b' }}>{r.action}</td>
-                  <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>
-                    {(r.n || 0).toLocaleString('en-IN')}
-                  </td>
+        <div className="grid-mock k2" style={{ gap: '24px' }}>
+          <div>
+            <p className="note-mock" style={{ fontSize: '12px', fontWeight: 700, color: '#475569', textTransform: 'uppercase', marginBottom: '8px' }}>
+              Concentration by device model
+            </p>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13.5px' }}>
+              <thead>
+                <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  <th style={{ padding: '10px 12px', textAlign: 'left' }}>Device Model</th>
+                  <th style={{ padding: '10px 12px', textAlign: 'right' }}>Incident Count</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {(activeModelHome?.top_models || []).map((r: any, i: number) => (
+                  <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                    <td style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 600, color: '#1e293b' }}>{r.model}</td>
+                    <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>
+                      {(r.n || 0).toLocaleString('en-IN')}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <p className="note-mock" style={{ fontSize: '12px', fontWeight: 700, color: '#475569', textTransform: 'uppercase', marginBottom: '8px' }}>
+              Concentration by action codes
+            </p>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13.5px' }}>
+              <thead>
+                <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  <th style={{ padding: '10px 12px', textAlign: 'left' }}>Action Recorded</th>
+                  <th style={{ padding: '10px 12px', textAlign: 'right' }}>Incident Count</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(activeModelHome?.top_actions || []).map((r: any, i: number) => (
+                  <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                    <td style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 600, color: '#1e293b' }}>{r.action}</td>
+                    <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>
+                      {(r.n || 0).toLocaleString('en-IN')}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 

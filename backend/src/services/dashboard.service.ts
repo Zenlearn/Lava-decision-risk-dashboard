@@ -1368,30 +1368,33 @@ export async function getFullDashboardData(filters?: {
   const homeRepeatCust = Array.from(customerHomeVisits.values()).filter((c) => c >= 3).length;
 
   // Top ASPs for board-at-home
-  const aspHomeCounts = new Map<string, { code: string; asp: string; asm: string; n: number }>();
+  const aspHomeCounts = new Map<string, { code: string; asp: string; asm: string; busm: string; n: number; sameDayCount: number; sameDayPct: number }>();
   processedRows.filter((r) => r.isHomeBoard).forEach((r) => {
-    const countObj = aspHomeCounts.get(r.asp) || { code: r.aspCode || '', asp: r.asp, asm: r.asm, n: 0 };
+    const isSameDay = r.tat === 0 || (Boolean(r.created) && r.created === r.delivered);
+    const countObj = aspHomeCounts.get(r.asp) || { code: r.aspCode || '', asp: r.asp, asm: r.asm, busm: r.busm, n: 0, sameDayCount: 0, sameDayPct: 0 };
     countObj.n++;
+    if (isSameDay) countObj.sameDayCount++;
+    countObj.sameDayPct = countObj.n > 0 ? Number(((countObj.sameDayCount / countObj.n) * 100).toFixed(1)) : 0;
     aspHomeCounts.set(r.asp, countObj);
   });
-  const topAsps = Array.from(aspHomeCounts.values()).sort((a, b) => b.n - a.n).slice(0, 10);
+  const topAsps = Array.from(aspHomeCounts.values()).sort((a, b) => b.n - a.n);
 
   // Top models for board-at-home
   const modelHomeCounts = new Map<string, number>();
   processedRows.filter((r) => r.isHomeBoard).forEach((r) => {
     modelHomeCounts.set(r.model, (modelHomeCounts.get(r.model) || 0) + 1);
   });
-  const topModels = Array.from(modelHomeCounts.entries()).map(([model, n]) => ({ model, n })).sort((a, b) => b.n - a.n).slice(0, 5);
+  const topModels = Array.from(modelHomeCounts.entries()).map(([model, n]) => ({ model, n })).sort((a, b) => b.n - a.n).slice(0, 10);
 
   // Top actions for board-at-home
   const actionHomeCounts = new Map<string, number>();
   processedRows.filter((r) => r.isHomeBoard).forEach((r) => {
     actionHomeCounts.set(r.action, (actionHomeCounts.get(r.action) || 0) + 1);
   });
-  const topActions = Array.from(actionHomeCounts.entries()).map(([action, n]) => ({ action, n })).sort((a, b) => b.n - a.n).slice(0, 5);
+  const topActions = Array.from(actionHomeCounts.entries()).map(([action, n]) => ({ action, n })).sort((a, b) => b.n - a.n).slice(0, 10);
 
   // Monthly breakdown for Doorstep Board-at-Home
-  const homeByMonth: Record<string, { board_at_home: number; pct_of_home: number; pcba_at_home: number; lcd_at_home: number; top_asps: { code: string; asp: string; asm: string; n: number }[]; top_models: { model: string; n: number }[]; top_actions: { action: string; n: number }[] }> = {};
+  const homeByMonth: Record<string, { board_at_home: number; pct_of_home: number; pcba_at_home: number; lcd_at_home: number; top_asps: { code: string; asp: string; asm: string; busm: string; n: number; sameDayCount: number; sameDayPct: number }[]; top_models: { model: string; n: number }[]; top_actions: { action: string; n: number }[] }> = {};
   
   const allHomeMonths = Array.from(new Set(processedRows.map((r) => r.month))).filter(Boolean);
   allHomeMonths.forEach((m) => {
@@ -1403,13 +1406,16 @@ export async function getFullDashboardData(filters?: {
     const mPcba = mHomeBoardRows.filter((r) => r.isPCBA).length;
     const mLcd = mHomeBoardRows.filter((r) => r.isLCD).length;
 
-    const mAspMap = new Map<string, { code: string; asp: string; asm: string; n: number }>();
+    const mAspMap = new Map<string, { code: string; asp: string; asm: string; busm: string; n: number; sameDayCount: number; sameDayPct: number }>();
     mHomeBoardRows.forEach((r) => {
-      const c = mAspMap.get(r.asp) || { code: r.aspCode || '', asp: r.asp, asm: r.asm, n: 0 };
+      const isSameDay = r.tat === 0 || (Boolean(r.created) && r.created === r.delivered);
+      const c = mAspMap.get(r.asp) || { code: r.aspCode || '', asp: r.asp, asm: r.asm, busm: r.busm, n: 0, sameDayCount: 0, sameDayPct: 0 };
       c.n++;
+      if (isSameDay) c.sameDayCount++;
+      c.sameDayPct = c.n > 0 ? Number(((c.sameDayCount / c.n) * 100).toFixed(1)) : 0;
       mAspMap.set(r.asp, c);
     });
-    const mTopAsps = Array.from(mAspMap.values()).sort((a, b) => b.n - a.n).slice(0, 10);
+    const mTopAsps = Array.from(mAspMap.values()).sort((a, b) => b.n - a.n);
 
     const mModelMap = new Map<string, number>();
     mHomeBoardRows.forEach((r) => mModelMap.set(r.model, (mModelMap.get(r.model) || 0) + 1));
