@@ -639,11 +639,7 @@ export default function TabDashboard({
                       />
                     </Bar>
                   </BarChart>
-                </ResponsiveContainer>
-              )}
-            </div>
-
-            {/* Channel Performance Breakdown Table (WhatsApp vs IVR) */}
+                </ResponsiveContaine            {/* Channel Performance Breakdown Table (WhatsApp vs IVR) */}
             <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '20px' }}>
               <div style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a', marginBottom: '4px' }}>
                 NPS Survey Feedback Channel Performance (WhatsApp vs IVR)
@@ -657,48 +653,50 @@ export default function TabDashboard({
                   <thead>
                     <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '12.5px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                       <th style={{ padding: '12px 14px', textAlign: 'left' }}>Survey Channel</th>
-                      <th style={{ padding: '12px 14px', textAlign: 'center' }}>Surveys Sent</th>
-                      <th style={{ padding: '12px 14px', textAlign: 'center' }}>Responded Count</th>
-                      <th style={{ padding: '12px 14px', textAlign: 'center' }}>Response Rate</th>
-                      <th style={{ padding: '12px 14px', textAlign: 'center' }}>Promoters &amp; Satisfied (4-5★)</th>
-                      <th style={{ padding: '12px 14px', textAlign: 'center' }}>Detractors (1-2★)</th>
-                      <th style={{ padding: '12px 14px', textAlign: 'center' }}>Net Promoter Score</th>
+                      <th style={{ padding: '12px 14px', textAlign: 'right' }}>Surveys Sent</th>
+                      <th style={{ padding: '12px 14px', textAlign: 'right' }}>Responded Count</th>
+                      <th style={{ padding: '12px 14px', textAlign: 'right' }}>Response Rate</th>
+                      <th style={{ padding: '12px 14px', textAlign: 'right' }}>Promoters &amp; Satisfied (4-5★)</th>
+                      <th style={{ padding: '12px 14px', textAlign: 'right' }}>Detractors (1-2★)</th>
+                      <th style={{ padding: '12px 14px', textAlign: 'right' }}>Net Promoter Score</th>
                       <th style={{ padding: '12px 14px', textAlign: 'right' }}>Channel CSAT %</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
-                      <td style={{ padding: '12px 14px', fontWeight: 700, color: '#2563eb' }}>WhatsApp Channel</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'center', fontWeight: 600 }}>6,339</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'center', fontWeight: 600 }}>2,690</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'center', fontWeight: 600, color: '#475569' }}>42.4%</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'center', fontWeight: 700, color: '#16a34a' }}>2,208 (82.1%)</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'center', fontWeight: 700, color: '#dc2626' }}>292 (10.9%)</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'center', fontWeight: 800, color: '#2563eb' }}>+61.3</td>
+                      <td style={{ padding: '12px 14px', textAlign: 'left', fontWeight: 700, color: '#2563eb' }}>WhatsApp Channel</td>
+                      <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 600 }}>6,339</td>
+                      <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 600 }}>2,690</td>
+                      <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 600, color: '#475569' }}>42.4%</td>
+                      <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 700, color: '#16a34a' }}>2,208 (82.1%)</td>
+                      <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>292 (10.9%)</td>
+                      <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 800, color: '#2563eb' }}>+61.3</td>
                       <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 800, color: '#16a34a' }}>82.1%</td>
                     </tr>
                     <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
-                      <td style={{ padding: '12px 14px', fontWeight: 700, color: '#7e22ce' }}>IVR Call Channel</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'center', fontWeight: 600 }}>4,231</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'center', fontWeight: 600 }}>1,017</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'center', fontWeight: 600, color: '#475569' }}>24.0%</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'center', fontWeight: 700, color: '#16a34a' }}>882 (86.7%)</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'center', fontWeight: 700, color: '#dc2626' }}>80 (7.9%)</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'center', fontWeight: 800, color: '#2563eb' }}>+71.3</td>
+                      <td style={{ padding: '12px 14px', textAlign: 'left', fontWeight: 700, color: '#7e22ce' }}>IVR Call Channel</td>
+                      <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 600 }}>4,231</td>
+                      <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 600 }}>1,017</td>
+                      <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 600, color: '#475569' }}>24.0%</td>
+                      <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 700, color: '#16a34a' }}>882 (86.7%)</td>
+                      <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>80 (7.9%)</td>
+                      <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight 800, color: '#2563eb' }}>+71.3</td>
                       <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 800, color: '#16a34a' }}>86.7%</td>
                     </tr>
                     <tr style={{ borderTop: '2px solid #cbd5e1', background: '#f8fafc', fontWeight: 800 }}>
                       <td style={{ padding: '12px 14px', textAlign: 'left', color: '#0f172a' }}>Total / National Overall</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'center', color: '#0f172a' }}>10,570</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'center', color: '#0f172a' }}>3,707</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'center', color: '#0f172a' }}>35.1%</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'center', color: '#16a34a' }}>3,090 (83.4%)</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'center', color: '#dc2626' }}>372 (10.0%)</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'center', color: '#2563eb' }}>+63.9</td>
+                      <td style={{ padding: '12px 14px', textAlign: 'right', color: '#0f172a' }}>10,570</td>
+                      <td style={{ padding: '12px 14px', textAlign: 'right', color: '#0f172a' }}>3,707</td>
+                      <td style={{ padding: '12px 14px', textAlign: 'right', color: '#0f172a' }}>35.1%</td>
+                      <td style={{ padding: '12px 14px', textAlign: 'right', color: '#16a34a' }}>3,090 (83.4%)</td>
+                      <td style={{ padding: '12px 14px', textAlign: 'right', color: '#0f172a' }}>372 (10.0%)</td>
+                      <td style={{ padding: '12px 14px', textAlign: 'right', color: '#2563eb' }}>+63.9</td>
                       <td style={{ padding: '12px 14px', textAlign: 'right', color: '#16a34a', fontSize: '15px' }}>83.4%</td>
                     </tr>
                   </tbody>
                 </table>
+              </div>
+            </div>ble>
               </div>
             </div>
           </div>
