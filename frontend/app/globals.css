@@ -1186,15 +1186,18 @@ body {
 .mockup-dashboard table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 12.5px;
+  font-size: 14px;
 }
 
 .mockup-dashboard th {
   background: var(--deep);
   color: #fff;
-  padding: 9px 11px;
+  padding: 11px 14px;
   text-align: left;
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   position: sticky;
   top: 0;
   cursor: pointer;
@@ -1206,7 +1209,8 @@ body {
 }
 
 .mockup-dashboard td {
-  padding: 8px 11px;
+  padding: 11px 14px;
+  font-size: 14px;
   border-bottom: 1px solid var(--line);
 }
 
