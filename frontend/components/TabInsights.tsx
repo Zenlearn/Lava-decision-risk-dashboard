@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 interface TabInsightsProps {
   data: any;
@@ -15,6 +15,12 @@ interface TabInsightsProps {
 }
 
 export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
+  const [selectedMonth, setSelectedMonth] = useState<string>('all');
+
+  const activeHome = selectedMonth === 'all'
+    ? data.home
+    : (data.home?.by_month?.[selectedMonth] || data.home);
+
   return (
     <div className="view-mock on" style={{ paddingBottom: '40px' }}>
       
@@ -26,29 +32,49 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
             Doorstep Board Repair Integrity Panel
           </span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ background: '#f1f5f9', color: '#1e293b', border: '1px solid #cbd5e1', padding: '6px 14px', borderRadius: '8px', fontSize: '13px', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#2563eb' }}></span>
-            Data Period: April – June 2026 (Apr, May, Jun 2026)
-          </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '13px', fontWeight: 700, color: '#475569' }}>Select Month:</span>
+            <select
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value)}
+              style={{
+                padding: '6px 14px',
+                borderRadius: '8px',
+                border: '1px solid #cbd5e1',
+                background: '#ffffff',
+                color: '#0f172a',
+                fontSize: '13.5px',
+                fontWeight: 700,
+                cursor: 'pointer',
+                outline: 'none',
+                boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
+              }}
+            >
+              <option value="all">All Months (Apr – Jun 2026)</option>
+              <option value="Apr">April 2026</option>
+              <option value="May">May 2026</option>
+              <option value="Jun">June 2026</option>
+            </select>
+          </div>
         </div>
       </div>
 
       <div className="grid-mock k4">
-        <div className="card-mock kpi-mock warnC">
-          <div className="big">{(data.home?.board_at_home ?? 0).toLocaleString()}</div>
-          <div className="sub">board replacements logged at home ({data.home?.pct_of_home}% of home visits)</div>
+        <div className="card-mock kpi-mock" style={{ borderLeft: '4px solid #f59e0b' }}>
+          <div className="big" style={{ color: '#0f172a', fontWeight: 800 }}>{(activeHome?.board_at_home ?? 0).toLocaleString()}</div>
+          <div className="sub">board replacements logged at home ({activeHome?.pct_of_home}% of home visits)</div>
         </div>
-        <div className="card-mock kpi-mock warnC">
-          <div className="big">{(data.home?.pcba_at_home ?? 0).toLocaleString()}</div>
+        <div className="card-mock kpi-mock" style={{ borderLeft: '4px solid #f59e0b' }}>
+          <div className="big" style={{ color: '#0f172a', fontWeight: 800 }}>{(activeHome?.pcba_at_home ?? 0).toLocaleString()}</div>
           <div className="sub">of which motherboard swaps (PCBA)</div>
         </div>
-        <div className="card-mock kpi-mock warnC">
-          <div className="big">{(data.home?.lcd_at_home ?? 0).toLocaleString()}</div>
+        <div className="card-mock kpi-mock" style={{ borderLeft: '4px solid #f59e0b' }}>
+          <div className="big" style={{ color: '#0f172a', fontWeight: 800 }}>{(activeHome?.lcd_at_home ?? 0).toLocaleString()}</div>
           <div className="sub">of which display screens (LCD)</div>
         </div>
-        <div className="card-mock kpi-mock warnC">
-          <div className="big">{fmtINR((data.home?.pcba_at_home || 0) * costs.pcba + (data.home?.lcd_at_home || 0) * costs.lcd)}</div>
+        <div className="card-mock kpi-mock" style={{ borderLeft: '4px solid #f59e0b' }}>
+          <div className="big" style={{ color: '#0f172a', fontWeight: 800 }}>{fmtINR((activeHome?.pcba_at_home || 0) * costs.pcba + (activeHome?.lcd_at_home || 0) * costs.lcd)}</div>
           <div className="sub">assumed doorstep board swap exposure</div>
         </div>
       </div>
@@ -67,7 +93,7 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
               </tr>
             </thead>
             <tbody>
-              {(data.home?.top_asps || []).map((r: any, i: number) => (
+              {(activeHome?.top_asps || []).map((r: any, i: number) => (
                 <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
                   <td style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 600, color: '#1e293b' }}>{r.asp}</td>
                   <td style={{ padding: '10px 12px', textAlign: 'left', color: '#475569' }}>{r.asm}</td>
@@ -98,7 +124,7 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
               </tr>
             </thead>
             <tbody>
-              {(data.home?.top_models || []).map((r: any, i: number) => (
+              {(activeHome?.top_models || []).map((r: any, i: number) => (
                 <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
                   <td style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 600, color: '#1e293b' }}>{r.model}</td>
                   <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>
@@ -120,7 +146,7 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
               </tr>
             </thead>
             <tbody>
-              {(data.home?.top_actions || []).map((r: any, i: number) => (
+              {(activeHome?.top_actions || []).map((r: any, i: number) => (
                 <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
                   <td style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 600, color: '#1e293b' }}>{r.action}</td>
                   <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>

@@ -1370,6 +1370,46 @@ export async function getFullDashboardData(filters?: {
   });
   const topActions = Array.from(actionHomeCounts.entries()).map(([action, n]) => ({ action, n })).sort((a, b) => b.n - a.n).slice(0, 5);
 
+  // Monthly breakdown for Doorstep Board-at-Home
+  const homeByMonth: Record<string, { board_at_home: number; pct_of_home: number; pcba_at_home: number; lcd_at_home: number; top_asps: { asp: string; asm: string; n: number }[]; top_models: { model: string; n: number }[]; top_actions: { action: string; n: number }[] }> = {};
+  
+  const allHomeMonths = Array.from(new Set(processedRows.map((r) => r.month))).filter(Boolean);
+  allHomeMonths.forEach((m) => {
+    const monthRows = processedRows.filter((r) => r.month === m);
+    const mHomeTotal = monthRows.filter((r) => r.isHome).length;
+    const mHomeBoardRows = monthRows.filter((r) => r.isHomeBoard);
+    const mBoardTotal = mHomeBoardRows.length;
+    const mPct = mHomeTotal > 0 ? Number(((mBoardTotal / mHomeTotal) * 100).toFixed(1)) : 0;
+    const mPcba = mHomeBoardRows.filter((r) => r.isPCBA).length;
+    const mLcd = mHomeBoardRows.filter((r) => r.isLCD).length;
+
+    const mAspMap = new Map<string, { asp: string; asm: string; n: number }>();
+    mHomeBoardRows.forEach((r) => {
+      const c = mAspMap.get(r.asp) || { asp: r.asp, asm: r.asm, n: 0 };
+      c.n++;
+      mAspMap.set(r.asp, c);
+    });
+    const mTopAsps = Array.from(mAspMap.values()).sort((a, b) => b.n - a.n).slice(0, 10);
+
+    const mModelMap = new Map<string, number>();
+    mHomeBoardRows.forEach((r) => mModelMap.set(r.model, (mModelMap.get(r.model) || 0) + 1));
+    const mTopModels = Array.from(mModelMap.entries()).map(([model, n]) => ({ model, n })).sort((a, b) => b.n - a.n).slice(0, 5);
+
+    const mActionMap = new Map<string, number>();
+    mHomeBoardRows.forEach((r) => mActionMap.set(r.action, (mActionMap.get(r.action) || 0) + 1));
+    const mTopActions = Array.from(mActionMap.entries()).map(([action, n]) => ({ action, n })).sort((a, b) => b.n - a.n).slice(0, 5);
+
+    homeByMonth[m] = {
+      board_at_home: mBoardTotal,
+      pct_of_home: mPct,
+      pcba_at_home: mPcba,
+      lcd_at_home: mLcd,
+      top_asps: mTopAsps,
+      top_models: mTopModels,
+      top_actions: mTopActions,
+    };
+  });
+
   const home = {
     board_at_home: homeBoardTotal,
     pct_of_home: pctOfHome,
@@ -1379,6 +1419,7 @@ export async function getFullDashboardData(filters?: {
     top_asps: topAsps,
     top_models: topModels,
     top_actions: topActions,
+    by_month: homeByMonth,
   };
 
   return {
