@@ -87,6 +87,7 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
             <thead>
               <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '12.5px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                <th style={{ padding: '10px 12px', textAlign: 'left' }}>ASP Code</th>
                 <th style={{ padding: '10px 12px', textAlign: 'left' }}>ASP Name</th>
                 <th style={{ padding: '10px 12px', textAlign: 'left' }}>Supervisor (ASM)</th>
                 <th style={{ padding: '10px 12px', textAlign: 'right' }}>Doorstep Board Swaps Count</th>
@@ -95,6 +96,7 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
             <tbody>
               {(activeHome?.top_asps || []).map((r: any, i: number) => (
                 <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                  <td style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 600, color: '#475569', fontFamily: 'monospace' }}>{r.code || '-'}</td>
                   <td style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 600, color: '#1e293b' }}>{r.asp}</td>
                   <td style={{ padding: '10px 12px', textAlign: 'left', color: '#475569' }}>{r.asm}</td>
                   <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>
