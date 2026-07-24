@@ -102,19 +102,6 @@ export default function TabEvidence({
             style={{ minWidth: '180px' }} 
           />
         </div>
-
-        <div style={{ marginLeft: 'auto' }}>
-          <button 
-            onClick={handleSlackPush} 
-            className="btn-primary" 
-            style={{ background: webhookStatus === 'success' ? 'var(--good)' : 'var(--cobalt)' }}
-            disabled={webhookStatus === 'sending'}
-          >
-            {webhookStatus === 'idle' && 'Push Outliers to Slack'}
-            {webhookStatus === 'sending' && 'Pushing...'}
-            {webhookStatus === 'success' && 'Exceptions Pushed! ✅'}
-          </button>
-        </div>
       </div>
 
       {/* Evidence Logs Table */}
