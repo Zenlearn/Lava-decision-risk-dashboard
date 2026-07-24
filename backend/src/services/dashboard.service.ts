@@ -897,36 +897,54 @@ export async function getFullDashboardData(filters?: {
 
     const diag = woCount > 0 ? Math.round((1 - mismatchBouncedCount / woCount) * 1000) / 10 : 0;
 
-    const calcCat = (catKey: string, filterFn: (r: any) => boolean, fallbackPrice: number) => {
-      const catRows = mRows.filter((r) => r.leakageValue > 0 && filterFn(r));
-      const qty = catRows.length;
-      let cost = Math.round(catRows.reduce((sum, r) => sum + (r.partLeakageVal || 0), 0));
-      if (qty > 0 && cost === 0) {
-        cost = qty * fallbackPrice;
-      }
-      return { qty, cost };
+    const isYesVal = (val: any): boolean => {
+      if (val === null || val === undefined) return false;
+      const str = String(val).trim().toLowerCase();
+      return str === 'yes' || str === 'y' || str === '1' || str === 'true';
     };
 
-    const pcbaData = calcCat('pcba', (r) => r.partCategory === 'pcba' || r.isPCBA, 1800);
-    const lcdData = calcCat('lcd', (r) => r.partCategory === 'lcd' || r.isLCD, 1200);
-    const batteryData = calcCat('battery', (r) => r.partCategory === 'battery' || r.isBattery, 600);
-    const cameraData = calcCat('camera', (r) => r.partCategory === 'camera' || r.isCamera, 450);
-    const speakerData = calcCat('speaker', (r) => r.partCategory === 'speaker' || r.isSpeaker, 150);
-    const chargerData = calcCat('charger', (r) => r.partCategory === 'charger' || r.isCharger, 250);
-    const othersData = calcCat('others', (r) => r.partCategory === 'others' && !r.isPCBA && !r.isLCD && !r.isBattery && !r.isCamera && !r.isSpeaker && !r.isCharger, 300);
+    const pcbaRows = mRows.filter((r) => r.leakageValue > 0 && isYesVal(r.rawData[FIELD_MAP.pcbaConsumption] || r.rawData['PCBA Consumption']));
+    const tpLcdRows = mRows.filter((r) => r.leakageValue > 0 && isYesVal(r.rawData[FIELD_MAP.tpLcdConsumption] || r.rawData['TP/LCD Consumption']));
+    const batteryRows = mRows.filter((r) => r.leakageValue > 0 && isYesVal(r.rawData[FIELD_MAP.batteryConsumption] || r.rawData['Battery Consumption']));
+    const subPcbaRows = mRows.filter((r) => r.leakageValue > 0 && isYesVal(r.rawData[FIELD_MAP.subPcbaConsumption] || r.rawData['Sub PCBA Consumprtion'] || r.rawData['Sub PCBA Consumption']));
+    const accRows = mRows.filter((r) => r.leakageValue > 0 && isYesVal(r.rawData[FIELD_MAP.accessoriesConsumption] || r.rawData['Accessories Consumption']));
+    const othersRows = mRows.filter((r) => r.leakageValue > 0 && isYesVal(r.rawData[FIELD_MAP.othersConsumption] || r.rawData['Others Consumption']));
+
+    const parseNum = (val: any): number => {
+      if (val === null || val === undefined) return 0;
+      if (typeof val === 'number') return isNaN(val) ? 0 : val;
+      const cleaned = String(val).replace(/[^0-9.-]/g, '');
+      const num = parseFloat(cleaned);
+      return isNaN(num) ? 0 : num;
+    };
+
+    const calcSumCost = (rows: any[], valFieldKey: string, fallbackPrice: number) => {
+      const q = rows.length;
+      let c = Math.round(rows.reduce((sum, r) => {
+        const p = parseNum(r.rawData[valFieldKey]);
+        return sum + (p > 0 ? p : fallbackPrice);
+      }, 0));
+      return { qty: q, cost: c };
+    };
+
+    const pcbaData = calcSumCost(pcbaRows, FIELD_MAP.pcbaValue, 1800);
+    const tpLcdData = calcSumCost(tpLcdRows, FIELD_MAP.tpLcdValue, 1200);
+    const batteryData = calcSumCost(batteryRows, FIELD_MAP.batteryValue, 600);
+    const subPcbaData = calcSumCost(subPcbaRows, FIELD_MAP.subPcbaValue, 400);
+    const accData = calcSumCost(accRows, FIELD_MAP.accessoriesValue, 250);
+    const othersData = calcSumCost(othersRows, FIELD_MAP.othersValue, 300);
 
     const travelRows = mRows.filter((r) => r.leakageValue > 0 && r.travelVal > 0);
     const travelQty = travelRows.length;
     const travelCost = travelQty * 500;
 
     const breakdown = [
-      { key: 'pcba', label: 'Motherboard (PCBA)', quantity: pcbaData.qty, cost: pcbaData.cost },
-      { key: 'lcd', label: 'Display Screen (LCD)', quantity: lcdData.qty, cost: lcdData.cost },
-      { key: 'battery', label: 'Battery Unit', quantity: batteryData.qty, cost: batteryData.cost },
-      { key: 'camera', label: 'Camera Module', quantity: cameraData.qty, cost: cameraData.cost },
-      { key: 'speaker', label: 'Speaker / Audio Assembly', quantity: speakerData.qty, cost: speakerData.cost },
-      { key: 'charger', label: 'Charger / Power Adapter', quantity: chargerData.qty, cost: chargerData.cost },
-      { key: 'others', label: 'Other Components & Accessories', quantity: othersData.qty, cost: othersData.cost },
+      { key: 'pcba', label: 'PCBA', quantity: pcbaData.qty, cost: pcbaData.cost },
+      { key: 'lcd', label: 'TP/LCD', quantity: tpLcdData.qty, cost: tpLcdData.cost },
+      { key: 'battery', label: 'Battery', quantity: batteryData.qty, cost: batteryData.cost },
+      { key: 'sub_pcba', label: 'Sub PCBA', quantity: subPcbaData.qty, cost: subPcbaData.cost },
+      { key: 'accessories', label: 'Accessories', quantity: accData.qty, cost: accData.cost },
+      { key: 'others', label: 'Others', quantity: othersData.qty, cost: othersData.cost },
       { key: 'travel', label: 'Technician Home Travel Fee', quantity: travelQty, cost: travelCost },
     ];
 
@@ -970,7 +988,7 @@ export async function getFullDashboardData(filters?: {
       tatDistribution,
       csatDistribution,
       modelConsumption,
-      _leakparts: { pcba: pcbaData.qty, lcd: lcdData.qty },
+      _leakparts: { pcba: pcbaData.qty, lcd: tpLcdData.qty },
       _leaktravel: travelQty,
       bounce: bounceCount,
       detractor: detractorCount,

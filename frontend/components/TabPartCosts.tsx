@@ -62,13 +62,12 @@ export default function TabPartCosts({
   const selectedConsData = monthsList.find((m: any) => m.month === partConsMonth) || monthsList[monthsList.length - 1];
 
   const itemDefinitions = [
-    { key: 'pcba', label: 'Motherboard (PCBA)' },
-    { key: 'lcd', label: 'Display Screen (LCD)' },
-    { key: 'battery', label: 'Battery Unit' },
-    { key: 'camera', label: 'Camera Module' },
-    { key: 'speaker', label: 'Speaker / Audio Assembly' },
-    { key: 'charger', label: 'Charger / Power Adapter' },
-    { key: 'others', label: 'Other Components & Accessories' },
+    { key: 'pcba', label: 'PCBA' },
+    { key: 'lcd', label: 'TP/LCD' },
+    { key: 'battery', label: 'Battery' },
+    { key: 'sub_pcba', label: 'Sub PCBA' },
+    { key: 'accessories', label: 'Accessories' },
+    { key: 'others', label: 'Others' },
     { key: 'travel', label: 'Technician Home Travel Fee' },
   ];
 
@@ -297,8 +296,8 @@ export default function TabPartCosts({
             </div>
           </div>
 
-          <div className="note-mock" style={{ borderTop: '1px solid var(--line)', paddingTop: '10px', marginTop: '16px' }}>
-            Breakdown includes quantities and actual component values calculated across selected months. Run-rate calculations align dynamically.
+          <div className="note-mock" style={{ borderTop: '1px solid var(--line)', paddingTop: '10px', marginTop: '16px', fontSize: '12.5px', color: '#64748b', lineHeight: '1.5' }}>
+            Quantities represent anomalous workorder jobs where part consumption flags (PCBA Consumption, TP/LCD Consumption, Battery Consumption, Sub PCBA Consumption, Accessories Consumption, Others Consumption) are recorded as 'Yes' in Master Data, alongside Technician Home Travel Fees for flagged home visits.
           </div>
         </div>
 
