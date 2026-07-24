@@ -146,12 +146,10 @@ export default function TabDashboard({
             </option>
           ))}
         </select>
-      </div>
-
-      {/* Clean Headline Exposure Hero Box (Upper-Right Duplicate Summary Removed) */}
+      </div>      {/* Clean Headline Exposure Hero Box (Upper-Right Duplicate Summary Removed) */}
       <div className="headline" style={{ marginBottom: '20px' }}>
         <div className="hl-main" style={{ width: '100%', paddingRight: 0 }}>
-          <div className="hl-label">Estimated Monthly Leakage Exposure ({currentKPI?.month || selectedMonth})</div>
+          <div className="hl-label">Estimated Monthly Leakage Exposure</div>
           <div className="hl-value">{fmtINR(activeLeakCur)}</div>
           {prevKPI ? (
             <div className={`hl-delta ${activeLeakDelta < 0 ? 'up' : 'down'}`}>
@@ -161,7 +159,7 @@ export default function TabDashboard({
             <div className="hl-delta flat">• Baseline Month</div>
           )}
           <div className="hl-context">
-            Actual component value exposure (PCBA, LCD, Battery &amp; Home Visit Travel Fees) logged in Master Data for all anomalous work orders on <b>{currentKPI?.month || selectedMonth}</b>. Annualised run-rate &asymp; <b>{fmtINR(activeAnnualLeakRunRate)}</b>.
+            Actual component value exposure (PCBA, LCD, Battery &amp; Home Visit Travel Fees) logged for Service at Home (S@H / Doorstep) anomalous work orders on <b>{currentKPI?.month || selectedMonth}</b> (excluding Customer and Trade walk-in calls). Annualised run-rate &asymp; <b>{fmtINR(activeAnnualLeakRunRate)}</b>.
           </div>
         </div>
       </div>
@@ -306,12 +304,13 @@ export default function TabDashboard({
             </span>
             <div>
               <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: '#0f172a' }}>
-                Estimated Monthly Leakage Exposure Deep Dive ({currentKPI?.month || selectedMonth})
+                Estimated Monthly Leakage Exposure Deep Dive
               </h3>
               <span style={{ fontSize: '12px', color: '#64748b' }}>
-                Component-level line items summing to total headline leakage of {fmtINR(activeLeakCur)}
+                Service at Home (S@H) component-level line items summing to total headline leakage of {fmtINR(activeLeakCur)} (excluding walk-in calls) for {currentKPI?.month || selectedMonth}
               </span>
             </div>
+          </div>>
           </div>
           <span style={{ background: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', padding: '6px 14px', borderRadius: '8px', fontSize: '13px', fontWeight: 800 }}>
             Total Exposure: {fmtINR(activeLeakCur)}
