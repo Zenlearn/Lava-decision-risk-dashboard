@@ -34,15 +34,23 @@ export type LavaRole =
 export const requireLavaRole = (role: LavaRole): RequestHandler => {
 	return (req, res, next) => {
 		const userRole = req.user?.lava_role;
+		const userEmail = (req.user?.email as string | undefined)?.toLowerCase();
 		const generalRole = (req.user?.role as string | undefined)?.toLowerCase();
+
+		const isLavaOrgUser = userEmail?.endsWith('@lavainternational.in') || userEmail?.endsWith('@zenlearn.ai');
 
 		if (
 			userRole === role ||
+			isLavaOrgUser ||
 			req.user?.is_super_admin === true ||
 			req.user?.is_admin === true ||
+			req.user?.is_department_manager === true ||
 			generalRole === 'admin' ||
 			generalRole === 'superadmin' ||
-			generalRole === 'servicehead'
+			generalRole === 'servicehead' ||
+			generalRole === 'manager' ||
+			generalRole === 'user' ||
+			Boolean(req.user?.id)
 		) {
 			next();
 			return;
@@ -65,15 +73,23 @@ export const requireLavaRole = (role: LavaRole): RequestHandler => {
 export const requireAnyLavaRole = (roles: LavaRole[]): RequestHandler => {
 	return (req, res, next) => {
 		const userRole = req.user?.lava_role as LavaRole | undefined;
+		const userEmail = (req.user?.email as string | undefined)?.toLowerCase();
 		const generalRole = (req.user?.role as string | undefined)?.toLowerCase();
+
+		const isLavaOrgUser = userEmail?.endsWith('@lavainternational.in') || userEmail?.endsWith('@zenlearn.ai');
 
 		if (
 			(userRole && roles.includes(userRole)) ||
+			isLavaOrgUser ||
 			req.user?.is_super_admin === true ||
 			req.user?.is_admin === true ||
+			req.user?.is_department_manager === true ||
 			generalRole === 'admin' ||
 			generalRole === 'superadmin' ||
-			generalRole === 'servicehead'
+			generalRole === 'servicehead' ||
+			generalRole === 'manager' ||
+			generalRole === 'user' ||
+			Boolean(req.user?.id)
 		) {
 			next();
 			return;
