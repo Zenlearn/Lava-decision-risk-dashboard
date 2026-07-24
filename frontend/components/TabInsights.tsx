@@ -19,9 +19,19 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
     <div className="view-mock on" style={{ paddingBottom: '40px' }}>
       
       {/* 1. DOORSTEP BOARD REPAIR INTEGRITY PANEL */}
-      <div className="sec-title">
-        <div className="bar"></div>
-        <span>Doorstep Board Repair Integrity Panel</span>
+      <div className="sec-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div className="bar"></div>
+          <span style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>
+            Doorstep Board Repair Integrity Panel
+          </span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span style={{ background: '#f1f5f9', color: '#1e293b', border: '1px solid #cbd5e1', padding: '6px 14px', borderRadius: '8px', fontSize: '13px', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#2563eb' }}></span>
+            Data Period: April – June 2026 (Apr, May, Jun 2026)
+          </span>
+        </div>
       </div>
 
       <div className="grid-mock k4">
