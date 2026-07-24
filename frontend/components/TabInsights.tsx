@@ -45,48 +45,78 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
 
       <div className="grid-mock k2" style={{ marginTop: '16px' }}>
         <div className="card-mock">
-          <h3>Top ASPs with Doorstep Board-level Swaps</h3>
-          <table>
+          <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', marginBottom: '12px' }}>
+            Top ASPs with Doorstep Board-level Swaps
+          </h3>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
             <thead>
-              <tr><th>ASP Name</th><th>Supervisor (ASM)</th><th>Doorstep Board Swaps Count</th></tr>
+              <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '12.5px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                <th style={{ padding: '10px 12px', textAlign: 'left' }}>ASP Name</th>
+                <th style={{ padding: '10px 12px', textAlign: 'left' }}>Supervisor (ASM)</th>
+                <th style={{ padding: '10px 12px', textAlign: 'right' }}>Doorstep Board Swaps Count</th>
+              </tr>
             </thead>
             <tbody>
               {(data.home?.top_asps || []).map((r: any, i: number) => (
-                <tr key={i}>
-                  <td><b>{r.asp}</b></td>
-                  <td>{r.asm}</td>
-                  <td style={{ color: 'var(--bad)', fontWeight: 700 }}>{r.n}</td>
+                <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                  <td style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 600, color: '#1e293b' }}>{r.asp}</td>
+                  <td style={{ padding: '10px 12px', textAlign: 'left', color: '#475569' }}>{r.asm}</td>
+                  <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>
+                    {(r.n || 0).toLocaleString('en-IN')}
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <div className="note-mock">
+          <div className="note-mock" style={{ marginTop: '12px', fontSize: '12px', color: '#64748b' }}>
             Pull files for these outlying service centers from the Evidence Logs first. Verify motherboard/display billings against parts-return batches.
           </div>
         </div>
 
         <div className="card-mock">
-          <h3>Insights: Affected Model Series and Action Codes</h3>
-          <p className="note-mock">Concentration by device model</p>
-          <table style={{ marginBottom: '16px' }}>
+          <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', marginBottom: '12px' }}>
+            Insights: Affected Model Series and Action Codes
+          </h3>
+          <p className="note-mock" style={{ fontSize: '12px', fontWeight: 700, color: '#475569', textTransform: 'uppercase', marginBottom: '8px' }}>
+            Concentration by device model
+          </p>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px', marginBottom: '16px' }}>
             <thead>
-              <tr><th>Device Model</th><th>Incident Count</th></tr>
+              <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '12.5px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                <th style={{ padding: '10px 12px', textAlign: 'left' }}>Device Model</th>
+                <th style={{ padding: '10px 12px', textAlign: 'right' }}>Incident Count</th>
+              </tr>
             </thead>
             <tbody>
               {(data.home?.top_models || []).map((r: any, i: number) => (
-                <tr key={i}><td>{r.model}</td><td>{r.n}</td></tr>
+                <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                  <td style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 600, color: '#1e293b' }}>{r.model}</td>
+                  <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>
+                    {(r.n || 0).toLocaleString('en-IN')}
+                  </td>
+                </tr>
               ))}
             </tbody>
           </table>
 
-          <p className="note-mock">Concentration by action codes</p>
-          <table>
+          <p className="note-mock" style={{ fontSize: '12px', fontWeight: 700, color: '#475569', textTransform: 'uppercase', marginBottom: '8px' }}>
+            Concentration by action codes
+          </p>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
             <thead>
-              <tr><th>Action Recorded</th><th>Incident Count</th></tr>
+              <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '12.5px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                <th style={{ padding: '10px 12px', textAlign: 'left' }}>Action Recorded</th>
+                <th style={{ padding: '10px 12px', textAlign: 'right' }}>Incident Count</th>
+              </tr>
             </thead>
             <tbody>
               {(data.home?.top_actions || []).map((r: any, i: number) => (
-                <tr key={i}><td>{r.action}</td><td>{r.n}</td></tr>
+                <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                  <td style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 600, color: '#1e293b' }}>{r.action}</td>
+                  <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>
+                    {(r.n || 0).toLocaleString('en-IN')}
+                  </td>
+                </tr>
               ))}
             </tbody>
           </table>
@@ -95,8 +125,8 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
 
       {/* Recommended audit check guidelines for doorstep board billing */}
       <div className="card-mock" style={{ marginTop: '16px', borderLeft: '4px solid var(--cobalt)' }}>
-        <h3>Recommended audit check guidelines for doorstep board billing</h3>
-        <ol style={{ marginLeft: '18px', fontSize: '13px', lineHeight: '1.9', color: 'var(--muted)', marginTop: '8px' }}>
+        <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a' }}>Recommended audit check guidelines for doorstep board billing</h3>
+        <ol style={{ marginLeft: '18px', fontSize: '13px', lineHeight: '1.9', color: '#475569', marginTop: '8px' }}>
           <li>Export high-outlier doorstep workorders from the Evidence tab (filter flag: "Board repair at home").</li>
           <li>Cross check these against the defective-part returns tracker to check if defective motherboards/displays were physically returned.</li>
           <li>Verify ASP inventory registers to check if they stock board components locally. If no local stock exists, doorstep swap was not physically possible.</li>
@@ -133,8 +163,8 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
           </div>
         </div>
 
-        {/* 5 Core Process Efficiency Dimensions Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '20px', marginBottom: '20px' }}>
+        {/* ROW 1: 3 TABLES (Dimensions 1, 2, 3) */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', marginBottom: '20px' }}>
 
           {/* Dimension 1: Service Fulfillment & Capacity Efficiency */}
           <div className="card-mock" style={{ margin: 0, padding: '20px' }}>
@@ -145,19 +175,19 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '14px', color: '#475569', fontWeight: 600 }}>Total Appointments Received</span>
-                <span style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a' }}>16,030</span>
+                <span style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a' }}>16,030</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '14px', color: '#475569', fontWeight: 600 }}>Appointment Fulfillment Rate</span>
-                <span style={{ fontSize: '15px', fontWeight: 800, color: '#16a34a' }}>68.7% <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 500 }}>(11,010 closed)</span></span>
+                <span style={{ fontSize: '16px', fontWeight: 800, color: '#16a34a' }}>68.7% <span style={{ fontSize: '13px', color: '#475569', fontWeight: 600 }}>(11,010 closed)</span></span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '14px', color: '#475569', fontWeight: 600 }}>Appointment Cancellation Rate</span>
-                <span style={{ fontSize: '15px', fontWeight: 800, color: '#dc2626' }}>30.7% <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 500 }}>(4,926 rejected)</span></span>
+                <span style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a' }}>30.7% <span style={{ fontSize: '13px', color: '#475569', fontWeight: 600 }}>(4,926 rejected)</span></span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '14px', color: '#475569', fontWeight: 600 }}>Work Order Conversion Velocity</span>
-                <span style={{ fontSize: '15px', fontWeight: 800, color: '#2563eb' }}>99.2%</span>
+                <span style={{ fontSize: '16px', fontWeight: 800, color: '#2563eb' }}>99.2%</span>
               </div>
             </div>
           </div>
@@ -171,19 +201,19 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '14px', color: '#475569', fontWeight: 600 }}>End-to-End Mean TAT</span>
-                <span style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a' }}>5.04 Days <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 500 }}>(Median: 4.05d)</span></span>
+                <span style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a' }}>5.04 Days <span style={{ fontSize: '13px', color: '#475569', fontWeight: 600 }}>(Median: 4.05d)</span></span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '14px', color: '#475569', fontWeight: 600 }}>Same-Day (24h) Resolution Rate</span>
-                <span style={{ fontSize: '15px', fontWeight: 800, color: '#16a34a' }}>31.4% <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 500 }}>(3,462 orders)</span></span>
+                <span style={{ fontSize: '16px', fontWeight: 800, color: '#16a34a' }}>31.4% <span style={{ fontSize: '13px', color: '#475569', fontWeight: 600 }}>(3,462 orders)</span></span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '14px', color: '#475569', fontWeight: 600 }}>3-Day SLA Adherence Rate</span>
-                <span style={{ fontSize: '15px', fontWeight: 800, color: '#2563eb' }}>49.8% <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 500 }}>(5,483 orders)</span></span>
+                <span style={{ fontSize: '16px', fontWeight: 800, color: '#2563eb' }}>49.8% <span style={{ fontSize: '13px', color: '#475569', fontWeight: 600 }}>(5,483 orders)</span></span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '14px', color: '#475569', fontWeight: 600 }}>Pickup &amp; Delivery Dispatch Speed</span>
-                <span style={{ fontSize: '15px', fontWeight: 800, color: '#475569' }}>1.4 Hours <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 500 }}>(Avg transit)</span></span>
+                <span style={{ fontSize: '16px', fontWeight: 800, color: '#475569' }}>1.4 Hours <span style={{ fontSize: '13px', color: '#475569', fontWeight: 600 }}>(Avg transit)</span></span>
               </div>
             </div>
           </div>
@@ -197,22 +227,27 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '14px', color: '#475569', fontWeight: 600 }}>GPS Geo-Tagging Compliance Rate</span>
-                <span style={{ fontSize: '15px', fontWeight: 800, color: '#16a34a' }}>68.7% <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 500 }}>(11,015 visits)</span></span>
+                <span style={{ fontSize: '16px', fontWeight: 800, color: '#16a34a' }}>68.7% <span style={{ fontSize: '13px', color: '#475569', fontWeight: 600 }}>(11,015 visits)</span></span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '14px', color: '#475569', fontWeight: 600 }}>Mean Technician Travel Distance</span>
-                <span style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a' }}>39.15 KM <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 500 }}>(Median: 7.0 km)</span></span>
+                <span style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a' }}>39.15 KM <span style={{ fontSize: '13px', color: '#475569', fontWeight: 600 }}>(Median: 7.0 km)</span></span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '14px', color: '#475569', fontWeight: 600 }}>Technician Productivity Index</span>
-                <span style={{ fontSize: '15px', fontWeight: 800, color: '#2563eb' }}>19.6 Orders / Tech / Mo</span>
+                <span style={{ fontSize: '16px', fontWeight: 800, color: '#2563eb' }}>19.6 Orders / Tech / Mo</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '14px', color: '#475569', fontWeight: 600 }}>Active Field Technicians</span>
-                <span style={{ fontSize: '15px', fontWeight: 800, color: '#475569' }}>560 Technicians</span>
+                <span style={{ fontSize: '16px', fontWeight: 800, color: '#475569' }}>560 Technicians</span>
               </div>
             </div>
           </div>
+
+        </div>
+
+        {/* ROW 2: 2 TABLES (Dimensions 4, 5) */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px', marginBottom: '20px' }}>
 
           {/* Dimension 4: Technical Resolution & Repair Quality */}
           <div className="card-mock" style={{ margin: 0, padding: '20px' }}>
@@ -223,19 +258,19 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '14px', color: '#475569', fontWeight: 600 }}>Appointment Reschedule Rate</span>
-                <span style={{ fontSize: '15px', fontWeight: 800, color: '#d97706' }}>10.0% <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 500 }}>(1,605 cases)</span></span>
+                <span style={{ fontSize: '16px', fontWeight: 800, color: '#d97706' }}>10.0% <span style={{ fontSize: '13px', color: '#475569', fontWeight: 600 }}>(1,605 cases)</span></span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '14px', color: '#475569', fontWeight: 600 }}>Component Replacement Share</span>
-                <span style={{ fontSize: '15px', fontWeight: 800, color: '#dc2626' }}>33.3% <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 500 }}>(3,674 parts)</span></span>
+                <span style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a' }}>33.3% <span style={{ fontSize: '13px', color: '#475569', fontWeight: 600 }}>(3,674 parts)</span></span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '14px', color: '#475569', fontWeight: 600 }}>Soft Repair Rate (Software/NFF)</span>
-                <span style={{ fontSize: '15px', fontWeight: 800, color: '#16a34a' }}>14.2% <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 500 }}>(2,128 updates)</span></span>
+                <span style={{ fontSize: '16px', fontWeight: 800, color: '#16a34a' }}>14.2% <span style={{ fontSize: '13px', color: '#475569', fontWeight: 600 }}>(2,128 updates)</span></span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '14px', color: '#475569', fontWeight: 600 }}>Unrepaired Return Rate</span>
-                <span style={{ fontSize: '15px', fontWeight: 800, color: '#64748b' }}>11.0% <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 500 }}>(1,760 cases)</span></span>
+                <span style={{ fontSize: '16px', fontWeight: 800, color: '#475569' }}>11.0% <span style={{ fontSize: '13px', color: '#475569', fontWeight: 600 }}>(1,760 cases)</span></span>
               </div>
             </div>
           </div>
@@ -249,19 +284,19 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '14px', color: '#475569', fontWeight: 600 }}>Customer Unreachable Share</span>
-                <span style={{ fontSize: '15px', fontWeight: 800, color: '#dc2626' }}>76.4% <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 500 }}>(3,763 of cancels)</span></span>
+                <span style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a' }}>76.4% <span style={{ fontSize: '13px', color: '#475569', fontWeight: 600 }}>(3,763 of cancels)</span></span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '14px', color: '#475569', fontWeight: 600 }}>Out-of-Warranty Price Refusal</span>
-                <span style={{ fontSize: '15px', fontWeight: 800, color: '#d97706' }}>4.8% <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 500 }}>(236 cancels)</span></span>
+                <span style={{ fontSize: '16px', fontWeight: 800, color: '#d97706' }}>4.8% <span style={{ fontSize: '13px', color: '#475569', fontWeight: 600 }}>(236 cancels)</span></span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '14px', color: '#475569', fontWeight: 600 }}>Self-Resolved Issue Prior to Visit</span>
-                <span style={{ fontSize: '15px', fontWeight: 800, color: '#16a34a' }}>3.2% <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 500 }}>(157 cancels)</span></span>
+                <span style={{ fontSize: '16px', fontWeight: 800, color: '#16a34a' }}>3.2% <span style={{ fontSize: '13px', color: '#475569', fontWeight: 600 }}>(157 cancels)</span></span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '14px', color: '#475569', fontWeight: 600 }}>Model Intake Information Error</span>
-                <span style={{ fontSize: '15px', fontWeight: 800, color: '#64748b' }}>1.8% <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 500 }}>(89 cancels)</span></span>
+                <span style={{ fontSize: '16px', fontWeight: 800, color: '#475569' }}>1.8% <span style={{ fontSize: '13px', color: '#475569', fontWeight: 600 }}>(89 cancels)</span></span>
               </div>
             </div>
           </div>
@@ -280,42 +315,42 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
               <thead>
-                <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '12.5px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                   <th style={{ padding: '12px 16px', textAlign: 'left' }}>Hierarchy Level</th>
                   <th style={{ padding: '12px 16px', textAlign: 'left' }}>Entity Scope</th>
-                  <th style={{ padding: '12px 16px', textAlign: 'center' }}>Entity Count</th>
+                  <th style={{ padding: '12px 16px', textAlign: 'right' }}>Entity Count</th>
                   <th style={{ padding: '12px 16px', textAlign: 'left' }}>Primary Measurable Efficiency Metrics</th>
                 </tr>
               </thead>
               <tbody>
                 <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
-                  <td style={{ padding: '12px 16px', fontWeight: 700, color: '#2563eb' }}>Level 1: ASP</td>
-                  <td style={{ padding: '12px 16px', color: '#1e293b', fontWeight: 500 }}>Authorized Service Provider (Center)</td>
-                  <td style={{ padding: '12px 16px', textAlign: 'center', fontWeight: 700, color: '#0f172a' }}>532 ASPs</td>
-                  <td style={{ padding: '12px 16px', color: '#334155' }}>Fulfillment %, Mean TAT, GPS Tagging %, Reschedule %, Travel Distance (KM)</td>
+                  <td style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 700, color: '#2563eb' }}>Level 1: ASP</td>
+                  <td style={{ padding: '12px 16px', textAlign: 'left', color: '#1e293b', fontWeight: 500 }}>Authorized Service Provider (Center)</td>
+                  <td style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>532 ASPs</td>
+                  <td style={{ padding: '12px 16px', textAlign: 'left', color: '#334155' }}>Fulfillment %, Mean TAT, GPS Tagging %, Reschedule %, Travel Distance (KM)</td>
                 </tr>
                 <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
-                  <td style={{ padding: '12px 16px', fontWeight: 700, color: '#7e22ce' }}>Level 2: ASM</td>
-                  <td style={{ padding: '12px 16px', color: '#1e293b', fontWeight: 500 }}>Area Service Manager (Territory Supervisor)</td>
-                  <td style={{ padding: '12px 16px', textAlign: 'center', fontWeight: 700, color: '#0f172a' }}>36 ASMs</td>
-                  <td style={{ padding: '12px 16px', color: '#334155' }}>Territory Fulfillment %, SLA Adherence %, Outlier ASP Count, Supervisor Scorecard</td>
+                  <td style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 700, color: '#7e22ce' }}>Level 2: ASM</td>
+                  <td style={{ padding: '12px 16px', textAlign: 'left', color: '#1e293b', fontWeight: 500 }}>Area Service Manager (Territory Supervisor)</td>
+                  <td style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>36 ASMs</td>
+                  <td style={{ padding: '12px 16px', textAlign: 'left', color: '#334155' }}>Territory Fulfillment %, SLA Adherence %, Outlier ASP Count, Supervisor Scorecard</td>
                 </tr>
                 <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
-                  <td style={{ padding: '12px 16px', fontWeight: 700, color: '#d97706' }}>Level 3: BUSM</td>
-                  <td style={{ padding: '12px 16px', color: '#1e293b', fontWeight: 500 }}>Business Unit Service Manager (Zonal Lead)</td>
-                  <td style={{ padding: '12px 16px', textAlign: 'center', fontWeight: 700, color: '#0f172a' }}>5 BUSMs</td>
-                  <td style={{ padding: '12px 16px', color: '#334155' }}>Zonal Fulfillment %, Regional Quality Score, Macro SLA Variance, Zonal Resource Allocation</td>
+                  <td style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 700, color: '#d97706' }}>Level 3: BUSM</td>
+                  <td style={{ padding: '12px 16px', textAlign: 'left', color: '#1e293b', fontWeight: 500 }}>Business Unit Service Manager (Zonal Lead)</td>
+                  <td style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>5 BUSMs</td>
+                  <td style={{ padding: '12px 16px', textAlign: 'left', color: '#334155' }}>Zonal Fulfillment %, Regional Quality Score, Macro SLA Variance, Zonal Resource Allocation</td>
                 </tr>
                 <tr style={{ borderBottom: '1px solid #f1f5f9', background: '#f8fafc' }}>
-                  <td style={{ padding: '12px 16px', fontWeight: 800, color: '#0f172a' }}>Level 4: Org Whole</td>
-                  <td style={{ padding: '12px 16px', fontWeight: 700, color: '#0f172a' }}>National Corporate Benchmark</td>
-                  <td style={{ padding: '12px 16px', textAlign: 'center', fontWeight: 800, color: '#E50046' }}>1 National Org</td>
-                  <td style={{ padding: '12px 16px', fontWeight: 700, color: '#0f172a' }}>68.7% Fulfillment, 5.04d Mean TAT, 68.7% GPS Compliance, 10.0% Reschedule Rate</td>
+                  <td style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 800, color: '#0f172a' }}>Level 4: Org Whole</td>
+                  <td style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 700, color: '#0f172a' }}>National Corporate Benchmark</td>
+                  <td style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 800, color: '#0f172a' }}>1 National Org</td>
+                  <td style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 700, color: '#0f172a' }}>68.7% Fulfillment, 5.04d Mean TAT, 68.7% GPS Compliance, 10.0% Reschedule Rate</td>
                 </tr>
               </tbody>
             </table>
           </div>
-        </div>
+        </div>v>
 
       </div>
 
