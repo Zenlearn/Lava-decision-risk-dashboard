@@ -649,6 +649,10 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
                 <span style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a' }}>16,030</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: '14px', color: '#475569', fontWeight: 600 }}>By Creation Date</span>
+                <span style={{ fontSize: '16px', fontWeight: 800, color: '#2563eb' }}>16,030 <span style={{ fontSize: '13px', color: '#475569', fontWeight: 600 }}>(logged in period)</span></span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '14px', color: '#475569', fontWeight: 600 }}>Appointment Fulfillment Rate</span>
                 <span style={{ fontSize: '16px', fontWeight: 800, color: '#16a34a' }}>68.7% <span style={{ fontSize: '13px', color: '#475569', fontWeight: 600 }}>(11,010 closed)</span></span>
               </div>
