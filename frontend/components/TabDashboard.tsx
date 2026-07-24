@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  LineChart, Line, BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, 
+  LineChart, Line, BarChart, Bar, Cell, LabelList, XAxis, YAxis, CartesianGrid, 
   Tooltip, Legend, ResponsiveContainer 
 } from 'recharts';
 import { DASHBOARD_DEFINITIONS } from '../constants/definitions';
@@ -276,114 +276,103 @@ export default function TabDashboard({
           </span>
         </div>
 
-        {/* Grid split: Frequency Bar Chart + Summary Table */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '20px' }}>
-          {/* Frequency Bar Chart */}
-          <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '16px', height: '260px' }}>
-            <div style={{ fontSize: '12px', fontWeight: 700, color: '#475569', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-              Turnaround Speed Frequency Distribution (Work Orders)
-            </div>
-            {isMounted && (
-              <ResponsiveContainer width="100%" height="80%">
-                <BarChart data={currentTatDist} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                  <XAxis dataKey="label" tickLine={false} style={{ fontSize: '11px', fontWeight: 600 }} />
-                  <YAxis tickLine={false} style={{ fontSize: '11px' }} />
-                  <Tooltip formatter={(val: any) => [`${val.toLocaleString('en-IN')} work orders`, 'Quantity']} />
-                  <Bar dataKey="quantity" name="Work Orders" radius={[6, 6, 0, 0]}>
-                    {currentTatDist.map((entry: any, index: number) => {
-                      const colors = ['#10b981', '#f59e0b', '#ef4444'];
-                      return <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />;
-                    })}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            )}
+        {/* Top Summary Badges Row: Count + % of Total */}
+        <div style={{ display: 'flex', gap: '16px', marginBottom: '20px', flexWrap: 'wrap' }}>
+          {currentTatDist.map((item: any, idx: number) => {
+            const badgeColor = item.key === '1d' ? '#10b981' : item.key === '3d' ? '#f59e0b' : '#ef4444';
+            const bgTint = item.key === '1d' ? '#ecfdf5' : item.key === '3d' ? '#fffbeb' : '#fef2f2';
+            return (
+              <div key={idx} style={{
+                background: bgTint,
+                border: `1px solid ${badgeColor}40`,
+                borderRadius: '10px',
+                padding: '12px 16px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '2px',
+                flex: 1,
+                minWidth: '180px'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 700, color: '#475569' }}>
+                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: badgeColor, flexShrink: 0 }}></span>
+                  {item.label}
+                </div>
+                <div style={{ fontSize: '20px', fontWeight: 800, color: '#0f172a' }}>
+                  {item.quantity.toLocaleString('en-IN')} <span style={{ fontSize: '13px', fontWeight: 700, color: '#64748b' }}>({item.pct}%)</span>
+                </div>
+              </div>
+            );
+          })}
+
+          {/* Total Work Orders Summary Badge */}
+          {(() => {
+            const totalWo = currentTatDist.reduce((sum: number, i: any) => sum + (i.quantity || 0), 0);
+            return (
+              <div style={{
+                background: '#f8fafc',
+                border: '1px solid #cbd5e1',
+                borderRadius: '10px',
+                padding: '12px 16px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '2px',
+                flex: 1,
+                minWidth: '180px'
+              }}>
+                <div style={{ fontSize: '12px', fontWeight: 700, color: '#475569' }}>
+                  Total Monthly Work Orders
+                </div>
+                <div style={{ fontSize: '20px', fontWeight: 800, color: '#0f172a' }}>
+                  {totalWo.toLocaleString('en-IN')} <span style={{ fontSize: '13px', fontWeight: 700, color: '#64748b' }}>(100.0%)</span>
+                </div>
+              </div>
+            );
+          })()}
+        </div>
+
+        {/* Full Width Frequency Bar Chart with Labels above Bars */}
+        <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '20px 20px 10px 20px', height: '300px' }}>
+          <div style={{ fontSize: '12px', fontWeight: 700, color: '#475569', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            Turnaround Speed Frequency Distribution (Work Order Count &amp; % Share)
           </div>
-
-          {/* Breakdown Table */}
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
-              <thead>
-                <tr style={{ borderBottom: '2px solid #e2e8f0', color: '#64748b', textAlign: 'left', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em', background: '#f8fafc' }}>
-                  <th style={{ padding: '10px 12px' }}>Turnaround Bracket</th>
-                  <th style={{ padding: '10px 12px', textAlign: 'center' }}>Work Orders</th>
-                  <th style={{ padding: '10px 12px', textAlign: 'right' }}>% of Total</th>
-                  <th style={{ padding: '10px 12px', textAlign: 'center' }}>MoM Trend</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentTatDist.map((item: any, idx: number) => {
-                  const prevItem = prevTatDist.find((pb: any) => pb.key === item.key);
-                  const prevQty = prevItem?.quantity || 0;
-                  const qtyDiff = prevKPI ? (item.quantity - prevQty) : 0;
-                  const badgeColor = item.key === '1d' ? '#10b981' : item.key === '3d' ? '#f59e0b' : '#ef4444';
-
-                  return (
-                    <tr key={idx} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                      <td style={{ padding: '12px', fontWeight: 600, color: '#1e293b', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: badgeColor, flexShrink: 0 }}></span>
-                        {item.label}
-                      </td>
-                      <td style={{ padding: '12px', textAlign: 'center', fontWeight: 700, color: '#0f172a' }}>
-                        {item.quantity.toLocaleString('en-IN')}
-                      </td>
-                      <td style={{ padding: '12px', textAlign: 'right', fontWeight: 600, color: '#64748b' }}>
-                        {item.pct}%
-                      </td>
-                      <td style={{ padding: '12px', textAlign: 'center', fontWeight: 700 }}>
-                        {prevKPI ? (
-                          <span style={{
-                            color: qtyDiff < 0 ? '#16a34a' : qtyDiff > 0 ? '#dc2626' : '#64748b',
-                            background: qtyDiff < 0 ? '#f0fdf4' : qtyDiff > 0 ? '#fef2f2' : '#f8fafc',
-                            padding: '2px 8px', borderRadius: '4px', fontSize: '11px'
-                          }}>
-                            {qtyDiff > 0 ? `↑ +${qtyDiff.toLocaleString()}` : qtyDiff < 0 ? `↓ -${Math.abs(qtyDiff).toLocaleString()}` : '• Stable'}
-                          </span>
-                        ) : (
-                          <span style={{ color: '#64748b', fontSize: '11px' }}>• Baseline</span>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-
-                {/* Total Work Orders Summary Row */}
-                {(() => {
-                  const totalCurrentWo = currentTatDist.reduce((sum: number, i: any) => sum + (i.quantity || 0), 0);
-                  const totalPrevWo = prevTatDist.reduce((sum: number, i: any) => sum + (i.quantity || 0), 0);
-                  const totalWoDiff = prevKPI ? (totalCurrentWo - totalPrevWo) : 0;
-
-                  return (
-                    <tr style={{ borderTop: '2px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
-                      <td style={{ padding: '12px', color: '#0f172a' }}>
-                        Total Work Orders
-                      </td>
-                      <td style={{ padding: '12px', textAlign: 'center', color: '#0f172a', fontSize: '14px' }}>
-                        {totalCurrentWo.toLocaleString('en-IN')}
-                      </td>
-                      <td style={{ padding: '12px', textAlign: 'right', color: '#0f172a', fontSize: '14px' }}>
-                        100.0%
-                      </td>
-                      <td style={{ padding: '12px', textAlign: 'center', fontWeight: 700 }}>
-                        {prevKPI ? (
-                          <span style={{
-                            color: totalWoDiff > 0 ? '#dc2626' : totalWoDiff < 0 ? '#16a34a' : '#64748b',
-                            background: totalWoDiff > 0 ? '#fef2f2' : totalWoDiff < 0 ? '#f0fdf4' : '#f8fafc',
-                            padding: '2px 8px', borderRadius: '4px', fontSize: '11px'
-                          }}>
-                            {totalWoDiff > 0 ? `↑ +${totalWoDiff.toLocaleString()}` : totalWoDiff < 0 ? `↓ -${Math.abs(totalWoDiff).toLocaleString()}` : '• Stable'}
-                          </span>
-                        ) : (
-                          <span style={{ color: '#64748b', fontSize: '11px' }}>• Baseline</span>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })()}
-              </tbody>
-            </table>
-          </div>
+          {isMounted && (
+            <ResponsiveContainer width="100%" height="82%">
+              <BarChart data={currentTatDist} margin={{ top: 25, right: 30, left: 10, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                <XAxis dataKey="label" tickLine={false} style={{ fontSize: '12px', fontWeight: 700, fill: '#1e293b' }} />
+                <YAxis tickLine={false} style={{ fontSize: '11px', fill: '#64748b' }} />
+                <Tooltip formatter={(val: any) => [`${val.toLocaleString('en-IN')} work orders`, 'Quantity']} />
+                <Bar dataKey="quantity" name="Work Orders" radius={[6, 6, 0, 0]}>
+                  {currentTatDist.map((entry: any, index: number) => {
+                    const colors = ['#10b981', '#f59e0b', '#ef4444'];
+                    return <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />;
+                  })}
+                  <LabelList
+                    dataKey="quantity"
+                    position="top"
+                    content={({ x, y, width, index }: any) => {
+                      const entry = currentTatDist[index];
+                      if (!entry) return null;
+                      const countStr = entry.quantity.toLocaleString('en-IN');
+                      const pctStr = `${entry.pct}%`;
+                      return (
+                        <text
+                          x={Number(x) + Number(width) / 2}
+                          y={Number(y) - 8}
+                          fill="#0f172a"
+                          textAnchor="middle"
+                          fontSize={13}
+                          fontWeight={800}
+                        >
+                          {countStr} ({pctStr})
+                        </text>
+                      );
+                    }}
+                  />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          )}
         </div>
       </div>
 
