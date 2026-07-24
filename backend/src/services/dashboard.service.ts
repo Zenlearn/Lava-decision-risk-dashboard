@@ -531,6 +531,7 @@ export async function getFullDashboardData(filters?: {
       totalAnomalies: true,
       serviceCentre: {
         select: {
+          code: true,
           name: true,
           dealer: {
             select: {
@@ -750,6 +751,7 @@ export async function getFullDashboardData(filters?: {
     return {
       row: index + 2,
       wo: String(raw[FIELD_MAP.workorder] ?? wo.id),
+      aspCode: wo.serviceCentre?.code || String(raw['Asp Code'] || raw['ASP Code'] || raw['Service Center Code'] || ''),
       asp,
       asm,
       busm,
@@ -1348,9 +1350,9 @@ export async function getFullDashboardData(filters?: {
   const homeRepeatCust = Array.from(customerHomeVisits.values()).filter((c) => c >= 3).length;
 
   // Top ASPs for board-at-home
-  const aspHomeCounts = new Map<string, { asp: string; asm: string; n: number }>();
+  const aspHomeCounts = new Map<string, { code: string; asp: string; asm: string; n: number }>();
   processedRows.filter((r) => r.isHomeBoard).forEach((r) => {
-    const countObj = aspHomeCounts.get(r.asp) || { asp: r.asp, asm: r.asm, n: 0 };
+    const countObj = aspHomeCounts.get(r.asp) || { code: r.aspCode || '', asp: r.asp, asm: r.asm, n: 0 };
     countObj.n++;
     aspHomeCounts.set(r.asp, countObj);
   });
@@ -1371,7 +1373,7 @@ export async function getFullDashboardData(filters?: {
   const topActions = Array.from(actionHomeCounts.entries()).map(([action, n]) => ({ action, n })).sort((a, b) => b.n - a.n).slice(0, 5);
 
   // Monthly breakdown for Doorstep Board-at-Home
-  const homeByMonth: Record<string, { board_at_home: number; pct_of_home: number; pcba_at_home: number; lcd_at_home: number; top_asps: { asp: string; asm: string; n: number }[]; top_models: { model: string; n: number }[]; top_actions: { action: string; n: number }[] }> = {};
+  const homeByMonth: Record<string, { board_at_home: number; pct_of_home: number; pcba_at_home: number; lcd_at_home: number; top_asps: { code: string; asp: string; asm: string; n: number }[]; top_models: { model: string; n: number }[]; top_actions: { action: string; n: number }[] }> = {};
   
   const allHomeMonths = Array.from(new Set(processedRows.map((r) => r.month))).filter(Boolean);
   allHomeMonths.forEach((m) => {
@@ -1383,9 +1385,9 @@ export async function getFullDashboardData(filters?: {
     const mPcba = mHomeBoardRows.filter((r) => r.isPCBA).length;
     const mLcd = mHomeBoardRows.filter((r) => r.isLCD).length;
 
-    const mAspMap = new Map<string, { asp: string; asm: string; n: number }>();
+    const mAspMap = new Map<string, { code: string; asp: string; asm: string; n: number }>();
     mHomeBoardRows.forEach((r) => {
-      const c = mAspMap.get(r.asp) || { asp: r.asp, asm: r.asm, n: 0 };
+      const c = mAspMap.get(r.asp) || { code: r.aspCode || '', asp: r.asp, asm: r.asm, n: 0 };
       c.n++;
       mAspMap.set(r.asp, c);
     });
