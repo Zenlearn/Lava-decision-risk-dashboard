@@ -16,6 +16,8 @@ export {};
 interface LavaAuthenticatedUser {
 	/** ZenLearn user id (JWT `id` or `sub` claim) */
 	id: string;
+	email?: string;
+	name?: string;
 	/** ZenLearn role string from JWT (e.g. 'user', 'admin') */
 	role?: string;
 	is_admin?: boolean;
