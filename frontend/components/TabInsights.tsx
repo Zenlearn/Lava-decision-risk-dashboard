@@ -350,7 +350,7 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
               </tbody>
             </table>
           </div>
-        </div>v>
+        </div>
 
       </div>
 

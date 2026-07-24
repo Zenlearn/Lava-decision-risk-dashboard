@@ -638,6 +638,7 @@ export default function TabDashboard({
                         }}
                       />
                     </Bar>
+                  </BarChart>
                 </ResponsiveContainer>
               )}
             </div>
@@ -681,7 +682,7 @@ export default function TabDashboard({
                       <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 600, color: '#475569' }}>24.0%</td>
                       <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 700, color: '#16a34a' }}>882 (86.7%)</td>
                       <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>80 (7.9%)</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight 800, color: '#2563eb' }}>+71.3</td>
+                      <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 800, color: '#2563eb' }}>+71.3</td>
                       <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 800, color: '#16a34a' }}>86.7%</td>
                     </tr>
                     <tr style={{ borderTop: '2px solid #cbd5e1', background: '#f8fafc', fontWeight: 800 }}>
@@ -696,7 +697,6 @@ export default function TabDashboard({
                     </tr>
                   </tbody>
                 </table>
-              </div>
               </div>
             </div>
           </div>

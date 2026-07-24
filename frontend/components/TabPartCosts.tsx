@@ -370,7 +370,7 @@ export default function TabPartCosts({
                       <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 600, color: '#64748b' }}>
                         {fmtINR(deviceASP)}
                       </td>
-                      <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 700, color: parseFloat(pctDeviceCost) > 15 ? '#E50046' : '#1e293b' }}>
+                      <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>
                         {pctDeviceCost}%
                       </td>
                     </tr>
@@ -391,7 +391,7 @@ export default function TabPartCosts({
                   <td style={{ padding: '12px 14px', textAlign: 'right', color: '#64748b' }}>
                     {fmtINR(consOverallAvgDeviceCost)}
                   </td>
-                  <td style={{ padding: '12px 14px', textAlign: 'right', color: '#E50046', fontSize: '15px' }}>
+                  <td style={{ padding: '12px 14px', textAlign: 'right', color: '#0f172a', fontSize: '15px' }}>
                     {consOverallPct}%
                   </td>
                 </tr>
