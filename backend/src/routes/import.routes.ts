@@ -12,17 +12,7 @@ const importRouter = Router();
 // Exported so auth.routes.ts's /upload-token endpoint (minted for direct,
 // Netlify-bypassing uploads — see JWTConfig.generateUploadToken) grants the
 // exact same access, not a separately-maintained copy of this list.
-export const importAllowedRoles: any[] = [
-  'Admin',
-  'MD',
-  'ServiceHead',
-  'RegionalHead',
-  'BUSM',
-  'ASM',
-  'Trainer',
-  'Dealer',
-  'ASP',
-];
+export const importAllowedRoles: any[] = ['Admin', 'MD', 'ServiceHead', 'RegionalHead'];
 
 // Per-route limiter on top of the global one — uploads are parsed/scored
 // synchronously (see ARCHITECTURE.md §7), so this is the endpoint most exposed
@@ -30,7 +20,7 @@ export const importAllowedRoles: any[] = [
 // convention (per-route limiter on upload/AI endpoints).
 const uploadLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 20,
+  max: 10,
   message: { message: 'Too many import uploads from this IP, please try again later.' },
   standardHeaders: true,
   legacyHeaders: false,
@@ -38,11 +28,11 @@ const uploadLimiter = rateLimit({
 
 
 // Configure Multer for file uploads in memory (since we parse in-request)
-// 100 MB — allows large multi-month Master Data and S@H workbooks
+// 25 MB — the Jul 2026 Master Data file alone is ~15.4 MB.
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 100 * 1024 * 1024,
+    fileSize: 25 * 1024 * 1024,
   },
   fileFilter: (_req, file, cb) => {
     // Accept CSV and Excel mime types
