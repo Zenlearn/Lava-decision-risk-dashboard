@@ -15,19 +15,14 @@ interface TabInsightsProps {
 }
 
 export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
-  const [selectedMonth, setSelectedMonth] = useState<string>('all');
-  const [selectedModelMonth, setSelectedModelMonth] = useState<string>('all');
+  const [selectedMonth, setSelectedMonth] = useState<string>('Jun');
+  const [selectedModelMonth, setSelectedModelMonth] = useState<string>('Jun');
   const [selectedBusm, setSelectedBusm] = useState<string>('all');
   const [selectedAsm, setSelectedAsm] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'swapsCount' | 'sameDayPct' | 'sameDayToCallsPct' | 'sameDayCount' | 'totalCalls'>('swapsCount');
 
-  const activeHome = selectedMonth === 'all'
-    ? data.home
-    : (data.home?.by_month?.[selectedMonth] || data.home);
-
-  const activeModelHome = selectedModelMonth === 'all'
-    ? data.home
-    : (data.home?.by_month?.[selectedModelMonth] || data.home);
+  const activeHome = data.home?.by_month?.[selectedMonth] || data.home;
+  const activeModelHome = data.home?.by_month?.[selectedModelMonth] || data.home;
 
   const allAspsList: any[] = activeHome?.top_asps || [];
   const uniqueBusms = Array.from(new Set(allAspsList.map((r) => r.busm))).filter(Boolean).sort();
@@ -70,6 +65,9 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
     if (sortBy === 'totalCalls') return (b.totalCalls || 0) - (a.totalCalls || 0);
     return (b.n || 0) - (a.n || 0);
   });
+
+  // Limit to Top 10 items only as requested by user
+  const top10Asps = filteredAsps.slice(0, 10);
 
   // Build BUSM & ASM Summary List (Table 1 Above)
   const busmAsmMap = new Map<string, {
@@ -169,10 +167,9 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
                   outline: 'none',
                 }}
               >
-                <option value="all">All Months (Apr – Jun 2026)</option>
-                <option value="Apr">April 2026</option>
-                <option value="May">May 2026</option>
                 <option value="Jun">June 2026</option>
+                <option value="May">May 2026</option>
+                <option value="Apr">April 2026</option>
               </select>
             </div>
 
@@ -350,14 +347,14 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
               </tr>
             </thead>
             <tbody>
-              {filteredAsps.length === 0 ? (
+              {top10Asps.length === 0 ? (
                 <tr>
                   <td colSpan={9} style={{ padding: '16px', textAlign: 'center', color: '#64748b' }}>
                     No ASPs found matching selected filters.
                   </td>
                 </tr>
               ) : (
-                filteredAsps.map((r: any, i: number) => (
+                top10Asps.map((r: any, i: number) => (
                   <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
                     <td style={{ padding: '7px 8px', textAlign: 'left', fontWeight: 600, color: '#475569', fontFamily: 'monospace' }}>{r.code || '-'}</td>
                     <td style={{ padding: '7px 8px', textAlign: 'left', fontWeight: 600, color: '#1e293b' }}>{r.asp}</td>
@@ -430,10 +427,9 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
                 outline: 'none',
               }}
             >
-              <option value="all">All Months (Apr – Jun 2026)</option>
-              <option value="Apr">April 2026</option>
-              <option value="May">May 2026</option>
               <option value="Jun">June 2026</option>
+              <option value="May">May 2026</option>
+              <option value="Apr">April 2026</option>
             </select>
           </div>
         </div>

@@ -18,7 +18,8 @@ interface SidebarProps {
 
 export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handleSignOut, user }: SidebarProps) {
   const menuItems = [
-    { id: 'exec', label: 'Executive One-Pager', icon: LayoutDashboard },
+    { id: 'exec', label: 'Executive KPIs', icon: LayoutDashboard },
+    { id: 'org_kpi', label: 'Organization KPIs', icon: Activity },
     { id: 'deep', label: 'Score Card', icon: CheckCircle },
     { 
       id: 'coach', 

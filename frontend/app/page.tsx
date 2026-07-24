@@ -7,6 +7,7 @@ import { RefreshCw, LogOut, UploadCloud } from 'lucide-react';
 // Import split subcomponents
 import Sidebar from '../components/Sidebar';
 import TabDashboard from '../components/TabDashboard';
+import TabOrgKPIs from '../components/TabOrgKPIs';
 import TabScorecard from '../components/TabScorecard';
 import TabCoaching from '../components/TabCoaching';
 import TabInsights from '../components/TabInsights';
@@ -419,6 +420,14 @@ export default function UnifiedMockupDashboard() {
             annualLeakRunRate={annualLeakRunRate}
             latestKPI={latestKPI}
             previousKPI={previousKPI}
+            fmtINR={fmtINR}
+            fmtPct={fmtPct}
+          />
+        )}
+
+        {activeTab === 'org_kpi' && (
+          <TabOrgKPIs
+            data={data}
             fmtINR={fmtINR}
             fmtPct={fmtPct}
           />
