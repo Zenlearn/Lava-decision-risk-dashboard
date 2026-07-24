@@ -131,6 +131,12 @@ const server = app.listen(port, () => {
 	});
 });
 
+// Configure server timeouts to 10 minutes (600,000 ms) to support long-running data imports & rule scoring
+server.timeout = 10 * 60 * 1000;
+server.keepAliveTimeout = 10 * 60 * 1000;
+server.headersTimeout = 10 * 60 * 1000;
+server.requestTimeout = 10 * 60 * 1000;
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Graceful shutdown
 // ─────────────────────────────────────────────────────────────────────────────
