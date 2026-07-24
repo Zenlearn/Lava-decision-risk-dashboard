@@ -638,8 +638,9 @@ export default function TabDashboard({
                         }}
                       />
                     </Bar>
-                  </BarChart>
-                </ResponsiveContaine            {/* Channel Performance Breakdown Table (WhatsApp vs IVR) */}
+                </ResponsiveContainer>
+              )}
+            </div>
             <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '20px' }}>
               <div style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a', marginBottom: '4px' }}>
                 NPS Survey Feedback Channel Performance (WhatsApp vs IVR)
