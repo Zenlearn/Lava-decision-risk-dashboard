@@ -364,6 +364,32 @@ export default function TabDashboard({
                       </tr>
                     );
                   })}
+                  {/* Highlighted Total Summary Row */}
+                  <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
+                    <td style={{ padding: '12px 14px', color: '#0f172a', background: '#f1f5f9', fontWeight: 800 }}>TOTAL MONTHLY LEAKAGE</td>
+                    <td style={{ padding: '12px 14px', textAlign: 'center', color: '#0f172a', fontWeight: 800 }}>
+                      {currentBreakdown.reduce((sum: number, item: any) => sum + (item.quantity || 0), 0).toLocaleString('en-IN')}
+                    </td>
+                    <td style={{ padding: '12px 14px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>
+                      {fmtINR(activeLeakCur)}
+                    </td>
+                    <td style={{ padding: '12px 14px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>
+                      100.0%
+                    </td>
+                    <td style={{ padding: '12px 14px', textAlign: 'center', fontWeight: 800 }}>
+                      {prevKPI ? (
+                        <span style={{
+                          color: activeLeakDelta < 0 ? '#16a34a' : activeLeakDelta > 0 ? '#dc2626' : '#64748b',
+                          background: activeLeakDelta < 0 ? '#f0fdf4' : activeLeakDelta > 0 ? '#fef2f2' : '#f8fafc',
+                          padding: '3px 10px', borderRadius: '4px', fontSize: '12px'
+                        }}>
+                          {activeLeakDelta > 0 ? `↑ +${fmtINR(activeLeakDelta)}` : activeLeakDelta < 0 ? `↓ -${fmtINR(Math.abs(activeLeakDelta))}` : '• Stable'}
+                        </span>
+                      ) : (
+                        <span style={{ color: '#64748b', fontSize: '12px' }}>• Baseline</span>
+                      )}
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>

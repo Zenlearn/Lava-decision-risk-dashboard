@@ -248,9 +248,9 @@ export default function TabPartCosts({
                 })}
 
                 {/* Total Monthly Leakage Exposure Row */}
-                <tr style={{ borderTop: '2px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
-                  <td style={{ padding: '12px', color: '#0f172a', borderRight: '1px solid #e2e8f0', whiteSpace: 'nowrap' }}>
-                    Total Monthly Leakage Exposure
+                <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
+                  <td style={{ padding: '12px', color: '#0f172a', background: '#f1f5f9', fontWeight: 800, borderRight: '1px solid #e2e8f0', whiteSpace: 'nowrap' }}>
+                    TOTAL MONTHLY LEAKAGE EXPOSURE
                   </td>
                   {activeCols.map((col, idx) => {
                     const m = col.data;
@@ -269,19 +269,19 @@ export default function TabPartCosts({
 
                     return (
                       <React.Fragment key={`tot-col-${idx}`}>
-                        <td style={{ padding: '12px 8px', textAlign: 'center', color: '#0f172a', fontSize: '13px' }}>
+                        <td style={{ padding: '12px 8px', textAlign: 'center', color: '#0f172a', fontWeight: 800, fontSize: '13px' }}>
                           {mQty.toLocaleString('en-IN')}
                         </td>
-                        <td style={{ padding: '12px 8px', textAlign: 'right', color: '#0f172a', fontSize: '14px', borderRight: '1px solid #e2e8f0' }}>
+                        <td style={{ padding: '12px 8px', textAlign: 'right', color: '#0f172a', fontWeight: 800, fontSize: '14px', borderRight: '1px solid #e2e8f0' }}>
                           {fmtINR(mCost)}
                         </td>
                       </React.Fragment>
                     );
                   })}
-                  <td style={{ padding: '12px 8px', textAlign: 'center', background: '#f8fafc', color: '#0f172a', fontSize: '14px' }}>
+                  <td style={{ padding: '12px 8px', textAlign: 'center', background: '#f8fafc', color: '#0f172a', fontWeight: 800, fontSize: '14px' }}>
                     {grandTotalQty.toLocaleString('en-IN')}
                   </td>
-                  <td style={{ padding: '12px 8px', textAlign: 'right', background: '#f8fafc', color: '#0f172a', fontSize: '15px' }}>
+                  <td style={{ padding: '12px 8px', textAlign: 'right', background: '#eff6ff', color: '#1d4ed8', fontWeight: 800, fontSize: '15px' }}>
                     {fmtINR(grandTotalCost)}
                   </td>
                 </tr>

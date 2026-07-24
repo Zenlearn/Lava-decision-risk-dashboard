@@ -179,6 +179,14 @@ export default function TabEvidence({
                       );
                     })
                   )}
+                  {/* Highlighted Total Summary Row */}
+                  <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
+                    <td colSpan={2} style={{ padding: '10px 12px', textAlign: 'left', color: '#0f172a', background: '#f1f5f9', fontWeight: 800 }}>TOTAL ANOMALIES FILTERED</td>
+                    <td style={{ padding: '10px 12px', color: '#dc2626', fontWeight: 800 }}>{rows.length.toLocaleString('en-IN')} Cases</td>
+                    <td colSpan={12} style={{ padding: '10px 12px', textAlign: 'left', color: '#64748b', fontSize: '12px' }}>
+                      Total Evidence Rows Evaluated Across Selected Territory &amp; Category Filters
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>

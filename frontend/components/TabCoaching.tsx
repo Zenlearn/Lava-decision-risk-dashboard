@@ -321,6 +321,17 @@ export default function TabCoaching({
                     </td>
                   </tr>
                 ))}
+                {/* Highlighted Total Summary Row */}
+                <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
+                  <td style={{ background: '#f1f5f9', color: '#0f172a', fontWeight: 800 }}>TOTAL</td>
+                  <td style={{ color: '#0f172a', fontWeight: 800 }}>{nominated.size} Nominated Staff</td>
+                  <td style={{ color: '#64748b', fontSize: '12px' }}>Aggregate Exception Program</td>
+                  <td colSpan={3} style={{ color: '#64748b', fontSize: '11px', textTransform: 'uppercase' }}>Individual Averages</td>
+                  <td style={{ color: '#0f172a', fontWeight: 800 }}>
+                    {Array.from(nominated.values()).reduce((sum, x) => sum + (parseInt(x.wo) || 0), 0).toLocaleString('en-IN')}
+                  </td>
+                  <td></td>
+                </tr>
               </tbody>
             </table>
           </>

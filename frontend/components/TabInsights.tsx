@@ -279,45 +279,74 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
                   </td>
                 </tr>
               ) : (
-                busmAsmSummaryList.map((r: any, i: number) => (
-                  <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                    <td style={{ padding: '7px 8px', textAlign: 'left', fontWeight: 600, color: '#1e293b' }}>{r.busm}</td>
-                    <td style={{ padding: '7px 8px', textAlign: 'left', color: '#475569' }}>{r.asm}</td>
-                    <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 600, color: '#475569' }}>
-                      {(r.totalCalls || 0).toLocaleString('en-IN')}
-                    </td>
-                    <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 800, color: '#0f172a' }}>
-                      {(r.n || 0).toLocaleString('en-IN')}
-                    </td>
-                    <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 700, color: '#2563eb' }}>
-                      {(r.sameDayCount || 0).toLocaleString('en-IN')}
-                    </td>
-                    <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 800 }}>
-                      <span style={{
-                        padding: '2px 5px',
-                        borderRadius: '4px',
-                        fontSize: '11px',
-                        background: (r.sameDayPct || 0) > 30 ? '#fef2f2' : '#f0fdf4',
-                        color: (r.sameDayPct || 0) > 30 ? '#dc2626' : '#16a34a',
-                        border: `1px solid ${(r.sameDayPct || 0) > 30 ? '#fecaca' : '#bbf7d0'}`,
-                      }}>
-                        {(r.sameDayPct ?? 0).toFixed(1)}%
-                      </span>
-                    </td>
-                    <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 800 }}>
-                      <span style={{
-                        padding: '2px 5px',
-                        borderRadius: '4px',
-                        fontSize: '11px',
-                        background: (r.sameDayToCallsPct || 0) > 15 ? '#fff7ed' : '#f8fafc',
-                        color: (r.sameDayToCallsPct || 0) > 15 ? '#c2410c' : '#0f172a',
-                        border: `1px solid ${(r.sameDayToCallsPct || 0) > 15 ? '#ffedd5' : '#e2e8f0'}`,
-                      }}>
-                        {(r.sameDayToCallsPct ?? 0).toFixed(1)}%
-                      </span>
-                    </td>
-                  </tr>
-                ))
+                <>
+                  {busmAsmSummaryList.map((r: any, i: number) => (
+                    <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                      <td style={{ padding: '7px 8px', textAlign: 'left', fontWeight: 600, color: '#1e293b' }}>{r.busm}</td>
+                      <td style={{ padding: '7px 8px', textAlign: 'left', color: '#475569' }}>{r.asm}</td>
+                      <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 600, color: '#475569' }}>
+                        {(r.totalCalls || 0).toLocaleString('en-IN')}
+                      </td>
+                      <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 800, color: '#0f172a' }}>
+                        {(r.n || 0).toLocaleString('en-IN')}
+                      </td>
+                      <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 700, color: '#2563eb' }}>
+                        {(r.sameDayCount || 0).toLocaleString('en-IN')}
+                      </td>
+                      <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 800 }}>
+                        <span style={{
+                          padding: '2px 5px',
+                          borderRadius: '4px',
+                          fontSize: '11px',
+                          background: (r.sameDayPct || 0) > 30 ? '#fef2f2' : '#f0fdf4',
+                          color: (r.sameDayPct || 0) > 30 ? '#dc2626' : '#16a34a',
+                          border: `1px solid ${(r.sameDayPct || 0) > 30 ? '#fecaca' : '#bbf7d0'}`,
+                        }}>
+                          {(r.sameDayPct ?? 0).toFixed(1)}%
+                        </span>
+                      </td>
+                      <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 800 }}>
+                        <span style={{
+                          padding: '2px 5px',
+                          borderRadius: '4px',
+                          fontSize: '11px',
+                          background: (r.sameDayToCallsPct || 0) > 15 ? '#fff7ed' : '#f8fafc',
+                          color: (r.sameDayToCallsPct || 0) > 15 ? '#c2410c' : '#0f172a',
+                          border: `1px solid ${(r.sameDayToCallsPct || 0) > 15 ? '#ffedd5' : '#e2e8f0'}`,
+                        }}>
+                          {(r.sameDayToCallsPct ?? 0).toFixed(1)}%
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                  {/* Highlighted Total Summary Row */}
+                  {(() => {
+                    const totalCallsSum = busmAsmSummaryList.reduce((sum, r) => sum + (r.totalCalls || 0), 0);
+                    const totalSwapsSum = busmAsmSummaryList.reduce((sum, r) => sum + (r.n || 0), 0);
+                    const sameDaySwapsSum = busmAsmSummaryList.reduce((sum, r) => sum + (r.sameDayCount || 0), 0);
+                    const avgSameDayPct = totalSwapsSum > 0 ? Number(((sameDaySwapsSum / totalSwapsSum) * 100).toFixed(1)) : 0;
+                    const avgSameDayToCallsPct = totalCallsSum > 0 ? Number(((sameDaySwapsSum / totalCallsSum) * 100).toFixed(1)) : 0;
+                    return (
+                      <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
+                        <td style={{ padding: '9px 8px', textAlign: 'left', color: '#0f172a', background: '#f1f5f9', fontWeight: 800 }}>TOTAL / ALL REGIONS</td>
+                        <td style={{ padding: '9px 8px', textAlign: 'left', color: '#64748b' }}>Summary Aggregate</td>
+                        <td style={{ padding: '9px 8px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>{totalCallsSum.toLocaleString('en-IN')}</td>
+                        <td style={{ padding: '9px 8px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>{totalSwapsSum.toLocaleString('en-IN')}</td>
+                        <td style={{ padding: '9px 8px', textAlign: 'right', color: '#2563eb', fontWeight: 800 }}>{sameDaySwapsSum.toLocaleString('en-IN')}</td>
+                        <td style={{ padding: '9px 8px', textAlign: 'right' }}>
+                          <span style={{ padding: '3px 7px', borderRadius: '4px', fontSize: '11.5px', background: '#ecfdf5', color: '#047857', border: '1px solid #a7f3d0', fontWeight: 800 }}>
+                            {avgSameDayPct}%
+                          </span>
+                        </td>
+                        <td style={{ padding: '9px 8px', textAlign: 'right' }}>
+                          <span style={{ padding: '3px 7px', borderRadius: '4px', fontSize: '11.5px', background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', fontWeight: 800 }}>
+                            {avgSameDayToCallsPct}%
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })()}
+                </>
               )}
             </tbody>
           </table>
@@ -355,47 +384,78 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
                   </td>
                 </tr>
               ) : (
-                top10Asps.map((r: any, i: number) => (
-                  <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                    <td style={{ padding: '7px 8px', textAlign: 'left', fontWeight: 600, color: '#475569', fontFamily: 'monospace' }}>{r.code || '-'}</td>
-                    <td style={{ padding: '7px 8px', textAlign: 'left', fontWeight: 600, color: '#1e293b' }}>{r.asp}</td>
-                    <td style={{ padding: '7px 8px', textAlign: 'left', color: '#475569' }}>{r.asm || '-'}</td>
-                    <td style={{ padding: '7px 8px', textAlign: 'left', color: '#475569' }}>{r.busm || '-'}</td>
-                    <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 600, color: '#475569' }}>
-                      {(r.totalCalls || 0).toLocaleString('en-IN')}
-                    </td>
-                    <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 800, color: '#0f172a' }}>
-                      {(r.n || 0).toLocaleString('en-IN')}
-                    </td>
-                    <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 700, color: '#2563eb' }}>
-                      {(r.sameDayCount || 0).toLocaleString('en-IN')}
-                    </td>
-                    <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 800 }}>
-                      <span style={{
-                        padding: '2px 5px',
-                        borderRadius: '4px',
-                        fontSize: '11px',
-                        background: (r.sameDayPct || 0) > 30 ? '#fef2f2' : '#f0fdf4',
-                        color: (r.sameDayPct || 0) > 30 ? '#dc2626' : '#16a34a',
-                        border: `1px solid ${(r.sameDayPct || 0) > 30 ? '#fecaca' : '#bbf7d0'}`,
-                      }}>
-                        {(r.sameDayPct ?? 0).toFixed(1)}%
-                      </span>
-                    </td>
-                    <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 800 }}>
-                      <span style={{
-                        padding: '2px 5px',
-                        borderRadius: '4px',
-                        fontSize: '11px',
-                        background: (r.sameDayToCallsPct || 0) > 15 ? '#fff7ed' : '#f8fafc',
-                        color: (r.sameDayToCallsPct || 0) > 15 ? '#c2410c' : '#0f172a',
-                        border: `1px solid ${(r.sameDayToCallsPct || 0) > 15 ? '#ffedd5' : '#e2e8f0'}`,
-                      }}>
-                        {(r.sameDayToCallsPct ?? 0).toFixed(1)}%
-                      </span>
-                    </td>
-                  </tr>
-                ))
+                <>
+                  {top10Asps.map((r: any, i: number) => (
+                    <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                      <td style={{ padding: '7px 8px', textAlign: 'left', fontWeight: 600, color: '#475569', fontFamily: 'monospace' }}>{r.code || '-'}</td>
+                      <td style={{ padding: '7px 8px', textAlign: 'left', fontWeight: 600, color: '#1e293b' }}>{r.asp}</td>
+                      <td style={{ padding: '7px 8px', textAlign: 'left', color: '#475569' }}>{r.asm || '-'}</td>
+                      <td style={{ padding: '7px 8px', textAlign: 'left', color: '#475569' }}>{r.busm || '-'}</td>
+                      <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 600, color: '#475569' }}>
+                        {(r.totalCalls || 0).toLocaleString('en-IN')}
+                      </td>
+                      <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 800, color: '#0f172a' }}>
+                        {(r.n || 0).toLocaleString('en-IN')}
+                      </td>
+                      <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 700, color: '#2563eb' }}>
+                        {(r.sameDayCount || 0).toLocaleString('en-IN')}
+                      </td>
+                      <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 800 }}>
+                        <span style={{
+                          padding: '2px 5px',
+                          borderRadius: '4px',
+                          fontSize: '11px',
+                          background: (r.sameDayPct || 0) > 30 ? '#fef2f2' : '#f0fdf4',
+                          color: (r.sameDayPct || 0) > 30 ? '#dc2626' : '#16a34a',
+                          border: `1px solid ${(r.sameDayPct || 0) > 30 ? '#fecaca' : '#bbf7d0'}`,
+                        }}>
+                          {(r.sameDayPct ?? 0).toFixed(1)}%
+                        </span>
+                      </td>
+                      <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 800 }}>
+                        <span style={{
+                          padding: '2px 5px',
+                          borderRadius: '4px',
+                          fontSize: '11px',
+                          background: (r.sameDayToCallsPct || 0) > 15 ? '#fff7ed' : '#f8fafc',
+                          color: (r.sameDayToCallsPct || 0) > 15 ? '#c2410c' : '#0f172a',
+                          border: `1px solid ${(r.sameDayToCallsPct || 0) > 15 ? '#ffedd5' : '#e2e8f0'}`,
+                        }}>
+                          {(r.sameDayToCallsPct ?? 0).toFixed(1)}%
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                  {/* Highlighted Total Summary Row for Top ASPs */}
+                  {(() => {
+                    const topAspCallsSum = top10Asps.reduce((sum, r) => sum + (r.totalCalls || 0), 0);
+                    const topAspSwapsSum = top10Asps.reduce((sum, r) => sum + (r.n || 0), 0);
+                    const topAspSameDaySum = top10Asps.reduce((sum, r) => sum + (r.sameDayCount || 0), 0);
+                    const topAspSameDayPct = topAspSwapsSum > 0 ? Number(((topAspSameDaySum / topAspSwapsSum) * 100).toFixed(1)) : 0;
+                    const topAspSameDayToCallsPct = topAspCallsSum > 0 ? Number(((topAspSameDaySum / topAspCallsSum) * 100).toFixed(1)) : 0;
+                    return (
+                      <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
+                        <td style={{ padding: '9px 8px', textAlign: 'left', color: '#0f172a', fontFamily: 'monospace', background: '#f1f5f9', fontWeight: 800 }}>TOTAL</td>
+                        <td style={{ padding: '9px 8px', textAlign: 'left', color: '#0f172a', fontWeight: 800 }}>Top 10 ASPs Aggregate</td>
+                        <td style={{ padding: '9px 8px', textAlign: 'left', color: '#64748b' }}>-</td>
+                        <td style={{ padding: '9px 8px', textAlign: 'left', color: '#64748b' }}>-</td>
+                        <td style={{ padding: '9px 8px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>{topAspCallsSum.toLocaleString('en-IN')}</td>
+                        <td style={{ padding: '9px 8px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>{topAspSwapsSum.toLocaleString('en-IN')}</td>
+                        <td style={{ padding: '9px 8px', textAlign: 'right', color: '#2563eb', fontWeight: 800 }}>{topAspSameDaySum.toLocaleString('en-IN')}</td>
+                        <td style={{ padding: '9px 8px', textAlign: 'right' }}>
+                          <span style={{ padding: '3px 7px', borderRadius: '4px', fontSize: '11.5px', background: '#ecfdf5', color: '#047857', border: '1px solid #a7f3d0', fontWeight: 800 }}>
+                            {topAspSameDayPct}%
+                          </span>
+                        </td>
+                        <td style={{ padding: '9px 8px', textAlign: 'right' }}>
+                          <span style={{ padding: '3px 7px', borderRadius: '4px', fontSize: '11.5px', background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', fontWeight: 800 }}>
+                            {topAspSameDayToCallsPct}%
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })()}
+                </>
               )}
             </tbody>
           </table>
@@ -456,6 +516,13 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
                     </td>
                   </tr>
                 ))}
+                {/* Total Row for Device Model */}
+                <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
+                  <td style={{ padding: '10px 12px', textAlign: 'left', color: '#0f172a', background: '#f1f5f9', fontWeight: 800 }}>TOTAL INCIDENTS</td>
+                  <td style={{ padding: '10px 12px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>
+                    {((activeModelHome?.top_models || []).reduce((sum: number, r: any) => sum + (r.n || 0), 0)).toLocaleString('en-IN')}
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -486,6 +553,13 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
                     </tr>
                   );
                 })}
+                {/* Total Row for Action Codes */}
+                <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
+                  <td style={{ padding: '10px 12px', textAlign: 'left', color: '#0f172a', background: '#f1f5f9', fontWeight: 800 }}>TOTAL INCIDENTS</td>
+                  <td style={{ padding: '10px 12px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>
+                    {((activeModelHome?.top_actions || []).reduce((sum: number, r: any) => sum + (r.n || 0), 0)).toLocaleString('en-IN')}
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>

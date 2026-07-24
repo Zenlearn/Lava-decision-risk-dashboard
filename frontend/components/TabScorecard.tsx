@@ -351,6 +351,37 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
                             <td>{r.conf === 'LOW' ? <span style={{ color: 'var(--bad)', fontWeight: 700 }}>LOW</span> : 'OK'}</td>
                           </tr>
                         ))}
+                        {/* Highlighted Total Summary Row */}
+                        {(() => {
+                          const totWo = aggData.reduce((sum, r) => sum + r.wo, 0);
+                          const totGhost = aggData.reduce((sum, r) => sum + r.ghost, 0);
+                          const totHomeBoard = aggData.reduce((sum, r) => sum + r.home_board, 0);
+                          const totCross = aggData.reduce((sum, r) => sum + r.cross, 0);
+                          const totBounce = aggData.reduce((sum, r) => sum + r.bounce, 0);
+                          const totMismatch = aggData.reduce((sum, r) => sum + r.mismatch, 0);
+                          const totDetractor = aggData.reduce((sum, r) => sum + r.detractor, 0);
+                          const totDoa = aggData.reduce((sum, r) => sum + r.doa, 0);
+                          const avgProc = totWo > 0 ? (aggData.reduce((sum, r) => sum + r.process * r.wo, 0) / totWo) : 0;
+                          const avgSk = totWo > 0 ? (aggData.reduce((sum, r) => sum + r.skill * r.wo, 0) / totWo) : 0;
+                          const avgAud = totWo > 0 ? (aggData.reduce((sum, r) => sum + r.audit * r.wo, 0) / totWo) : 0;
+                          return (
+                            <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
+                              <td style={{ background: '#f1f5f9', color: '#0f172a', fontWeight: 800 }}>TOTAL / AVERAGE</td>
+                              <td><span className="score-pill s-good">{avgProc.toFixed(1)}</span></td>
+                              <td><span className="score-pill s-good">{avgSk.toFixed(1)}</span></td>
+                              <td><span className="score-pill s-good">{avgAud.toFixed(1)}</span></td>
+                              <td style={{ color: '#0f172a', fontWeight: 800 }}>{totWo.toLocaleString('en-IN')}</td>
+                              <td style={{ color: '#0f172a', fontWeight: 800 }}>{totGhost}</td>
+                              <td style={{ color: '#0f172a', fontWeight: 800 }}>{totHomeBoard}</td>
+                              <td style={{ color: '#0f172a', fontWeight: 800 }}>{totCross}</td>
+                              <td style={{ color: '#0f172a', fontWeight: 800 }}>{totBounce}</td>
+                              <td style={{ color: '#0f172a', fontWeight: 800 }}>{totMismatch}</td>
+                              <td style={{ color: '#0f172a', fontWeight: 800 }}>{totDetractor}</td>
+                              <td style={{ color: '#0f172a', fontWeight: 800 }}>{totDoa}</td>
+                              <td style={{ color: '#64748b', fontSize: '11px', textTransform: 'uppercase' }}>AGGREGATE</td>
+                            </tr>
+                          );
+                        })()}
                       </tbody>
                     </table>
                   </div>
