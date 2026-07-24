@@ -310,7 +310,6 @@ export default function TabDashboard({
                 Service at Home (S@H) component-level line items summing to total headline leakage of {fmtINR(activeLeakCur)} (excluding walk-in calls) for {currentKPI?.month || selectedMonth}
               </span>
             </div>
-          </div>>
           </div>
           <span style={{ background: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', padding: '6px 14px', borderRadius: '8px', fontSize: '13px', fontWeight: 800 }}>
             Total Exposure: {fmtINR(activeLeakCur)}
