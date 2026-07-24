@@ -17,6 +17,7 @@ interface TabInsightsProps {
 export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
   const [selectedMonth, setSelectedMonth] = useState<string>('Jun');
   const [selectedModelMonth, setSelectedModelMonth] = useState<string>('Jun');
+  const [selectedBenchmarkMonth, setSelectedBenchmarkMonth] = useState<string>('Jun');
   const [selectedBusm, setSelectedBusm] = useState<string>('all');
   const [selectedAsm, setSelectedAsm] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'swapsCount' | 'sameDayPct' | 'sameDayToCallsPct' | 'sameDayCount' | 'totalCalls'>('swapsCount');
@@ -471,14 +472,20 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
                 </tr>
               </thead>
               <tbody>
-                {(activeModelHome?.top_actions || []).map((r: any, i: number) => (
-                  <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                    <td style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 600, color: '#1e293b' }}>{r.action}</td>
-                    <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>
-                      {(r.n || 0).toLocaleString('en-IN')}
-                    </td>
-                  </tr>
-                ))}
+                {(activeModelHome?.top_actions || []).map((r: any, i: number) => {
+                  const actionName = (r.action && r.action.trim() !== '') ? r.action : 'UNSPECIFIED / NOT RECORDED';
+                  const isUnspecified = actionName === 'UNSPECIFIED / NOT RECORDED';
+                  return (
+                    <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                      <td style={{ padding: '10px 12px', textAlign: 'left', fontWeight: isUnspecified ? 500 : 600, color: isUnspecified ? '#64748b' : '#1e293b', fontStyle: isUnspecified ? 'italic' : 'normal' }}>
+                        {actionName}
+                      </td>
+                      <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>
+                        {(r.n || 0).toLocaleString('en-IN')}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -498,18 +505,46 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
 
       {/* 2. BROAD SECTION: SERVE@HOME (S@H) PROCESS EFFICIENCY & OPERATIONAL BENCHMARKS */}
       <div style={{ marginTop: '32px' }}>
-        <div className="sec-title">
-          <div className="bar" style={{ background: '#E50046' }}></div>
-          <span style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>
-            Serve@Home (S@H) Process Efficiency &amp; Operational Benchmarks
-          </span>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '16px' }}>
+          <div className="sec-title" style={{ margin: 0 }}>
+            <div className="bar" style={{ background: '#E50046' }}></div>
+            <span style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>
+              Serve@Home (S@H) Process Efficiency &amp; Operational Benchmarks
+            </span>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <label style={{ fontSize: '12.5px', fontWeight: 700, color: '#475569', textTransform: 'uppercase' }}>
+              Benchmark Month:
+            </label>
+            <select
+              value={selectedBenchmarkMonth}
+              onChange={(e) => setSelectedBenchmarkMonth(e.target.value)}
+              style={{
+                padding: '6px 14px',
+                borderRadius: '8px',
+                border: '1.5px solid #E50046',
+                background: '#ffffff',
+                color: '#0f172a',
+                fontSize: '13.5px',
+                fontWeight: 700,
+                cursor: 'pointer',
+                outline: 'none',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+              }}
+            >
+              <option value="Jun">June 2026</option>
+              <option value="May">May 2026</option>
+              <option value="Apr">April 2026</option>
+            </select>
+          </div>
         </div>
 
         {/* Overview Scope Banner */}
         <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '12px', padding: '18px 22px', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
           <div>
             <div style={{ fontWeight: 800, fontSize: '16px', color: '#0f172a' }}>
-              Dataset Operational Scope: 16,030 Appointments Analyzed (Apr – Jun 2026)
+              Dataset Operational Scope: 16,030 Appointments Analyzed ({selectedBenchmarkMonth === 'Jun' ? 'June 2026' : selectedBenchmarkMonth === 'May' ? 'May 2026' : 'April 2026'})
             </div>
             <div style={{ fontSize: '13px', color: '#64748b', marginTop: '4px' }}>
               Process metrics calculated across 532 Authorized Service Providers (ASPs), 36 Area Managers (ASMs), and 5 Business Unit Managers (BUSMs)
@@ -525,8 +560,8 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
           </div>
         </div>
 
-        {/* ROW 1: 3 TABLES (Dimensions 1, 2, 3) */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', marginBottom: '20px' }}>
+        {/* 2 CARDS PER ROW GRID LAYOUT */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px', marginBottom: '20px' }}>
 
           {/* Dimension 1: Service Fulfillment & Capacity Efficiency */}
           <div className="card-mock" style={{ margin: 0, padding: '20px' }}>
@@ -544,8 +579,12 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
                 <span style={{ fontSize: '16px', fontWeight: 800, color: '#16a34a' }}>68.7% <span style={{ fontSize: '13px', color: '#475569', fontWeight: 600 }}>(11,010 closed)</span></span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '14px', color: '#475569', fontWeight: 600 }}>Appointment Cancellation Rate</span>
-                <span style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a' }}>30.7% <span style={{ fontSize: '13px', color: '#475569', fontWeight: 600 }}>(4,926 rejected)</span></span>
+                <span style={{ fontSize: '14px', color: '#475569', fontWeight: 600 }}>Pre-Assignment Cancellation Rate</span>
+                <span style={{ fontSize: '16px', fontWeight: 800, color: '#d97706' }}>18.4% <span style={{ fontSize: '13px', color: '#475569', fontWeight: 600 }}>(2,950 before ASP/ASM)</span></span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: '14px', color: '#475569', fontWeight: 600 }}>Post-Assignment Cancellation Rate</span>
+                <span style={{ fontSize: '16px', fontWeight: 800, color: '#dc2626' }}>12.3% <span style={{ fontSize: '13px', color: '#475569', fontWeight: 600 }}>(1,976 after ASP/ASM)</span></span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '14px', color: '#475569', fontWeight: 600 }}>Work Order Conversion Velocity</span>
@@ -580,7 +619,7 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
             </div>
           </div>
 
-          {/* Dimension 3: Logistics & Field Technician Productivity */}
+          {/* Dimension 3: Field Logistics & Technician Productivity */}
           <div className="card-mock" style={{ margin: 0, padding: '20px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px', borderBottom: '1px solid #f1f5f9', paddingBottom: '12px' }}>
               <span style={{ background: '#dcfce7', color: '#15803d', width: '26px', height: '26px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: 800 }}>3</span>
@@ -605,11 +644,6 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
               </div>
             </div>
           </div>
-
-        </div>
-
-        {/* ROW 2: 2 TABLES (Dimensions 4, 5) */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px', marginBottom: '20px' }}>
 
           {/* Dimension 4: Technical Resolution & Repair Quality */}
           <div className="card-mock" style={{ margin: 0, padding: '20px' }}>

@@ -588,7 +588,8 @@ export async function getFullDashboardData(filters?: {
     const busm = wo.serviceCentre.dealer.region.name;
     const model = String(raw[FIELD_MAP.model] || '');
     const symptomRaw = String(raw[FIELD_MAP.symptomDesc] || '');
-    const actionRaw = String(raw['Action Code Desc'] || raw['Action Taken'] || '');
+    const rawActionStr = String(raw['Action Code Desc'] || raw['Action Taken'] || '').trim();
+    const actionRaw = rawActionStr !== '' ? rawActionStr : 'UNSPECIFIED / NOT RECORDED';
     const partRaw = String(raw['Part Name'] || raw['Part Description'] || '');
     const city = ''; // Customer City column dropped from Master Data in the Jul 2026 drop
 
