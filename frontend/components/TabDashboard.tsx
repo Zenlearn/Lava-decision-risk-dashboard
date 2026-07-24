@@ -319,14 +319,14 @@ export default function TabDashboard({
         {expandedSections.leakage && (
           <div style={{ padding: '20px' }}>
             <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
                 <thead>
-                  <tr style={{ borderBottom: '2px solid #e2e8f0', color: '#64748b', textAlign: 'left', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em', background: '#f8fafc' }}>
-                    <th style={{ padding: '10px 12px' }}>Line Item / Component</th>
-                    <th style={{ padding: '10px 12px', textAlign: 'center' }}>Quantity (Units / Visits)</th>
-                    <th style={{ padding: '10px 12px', textAlign: 'right' }}>Total Exposure Cost</th>
-                    <th style={{ padding: '10px 12px', textAlign: 'right' }}>% Share of Total</th>
-                    <th style={{ padding: '10px 12px', textAlign: 'center' }}>MoM Trend</th>
+                  <tr style={{ borderBottom: '2px solid #cbd5e1', color: '#475569', textAlign: 'left', fontSize: '12.5px', textTransform: 'uppercase', letterSpacing: '0.04em', background: '#f8fafc' }}>
+                    <th style={{ padding: '12px 14px' }}>Line Item / Component</th>
+                    <th style={{ padding: '12px 14px', textAlign: 'center' }}>Quantity (Units / Visits)</th>
+                    <th style={{ padding: '12px 14px', textAlign: 'right' }}>Total Exposure Cost</th>
+                    <th style={{ padding: '12px 14px', textAlign: 'right' }}>% Share of Total</th>
+                    <th style={{ padding: '12px 14px', textAlign: 'center' }}>MoM Trend</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -338,27 +338,27 @@ export default function TabDashboard({
 
                     return (
                       <tr key={idx} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                        <td style={{ padding: '10px 12px', fontWeight: 600, color: '#1e293b' }}>{item.label}</td>
-                        <td style={{ padding: '10px 12px', textAlign: 'center', fontWeight: 600, color: '#475569' }}>
+                        <td style={{ padding: '12px 14px', fontWeight: 600, color: '#1e293b' }}>{item.label}</td>
+                        <td style={{ padding: '12px 14px', textAlign: 'center', fontWeight: 600, color: '#475569' }}>
                           {(item.quantity || 0).toLocaleString('en-IN')}
                         </td>
-                        <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>
+                        <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>
                           {fmtINR(item.cost || 0)}
                         </td>
-                        <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 600, color: '#64748b' }}>
+                        <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 600, color: '#64748b' }}>
                           {pctShare}%
                         </td>
-                        <td style={{ padding: '10px 12px', textAlign: 'center', fontWeight: 700 }}>
+                        <td style={{ padding: '12px 14px', textAlign: 'center', fontWeight: 700 }}>
                           {prevKPI ? (
                             <span style={{
                               color: costDiff < 0 ? '#16a34a' : costDiff > 0 ? '#dc2626' : '#64748b',
                               background: costDiff < 0 ? '#f0fdf4' : costDiff > 0 ? '#fef2f2' : '#f8fafc',
-                              padding: '2px 8px', borderRadius: '4px', fontSize: '11px'
+                              padding: '3px 10px', borderRadius: '4px', fontSize: '12px'
                             }}>
                               {costDiff > 0 ? `↑ +${fmtINR(costDiff)}` : costDiff < 0 ? `↓ -${fmtINR(Math.abs(costDiff))}` : '• Stable'}
                             </span>
                           ) : (
-                            <span style={{ color: '#64748b', fontSize: '11px' }}>• Baseline</span>
+                            <span style={{ color: '#64748b', fontSize: '12px' }}>• Baseline</span>
                           )}
                         </td>
                       </tr>

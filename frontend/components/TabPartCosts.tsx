@@ -341,14 +341,14 @@ export default function TabPartCosts({
 
           {/* Model Breakdown Table */}
           <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
               <thead>
-                <tr style={{ borderBottom: '2px solid #e2e8f0', background: '#f8fafc', color: '#475569', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                  <th style={{ padding: '10px 12px', textAlign: 'left' }}>Phone / Device Model Name</th>
-                  <th style={{ padding: '10px 12px', textAlign: 'right' }}>Monthly Total Cost of Parts Replaced (₹)</th>
-                  <th style={{ padding: '10px 12px', textAlign: 'right' }}>Average Cost of Parts Replaced (₹)</th>
-                  <th style={{ padding: '10px 12px', textAlign: 'right' }}>Cost of Phone / Device (ASP ₹)</th>
-                  <th style={{ padding: '10px 12px', textAlign: 'right' }}>% of Avg Part Cost by Device Cost</th>
+                <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '12.5px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  <th style={{ padding: '12px 14px', textAlign: 'left' }}>Phone / Device Model Name</th>
+                  <th style={{ padding: '12px 14px', textAlign: 'right' }}>Monthly Total Cost of Parts Replaced (₹)</th>
+                  <th style={{ padding: '12px 14px', textAlign: 'right' }}>Average Cost of Parts Replaced (₹)</th>
+                  <th style={{ padding: '12px 14px', textAlign: 'right' }}>Cost of Phone / Device (ASP ₹)</th>
+                  <th style={{ padding: '12px 14px', textAlign: 'right' }}>% of Avg Part Cost by Device Cost</th>
                 </tr>
               </thead>
               <tbody>
@@ -358,19 +358,19 @@ export default function TabPartCosts({
 
                   return (
                     <tr key={idx} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                      <td style={{ padding: '10px 12px', fontWeight: 600, color: '#1e293b' }}>
+                      <td style={{ padding: '12px 14px', fontWeight: 600, color: '#1e293b' }}>
                         {m.model}
                       </td>
-                      <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>
+                      <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>
                         {fmtINR(m.totalPartCost || 0)}
                       </td>
-                      <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 600, color: '#475569' }}>
+                      <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 600, color: '#475569' }}>
                         {fmtINR(m.avgPartCost || 0)}
                       </td>
-                      <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 600, color: '#64748b' }}>
+                      <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 600, color: '#64748b' }}>
                         {fmtINR(deviceASP)}
                       </td>
-                      <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 700, color: parseFloat(pctDeviceCost) > 15 ? '#E50046' : '#1e293b' }}>
+                      <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 700, color: parseFloat(pctDeviceCost) > 15 ? '#E50046' : '#1e293b' }}>
                         {pctDeviceCost}%
                       </td>
                     </tr>
@@ -378,20 +378,20 @@ export default function TabPartCosts({
                 })}
 
                 {/* Total Summary Row */}
-                <tr style={{ borderTop: '2px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
-                  <td style={{ padding: '12px', color: '#0f172a' }}>
-                    Total ({modelList.length} Models)
+                <tr style={{ borderTop: '2px solid #cbd5e1', background: '#f8fafc', fontWeight: 800 }}>
+                  <td style={{ padding: '12px 14px', textAlign: 'left', color: '#0f172a' }}>
+                    Total / Overall Weighted Average
                   </td>
-                  <td style={{ padding: '12px', textAlign: 'right', color: '#0f172a', fontSize: '14px' }}>
+                  <td style={{ padding: '12px 14px', textAlign: 'right', color: '#0f172a', fontSize: '15px' }}>
                     {fmtINR(consTotalPartCost)}
                   </td>
-                  <td style={{ padding: '12px', textAlign: 'right', color: '#0f172a', fontSize: '14px' }}>
+                  <td style={{ padding: '12px 14px', textAlign: 'right', color: '#0f172a' }}>
                     {fmtINR(consOverallAvgPartCost)}
                   </td>
-                  <td style={{ padding: '12px', textAlign: 'right', color: '#0f172a', fontSize: '14px' }}>
+                  <td style={{ padding: '12px 14px', textAlign: 'right', color: '#64748b' }}>
                     {fmtINR(consOverallAvgDeviceCost)}
                   </td>
-                  <td style={{ padding: '12px', textAlign: 'right', color: '#0f172a', fontSize: '14px' }}>
+                  <td style={{ padding: '12px 14px', textAlign: 'right', color: '#E50046', fontSize: '15px' }}>
                     {consOverallPct}%
                   </td>
                 </tr>
