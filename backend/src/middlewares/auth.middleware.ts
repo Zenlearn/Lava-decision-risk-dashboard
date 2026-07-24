@@ -60,6 +60,8 @@ export class AuthMiddleware {
 
 			req.user = {
 				id: userId ?? '',
+				email: (payload['email'] || payload['user_email'] || payload['username']) as string | undefined,
+				name: (payload['name'] || payload['full_name'] || payload['first_name']) as string | undefined,
 				role: payload['role'] as string | undefined,
 				is_admin: payload['is_admin'] as boolean | undefined,
 				is_super_admin: payload['is_super_admin'] as boolean | undefined,
