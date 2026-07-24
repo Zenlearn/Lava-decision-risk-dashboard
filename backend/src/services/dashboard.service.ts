@@ -1367,14 +1367,22 @@ export async function getFullDashboardData(filters?: {
   });
   const homeRepeatCust = Array.from(customerHomeVisits.values()).filter((c) => c >= 3).length;
 
+  // Total workorder calls per ASP
+  const aspCallsMap = new Map<string, number>();
+  processedRows.forEach((r) => {
+    aspCallsMap.set(r.asp, (aspCallsMap.get(r.asp) || 0) + 1);
+  });
+
   // Top ASPs for board-at-home
-  const aspHomeCounts = new Map<string, { code: string; asp: string; asm: string; busm: string; n: number; sameDayCount: number; sameDayPct: number }>();
+  const aspHomeCounts = new Map<string, { code: string; asp: string; asm: string; busm: string; totalCalls: number; n: number; sameDayCount: number; sameDayPct: number; sameDayToCallsPct: number }>();
   processedRows.filter((r) => r.isHomeBoard).forEach((r) => {
     const isSameDay = r.tat === 0 || (Boolean(r.created) && r.created === r.delivered);
-    const countObj = aspHomeCounts.get(r.asp) || { code: r.aspCode || '', asp: r.asp, asm: r.asm, busm: r.busm, n: 0, sameDayCount: 0, sameDayPct: 0 };
+    const totCalls = aspCallsMap.get(r.asp) || 0;
+    const countObj = aspHomeCounts.get(r.asp) || { code: r.aspCode || '', asp: r.asp, asm: r.asm, busm: r.busm, totalCalls: totCalls, n: 0, sameDayCount: 0, sameDayPct: 0, sameDayToCallsPct: 0 };
     countObj.n++;
     if (isSameDay) countObj.sameDayCount++;
     countObj.sameDayPct = countObj.n > 0 ? Number(((countObj.sameDayCount / countObj.n) * 100).toFixed(1)) : 0;
+    countObj.sameDayToCallsPct = countObj.totalCalls > 0 ? Number(((countObj.sameDayCount / countObj.totalCalls) * 100).toFixed(1)) : 0;
     aspHomeCounts.set(r.asp, countObj);
   });
   const topAsps = Array.from(aspHomeCounts.values()).sort((a, b) => b.n - a.n);
@@ -1394,7 +1402,7 @@ export async function getFullDashboardData(filters?: {
   const topActions = Array.from(actionHomeCounts.entries()).map(([action, n]) => ({ action, n })).sort((a, b) => b.n - a.n).slice(0, 10);
 
   // Monthly breakdown for Doorstep Board-at-Home
-  const homeByMonth: Record<string, { board_at_home: number; pct_of_home: number; pcba_at_home: number; lcd_at_home: number; top_asps: { code: string; asp: string; asm: string; busm: string; n: number; sameDayCount: number; sameDayPct: number }[]; top_models: { model: string; n: number }[]; top_actions: { action: string; n: number }[] }> = {};
+  const homeByMonth: Record<string, { board_at_home: number; pct_of_home: number; pcba_at_home: number; lcd_at_home: number; top_asps: { code: string; asp: string; asm: string; busm: string; totalCalls: number; n: number; sameDayCount: number; sameDayPct: number; sameDayToCallsPct: number }[]; top_models: { model: string; n: number }[]; top_actions: { action: string; n: number }[] }> = {};
   
   const allHomeMonths = Array.from(new Set(processedRows.map((r) => r.month))).filter(Boolean);
   allHomeMonths.forEach((m) => {
@@ -1406,13 +1414,20 @@ export async function getFullDashboardData(filters?: {
     const mPcba = mHomeBoardRows.filter((r) => r.isPCBA).length;
     const mLcd = mHomeBoardRows.filter((r) => r.isLCD).length;
 
-    const mAspMap = new Map<string, { code: string; asp: string; asm: string; busm: string; n: number; sameDayCount: number; sameDayPct: number }>();
+    const mAspCallsMap = new Map<string, number>();
+    monthRows.forEach((r) => {
+      mAspCallsMap.set(r.asp, (mAspCallsMap.get(r.asp) || 0) + 1);
+    });
+
+    const mAspMap = new Map<string, { code: string; asp: string; asm: string; busm: string; totalCalls: number; n: number; sameDayCount: number; sameDayPct: number; sameDayToCallsPct: number }>();
     mHomeBoardRows.forEach((r) => {
       const isSameDay = r.tat === 0 || (Boolean(r.created) && r.created === r.delivered);
-      const c = mAspMap.get(r.asp) || { code: r.aspCode || '', asp: r.asp, asm: r.asm, busm: r.busm, n: 0, sameDayCount: 0, sameDayPct: 0 };
+      const totCalls = mAspCallsMap.get(r.asp) || 0;
+      const c = mAspMap.get(r.asp) || { code: r.aspCode || '', asp: r.asp, asm: r.asm, busm: r.busm, totalCalls: totCalls, n: 0, sameDayCount: 0, sameDayPct: 0, sameDayToCallsPct: 0 };
       c.n++;
       if (isSameDay) c.sameDayCount++;
       c.sameDayPct = c.n > 0 ? Number(((c.sameDayCount / c.n) * 100).toFixed(1)) : 0;
+      c.sameDayToCallsPct = c.totalCalls > 0 ? Number(((c.sameDayCount / c.totalCalls) * 100).toFixed(1)) : 0;
       mAspMap.set(r.asp, c);
     });
     const mTopAsps = Array.from(mAspMap.values()).sort((a, b) => b.n - a.n);
