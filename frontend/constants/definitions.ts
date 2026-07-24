@@ -2,7 +2,7 @@ export const DASHBOARD_DEFINITIONS = {
   kpiCalculations: [
     {
       title: 'Estimated monthly leakage exposure',
-      definition: 'For the latest month: (PCBA count × PCBA cost) + (LCD count × LCD cost) across same-day walk-in board swaps and board repairs logged at home, plus (repeat home-visit bounces × travel cost). Board-level parts only — battery/charger swaps are excluded as legitimate doorstep work. Costs are editable placeholders set in the Part-Cost Assumptions tab. Annualised run-rate = monthly × 12.'
+      definition: 'Calculated strictly for Service at Home (S@H / Doorstep) work orders (excluding Customer Walk-in and Trade Walk-in calls): (PCBA count × PCBA cost) + (LCD count × LCD cost) across anomalous doorstep repairs, plus (repeat home-visit bounces × travel cost). Board-level parts only — battery/charger swaps are excluded as legitimate doorstep work. Unit costs align with Part Exposure settings. Annualised run-rate = monthly × 12.'
     },
     {
       title: 'First-time fix rate (FTFR)',
@@ -21,8 +21,8 @@ export const DASHBOARD_DEFINITIONS = {
       definition: '1 − (mismatch-that-bounced work orders ÷ total work orders) × 100. A "mismatch-that-bounced" is a hardware symptom closed with a software-only action that then returned for service — a confirmed mis-diagnosis. A leading indicator of FTFR.'
     }
   ],
-  kpiNote: 'All counts are for the latest month unless stated. Targets: C-SAT 95% is Lava\'s published standard; FTFR, MTTR and diagnostic-accuracy targets shown on the cards are indicative and should be confirmed with Lava.',
-  executiveFootnote: 'These four KPIs are expressed in Lava’s own service language. Each is driven by an underlying decision-risk signal measured in the Score Card and Evidence tabs: bounces → first-time fix, detractors → satisfaction, turnaround → MTTR, mis-fixes that bounce → diagnostic accuracy. Rupee figures use placeholder part costs set in the Part-Cost Assumptions tab. CSAT target (95%) is Lava’s published standard; other targets are indicative and should be confirmed with Lava.',
+  kpiNote: 'All counts are for the latest month unless stated. Leakage calculations filter strictly for Service at Home (S@H) work orders, excluding Customer Walk-in and Trade Walk-in calls. Targets: C-SAT 95% is Lava\'s published standard; FTFR, MTTR and diagnostic-accuracy targets shown on the cards are indicative and should be confirmed with Lava.',
+  executiveFootnote: 'These four KPIs are expressed in Lava’s own service language. Each is driven by an underlying decision-risk signal measured in the Score Card and Evidence tabs: bounces → first-time fix, detractors → satisfaction, turnaround → MTTR, mis-fixes that bounce → diagnostic accuracy. Rupee figures reflect Service at Home (S@H) doorstep exposure using component costs set in the Part Exposure tab (excluding walk-in calls). CSAT target (95%) is Lava’s published standard; other targets are indicative and should be confirmed with Lava.',
   globalFooter: 'ZenLearn Decision Risk Measurement - built for verification, not accusation - all rupee values provisional pending Lava part-cost master',
   
   cohortThresholds: {

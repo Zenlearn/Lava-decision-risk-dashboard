@@ -734,7 +734,8 @@ export async function getFullDashboardData(filters?: {
     if (isHome && (isBounce || isGhost || isCrossAsp)) {
       travelVal = 500;
     }
-    const isAnomalous = isGhost || isHomeBoard || isCrossAsp || isBounce || isMismatchBounced || isMismatch;
+    const isSahCall = isHome || !isWalkIn;
+    const isAnomalous = isSahCall && (isGhost || isHomeBoard || isCrossAsp || isBounce || isMismatchBounced || isMismatch);
     const leakageValue = isAnomalous ? (actualPartVal + travelVal) : 0;
     const partLeakageVal = isAnomalous ? actualPartVal : 0;
 
