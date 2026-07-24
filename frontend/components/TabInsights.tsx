@@ -19,7 +19,7 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
   const [selectedModelMonth, setSelectedModelMonth] = useState<string>('all');
   const [selectedBusm, setSelectedBusm] = useState<string>('all');
   const [selectedAsm, setSelectedAsm] = useState<string>('all');
-  const [sortBy, setSortBy] = useState<'swapsCount' | 'sameDayPct' | 'sameDayCount'>('swapsCount');
+  const [sortBy, setSortBy] = useState<'swapsCount' | 'sameDayPct' | 'sameDayToCallsPct' | 'sameDayCount' | 'totalCalls'>('swapsCount');
 
   const activeHome = selectedMonth === 'all'
     ? data.home
@@ -33,15 +33,83 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
   const uniqueBusms = Array.from(new Set(allAspsList.map((r) => r.busm))).filter(Boolean).sort();
   const uniqueAsms = Array.from(new Set(allAspsList.map((r) => r.asm))).filter(Boolean).sort();
 
+  // Handle BUSM Change (Cascading filter rule)
+  const handleBusmChange = (newBusm: string) => {
+    setSelectedBusm(newBusm);
+    if (newBusm !== 'all') {
+      const validAsms = Array.from(
+        new Set(allAspsList.filter((r) => r.busm === newBusm).map((r) => r.asm))
+      );
+      if (!validAsms.includes(selectedAsm)) {
+        setSelectedAsm('all');
+      }
+    }
+  };
+
+  // Available ASMs belong strictly to selectedBusm
+  const availableAsms = Array.from(
+    new Set(
+      allAspsList
+        .filter((r) => selectedBusm === 'all' || r.busm === selectedBusm)
+        .map((r) => r.asm)
+    )
+  ).filter(Boolean).sort();
+
+  // Filter ASPs based on BUSM & ASM
   let filteredAsps = allAspsList.filter((r) => {
     if (selectedBusm !== 'all' && r.busm !== selectedBusm) return false;
     if (selectedAsm !== 'all' && r.asm !== selectedAsm) return false;
     return true;
   });
 
+  // Sort ASPs
   filteredAsps.sort((a, b) => {
     if (sortBy === 'sameDayPct') return (b.sameDayPct || 0) - (a.sameDayPct || 0);
+    if (sortBy === 'sameDayToCallsPct') return (b.sameDayToCallsPct || 0) - (a.sameDayToCallsPct || 0);
     if (sortBy === 'sameDayCount') return (b.sameDayCount || 0) - (a.sameDayCount || 0);
+    if (sortBy === 'totalCalls') return (b.totalCalls || 0) - (a.totalCalls || 0);
+    return (b.n || 0) - (a.n || 0);
+  });
+
+  // Build BUSM & ASM Summary List (Table 1 Above)
+  const busmAsmMap = new Map<string, {
+    busm: string;
+    asm: string;
+    totalCalls: number;
+    n: number;
+    sameDayCount: number;
+    sameDayPct: number;
+    sameDayToCallsPct: number;
+  }>();
+
+  filteredAsps.forEach((r) => {
+    const key = `${r.busm || 'Unknown'}___${r.asm || 'Unknown'}`;
+    const existing = busmAsmMap.get(key) || {
+      busm: r.busm || 'Unknown',
+      asm: r.asm || 'Unknown',
+      totalCalls: 0,
+      n: 0,
+      sameDayCount: 0,
+      sameDayPct: 0,
+      sameDayToCallsPct: 0,
+    };
+    existing.totalCalls += (r.totalCalls || 0);
+    existing.n += (r.n || 0);
+    existing.sameDayCount += (r.sameDayCount || 0);
+    busmAsmMap.set(key, existing);
+  });
+
+  const busmAsmSummaryList = Array.from(busmAsmMap.values()).map((row) => {
+    const sameDayPct = row.n > 0 ? Number(((row.sameDayCount / row.n) * 100).toFixed(1)) : 0;
+    const sameDayToCallsPct = row.totalCalls > 0 ? Number(((row.sameDayCount / row.totalCalls) * 100).toFixed(1)) : 0;
+    return { ...row, sameDayPct, sameDayToCallsPct };
+  });
+
+  busmAsmSummaryList.sort((a, b) => {
+    if (sortBy === 'sameDayPct') return (b.sameDayPct || 0) - (a.sameDayPct || 0);
+    if (sortBy === 'sameDayToCallsPct') return (b.sameDayToCallsPct || 0) - (a.sameDayToCallsPct || 0);
+    if (sortBy === 'sameDayCount') return (b.sameDayCount || 0) - (a.sameDayCount || 0);
+    if (sortBy === 'totalCalls') return (b.totalCalls || 0) - (a.totalCalls || 0);
     return (b.n || 0) - (a.n || 0);
   });
 
@@ -77,25 +145,25 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
         </div>
       </div>
 
-      {/* TABLE 1: TOP ASPS WITH DOORSTEP BOARD-LEVEL SWAPS */}
-      <div className="card-mock" style={{ marginTop: '20px', padding: '20px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '16px', borderBottom: '1px solid #f1f5f9', paddingBottom: '12px' }}>
-          <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-            Top ASPs with Doorstep Board-level Swaps
-          </h3>
+      {/* SHARED CONTROLS BAR (MONTH, BUSM, ASM, SORT BY) */}
+      <div className="card-mock" style={{ marginTop: '20px', padding: '14px 18px', background: '#f8fafc', border: '1px solid #e2e8f0' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+          <div style={{ fontSize: '13.5px', fontWeight: 800, color: '#0f172a' }}>
+            Regional &amp; Hierarchical Filters
+          </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ fontSize: '12px', fontWeight: 700, color: '#475569', textTransform: 'uppercase' }}>Month:</span>
+              <span style={{ fontSize: '11.5px', fontWeight: 700, color: '#475569', textTransform: 'uppercase' }}>Month:</span>
               <select
                 value={selectedMonth}
                 onChange={(e) => setSelectedMonth(e.target.value)}
                 style={{
-                  padding: '5px 10px',
+                  padding: '4px 8px',
                   borderRadius: '6px',
                   border: '1px solid #cbd5e1',
                   background: '#ffffff',
                   color: '#0f172a',
-                  fontSize: '12.5px',
+                  fontSize: '12px',
                   fontWeight: 700,
                   cursor: 'pointer',
                   outline: 'none',
@@ -109,17 +177,17 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ fontSize: '12px', fontWeight: 700, color: '#475569', textTransform: 'uppercase' }}>BUSM:</span>
+              <span style={{ fontSize: '11.5px', fontWeight: 700, color: '#475569', textTransform: 'uppercase' }}>BUSM:</span>
               <select
                 value={selectedBusm}
-                onChange={(e) => setSelectedBusm(e.target.value)}
+                onChange={(e) => handleBusmChange(e.target.value)}
                 style={{
-                  padding: '5px 10px',
+                  padding: '4px 8px',
                   borderRadius: '6px',
                   border: '1px solid #cbd5e1',
                   background: '#ffffff',
                   color: '#0f172a',
-                  fontSize: '12.5px',
+                  fontSize: '12px',
                   fontWeight: 700,
                   cursor: 'pointer',
                   outline: 'none',
@@ -133,96 +201,121 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ fontSize: '12px', fontWeight: 700, color: '#475569', textTransform: 'uppercase' }}>ASM:</span>
+              <span style={{ fontSize: '11.5px', fontWeight: 700, color: '#475569', textTransform: 'uppercase' }}>ASM:</span>
               <select
                 value={selectedAsm}
                 onChange={(e) => setSelectedAsm(e.target.value)}
                 style={{
-                  padding: '5px 10px',
+                  padding: '4px 8px',
                   borderRadius: '6px',
                   border: '1px solid #cbd5e1',
                   background: '#ffffff',
                   color: '#0f172a',
-                  fontSize: '12.5px',
+                  fontSize: '12px',
                   fontWeight: 700,
                   cursor: 'pointer',
                   outline: 'none',
                 }}
               >
-                <option value="all">All ASMs</option>
-                {uniqueAsms.map((a) => (
+                <option value="all">All ASMs {selectedBusm !== 'all' ? `(in ${selectedBusm})` : ''}</option>
+                {availableAsms.map((a) => (
                   <option key={a} value={a}>{a}</option>
                 ))}
               </select>
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ fontSize: '12px', fontWeight: 700, color: '#475569', textTransform: 'uppercase' }}>Sort By:</span>
+              <span style={{ fontSize: '11.5px', fontWeight: 700, color: '#475569', textTransform: 'uppercase' }}>Sort By:</span>
               <select
                 value={sortBy}
                 onChange={(e: any) => setSortBy(e.target.value)}
                 style={{
-                  padding: '5px 10px',
+                  padding: '4px 8px',
                   borderRadius: '6px',
                   border: '1.5px solid #2563eb',
                   background: '#eff6ff',
                   color: '#1d4ed8',
-                  fontSize: '12.5px',
+                  fontSize: '12px',
                   fontWeight: 700,
                   cursor: 'pointer',
                   outline: 'none',
                 }}
               >
                 <option value="swapsCount">Highest Total Swaps</option>
-                <option value="sameDayPct">Highest % Same-Day Swaps</option>
+                <option value="sameDayPct">Highest % Same-Day / Total Swaps</option>
+                <option value="sameDayToCallsPct">Highest % Same-Day / Total Calls</option>
                 <option value="sameDayCount">Highest Same-Day Count</option>
+                <option value="totalCalls">Highest Total Calls</option>
               </select>
             </div>
           </div>
         </div>
+      </div>
+
+      {/* TABLE 1: SUMMARY BY BUSM AND ASM (NEW TABLE ABOVE ASP TABLE) */}
+      <div className="card-mock" style={{ marginTop: '16px', padding: '16px' }}>
+        <div style={{ marginBottom: '10px', borderBottom: '1px solid #f1f5f9', paddingBottom: '8px' }}>
+          <h3 style={{ fontSize: '14.5px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+            Summary of Doorstep Board Swaps by BUSM &amp; Supervisor (ASM)
+          </h3>
+        </div>
 
         <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13.5px' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', lineHeight: '1.3' }}>
             <thead>
-              <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                <th style={{ padding: '10px 12px', textAlign: 'left' }}>ASP Code</th>
-                <th style={{ padding: '10px 12px', textAlign: 'left' }}>ASP Name</th>
-                <th style={{ padding: '10px 12px', textAlign: 'left' }}>Supervisor (ASM)</th>
-                <th style={{ padding: '10px 12px', textAlign: 'left' }}>BUSM</th>
-                <th style={{ padding: '10px 12px', textAlign: 'right' }}>Total Doorstep Board Swaps</th>
-                <th style={{ padding: '10px 12px', textAlign: 'right' }}>Same-Day Swaps (Creation = Delivery)</th>
-                <th style={{ padding: '10px 12px', textAlign: 'right' }}>% Same-Day / Total Swaps</th>
+              <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.03em' }}>
+                <th style={{ padding: '8px 8px', textAlign: 'left', whiteSpace: 'nowrap' }}>BUSM</th>
+                <th style={{ padding: '8px 8px', textAlign: 'left', whiteSpace: 'nowrap' }}>Supervisor (ASM)</th>
+                <th style={{ padding: '8px 8px', textAlign: 'right', whiteSpace: 'nowrap' }}>Total Calls</th>
+                <th style={{ padding: '8px 8px', textAlign: 'right', whiteSpace: 'nowrap' }}>Total Board Swaps</th>
+                <th style={{ padding: '8px 8px', textAlign: 'right', whiteSpace: 'nowrap' }}>Same-Day Swaps</th>
+                <th style={{ padding: '8px 8px', textAlign: 'right', whiteSpace: 'nowrap' }}>% Same-Day / Swaps</th>
+                <th style={{ padding: '8px 8px', textAlign: 'right', whiteSpace: 'nowrap' }}>% Same-Day / Total Calls</th>
               </tr>
             </thead>
             <tbody>
-              {filteredAsps.length === 0 ? (
+              {busmAsmSummaryList.length === 0 ? (
                 <tr>
-                  <td colSpan={7} style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>
-                    No ASPs found matching selected filters.
+                  <td colSpan={7} style={{ padding: '16px', textAlign: 'center', color: '#64748b' }}>
+                    No summary data found for selected filters.
                   </td>
                 </tr>
               ) : (
-                filteredAsps.map((r: any, i: number) => (
+                busmAsmSummaryList.map((r: any, i: number) => (
                   <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                    <td style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 600, color: '#475569', fontFamily: 'monospace' }}>{r.code || '-'}</td>
-                    <td style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 600, color: '#1e293b' }}>{r.asp}</td>
-                    <td style={{ padding: '10px 12px', textAlign: 'left', color: '#475569' }}>{r.asm || '-'}</td>
-                    <td style={{ padding: '10px 12px', textAlign: 'left', color: '#475569' }}>{r.busm || '-'}</td>
-                    <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 800, color: '#0f172a' }}>
+                    <td style={{ padding: '7px 8px', textAlign: 'left', fontWeight: 600, color: '#1e293b' }}>{r.busm}</td>
+                    <td style={{ padding: '7px 8px', textAlign: 'left', color: '#475569' }}>{r.asm}</td>
+                    <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 600, color: '#475569' }}>
+                      {(r.totalCalls || 0).toLocaleString('en-IN')}
+                    </td>
+                    <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 800, color: '#0f172a' }}>
                       {(r.n || 0).toLocaleString('en-IN')}
                     </td>
-                    <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 700, color: '#2563eb' }}>
+                    <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 700, color: '#2563eb' }}>
                       {(r.sameDayCount || 0).toLocaleString('en-IN')}
                     </td>
-                    <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 800 }}>
+                    <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 800 }}>
                       <span style={{
-                        padding: '3px 8px',
-                        borderRadius: '6px',
+                        padding: '2px 5px',
+                        borderRadius: '4px',
+                        fontSize: '11px',
                         background: (r.sameDayPct || 0) > 30 ? '#fef2f2' : '#f0fdf4',
                         color: (r.sameDayPct || 0) > 30 ? '#dc2626' : '#16a34a',
                         border: `1px solid ${(r.sameDayPct || 0) > 30 ? '#fecaca' : '#bbf7d0'}`,
                       }}>
                         {(r.sameDayPct ?? 0).toFixed(1)}%
+                      </span>
+                    </td>
+                    <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 800 }}>
+                      <span style={{
+                        padding: '2px 5px',
+                        borderRadius: '4px',
+                        fontSize: '11px',
+                        background: (r.sameDayToCallsPct || 0) > 15 ? '#fff7ed' : '#f8fafc',
+                        color: (r.sameDayToCallsPct || 0) > 15 ? '#c2410c' : '#0f172a',
+                        border: `1px solid ${(r.sameDayToCallsPct || 0) > 15 ? '#ffedd5' : '#e2e8f0'}`,
+                      }}>
+                        {(r.sameDayToCallsPct ?? 0).toFixed(1)}%
                       </span>
                     </td>
                   </tr>
@@ -231,7 +324,85 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
             </tbody>
           </table>
         </div>
-        <div className="note-mock" style={{ marginTop: '12px', fontSize: '12px', color: '#64748b' }}>
+      </div>
+
+      {/* TABLE 2: TOP ASPS WITH DOORSTEP BOARD-LEVEL SWAPS */}
+      <div className="card-mock" style={{ marginTop: '16px', padding: '16px' }}>
+        <div style={{ marginBottom: '10px', borderBottom: '1px solid #f1f5f9', paddingBottom: '8px' }}>
+          <h3 style={{ fontSize: '14.5px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+            Top ASPs with Doorstep Board-level Swaps
+          </h3>
+        </div>
+
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', lineHeight: '1.3' }}>
+            <thead>
+              <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.03em' }}>
+                <th style={{ padding: '8px 8px', textAlign: 'left', whiteSpace: 'nowrap' }}>ASP Code</th>
+                <th style={{ padding: '8px 8px', textAlign: 'left', whiteSpace: 'nowrap' }}>ASP Name</th>
+                <th style={{ padding: '8px 8px', textAlign: 'left', whiteSpace: 'nowrap' }}>Supervisor (ASM)</th>
+                <th style={{ padding: '8px 8px', textAlign: 'left', whiteSpace: 'nowrap' }}>BUSM</th>
+                <th style={{ padding: '8px 8px', textAlign: 'right', whiteSpace: 'nowrap' }}>Total Calls</th>
+                <th style={{ padding: '8px 8px', textAlign: 'right', whiteSpace: 'nowrap' }}>Total Board Swaps</th>
+                <th style={{ padding: '8px 8px', textAlign: 'right', whiteSpace: 'nowrap' }}>Same-Day Swaps</th>
+                <th style={{ padding: '8px 8px', textAlign: 'right', whiteSpace: 'nowrap' }}>% Same-Day / Swaps</th>
+                <th style={{ padding: '8px 8px', textAlign: 'right', whiteSpace: 'nowrap' }}>% Same-Day / Total Calls</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredAsps.length === 0 ? (
+                <tr>
+                  <td colSpan={9} style={{ padding: '16px', textAlign: 'center', color: '#64748b' }}>
+                    No ASPs found matching selected filters.
+                  </td>
+                </tr>
+              ) : (
+                filteredAsps.map((r: any, i: number) => (
+                  <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                    <td style={{ padding: '7px 8px', textAlign: 'left', fontWeight: 600, color: '#475569', fontFamily: 'monospace' }}>{r.code || '-'}</td>
+                    <td style={{ padding: '7px 8px', textAlign: 'left', fontWeight: 600, color: '#1e293b' }}>{r.asp}</td>
+                    <td style={{ padding: '7px 8px', textAlign: 'left', color: '#475569' }}>{r.asm || '-'}</td>
+                    <td style={{ padding: '7px 8px', textAlign: 'left', color: '#475569' }}>{r.busm || '-'}</td>
+                    <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 600, color: '#475569' }}>
+                      {(r.totalCalls || 0).toLocaleString('en-IN')}
+                    </td>
+                    <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 800, color: '#0f172a' }}>
+                      {(r.n || 0).toLocaleString('en-IN')}
+                    </td>
+                    <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 700, color: '#2563eb' }}>
+                      {(r.sameDayCount || 0).toLocaleString('en-IN')}
+                    </td>
+                    <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 800 }}>
+                      <span style={{
+                        padding: '2px 5px',
+                        borderRadius: '4px',
+                        fontSize: '11px',
+                        background: (r.sameDayPct || 0) > 30 ? '#fef2f2' : '#f0fdf4',
+                        color: (r.sameDayPct || 0) > 30 ? '#dc2626' : '#16a34a',
+                        border: `1px solid ${(r.sameDayPct || 0) > 30 ? '#fecaca' : '#bbf7d0'}`,
+                      }}>
+                        {(r.sameDayPct ?? 0).toFixed(1)}%
+                      </span>
+                    </td>
+                    <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 800 }}>
+                      <span style={{
+                        padding: '2px 5px',
+                        borderRadius: '4px',
+                        fontSize: '11px',
+                        background: (r.sameDayToCallsPct || 0) > 15 ? '#fff7ed' : '#f8fafc',
+                        color: (r.sameDayToCallsPct || 0) > 15 ? '#c2410c' : '#0f172a',
+                        border: `1px solid ${(r.sameDayToCallsPct || 0) > 15 ? '#ffedd5' : '#e2e8f0'}`,
+                      }}>
+                        {(r.sameDayToCallsPct ?? 0).toFixed(1)}%
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+        <div className="note-mock" style={{ marginTop: '10px', fontSize: '11.5px', color: '#64748b' }}>
           Pull files for these outlying service centers from the Evidence Logs first. Verify motherboard/display billings against parts-return batches. Same-Day Doorstep Swaps represent jobs where Creation Date and Delivery Date are identical.
         </div>
       </div>
