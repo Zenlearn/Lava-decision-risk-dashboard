@@ -67,22 +67,29 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
         borderBottom: '1px solid rgba(255,255,255,0.08)',
         display: 'flex',
         flexDirection: 'column',
-        gap: '6px'
+        alignItems: 'flex-start',
+        gap: '12px'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <img
-            src="/logo_144.png"
-            alt="ZenLearn"
-            style={{ height: '36px', width: 'auto', display: 'block', borderRadius: '4px', flexShrink: 0 }}
-          />
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <span style={{ fontSize: '15px', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.3px', lineHeight: '1.2' }}>
-              ZenLearn
-            </span>
-            <span style={{ fontSize: '10px', color: '#E50046', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px' }}>
-              Decision Intel
-            </span>
-          </div>
+        {/* Uncompressed ZenLearn Logo in original aspect ratio */}
+        <img
+          src="/logo_144.png"
+          alt="ZenLearn Logo"
+          style={{
+            height: '44px',
+            width: 'auto',
+            maxWidth: '100%',
+            objectFit: 'contain',
+            display: 'block'
+          }}
+        />
+        {/* Two lines moved below logo */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+          <span style={{ fontSize: '16px', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.3px', lineHeight: '1.2' }}>
+            ZenLearn
+          </span>
+          <span style={{ fontSize: '10px', color: '#E50046', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px' }}>
+            Decision Intel
+          </span>
         </div>
       </div>
 
