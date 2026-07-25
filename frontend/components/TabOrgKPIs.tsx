@@ -12,8 +12,8 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
 
   const activeOrgKpi = data?.orgKpis?.by_month?.[selectedMonth] || data?.orgKpis?.all || { busms: [], asms: [], national: {} };
 
-  const busmList: any[] = activeOrgKpi.busms || [];
-  const allAsmList: any[] = activeOrgKpi.asms || [];
+  const busmList: any[] = (activeOrgKpi.busms || []).filter((b: any) => b.name && !b.name.toLowerCase().includes('unknown'));
+  const allAsmList: any[] = (activeOrgKpi.asms || []).filter((a: any) => a.name && !a.name.toLowerCase().includes('unknown') && a.busm && !a.busm.toLowerCase().includes('unknown'));
   const nationalSummary: any = activeOrgKpi.national || {};
 
   // Filter ASMs by clicked BUSM row (or show all if no row is clicked)
@@ -102,31 +102,14 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px', lineHeight: '1.3' }}>
             <thead>
-              <tr style={{ borderBottom: '1px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                <th rowSpan={2} style={{ padding: '10px 12px', textAlign: 'left', borderRight: '1px solid #e2e8f0', width: '15%' }}>
-                  BUSM Name
-                </th>
-                <th colSpan={6} style={{ padding: '6px 8px', textAlign: 'center', borderRight: '1px solid #e2e8f0', background: '#f1f5f9', color: '#0f172a', fontWeight: 800 }}>
-                  Performance Metrics
-                </th>
-                <th colSpan={6} style={{ padding: '6px 8px', textAlign: 'center', background: '#eff6ff', color: '#1d4ed8', fontWeight: 800 }}>
-                  Parameter Ranks
-                </th>
-              </tr>
-              <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#64748b', fontSize: '11px', textTransform: 'uppercase' }}>
-                <th style={{ padding: '8px', textAlign: 'right' }}>TAT %</th>
-                <th style={{ padding: '8px', textAlign: 'right' }}>CPC (₹)</th>
-                <th style={{ padding: '8px', textAlign: 'right' }}>S@H Adherence</th>
-                <th style={{ padding: '8px', textAlign: 'right' }}>NPS %</th>
-                <th style={{ padding: '8px', textAlign: 'right' }}>Diagnostics Acc.</th>
-                <th style={{ padding: '8px', textAlign: 'right', borderRight: '1px solid #e2e8f0' }}>CAG Scorecard</th>
-
-                <th style={{ padding: '8px', textAlign: 'center', background: '#eff6ff', color: '#1d4ed8' }}>TAT</th>
-                <th style={{ padding: '8px', textAlign: 'center', background: '#eff6ff', color: '#1d4ed8' }}>CPC</th>
-                <th style={{ padding: '8px', textAlign: 'center', background: '#eff6ff', color: '#1d4ed8' }}>S@H</th>
-                <th style={{ padding: '8px', textAlign: 'center', background: '#eff6ff', color: '#1d4ed8' }}>NPS</th>
-                <th style={{ padding: '8px', textAlign: 'center', background: '#eff6ff', color: '#1d4ed8' }}>Diag</th>
-                <th style={{ padding: '8px', textAlign: 'center', background: '#eff6ff', color: '#1d4ed8' }}>CAG</th>
+              <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                <th style={{ padding: '10px 12px', textAlign: 'left', width: '22%' }}>BUSM Name</th>
+                <th style={{ padding: '10px 10px', textAlign: 'right' }}>TAT % (Rank)</th>
+                <th style={{ padding: '10px 10px', textAlign: 'right' }}>CPC ₹ (Rank)</th>
+                <th style={{ padding: '10px 10px', textAlign: 'right' }}>S@H Adherence % (Rank)</th>
+                <th style={{ padding: '10px 10px', textAlign: 'right' }}>NPS % (Rank)</th>
+                <th style={{ padding: '10px 10px', textAlign: 'right' }}>Diagnostics Acc. (Rank)</th>
+                <th style={{ padding: '10px 10px', textAlign: 'right' }}>CAG Scorecard (Rank)</th>
               </tr>
             </thead>
             <tbody>
@@ -146,37 +129,69 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                     <td style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 800, color: isSelected ? '#1d4ed8' : '#1e293b', borderRight: '1px solid #f1f5f9' }}>
                       {r.name} {isSelected && '✓'}
                     </td>
-                    <td style={{ padding: '10px 8px', textAlign: 'right', fontWeight: 600 }}>{r.tat}%</td>
-                    <td style={{ padding: '10px 8px', textAlign: 'right', fontWeight: 600 }}>₹{r.cpc}</td>
-                    <td style={{ padding: '10px 8px', textAlign: 'right', fontWeight: 600 }}>{r.sah}%</td>
-                    <td style={{ padding: '10px 8px', textAlign: 'right', fontWeight: 600 }}>{r.nps}%</td>
-                    <td style={{ padding: '10px 8px', textAlign: 'right', fontWeight: 600 }}>{r.diag}%</td>
-                    <td style={{ padding: '10px 8px', textAlign: 'right', fontWeight: 700, color: '#0f172a', borderRight: '1px solid #f1f5f9' }}>{r.cag}%</td>
-
-                    <td style={{ padding: '10px 8px', textAlign: 'center', background: '#f8fafc', fontWeight: 700, color: '#2563eb' }}>{r.ranks?.tat}</td>
-                    <td style={{ padding: '10px 8px', textAlign: 'center', background: '#f8fafc', fontWeight: 700, color: '#2563eb' }}>{r.ranks?.cpc}</td>
-                    <td style={{ padding: '10px 8px', textAlign: 'center', background: '#f8fafc', fontWeight: 700, color: '#2563eb' }}>{r.ranks?.sah}</td>
-                    <td style={{ padding: '10px 8px', textAlign: 'center', background: '#f8fafc', fontWeight: 700, color: '#2563eb' }}>{r.ranks?.nps}</td>
-                    <td style={{ padding: '10px 8px', textAlign: 'center', background: '#f8fafc', fontWeight: 700, color: '#2563eb' }}>{r.ranks?.diag}</td>
-                    <td style={{ padding: '10px 8px', textAlign: 'center', background: '#eff6ff', fontWeight: 800, color: '#1d4ed8' }}>{r.ranks?.cag}</td>
+                    <td style={{ padding: '10px 10px', textAlign: 'right' }}>
+                      <span style={{ fontWeight: 600, color: '#1e293b' }}>{r.tat}%</span>
+                      {r.ranks?.tat && (
+                        <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', padding: '1px 5px', borderRadius: '4px', marginLeft: '6px' }}>
+                          #{r.ranks.tat}
+                        </span>
+                      )}
+                    </td>
+                    <td style={{ padding: '10px 10px', textAlign: 'right' }}>
+                      <span style={{ fontWeight: 600, color: '#1e293b' }}>₹{r.cpc}</span>
+                      {r.ranks?.cpc && (
+                        <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', padding: '1px 5px', borderRadius: '4px', marginLeft: '6px' }}>
+                          #{r.ranks.cpc}
+                        </span>
+                      )}
+                    </td>
+                    <td style={{ padding: '10px 10px', textAlign: 'right' }}>
+                      <span style={{ fontWeight: 600, color: '#1e293b' }}>{r.sah}%</span>
+                      {r.ranks?.sah && (
+                        <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', padding: '1px 5px', borderRadius: '4px', marginLeft: '6px' }}>
+                          #{r.ranks.sah}
+                        </span>
+                      )}
+                    </td>
+                    <td style={{ padding: '10px 10px', textAlign: 'right' }}>
+                      <span style={{ fontWeight: 600, color: '#1e293b' }}>{r.nps}%</span>
+                      {r.ranks?.nps && (
+                        <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', padding: '1px 5px', borderRadius: '4px', marginLeft: '6px' }}>
+                          #{r.ranks.nps}
+                        </span>
+                      )}
+                    </td>
+                    <td style={{ padding: '10px 10px', textAlign: 'right' }}>
+                      <span style={{ fontWeight: 600, color: '#1e293b' }}>{r.diag}%</span>
+                      {r.ranks?.diag && (
+                        <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', padding: '1px 5px', borderRadius: '4px', marginLeft: '6px' }}>
+                          #{r.ranks.diag}
+                        </span>
+                      )}
+                    </td>
+                    <td style={{ padding: '10px 10px', textAlign: 'right' }}>
+                      <span style={{ fontWeight: 800, color: '#0f172a' }}>{r.cag}%</span>
+                      {r.ranks?.cag && (
+                        <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#dbeafe', color: '#1e40af', border: '1px solid #93c5fd', padding: '1px 6px', borderRadius: '4px', marginLeft: '6px' }}>
+                          #{r.ranks.cag}
+                        </span>
+                      )}
+                    </td>
                   </tr>
                 );
               })}
 
               {/* National % / Total Summary Row */}
               <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
-                <td style={{ padding: '12px', color: '#0f172a', borderRight: '1px solid #e2e8f0' }}>
+                <td style={{ padding: '12px', color: '#0f172a', borderRight: '1px solid #e2e8f0', background: '#f1f5f9', fontWeight: 800 }}>
                   {nationalSummary.name || 'National %'}
                 </td>
-                <td style={{ padding: '12px 8px', textAlign: 'right', color: '#0f172a' }}>{nationalSummary.tat ?? 85.0}%</td>
-                <td style={{ padding: '12px 8px', textAlign: 'right', color: '#0f172a' }}>₹{nationalSummary.cpc ?? 620}</td>
-                <td style={{ padding: '12px 8px', textAlign: 'right', color: '#0f172a' }}>{nationalSummary.sah ?? 90.5}%</td>
-                <td style={{ padding: '12px 8px', textAlign: 'right', color: '#0f172a' }}>{nationalSummary.nps ?? 83.4}%</td>
-                <td style={{ padding: '12px 8px', textAlign: 'right', color: '#0f172a' }}>{nationalSummary.diag ?? 96.2}%</td>
-                <td style={{ padding: '12px 8px', textAlign: 'right', color: '#0f172a', borderRight: '1px solid #e2e8f0' }}>{nationalSummary.cag ?? 97.5}%</td>
-                <td colSpan={6} style={{ padding: '12px 8px', textAlign: 'center', color: '#64748b', fontSize: '11px', textTransform: 'uppercase' }}>
-                  National Benchmark Total
-                </td>
+                <td style={{ padding: '12px 10px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>{nationalSummary.tat ?? 85.0}%</td>
+                <td style={{ padding: '12px 10px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>₹{nationalSummary.cpc ?? 620}</td>
+                <td style={{ padding: '12px 10px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>{nationalSummary.sah ?? 90.5}%</td>
+                <td style={{ padding: '12px 10px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>{nationalSummary.nps ?? 83.4}%</td>
+                <td style={{ padding: '12px 10px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>{nationalSummary.diag ?? 96.2}%</td>
+                <td style={{ padding: '12px 10px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>{nationalSummary.cag ?? 97.5}%</td>
               </tr>
             </tbody>
           </table>
@@ -202,40 +217,21 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12.5px', lineHeight: '1.3' }}>
             <thead>
-              <tr style={{ borderBottom: '1px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                <th rowSpan={2} style={{ padding: '10px 12px', textAlign: 'left', borderRight: '1px solid #e2e8f0', width: '15%' }}>
-                  ASM Name
-                </th>
-                <th rowSpan={2} style={{ padding: '10px 10px', textAlign: 'left', borderRight: '1px solid #e2e8f0', width: '12%' }}>
-                  BUSM
-                </th>
-                <th colSpan={6} style={{ padding: '6px 8px', textAlign: 'center', borderRight: '1px solid #e2e8f0', background: '#f1f5f9', color: '#0f172a', fontWeight: 800 }}>
-                  Performance Metrics
-                </th>
-                <th colSpan={6} style={{ padding: '6px 8px', textAlign: 'center', background: '#eff6ff', color: '#1d4ed8', fontWeight: 800 }}>
-                  Parameter Ranks
-                </th>
-              </tr>
-              <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#64748b', fontSize: '11px', textTransform: 'uppercase' }}>
-                <th style={{ padding: '8px', textAlign: 'right' }}>TAT %</th>
-                <th style={{ padding: '8px', textAlign: 'right' }}>CPC (₹)</th>
-                <th style={{ padding: '8px', textAlign: 'right' }}>S@H Adherence</th>
-                <th style={{ padding: '8px', textAlign: 'right' }}>NPS %</th>
-                <th style={{ padding: '8px', textAlign: 'right' }}>Diagnostics Acc.</th>
-                <th style={{ padding: '8px', textAlign: 'right', borderRight: '1px solid #e2e8f0' }}>CAG Scorecard</th>
-
-                <th style={{ padding: '8px', textAlign: 'center', background: '#eff6ff', color: '#1d4ed8' }}>TAT</th>
-                <th style={{ padding: '8px', textAlign: 'center', background: '#eff6ff', color: '#1d4ed8' }}>CPC</th>
-                <th style={{ padding: '8px', textAlign: 'center', background: '#eff6ff', color: '#1d4ed8' }}>S@H</th>
-                <th style={{ padding: '8px', textAlign: 'center', background: '#eff6ff', color: '#1d4ed8' }}>NPS</th>
-                <th style={{ padding: '8px', textAlign: 'center', background: '#eff6ff', color: '#1d4ed8' }}>Diag</th>
-                <th style={{ padding: '8px', textAlign: 'center', background: '#eff6ff', color: '#1d4ed8' }}>CAG</th>
+              <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                <th style={{ padding: '10px 12px', textAlign: 'left', borderRight: '1px solid #e2e8f0', width: '16%' }}>ASM Name</th>
+                <th style={{ padding: '10px 10px', textAlign: 'left', borderRight: '1px solid #e2e8f0', width: '14%' }}>BUSM</th>
+                <th style={{ padding: '10px 10px', textAlign: 'right' }}>TAT % (Rank)</th>
+                <th style={{ padding: '10px 10px', textAlign: 'right' }}>CPC ₹ (Rank)</th>
+                <th style={{ padding: '10px 10px', textAlign: 'right' }}>S@H Adherence % (Rank)</th>
+                <th style={{ padding: '10px 10px', textAlign: 'right' }}>NPS % (Rank)</th>
+                <th style={{ padding: '10px 10px', textAlign: 'right' }}>Diagnostics Acc. (Rank)</th>
+                <th style={{ padding: '10px 10px', textAlign: 'right' }}>CAG Scorecard (Rank)</th>
               </tr>
             </thead>
             <tbody>
               {filteredAsmList.length === 0 ? (
                 <tr>
-                  <td colSpan={14} style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>
+                  <td colSpan={8} style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>
                     No ASMs found for selected filter.
                   </td>
                 </tr>
@@ -244,36 +240,68 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
                     <td style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 700, color: '#1e293b' }}>{r.name}</td>
                     <td style={{ padding: '8px 10px', textAlign: 'left', color: '#64748b', borderRight: '1px solid #f1f5f9' }}>{r.busm}</td>
-                    <td style={{ padding: '8px', textAlign: 'right', fontWeight: 600 }}>{r.tat}%</td>
-                    <td style={{ padding: '8px', textAlign: 'right', fontWeight: 600 }}>₹{r.cpc}</td>
-                    <td style={{ padding: '8px', textAlign: 'right', fontWeight: 600 }}>{r.sah}%</td>
-                    <td style={{ padding: '8px', textAlign: 'right', fontWeight: 600 }}>{r.nps}%</td>
-                    <td style={{ padding: '8px', textAlign: 'right', fontWeight: 600 }}>{r.diag}%</td>
-                    <td style={{ padding: '8px', textAlign: 'right', fontWeight: 700, color: '#0f172a', borderRight: '1px solid #f1f5f9' }}>{r.cag}%</td>
-
-                    <td style={{ padding: '8px', textAlign: 'center', background: '#f8fafc', fontWeight: 700, color: '#2563eb' }}>{r.ranks?.tat}</td>
-                    <td style={{ padding: '8px', textAlign: 'center', background: '#f8fafc', fontWeight: 700, color: '#2563eb' }}>{r.ranks?.cpc}</td>
-                    <td style={{ padding: '8px', textAlign: 'center', background: '#f8fafc', fontWeight: 700, color: '#2563eb' }}>{r.ranks?.sah}</td>
-                    <td style={{ padding: '8px', textAlign: 'center', background: '#f8fafc', fontWeight: 700, color: '#2563eb' }}>{r.ranks?.nps}</td>
-                    <td style={{ padding: '8px', textAlign: 'center', background: '#f8fafc', fontWeight: 700, color: '#2563eb' }}>{r.ranks?.diag}</td>
-                    <td style={{ padding: '8px', textAlign: 'center', background: '#eff6ff', fontWeight: 800, color: '#1d4ed8' }}>{r.ranks?.cag}</td>
+                    <td style={{ padding: '8px 10px', textAlign: 'right' }}>
+                      <span style={{ fontWeight: 600, color: '#1e293b' }}>{r.tat}%</span>
+                      {r.ranks?.tat && (
+                        <span style={{ fontSize: '10px', fontWeight: 800, background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', padding: '1px 4px', borderRadius: '4px', marginLeft: '4px' }}>
+                          #{r.ranks.tat}
+                        </span>
+                      )}
+                    </td>
+                    <td style={{ padding: '8px 10px', textAlign: 'right' }}>
+                      <span style={{ fontWeight: 600, color: '#1e293b' }}>₹{r.cpc}</span>
+                      {r.ranks?.cpc && (
+                        <span style={{ fontSize: '10px', fontWeight: 800, background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', padding: '1px 4px', borderRadius: '4px', marginLeft: '4px' }}>
+                          #{r.ranks.cpc}
+                        </span>
+                      )}
+                    </td>
+                    <td style={{ padding: '8px 10px', textAlign: 'right' }}>
+                      <span style={{ fontWeight: 600, color: '#1e293b' }}>{r.sah}%</span>
+                      {r.ranks?.sah && (
+                        <span style={{ fontSize: '10px', fontWeight: 800, background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', padding: '1px 4px', borderRadius: '4px', marginLeft: '4px' }}>
+                          #{r.ranks.sah}
+                        </span>
+                      )}
+                    </td>
+                    <td style={{ padding: '8px 10px', textAlign: 'right' }}>
+                      <span style={{ fontWeight: 600, color: '#1e293b' }}>{r.nps}%</span>
+                      {r.ranks?.nps && (
+                        <span style={{ fontSize: '10px', fontWeight: 800, background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', padding: '1px 4px', borderRadius: '4px', marginLeft: '4px' }}>
+                          #{r.ranks.nps}
+                        </span>
+                      )}
+                    </td>
+                    <td style={{ padding: '8px 10px', textAlign: 'right' }}>
+                      <span style={{ fontWeight: 600, color: '#1e293b' }}>{r.diag}%</span>
+                      {r.ranks?.diag && (
+                        <span style={{ fontSize: '10px', fontWeight: 800, background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', padding: '1px 4px', borderRadius: '4px', marginLeft: '4px' }}>
+                          #{r.ranks.diag}
+                        </span>
+                      )}
+                    </td>
+                    <td style={{ padding: '8px 10px', textAlign: 'right' }}>
+                      <span style={{ fontWeight: 700, color: '#0f172a' }}>{r.cag}%</span>
+                      {r.ranks?.cag && (
+                        <span style={{ fontSize: '10px', fontWeight: 800, background: '#dbeafe', color: '#1e40af', border: '1px solid #93c5fd', padding: '1px 4px', borderRadius: '4px', marginLeft: '4px' }}>
+                          #{r.ranks.cag}
+                        </span>
+                      )}
+                    </td>
                   </tr>
                 ))
               )}
 
               {/* Total Summary Row for ASMs */}
               <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
-                <td style={{ padding: '10px 12px', color: '#0f172a' }}>Total / Average</td>
+                <td style={{ padding: '10px 12px', color: '#0f172a', background: '#f1f5f9', fontWeight: 800 }}>Total / Average</td>
                 <td style={{ padding: '10px 10px', color: '#64748b', borderRight: '1px solid #e2e8f0' }}>{selectedBusmRow || 'All Regions'}</td>
-                <td style={{ padding: '10px 8px', textAlign: 'right', color: '#0f172a' }}>{asmAvgTat}%</td>
-                <td style={{ padding: '10px 8px', textAlign: 'right', color: '#0f172a' }}>₹{asmAvgCpc}</td>
-                <td style={{ padding: '10px 8px', textAlign: 'right', color: '#0f172a' }}>{asmAvgSah}%</td>
-                <td style={{ padding: '10px 8px', textAlign: 'right', color: '#0f172a' }}>{asmAvgNps}%</td>
-                <td style={{ padding: '10px 8px', textAlign: 'right', color: '#0f172a' }}>{asmAvgDiag}%</td>
-                <td style={{ padding: '10px 8px', textAlign: 'right', color: '#0f172a', borderRight: '1px solid #e2e8f0' }}>{asmAvgCag}%</td>
-                <td colSpan={6} style={{ padding: '10px 8px', textAlign: 'center', color: '#64748b', fontSize: '11px', textTransform: 'uppercase' }}>
-                  Regional Summary Total
-                </td>
+                <td style={{ padding: '10px 8px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>{asmAvgTat}%</td>
+                <td style={{ padding: '10px 8px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>₹{asmAvgCpc}</td>
+                <td style={{ padding: '10px 8px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>{asmAvgSah}%</td>
+                <td style={{ padding: '10px 8px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>{asmAvgNps}%</td>
+                <td style={{ padding: '10px 8px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>{asmAvgDiag}%</td>
+                <td style={{ padding: '10px 8px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>{asmAvgCag}%</td>
               </tr>
             </tbody>
           </table>

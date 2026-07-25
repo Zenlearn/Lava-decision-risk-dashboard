@@ -1470,6 +1470,7 @@ export async function getFullDashboardData(filters?: {
     const busmMap = new Map<string, any[]>();
     rows.forEach((r) => {
       const b = r.busm || 'Unknown';
+      if (!b || b === 'Unknown' || b.toLowerCase().includes('unknown')) return;
       if (!busmMap.has(b)) busmMap.set(b, []);
       busmMap.get(b)!.push(r);
     });
@@ -1566,6 +1567,7 @@ export async function getFullDashboardData(filters?: {
     const asmMap = new Map<string, { busm: string; rows: any[] }>();
     rows.forEach((r) => {
       const a = r.asm || 'Unknown';
+      if (!a || a === 'Unknown' || a.toLowerCase().includes('unknown')) return;
       if (!asmMap.has(a)) asmMap.set(a, { busm: r.busm || 'Unknown', rows: [] });
       asmMap.get(a)!.rows.push(r);
     });
