@@ -46,11 +46,10 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
   return (
     <aside className="zen-sidebar" style={{
       width: '260px',
-      // Mid-tone Navy Theme — Balanced for CXO readability without being overly bright
-      // Starts with "Zen Midnight" (#294D89) and fades smoothly to "Deep Space Navy" (#1B264F)
-      background: 'linear-gradient(180deg, #294D89 0%, #203A6B 45%, #1B264F 100%)',
-      borderRight: '1px solid rgba(78, 103, 235, 0.14)',
-      boxShadow: '4px 0 28px rgba(0, 0, 0, 0.30), inset -1px 0 0 rgba(78, 103, 235, 0.08)',
+      // Enterprise Light Theme
+      background: '#ffffff',
+      borderRight: '1px solid #e2e8f0',
+      boxShadow: '1px 0 10px rgba(0, 0, 0, 0.02)',
       display: 'flex',
       flexDirection: 'column',
       height: '100vh',
@@ -58,13 +57,13 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
       left: 0,
       top: 0,
       zIndex: 100,
-      color: '#f8fafc'
+      color: '#0f172a'
     }}>
 
       {/* Brand Header */}
       <div style={{
         padding: '20px 16px',
-        borderBottom: '1px solid rgba(255,255,255,0.07)',
+        borderBottom: '1px solid #f1f5f9',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'flex-start',
@@ -85,14 +84,13 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
               width: 'auto',
               objectFit: 'contain',
               display: 'block',
-              mixBlendMode: 'screen', // Removes white background if the image has one and the sidebar is dark
               borderRadius: '4px'
             }}
           />
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
-          <span style={{ fontSize: '15px', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.3px' }}>
+          <span style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', letterSpacing: '-0.3px' }}>
             ZenLearn
           </span>
           <span style={{ fontSize: '10px', color: '#E50046', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px' }}>
@@ -118,8 +116,8 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
                 padding: '10px 14px',
                 borderRadius: '8px',
                 border: 'none',
-                background: isActive ? 'rgba(78, 103, 235, 0.20)' : 'transparent',
-                color: isActive ? '#ffffff' : 'rgba(255,255,255,0.58)',
+                background: isActive ? '#f8fafc' : 'transparent',
+                color: isActive ? '#0f172a' : '#475569',
                 borderLeft: isActive ? '3px solid #E50046' : '3px solid transparent',
                 textAlign: 'left',
                 fontSize: '13.5px',
@@ -130,21 +128,21 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
               }}
               onMouseEnter={(e) => {
                 if (!isActive) {
-                  e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
-                  e.currentTarget.style.color = 'rgba(255,255,255,0.88)';
+                  e.currentTarget.style.background = '#f8fafc';
+                  e.currentTarget.style.color = '#0f172a';
                 }
               }}
               onMouseLeave={(e) => {
                 if (!isActive) {
                   e.currentTarget.style.background = 'transparent';
-                  e.currentTarget.style.color = 'rgba(255,255,255,0.58)';
+                  e.currentTarget.style.color = '#475569';
                 }
               }}
             >
               <Icon 
                 size={17} 
                 style={{ 
-                  color: isActive ? '#E50046' : 'rgba(255,255,255,0.40)',
+                  color: isActive ? '#E50046' : '#64748b',
                   flexShrink: 0
                 }} 
               />
@@ -168,12 +166,12 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
 
       {/* User Context — bottom section */}
       <div style={{
-        borderTop: '1px solid rgba(255,255,255,0.07)',
+        borderTop: '1px solid #f1f5f9',
         padding: '14px 16px',
         display: 'flex',
         flexDirection: 'column',
         gap: '12px',
-        background: 'rgba(0,0,0,0.18)',
+        background: '#ffffff',
       }}>
         {/* Profile Avatar + Name */}
         <div 
@@ -197,10 +195,10 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
             {userInitials}
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-            <span style={{ fontSize: '13px', fontWeight: 700, color: '#ffffff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            <span style={{ fontSize: '13px', fontWeight: 700, color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {userName}
             </span>
-            <span style={{ fontSize: '10.5px', color: 'rgba(255,255,255,0.38)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            <span style={{ fontSize: '10.5px', color: '#64748b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {userEmail}
             </span>
           </div>
@@ -223,7 +221,7 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
                 padding: '5px 6px',
                 border: 'none',
                 background: 'transparent',
-                color: 'rgba(255,255,255,0.40)',
+                color: '#64748b',
                 fontSize: '12.5px',
                 cursor: 'pointer',
                 textAlign: 'left',
@@ -232,11 +230,11 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
                 transition: 'all 0.15s ease',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.color = '#ffffff';
-                e.currentTarget.style.background = 'rgba(255,255,255,0.07)';
+                e.currentTarget.style.color = '#0f172a';
+                e.currentTarget.style.background = '#f1f5f9';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.color = 'rgba(255,255,255,0.40)';
+                e.currentTarget.style.color = '#64748b';
                 e.currentTarget.style.background = 'transparent';
               }}
             >
