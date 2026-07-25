@@ -1520,6 +1520,19 @@ export async function getFullDashboardData(filters?: {
       const pendingCount = busmRows.filter((r) => r.tat === null).length;
       const pendingToAttendPct = wo > 0 ? Math.round((pendingCount / wo) * 1000) / 10 : 5.5;
 
+      const tatValidRows = busmRows.filter((r) => r.tat !== null);
+      const c1d = tatValidRows.filter((r) => r.tat === 1 || r.tat === 0).length;
+      const c2d = tatValidRows.filter((r) => r.tat === 2).length;
+      const c3d = tatValidRows.filter((r) => r.tat === 3 || r.tat === 4).length;
+      const c5d = tatValidRows.filter((r) => r.tat >= 5).length;
+      const cStillOpen = busmRows.filter((r) => r.tat === null).length;
+
+      const tat1dPct = wo > 0 ? Math.round((c1d / wo) * 1000) / 10 : 0;
+      const tat2dPct = wo > 0 ? Math.round((c2d / wo) * 1000) / 10 : 0;
+      const tat3dPct = wo > 0 ? Math.round((c3d / wo) * 1000) / 10 : 0;
+      const tat5dPct = wo > 0 ? Math.round((c5d / wo) * 1000) / 10 : 0;
+      const stillOpenPct = wo > 0 ? Math.round((cStillOpen / wo) * 1000) / 10 : 0;
+
       return {
         name: busmName,
         wo,
@@ -1534,6 +1547,13 @@ export async function getFullDashboardData(filters?: {
         sameDayAttendPct,
         sameDayAttendCancelPct,
         pendingToAttendPct,
+        tatClosure: {
+          c1d, tat1dPct,
+          c2d, tat2dPct,
+          c3d, tat3dPct,
+          c5d, tat5dPct,
+          cStillOpen, stillOpenPct
+        }
       };
     });
 
@@ -1618,6 +1638,19 @@ export async function getFullDashboardData(filters?: {
       const pendingCount = asmRows.filter((r) => r.tat === null).length;
       const pendingToAttendPct = wo > 0 ? Math.round((pendingCount / wo) * 1000) / 10 : 5.5;
 
+      const tatValidRows = asmRows.filter((r) => r.tat !== null);
+      const c1d = tatValidRows.filter((r) => r.tat === 1 || r.tat === 0).length;
+      const c2d = tatValidRows.filter((r) => r.tat === 2).length;
+      const c3d = tatValidRows.filter((r) => r.tat === 3 || r.tat === 4).length;
+      const c5d = tatValidRows.filter((r) => r.tat >= 5).length;
+      const cStillOpen = asmRows.filter((r) => r.tat === null).length;
+
+      const tat1dPct = wo > 0 ? Math.round((c1d / wo) * 1000) / 10 : 0;
+      const tat2dPct = wo > 0 ? Math.round((c2d / wo) * 1000) / 10 : 0;
+      const tat3dPct = wo > 0 ? Math.round((c3d / wo) * 1000) / 10 : 0;
+      const tat5dPct = wo > 0 ? Math.round((c5d / wo) * 1000) / 10 : 0;
+      const stillOpenPct = wo > 0 ? Math.round((cStillOpen / wo) * 1000) / 10 : 0;
+
       return {
         name: asmName,
         busm: obj.busm,
@@ -1633,6 +1666,13 @@ export async function getFullDashboardData(filters?: {
         sameDayAttendPct,
         sameDayAttendCancelPct,
         pendingToAttendPct,
+        tatClosure: {
+          c1d, tat1dPct,
+          c2d, tat2dPct,
+          c3d, tat3dPct,
+          c5d, tat5dPct,
+          cStillOpen, stillOpenPct
+        }
       };
     });
 
@@ -1685,6 +1725,19 @@ export async function getFullDashboardData(filters?: {
     const totalAvgAudit = totalWo > 0 ? rows.reduce((sum, r) => sum + r.auditScore, 0) / totalWo : 100;
     const nationalCag = Math.round(((totalAvgProcess + totalAvgSkill + totalAvgAudit) / 3) * 10) / 10;
 
+    const natTatValidRows = rows.filter((r) => r.tat !== null);
+    const natC1d = natTatValidRows.filter((r) => r.tat === 1 || r.tat === 0).length;
+    const natC2d = natTatValidRows.filter((r) => r.tat === 2).length;
+    const natC3d = natTatValidRows.filter((r) => r.tat === 3 || r.tat === 4).length;
+    const natC5d = natTatValidRows.filter((r) => r.tat >= 5).length;
+    const natStillOpen = rows.filter((r) => r.tat === null).length;
+
+    const natTat1dPct = totalWo > 0 ? Math.round((natC1d / totalWo) * 1000) / 10 : 0;
+    const natTat2dPct = totalWo > 0 ? Math.round((natC2d / totalWo) * 1000) / 10 : 0;
+    const natTat3dPct = totalWo > 0 ? Math.round((natC3d / totalWo) * 1000) / 10 : 0;
+    const natTat5dPct = totalWo > 0 ? Math.round((natC5d / totalWo) * 1000) / 10 : 0;
+    const natStillOpenPct = totalWo > 0 ? Math.round((natStillOpen / totalWo) * 1000) / 10 : 0;
+
     const nationalSummary = {
       name: 'National %',
       wo: totalWo,
@@ -1699,6 +1752,13 @@ export async function getFullDashboardData(filters?: {
       sameDayAttendPct: 31.4,
       sameDayAttendCancelPct: 12.3,
       pendingToAttendPct: 5.5,
+      tatClosure: {
+        c1d: natC1d, tat1dPct: natTat1dPct,
+        c2d: natC2d, tat2dPct: natTat2dPct,
+        c3d: natC3d, tat3dPct: natTat3dPct,
+        c5d: natC5d, tat5dPct: natTat5dPct,
+        cStillOpen: natStillOpen, stillOpenPct: natStillOpenPct
+      }
     };
 
     return {
