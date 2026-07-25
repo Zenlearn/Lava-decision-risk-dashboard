@@ -46,9 +46,9 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
   return (
     <aside className="zen-sidebar" style={{
       width: '260px',
-      // Lighter Cobalt Blue theme — requested by CXOs for better readability
-      // Uses Zenlearn "Learning Cobalt" (#4E67EB) down to "Zen Midnight" (#294D89)
-      background: 'linear-gradient(180deg, #4E67EB 0%, #3B54D1 45%, #294D89 100%)',
+      // Mid-tone Navy Theme — Balanced for CXO readability without being overly bright
+      // Starts with "Zen Midnight" (#294D89) and fades smoothly to "Deep Space Navy" (#1B264F)
+      background: 'linear-gradient(180deg, #294D89 0%, #203A6B 45%, #1B264F 100%)',
       borderRight: '1px solid rgba(78, 103, 235, 0.14)',
       boxShadow: '4px 0 28px rgba(0, 0, 0, 0.30), inset -1px 0 0 rgba(78, 103, 235, 0.08)',
       display: 'flex',
