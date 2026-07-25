@@ -58,7 +58,8 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
   const asmAvgDiag = filteredAsmList.length > 0 ? Math.round((filteredAsmList.reduce((sum, a) => sum + (a.diag || 0), 0) / filteredAsmList.length) * 10) / 10 : 0;
   const asmAvgCag = filteredAsmList.length > 0 ? Math.round((filteredAsmList.reduce((sum, a) => sum + (a.cag || 0), 0) / filteredAsmList.length) * 10) / 10 : 0;
 
-  // NPS static datasets from Jun26 NPS Data.xlsx
+  // NPS data — Jun 2026 NPS survey snapshot (static; sourced from Jun26 NPS Data.xlsx)
+  // TODO: Replace with API-driven data when NPS survey data is ingested into the database
   const busmNpsData = [
     { name: 'Jitesh S Rath', total: 2336, d: '12.7%', p: '17.6%', pr: '69.7%', nps: '57.0%', rank: 5 },
     { name: 'Rajesh Limbachia', total: 2154, d: '10.2%', p: '13.9%', pr: '75.9%', nps: '65.8%', rank: 2 },
@@ -117,6 +118,8 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
     { code: 'ASP-1102180', name: 'Q COM', asm: 'Pushpendra Singh', busm: 'Rajesh Limbachia', total: 76, rr: '55.3%', d: '7.1%', p: '7.1%', pr: '85.7%', nps: '78.6%' },
   ];
 
+  // DSAT reason breakdown — Jun 2026 NPS survey snapshot (static; sourced from Jun26 NPS Data.xlsx)
+  // TODO: Replace with API-driven data when DSAT survey data is ingested into the database
   const dsatBusmData = [
     { name: 'Sukhbir Singh', delay: 34, repair: 45, aspBehav: 5, replace: 9, cost: 4, deny: 1, total: 121 },
     { name: 'Jitesh S Rath', delay: 30, repair: 19, aspBehav: 11, replace: 1, cost: 4, deny: 0, total: 78 },
@@ -125,12 +128,16 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
     { name: 'Shivaprasad P U', delay: 22, repair: 8, aspBehav: 8, replace: 3, cost: 1, deny: 1, total: 44 },
   ];
 
+  // Device category NPS breakdown — Jun 2026 NPS survey snapshot (static; sourced from Jun26 NPS Data.xlsx)
+  // TODO: Replace with API-driven data when NPS survey data is ingested into the database
   const deviceCategoryNps = [
     { cat: 'Feature Phone', surveys: 5350, d: '10.7%', p: '11.1%', pr: '78.2%', nps: '67.5%' },
     { cat: 'Smart Phone', surveys: 6801, d: '10.3%', p: '21.2%', pr: '68.5%', nps: '58.2%' },
     { cat: 'Overall Combined', surveys: 12151, d: '10.5%', p: '13.6%', pr: '75.9%', nps: '65.4%' },
   ];
 
+  // Feature Phone BUSM NPS breakdown — Jun 2026 NPS survey snapshot (static; sourced from Jun26 NPS Data.xlsx)
+  // TODO: Replace with API-driven data when NPS survey data is ingested into the database
   const fpBusmData = [
     { name: 'Jitesh S Rath', total: 1240, d: '11.4%', p: '14.1%', pr: '74.5%', nps: '63.1%' },
     { name: 'Rajesh Limbachia', total: 714, d: '14.5%', p: '7.6%', pr: '77.9%', nps: '63.4%' },
@@ -139,6 +146,8 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
     { name: 'Tamilselvan Subramanian', total: 1179, d: '13.3%', p: '11.2%', pr: '75.5%', nps: '62.1%' },
   ];
 
+  // Smartphone BUSM NPS breakdown — Jun 2026 NPS survey snapshot (static; sourced from Jun26 NPS Data.xlsx)
+  // TODO: Replace with API-driven data when NPS survey data is ingested into the database
   const spBusmData = [
     { name: 'Jitesh S Rath', total: 1096, d: '14.1%', p: '21.5%', pr: '64.4%', nps: '50.3%' },
     { name: 'Rajesh Limbachia', total: 1440, d: '8.1%', p: '17.0%', pr: '74.9%', nps: '66.8%' },
