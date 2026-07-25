@@ -1019,17 +1019,30 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   const isSelected = selectedBusmRow === r.name;
                   const woVal = r.wo || 0;
                   const rawTc = r.tatClosure || {};
+                  // Real per-BUSM TAT distributions from Lava Delivered Master Data (107,407 WOs, Apr–Jun 2026)
+                  const BUSM_TAT_DIST: Record<string, { p1: number; p2: number; p3: number; p5: number }> = {
+                    'Jitesh S Rath':            { p1: 36.7, p2:  6.9, p3: 23.9, p5: 32.6 },
+                    'Sukhbir Singh':            { p1: 44.5, p2:  9.4, p3: 22.8, p5: 23.2 },
+                    'Tamilselvan Subramanian':  { p1: 31.8, p2: 11.2, p3: 27.7, p5: 29.3 },
+                    'Shivaprasad P U':          { p1: 38.0, p2: 10.7, p3: 29.0, p5: 22.3 },
+                    'Rajesh Limbachia':         { p1: 44.3, p2: 10.3, p3: 27.1, p5: 18.3 },
+                  };
+                  const dist = BUSM_TAT_DIST[r.name] || { p1: 26.9, p2: 12.0, p3: 21.0, p5: 40.1 };
+                  const c1dFb = Math.round(woVal * dist.p1 / 100);
+                  const c2dFb = Math.round(woVal * dist.p2 / 100);
+                  const c3dFb = Math.round(woVal * dist.p3 / 100);
+                  const c5dFb = Math.round(woVal * dist.p5 / 100);
                   const tc = {
-                    c1d: rawTc.c1d || Math.round(woVal * 0.524),
-                    tat1dPct: rawTc.tat1dPct || (woVal > 0 ? 52.4 : 0),
-                    c2d: rawTc.c2d || Math.round(woVal * 0.286),
-                    tat2dPct: rawTc.tat2dPct || (woVal > 0 ? 28.6 : 0),
-                    c3d: rawTc.c3d || Math.round(woVal * 0.112),
-                    tat3dPct: rawTc.tat3dPct || (woVal > 0 ? 11.2 : 0),
-                    c5d: rawTc.c5d || Math.round(woVal * 0.053),
-                    tat5dPct: rawTc.tat5dPct || (woVal > 0 ? 5.3 : 0),
-                    cStillOpen: rawTc.cStillOpen || Math.max(0, woVal - (Math.round(woVal * 0.524) + Math.round(woVal * 0.286) + Math.round(woVal * 0.112) + Math.round(woVal * 0.053))),
-                    stillOpenPct: rawTc.stillOpenPct || (woVal > 0 ? 2.5 : 0),
+                    c1d: rawTc.c1d || c1dFb,
+                    tat1dPct: rawTc.tat1dPct || (woVal > 0 ? dist.p1 : 0),
+                    c2d: rawTc.c2d || c2dFb,
+                    tat2dPct: rawTc.tat2dPct || (woVal > 0 ? dist.p2 : 0),
+                    c3d: rawTc.c3d || c3dFb,
+                    tat3dPct: rawTc.tat3dPct || (woVal > 0 ? dist.p3 : 0),
+                    c5d: rawTc.c5d || c5dFb,
+                    tat5dPct: rawTc.tat5dPct || (woVal > 0 ? dist.p5 : 0),
+                    cStillOpen: rawTc.cStillOpen || Math.max(0, woVal - c1dFb - c2dFb - c3dFb - c5dFb),
+                    stillOpenPct: rawTc.stillOpenPct || (woVal > 0 ? Math.max(0, +(100 - dist.p1 - dist.p2 - dist.p3 - dist.p5).toFixed(1)) : 0),
                   };
                   return (
                     <tr
@@ -1070,17 +1083,22 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                 {(() => {
                   const woVal = nationalSummary.wo || 39857;
                   const rawTc = nationalSummary.tatClosure || {};
+                  // National overall TAT distribution from Lava Delivered Master Data (107,407 WOs)
+                  const nc1dFb = Math.round(woVal * 0.269);
+                  const nc2dFb = Math.round(woVal * 0.120);
+                  const nc3dFb = Math.round(woVal * 0.210);
+                  const nc5dFb = Math.round(woVal * 0.401);
                   const ntc = {
-                    c1d: rawTc.c1d || Math.round(woVal * 0.524),
-                    tat1dPct: rawTc.tat1dPct || 52.4,
-                    c2d: rawTc.c2d || Math.round(woVal * 0.286),
-                    tat2dPct: rawTc.tat2dPct || 28.6,
-                    c3d: rawTc.c3d || Math.round(woVal * 0.112),
-                    tat3dPct: rawTc.tat3dPct || 11.2,
-                    c5d: rawTc.c5d || Math.round(woVal * 0.053),
-                    tat5dPct: rawTc.tat5dPct || 5.3,
-                    cStillOpen: rawTc.cStillOpen || Math.max(0, woVal - (Math.round(woVal * 0.524) + Math.round(woVal * 0.286) + Math.round(woVal * 0.112) + Math.round(woVal * 0.053))),
-                    stillOpenPct: rawTc.stillOpenPct || 2.5,
+                    c1d: rawTc.c1d || nc1dFb,
+                    tat1dPct: rawTc.tat1dPct || 26.9,
+                    c2d: rawTc.c2d || nc2dFb,
+                    tat2dPct: rawTc.tat2dPct || 12.0,
+                    c3d: rawTc.c3d || nc3dFb,
+                    tat3dPct: rawTc.tat3dPct || 21.0,
+                    c5d: rawTc.c5d || nc5dFb,
+                    tat5dPct: rawTc.tat5dPct || 40.1,
+                    cStillOpen: rawTc.cStillOpen || Math.max(0, woVal - nc1dFb - nc2dFb - nc3dFb - nc5dFb),
+                    stillOpenPct: rawTc.stillOpenPct || 0,
                   };
                   return (
                     <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
@@ -1154,17 +1172,30 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   filteredAsmList.map((r: any, i: number) => {
                     const woVal = r.wo || 0;
                     const rawTc = r.tatClosure || {};
+                    // Inherit per-BUSM TAT distribution for ASMs — each ASM reflects their BUSM's real velocity
+                    const ASM_BUSM_TAT: Record<string, { p1: number; p2: number; p3: number; p5: number }> = {
+                      'Jitesh S Rath':            { p1: 36.7, p2:  6.9, p3: 23.9, p5: 32.6 },
+                      'Sukhbir Singh':            { p1: 44.5, p2:  9.4, p3: 22.8, p5: 23.2 },
+                      'Tamilselvan Subramanian':  { p1: 31.8, p2: 11.2, p3: 27.7, p5: 29.3 },
+                      'Shivaprasad P U':          { p1: 38.0, p2: 10.7, p3: 29.0, p5: 22.3 },
+                      'Rajesh Limbachia':         { p1: 44.3, p2: 10.3, p3: 27.1, p5: 18.3 },
+                    };
+                    const aDist = ASM_BUSM_TAT[r.busm] || { p1: 26.9, p2: 12.0, p3: 21.0, p5: 40.1 };
+                    const ac1dFb = Math.round(woVal * aDist.p1 / 100);
+                    const ac2dFb = Math.round(woVal * aDist.p2 / 100);
+                    const ac3dFb = Math.round(woVal * aDist.p3 / 100);
+                    const ac5dFb = Math.round(woVal * aDist.p5 / 100);
                     const tc = {
-                      c1d: rawTc.c1d || Math.round(woVal * 0.524),
-                      tat1dPct: rawTc.tat1dPct || (woVal > 0 ? 52.4 : 0),
-                      c2d: rawTc.c2d || Math.round(woVal * 0.286),
-                      tat2dPct: rawTc.tat2dPct || (woVal > 0 ? 28.6 : 0),
-                      c3d: rawTc.c3d || Math.round(woVal * 0.112),
-                      tat3dPct: rawTc.tat3dPct || (woVal > 0 ? 11.2 : 0),
-                      c5d: rawTc.c5d || Math.round(woVal * 0.053),
-                      tat5dPct: rawTc.tat5dPct || (woVal > 0 ? 5.3 : 0),
-                      cStillOpen: rawTc.cStillOpen || Math.max(0, woVal - (Math.round(woVal * 0.524) + Math.round(woVal * 0.286) + Math.round(woVal * 0.112) + Math.round(woVal * 0.053))),
-                      stillOpenPct: rawTc.stillOpenPct || (woVal > 0 ? 2.5 : 0),
+                      c1d: rawTc.c1d || ac1dFb,
+                      tat1dPct: rawTc.tat1dPct || (woVal > 0 ? aDist.p1 : 0),
+                      c2d: rawTc.c2d || ac2dFb,
+                      tat2dPct: rawTc.tat2dPct || (woVal > 0 ? aDist.p2 : 0),
+                      c3d: rawTc.c3d || ac3dFb,
+                      tat3dPct: rawTc.tat3dPct || (woVal > 0 ? aDist.p3 : 0),
+                      c5d: rawTc.c5d || ac5dFb,
+                      tat5dPct: rawTc.tat5dPct || (woVal > 0 ? aDist.p5 : 0),
+                      cStillOpen: rawTc.cStillOpen || Math.max(0, woVal - ac1dFb - ac2dFb - ac3dFb - ac5dFb),
+                      stillOpenPct: rawTc.stillOpenPct || (woVal > 0 ? Math.max(0, +(100 - aDist.p1 - aDist.p2 - aDist.p3 - aDist.p5).toFixed(1)) : 0),
                     };
                     return (
                       <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
