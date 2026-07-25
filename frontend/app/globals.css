@@ -1,61 +1,72 @@
 /* ─── Lava Decision Risk Dashboard Design System ─── */
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap');
 
 :root {
-  --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  /* Fonts */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   
-  /* Official Zenlearn x Lava Design System 6-Color Palette */
-  --learning-cobalt: #4E67EB;    /* Brand Primary Action */
-  --zen-midnight: #294D89;       /* Brand Identity / Authority */
-  --deep-space: #1B264F;          /* Deep Contrast Typography */
-  --slate-breeze: #94A3B8;        /* UI Neutral & Grid Dividers */
-  --serenity-ice: #F0F4FF;        /* Main Surface & Light Table Fills */
-  --lava-crimson: #E50046;        /* Lava Accent Identity */
-
-  --color-bg: #f8fafc;
-  --color-card: #ffffff;
+  /* Semantic Backgrounds */
+  --bg-canvas: #f8fafc;        /* App background */
+  --bg-surface: #ffffff;       /* Card/Panel background */
+  --bg-surface-hover: #f1f5f9; /* Row hover / subtle active states */
+  --bg-surface-selected: #eff6ff;
   
-  --deep: #1B264F;
-  --mid: #E50046;
-  --cobalt: #4E67EB;
-  --lava-crimson-hover: #D0003F;
-  --lava-crimson-light: #FFF1F2;
-  --ice: #F0F4FF;
-  --ink: #1B264F;
-  --muted: #64748b;
-  --line: #e2e8f0;
-  --paper: #f8fafc;
-  --bad: #ef4444;
-  --warn: #f59e0b;
-  --good: #10b981;
+  /* Semantic Typography */
+  --text-primary: #0f172a;     /* Deep, high contrast text */
+  --text-secondary: #475569;   /* Subtle labels, headers */
+  --text-tertiary: #64748b;    /* Muted text, timestamps */
+  --text-inverse: #ffffff;     /* Text on dark backgrounds */
   
-  --color-primary: #1B264F;      /* Deep Space */
-  --color-primary-light: #E50046; /* Lava Crimson */
-  --color-primary-hover: #D0003F;
-  --color-accent: #4E67EB;       /* Learning Cobalt */
-  --color-text-main: #1B264F;
-  --color-text-muted: #64748b;
-  --color-border: #e2e8f0;
+  /* Semantic Borders */
+  --border-subtle: #f1f5f9;    /* Inner row dividers */
+  --border-default: #e2e8f0;   /* Card borders, main dividers */
+  --border-strong: #cbd5e1;    /* Emphasized borders */
   
-  /* Status/Exception colors */
-  --color-success: #10b981;
-  --color-warning: #f59e0b;
-  --color-danger: #ef4444;
+  /* Semantic Status Colors */
+  --status-success: #16a34a;
+  --status-warning: #d97706;
+  --status-danger: #dc2626;
+  --status-info: #2563eb;
+  
+  /* Brand Tokens (Used sparingly for identity) */
+  --brand-primary: #1B264F;      /* Zenlearn Deep Space */
+  --brand-secondary: #4E67EB;    /* Zenlearn Cobalt */
+  --brand-accent: #E50046;       /* Lava Crimson */
   
   /* Shadows and Transitions */
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
-  --shadow-md: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 5px -1px rgba(0, 0, 0, 0.03);
-  --shadow-lg: 0 10px 30px -5px rgba(0, 35, 120, 0.06);
-  --transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.05);
+  --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-normal: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* (Legacy tokens kept temporarily to avoid breaking other un-migrated tabs immediately) */
+  --color-bg: var(--bg-canvas);
+  --color-card: var(--bg-surface);
+  --deep: var(--brand-primary);
+  --mid: var(--brand-accent);
+  --cobalt: var(--brand-secondary);
+  --ice: var(--bg-surface-hover);
+  --ink: var(--text-primary);
+  --muted: var(--text-tertiary);
+  --line: var(--border-default);
+  --bad: var(--status-danger);
+  --warn: var(--status-warning);
+  --good: var(--status-success);
 }
 
-/* ─── Global Premium Table Framework ─── */
+/* ─── Density Modes ─── */
+.table-density-compact { --row-height: 36px; --cell-py: 6px; }
+.table-density-comfortable { --row-height: 44px; --cell-py: 10px; }
+.table-density-relaxed { --row-height: 52px; --cell-py: 14px; }
+
+/* ─── Global Premium Table Framework (Legacy Update) ─── */
 .table-container-premium {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(27, 38, 79, 0.04);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
 }
 
@@ -64,54 +75,42 @@
   border-collapse: collapse;
   font-family: var(--font-sans);
   font-size: 13px;
-  color: var(--deep-space);
+  color: var(--text-primary);
 }
 
 .table-premium thead tr {
-  background-color: #F8FAFC;
-  border-bottom: 2px solid #E2E8F0;
+  background-color: var(--bg-canvas);
+  border-bottom: 1px solid var(--border-default);
 }
 
 .table-premium th {
   padding: 10px 14px;
-  font-size: 11px;
-  font-weight: 700;
-  color: #475569;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border-right: 1px solid #E2E8F0;
-}
-
-.table-premium th:last-child {
-  border-right: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: none; /* Sentence case preferred for scan speed */
+  border-right: none; /* Removing grid-heavy vertical borders */
 }
 
 .table-premium td {
   padding: 10px 14px;
-  color: var(--deep-space);
-  border-bottom: 1px solid #F1F5F9;
-  border-right: 1px solid #F1F5F9;
-  font-weight: 600;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-subtle);
+  border-right: none; /* Removing grid-heavy vertical borders */
+  font-weight: 500;
+  transition: var(--transition-fast);
 }
 
-.table-premium td:last-child {
-  border-right: none;
-}
-
-.table-premium tbody tr:hover {
-  background-color: #F8FAFF;
-}
-
-.table-premium tr.summary-row-premium {
-  border-top: 2.5px solid var(--deep-space);
-  background-color: #F1F5F9;
-  font-weight: 800;
+.table-premium tbody tr:hover td {
+  background-color: var(--bg-surface-hover);
 }
 
 .table-premium tr.summary-row-premium td {
-  color: var(--deep-space);
-  font-weight: 800;
-  border-right: 1px solid #E2E8F0;
+  border-top: 1px solid var(--border-strong);
+  background-color: var(--bg-surface-hover);
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text-primary);
 }
 
 .mockup-dashboard {
