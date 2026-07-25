@@ -641,20 +641,35 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                     </td>
                   </tr>
                 ) : (
-                  filteredAsmList.map((r: any, i: number) => (
+                  filteredAsmList.map((r: any, i: number) => {
+                    // Rank cancel (lower = better rank #1), sameDayAttend (higher = better), pending (lower = better)
+                    const cancelRank = [...filteredAsmList].sort((a: any, b: any) => (a.cancelPct ?? 30.7) - (b.cancelPct ?? 30.7)).findIndex((x: any) => x.name === r.name) + 1;
+                    const sdaRank   = [...filteredAsmList].sort((a: any, b: any) => (b.sameDayAttendPct ?? 31.4) - (a.sameDayAttendPct ?? 31.4)).findIndex((x: any) => x.name === r.name) + 1;
+                    const pendRank  = [...filteredAsmList].sort((a: any, b: any) => (a.pendingToAttendPct ?? 5.5) - (b.pendingToAttendPct ?? 5.5)).findIndex((x: any) => x.name === r.name) + 1;
+                    return (
                     <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
                       <td style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 700, color: '#1e293b' }}>{r.name}</td>
                       <td style={{ padding: '8px 10px', textAlign: 'left', color: '#64748b', borderRight: '1px solid #f1f5f9' }}>{r.busm}</td>
                       <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, borderRight: '1px solid #f1f5f9' }}>
                         {(r.wo || 0).toLocaleString('en-IN')}
                       </td>
-                      <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#d97706' }}>{r.cancelPct ?? 30.7}%</td>
+                      <td style={{ padding: '8px 10px', textAlign: 'right' }}>
+                        <span style={{ fontWeight: 700, color: '#d97706' }}>{r.cancelPct ?? 30.7}%</span>
+                        <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', padding: '1px 5px', borderRadius: '4px', marginLeft: '5px' }}>#{cancelRank}</span>
+                      </td>
                       <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 600 }}>{r.reschedulePct ?? 10.0}%</td>
-                      <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#16a34a' }}>{r.sameDayAttendPct ?? 31.4}%</td>
+                      <td style={{ padding: '8px 10px', textAlign: 'right' }}>
+                        <span style={{ fontWeight: 700, color: '#16a34a' }}>{r.sameDayAttendPct ?? 31.4}%</span>
+                        <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', padding: '1px 5px', borderRadius: '4px', marginLeft: '5px' }}>#{sdaRank}</span>
+                      </td>
                       <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#dc2626' }}>{r.sameDayAttendCancelPct ?? 12.3}%</td>
-                      <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#2563eb' }}>{r.pendingToAttendPct ?? 5.5}%</td>
+                      <td style={{ padding: '8px 10px', textAlign: 'right' }}>
+                        <span style={{ fontWeight: 700, color: '#2563eb' }}>{r.pendingToAttendPct ?? 5.5}%</span>
+                        <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', padding: '1px 5px', borderRadius: '4px', marginLeft: '5px' }}>#{pendRank}</span>
+                      </td>
                     </tr>
-                  ))
+                    );
+                  })
                 )}
 
                 {/* Total Summary Row for ASMs */}
@@ -802,8 +817,13 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                 </tr>
               </thead>
               <tbody>
-                {topAspNpsData.map((r, i) => (
-                  <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                {topAspNpsData
+                  .slice()
+                  .sort((a, b) => parseFloat(b.nps) - parseFloat(a.nps))
+                  .map((r, i, sorted) => {
+                    const rank = i + 1;
+                    return (
+                  <tr key={r.code} style={{ borderBottom: '1px solid #f1f5f9' }}>
                     <td style={{ padding: '8px 10px', fontFamily: 'monospace', color: '#64748b' }}>{r.code}</td>
                     <td style={{ padding: '8px 12px', fontWeight: 700, color: '#1e293b' }}>{r.name}</td>
                     <td style={{ padding: '8px 10px', color: '#64748b' }}>{r.asm}</td>
@@ -813,9 +833,13 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                     <td style={{ padding: '8px 10px', textAlign: 'right', color: '#dc2626', fontWeight: 700 }}>{r.d}</td>
                     <td style={{ padding: '8px 10px', textAlign: 'right', color: '#d97706' }}>{r.p}</td>
                     <td style={{ padding: '8px 10px', textAlign: 'right', color: '#16a34a', fontWeight: 700 }}>{r.pr}</td>
-                    <td style={{ padding: '8px 10px', textAlign: 'right', color: '#2563eb', fontWeight: 800 }}>{r.nps}</td>
+                    <td style={{ padding: '8px 10px', textAlign: 'right' }}>
+                      <span style={{ color: '#2563eb', fontWeight: 800 }}>{r.nps}</span>
+                      <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', padding: '1px 5px', borderRadius: '4px', marginLeft: '6px' }}>#{rank}</span>
+                    </td>
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -921,15 +945,24 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   </tr>
                 </thead>
                 <tbody>
-                  {fpBusmData.map((r, i) => (
-                    <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                  {fpBusmData
+                    .slice()
+                    .sort((a, b) => parseFloat(b.nps) - parseFloat(a.nps))
+                    .map((r, i) => {
+                      const rank = i + 1;
+                      return (
+                    <tr key={r.name} style={{ borderBottom: '1px solid #f1f5f9' }}>
                       <td style={{ padding: '8px 10px', fontWeight: 700, color: '#1e293b' }}>{r.name}</td>
                       <td style={{ padding: '8px 8px', textAlign: 'right' }}>{r.total.toLocaleString('en-IN')}</td>
                       <td style={{ padding: '8px 8px', textAlign: 'right', color: '#dc2626', fontWeight: 700 }}>{r.d}</td>
                       <td style={{ padding: '8px 8px', textAlign: 'right', color: '#16a34a', fontWeight: 700 }}>{r.pr}</td>
-                      <td style={{ padding: '8px 8px', textAlign: 'right', color: '#2563eb', fontWeight: 800 }}>{r.nps}</td>
+                      <td style={{ padding: '8px 8px', textAlign: 'right' }}>
+                        <span style={{ color: '#2563eb', fontWeight: 800 }}>{r.nps}</span>
+                        <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', padding: '1px 5px', borderRadius: '4px', marginLeft: '5px' }}>#{rank}</span>
+                      </td>
                     </tr>
-                  ))}
+                    );
+                  })}
                   <tr style={{ borderTop: '2px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
                     <td style={{ padding: '8px 10px', color: '#0f172a' }}>Total Feature Phone</td>
                     <td style={{ padding: '8px 8px', textAlign: 'right' }}>5,350</td>
@@ -959,15 +992,24 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   </tr>
                 </thead>
                 <tbody>
-                  {spBusmData.map((r, i) => (
-                    <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                  {spBusmData
+                    .slice()
+                    .sort((a, b) => parseFloat(b.nps) - parseFloat(a.nps))
+                    .map((r, i) => {
+                      const rank = i + 1;
+                      return (
+                    <tr key={r.name} style={{ borderBottom: '1px solid #f1f5f9' }}>
                       <td style={{ padding: '8px 10px', fontWeight: 700, color: '#1e293b' }}>{r.name}</td>
                       <td style={{ padding: '8px 8px', textAlign: 'right' }}>{r.total.toLocaleString('en-IN')}</td>
                       <td style={{ padding: '8px 8px', textAlign: 'right', color: '#dc2626', fontWeight: 700 }}>{r.d}</td>
                       <td style={{ padding: '8px 8px', textAlign: 'right', color: '#16a34a', fontWeight: 700 }}>{r.pr}</td>
-                      <td style={{ padding: '8px 8px', textAlign: 'right', color: '#2563eb', fontWeight: 800 }}>{r.nps}</td>
+                      <td style={{ padding: '8px 8px', textAlign: 'right' }}>
+                        <span style={{ color: '#2563eb', fontWeight: 800 }}>{r.nps}</span>
+                        <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', padding: '1px 5px', borderRadius: '4px', marginLeft: '5px' }}>#{rank}</span>
+                      </td>
                     </tr>
-                  ))}
+                    );
+                  })}
                   <tr style={{ borderTop: '2px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
                     <td style={{ padding: '8px 10px', color: '#0f172a' }}>Total Smart Phone</td>
                     <td style={{ padding: '8px 8px', textAlign: 'right' }}>6,801</td>
