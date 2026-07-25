@@ -482,11 +482,11 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                 <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                   <th style={{ padding: '10px 12px', textAlign: 'left', borderRight: '1px solid #e2e8f0', width: '18%' }}>BUSM Name</th>
                   <th style={{ padding: '10px 10px', textAlign: 'right', borderRight: '1px solid #e2e8f0' }}>Total Appointments</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', color: '#d97706' }}>Cancellation %</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', color: '#475569' }}>Reschedule %</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', color: '#16a34a' }}>Same Day Attend %</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', color: '#dc2626' }}>Same Day Attend with Cancellation %</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', color: '#2563eb' }}>Pending to Attend %</th>
+                  <th style={{ padding: '10px 10px', textAlign: 'right' }}>Cancellation %</th>
+                  <th style={{ padding: '10px 10px', textAlign: 'right' }}>Reschedule %</th>
+                  <th style={{ padding: '10px 10px', textAlign: 'right' }}>Same Day Attend %</th>
+                  <th style={{ padding: '10px 10px', textAlign: 'right' }}>Same Day Attend with Cancellation %</th>
+                  <th style={{ padding: '10px 10px', textAlign: 'right' }}>Pending to Attend %</th>
                 </tr>
               </thead>
               <tbody>
@@ -559,11 +559,11 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   <th style={{ padding: '10px 12px', textAlign: 'left', borderRight: '1px solid #e2e8f0', width: '16%' }}>ASM Name</th>
                   <th style={{ padding: '10px 10px', textAlign: 'left', borderRight: '1px solid #e2e8f0', width: '14%' }}>BUSM</th>
                   <th style={{ padding: '10px 10px', textAlign: 'right', borderRight: '1px solid #e2e8f0' }}>Total Appointments</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', color: '#d97706' }}>Cancellation %</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', color: '#475569' }}>Reschedule %</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', color: '#16a34a' }}>Same Day Attend %</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', color: '#dc2626' }}>Same Day Attend with Cancellation %</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', color: '#2563eb' }}>Pending to Attend %</th>
+                  <th style={{ padding: '10px 10px', textAlign: 'right' }}>Cancellation %</th>
+                  <th style={{ padding: '10px 10px', textAlign: 'right' }}>Reschedule %</th>
+                  <th style={{ padding: '10px 10px', textAlign: 'right' }}>Same Day Attend %</th>
+                  <th style={{ padding: '10px 10px', textAlign: 'right' }}>Same Day Attend with Cancellation %</th>
+                  <th style={{ padding: '10px 10px', textAlign: 'right' }}>Pending to Attend %</th>
                 </tr>
               </thead>
               <tbody>
