@@ -19,7 +19,7 @@ interface SidebarProps {
 export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handleSignOut, user }: SidebarProps) {
   const menuItems = [
     { id: 'exec', label: 'Executive KPIs', icon: LayoutDashboard },
-    { id: 'org_kpi', label: 'Organization KPIs', icon: Activity },
+    { id: 'org_kpi', label: 'Org KPIs', icon: Activity },
     { id: 'deep', label: 'Score Card', icon: CheckCircle },
     { 
       id: 'coach', 
