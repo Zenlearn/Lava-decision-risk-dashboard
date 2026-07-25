@@ -70,15 +70,11 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
         alignItems: 'flex-start',
         gap: '10px'
       }}>
-        {/* ZenLearn Logo on a fitted white pill */}
+        {/* ZenLearn Logo */}
         <div style={{
-          background: '#ffffff',
-          borderRadius: '6px',
-          padding: '4px 8px',
-          display: 'inline-flex',
+          display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+          justifyContent: 'flex-start',
           marginBottom: '6px'
         }}>
           <img
@@ -88,7 +84,9 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
               height: '32px',
               width: 'auto',
               objectFit: 'contain',
-              display: 'block'
+              display: 'block',
+              mixBlendMode: 'screen', // Removes white background if the image has one and the sidebar is dark
+              borderRadius: '4px'
             }}
           />
         </div>
