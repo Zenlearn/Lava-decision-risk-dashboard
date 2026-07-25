@@ -30,7 +30,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
         userSelect: 'none',
         display: 'inline-flex',
         alignItems: 'center',
-        justify: 'center'
+        justifyContent: 'center'
       }}
       title={collapsedTables[key] ? "Expand Table" : "Collapse Table"}
     >
@@ -473,7 +473,8 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                       </td>
                     </tr>
                   ))
-                    {/* Total Summary Row for ASMs */}
+                )}
+                {/* Total Summary Row for ASMs */}
                 <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
                   <td style={{ padding: '10px 12px', color: '#0f172a', background: '#f1f5f9', fontWeight: 800 }}>Total / Average</td>
                   <td style={{ padding: '10px 10px', color: '#64748b', borderRight: '1px solid #e2e8f0' }}>{selectedBusmRow || 'All Regions'}</td>
@@ -568,7 +569,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
 
                 {/* National Total Summary Row */}
                 <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
-                  <td style={{ padding: '12px', color: '#0f172a', borderRight: '1px solid #e2e8f0', background: '#f1f5f9', fontWeight 800 }}>
+                  <td style={{ padding: '12px', color: '#0f172a', borderRight: '1px solid #e2e8f0', background: '#f1f5f9', fontWeight: 800 }}>
                     {nationalSummary.name || 'National %'}
                   </td>
                   <td style={{ padding: '12px 10px', textAlign: 'right', color: '#0f172a', borderRight: '1px solid #e2e8f0', fontWeight: 800 }}>
@@ -585,7 +586,6 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
           </div>
           )}
         </div>
-      </div>
 
         {/* TABLE 4: ASM APPOINTMENT METRICS TABLE */}
         <div className="card-mock" style={{ padding: '20px' }}>
