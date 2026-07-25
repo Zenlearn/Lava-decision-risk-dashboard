@@ -46,9 +46,9 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
   return (
     <aside className="zen-sidebar" style={{
       width: '260px',
-      // Rich Zenlearn Deep Space Navy — on-brand, easy on the eyes, premium depth
-      // Replaces the harsh #111827 charcoal-black that was hurting readability
-      background: 'linear-gradient(180deg, #1B264F 0%, #152045 45%, #0D1829 100%)',
+      // Lighter Cobalt Blue theme — requested by CXOs for better readability
+      // Uses Zenlearn "Learning Cobalt" (#4E67EB) down to "Zen Midnight" (#294D89)
+      background: 'linear-gradient(180deg, #4E67EB 0%, #3B54D1 45%, #294D89 100%)',
       borderRight: '1px solid rgba(78, 103, 235, 0.14)',
       boxShadow: '4px 0 28px rgba(0, 0, 0, 0.30), inset -1px 0 0 rgba(78, 103, 235, 0.08)',
       display: 'flex',
