@@ -21,6 +21,33 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
   const [selectedBusm, setSelectedBusm] = useState<string>('all');
   const [selectedAsm, setSelectedAsm] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'swapsCount' | 'sameDayPct' | 'sameDayToCallsPct' | 'sameDayCount' | 'totalCalls'>('swapsCount');
+  const [collapsedTables, setCollapsedTables] = useState<Record<string, boolean>>({});
+
+  const toggleTable = (key: string) => {
+    setCollapsedTables(prev => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const renderHeaderArrow = (key: string) => (
+    <span 
+      onClick={(e) => {
+        e.stopPropagation();
+        toggleTable(key);
+      }}
+      style={{ 
+        fontSize: '14px', 
+        fontWeight: 800, 
+        color: '#E50046', 
+        cursor: 'pointer',
+        marginRight: '8px',
+        userSelect: 'none',
+        display: 'inline-flex',
+        alignItems: 'center'
+      }}
+      title={collapsedTables[key] ? "Expand Table" : "Collapse Table"}
+    >
+      {collapsedTables[key] ? '▶' : '▼'}
+    </span>
+  );
 
   const activeHome = data.home?.by_month?.[selectedMonth] || data.home;
   const activeModelHome = data.home?.by_month?.[selectedModelMonth] || data.home;
