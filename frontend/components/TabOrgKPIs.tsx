@@ -12,10 +12,12 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
   const [selectedBusmRow, setSelectedBusmRow] = useState<string | null>(null);
   const [collapsedTables, setCollapsedTables] = useState<Record<string, boolean>>({});
 
-  const getRankBadgeStyle = (rank: number) => {
-    if (rank <= 3) return { background: 'var(--badge-emerald-bg)', color: 'var(--badge-emerald-text)', border: `1px solid var(--badge-emerald-border)` };
-    if (rank <= 10) return { background: 'var(--badge-cobalt-bg)', color: 'var(--badge-cobalt-text)', border: `1px solid var(--badge-cobalt-border)` };
-    if (rank <= 20) return { background: 'var(--badge-amber-bg)', color: 'var(--badge-amber-text)', border: `1px solid var(--badge-amber-border)` };
+  const getRankBadgeStyle = (rank: any) => {
+    const parsedRank = typeof rank === 'string' ? parseInt(rank.replace(/[^0-9]/g, ''), 10) : Number(rank);
+    if (isNaN(parsedRank)) return { background: 'var(--badge-slate-bg)', color: 'var(--badge-slate-text)', border: `1px solid var(--badge-slate-border)` };
+    if (parsedRank <= 3) return { background: 'var(--badge-emerald-bg)', color: 'var(--badge-emerald-text)', border: `1px solid var(--badge-emerald-border)` };
+    if (parsedRank <= 10) return { background: 'var(--badge-cobalt-bg)', color: 'var(--badge-cobalt-text)', border: `1px solid var(--badge-cobalt-border)` };
+    if (parsedRank <= 20) return { background: 'var(--badge-amber-bg)', color: 'var(--badge-amber-text)', border: `1px solid var(--badge-amber-border)` };
     return { background: 'var(--badge-slate-bg)', color: 'var(--badge-slate-text)', border: `1px solid var(--badge-slate-border)` };
   };
 
