@@ -73,11 +73,11 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
   // NPS data — Jun 2026 NPS survey snapshot (static; sourced from Jun26 NPS Data.xlsx)
   // TODO: Replace with API-driven data when NPS survey data is ingested into the database
   const busmNpsData = [
-    { name: 'Jitesh S Rath', total: 2336, d: '12.7%', p: '17.6%', pr: '69.7%', nps: '57.0%', rank: 5 },
-    { name: 'Rajesh Limbachia', total: 2154, d: '10.2%', p: '13.9%', pr: '75.9%', nps: '65.8%', rank: 2 },
-    { name: 'Shivaprasad P U', total: 2521, d: '8.3%', p: '17.2%', pr: '74.6%', nps: '66.3%', rank: 1 },
-    { name: 'Sukhbir Singh', total: 3093, d: '10.1%', p: '17.3%', pr: '72.6%', nps: '62.5%', rank: 3 },
-    { name: 'Tamilselvan Subramanian', total: 2047, d: '9.0%', p: '20.6%', pr: '70.4%', nps: '61.4%', rank: 4 },
+    { name: 'Jitesh S Rath', total: 2336, rr: '33.6%', d: '12.6%', p: '15.3%', pr: '72.1%', nps: '59.5%', rank: 5 },
+    { name: 'Rajesh Limbachia', total: 2154, rr: '36.0%', d: '10.3%', p: '9.0%', pr: '80.7%', nps: '70.4%', rank: 1 },
+    { name: 'Shivaprasad P U', total: 2521, rr: '32.6%', d: '8.5%', p: '13.6%', pr: '77.9%', nps: '69.4%', rank: 2 },
+    { name: 'Sukhbir Singh', total: 3093, rr: '38.3%', d: '11.1%', p: '14.1%', pr: '74.8%', nps: '63.7%', rank: 4 },
+    { name: 'Tamilselvan Subramanian', total: 2047, rr: '43.0%', d: '9.8%', p: '15.3%', pr: '74.9%', nps: '65.1%', rank: 3 },
   ];
 
   const asmNpsData = [
@@ -718,45 +718,48 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             Table 1: BUSM Wise NPS Performance Breakdown
           </h3>
           <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
-              <thead>
-                <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '11px', textTransform: 'uppercase' }}>
-                  <th style={{ padding: '10px 12px', textAlign: 'left' }}>BUSM Name</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right' }}>Total Surveys</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', color: '#dc2626' }}>Detractor %</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', color: '#d97706' }}>Passive %</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', color: '#16a34a' }}>Promoter %</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', color: '#2563eb' }}>NPS %</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'center' }}>NPS Rank</th>
-                </tr>
-              </thead>
-              <tbody>
+            <Table density="comfortable">
+              <TableHeader>
+                <TableRow>
+                  <TableHead style={{ textAlign: 'left' }}>BUSM Name</TableHead>
+                  <TableHead style={{ textAlign: 'right' }}>Total Surveys Sent</TableHead>
+                  <TableHead style={{ textAlign: 'right' }}>Response Rate (RR %)</TableHead>
+                  <TableHead style={{ textAlign: 'right' }}>Detractor % (1-2★)</TableHead>
+                  <TableHead style={{ textAlign: 'right' }}>Passive % (3-4★)</TableHead>
+                  <TableHead style={{ textAlign: 'right' }}>Promoter % (5★)</TableHead>
+                  <TableHead style={{ textAlign: 'right' }}>NPS Score</TableHead>
+                  <TableHead style={{ textAlign: 'center' }}>NPS Rank</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {busmNpsData.map((r, i) => (
-                  <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                    <td style={{ padding: '9px 12px', fontWeight: 700, color: '#1e293b' }}>{r.name}</td>
-                    <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 600 }}>{r.total.toLocaleString('en-IN')}</td>
-                    <td style={{ padding: '9px 10px', textAlign: 'right', color: '#dc2626', fontWeight: 700 }}>{r.d}</td>
-                    <td style={{ padding: '9px 10px', textAlign: 'right', color: '#d97706', fontWeight: 600 }}>{r.p}</td>
-                    <td style={{ padding: '9px 10px', textAlign: 'right', color: '#16a34a', fontWeight: 700 }}>{r.pr}</td>
-                    <td style={{ padding: '9px 10px', textAlign: 'right', color: '#2563eb', fontWeight: 800 }}>{r.nps}</td>
-                    <td style={{ padding: '9px 10px', textAlign: 'center' }}>
-                      <span style={{ fontSize: '11px', fontWeight: 800, background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', padding: '2px 7px', borderRadius: '4px' }}>
+                  <TableRow key={i}>
+                    <TableCell style={{ textAlign: 'left', fontWeight: 700, color: '#1e293b' }}>{r.name}</TableCell>
+                    <TableCell style={{ textAlign: 'right', fontWeight: 600 }}>{r.total.toLocaleString('en-IN')}</TableCell>
+                    <TableCell style={{ textAlign: 'right', fontWeight: 700, color: '#1e40af' }}>{r.rr}</TableCell>
+                    <TableCell style={{ textAlign: 'right', color: '#be123c', fontWeight: 700 }}>{r.d}</TableCell>
+                    <TableCell style={{ textAlign: 'right', color: '#92400e', fontWeight: 600 }}>{r.p}</TableCell>
+                    <TableCell style={{ textAlign: 'right', color: '#065f46', fontWeight: 700 }}>{r.pr}</TableCell>
+                    <TableCell style={{ textAlign: 'right', color: '#1d4ed8', fontWeight: 800 }}>+{r.nps}</TableCell>
+                    <TableCell style={{ textAlign: 'center' }}>
+                      <span style={{ fontSize: '11px', fontWeight: 800, background: 'var(--badge-cobalt-bg)', color: 'var(--badge-cobalt-text)', border: '1px solid var(--badge-cobalt-border)', padding: '2px 7px', borderRadius: '4px' }}>
                         #{r.rank}
                       </span>
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-                <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
-                  <td style={{ padding: '10px 12px', color: '#0f172a', background: '#f1f5f9' }}>National % / Total</td>
-                  <td style={{ padding: '10px 10px', textAlign: 'right', color: '#0f172a' }}>12,151</td>
-                  <td style={{ padding: '10px 10px', textAlign: 'right', color: '#dc2626' }}>10.5%</td>
-                  <td style={{ padding: '10px 10px', textAlign: 'right', color: '#0f172a' }}>13.6%</td>
-                  <td style={{ padding: '10px 10px', textAlign: 'right', color: '#16a34a' }}>75.9%</td>
-                  <td style={{ padding: '10px 10px', textAlign: 'right', color: '#2563eb' }}>65.4%</td>
-                  <td style={{ padding: '10px 10px', textAlign: 'center', color: '#64748b', fontSize: '11px' }}>-</td>
-                </tr>
-              </tbody>
-            </table>
+              </TableBody>
+              <TableSummaryRow>
+                <TableCell style={{ textAlign: 'left' }}>National Overall</TableCell>
+                <TableCell style={{ textAlign: 'right' }}>12,151</TableCell>
+                <TableCell style={{ textAlign: 'right', color: '#1e40af' }}>36.6%</TableCell>
+                <TableCell style={{ textAlign: 'right', color: '#be123c' }}>10.5%</TableCell>
+                <TableCell style={{ textAlign: 'right' }}>13.6%</TableCell>
+                <TableCell style={{ textAlign: 'right', color: '#065f46' }}>75.9%</TableCell>
+                <TableCell style={{ textAlign: 'right', color: '#1d4ed8' }}>+65.4</TableCell>
+                <TableCell style={{ textAlign: 'center' }}>-</TableCell>
+              </TableSummaryRow>
+            </Table>
           </div>
         </div>
 
