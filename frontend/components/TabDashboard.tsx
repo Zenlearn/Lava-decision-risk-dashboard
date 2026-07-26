@@ -4,6 +4,7 @@ import {
   Tooltip, Legend, ResponsiveContainer 
 } from 'recharts';
 import { DASHBOARD_DEFINITIONS } from '../constants/definitions';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TableSummaryRow } from './ui/Table';
 
 interface TabDashboardProps {
   data: any;
@@ -496,17 +497,17 @@ export default function TabDashboard({
         {expandedSections.leakage && (
           <div style={{ padding: '20px' }}>
             <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
-                <thead>
-                  <tr style={{ borderBottom: '2px solid #cbd5e1', color: '#475569', textAlign: 'left', fontSize: '12.5px', textTransform: 'uppercase', letterSpacing: '0.04em', background: '#f8fafc' }}>
-                    <th style={{ padding: '12px 14px' }}>Line Item / Component</th>
-                    <th style={{ padding: '12px 14px', textAlign: 'center' }}>Quantity (Units / Visits)</th>
-                    <th style={{ padding: '12px 14px', textAlign: 'right' }}>Total Exposure Cost</th>
-                    <th style={{ padding: '12px 14px', textAlign: 'right' }}>% Share of Total</th>
-                    <th style={{ padding: '12px 14px', textAlign: 'center' }}>MoM Trend</th>
-                  </tr>
-                </thead>
-                <tbody>
+              <Table density="comfortable">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead style={{ textAlign: 'left' }}>Line Item / Component</TableHead>
+                    <TableHead style={{ textAlign: 'center' }}>Quantity (Units / Visits)</TableHead>
+                    <TableHead style={{ textAlign: 'right' }}>Total Exposure Cost</TableHead>
+                    <TableHead style={{ textAlign: 'right' }}>% Share of Total</TableHead>
+                    <TableHead style={{ textAlign: 'center' }}>MoM Trend</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                   {currentBreakdown.map((item: any, idx: number) => {
                     const prevItem = prevBreakdown.find((pb: any) => pb.key === item.key || pb.label === item.label);
                     const prevCost = prevItem?.cost || 0;
@@ -514,61 +515,62 @@ export default function TabDashboard({
                     const pctShare = activeLeakCur > 0 ? ((item.cost / activeLeakCur) * 100).toFixed(1) : '0.0';
 
                     return (
-                      <tr key={idx} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                        <td style={{ padding: '12px 14px', fontWeight: 600, color: '#1e293b' }}>{item.label}</td>
-                        <td style={{ padding: '12px 14px', textAlign: 'center', fontWeight: 600, color: '#475569' }}>
+                      <TableRow key={idx}>
+                        <TableCell style={{ textAlign: 'left', fontWeight: 600, color: '#1e293b' }}>{item.label}</TableCell>
+                        <TableCell style={{ textAlign: 'center', fontWeight: 600, color: '#475569' }}>
                           {(item.quantity || 0).toLocaleString('en-IN')}
-                        </td>
-                        <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>
+                        </TableCell>
+                        <TableCell style={{ textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>
                           {fmtINR(item.cost || 0)}
-                        </td>
-                        <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 600, color: '#64748b' }}>
+                        </TableCell>
+                        <TableCell style={{ textAlign: 'right', fontWeight: 600, color: '#64748b' }}>
                           {pctShare}%
-                        </td>
-                        <td style={{ padding: '12px 14px', textAlign: 'center', fontWeight: 700 }}>
+                        </TableCell>
+                        <TableCell style={{ textAlign: 'center', fontWeight: 700 }}>
                           {prevKPI ? (
                             <span style={{
-                              color: costDiff < 0 ? '#16a34a' : costDiff > 0 ? '#dc2626' : '#64748b',
-                              background: costDiff < 0 ? '#f0fdf4' : costDiff > 0 ? '#fef2f2' : '#f8fafc',
-                              padding: '3px 10px', borderRadius: '4px', fontSize: '12px'
+                              color: costDiff < 0 ? '#047857' : costDiff > 0 ? '#be123c' : '#475569',
+                              background: costDiff < 0 ? '#d1fae5' : costDiff > 0 ? '#ffe4e6' : '#e2e8f0',
+                              border: `1px solid ${costDiff < 0 ? '#34d399' : costDiff > 0 ? '#f87171' : '#cbd5e1'}`,
+                              padding: '3px 10px', borderRadius: '4px', fontSize: '12px', fontWeight: 700
                             }}>
                               {costDiff > 0 ? `↑ +${fmtINR(costDiff)}` : costDiff < 0 ? `↓ -${fmtINR(Math.abs(costDiff))}` : '• Stable'}
                             </span>
                           ) : (
                             <span style={{ color: '#64748b', fontSize: '12px' }}>• Baseline</span>
                           )}
-                        </td>
-                      </tr>
+                        </TableCell>
+                      </TableRow>
                     );
                   })}
-                  {/* Highlighted Total Summary Row */}
-                  <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
-                    <td style={{ padding: '12px 14px', color: '#0f172a', background: '#f1f5f9', fontWeight: 800 }}>TOTAL MONTHLY LEAKAGE</td>
-                    <td style={{ padding: '12px 14px', textAlign: 'center', color: '#0f172a', fontWeight: 800 }}>
-                      {currentBreakdown.reduce((sum: number, item: any) => sum + (item.quantity || 0), 0).toLocaleString('en-IN')}
-                    </td>
-                    <td style={{ padding: '12px 14px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>
-                      {fmtINR(activeLeakCur)}
-                    </td>
-                    <td style={{ padding: '12px 14px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>
-                      100.0%
-                    </td>
-                    <td style={{ padding: '12px 14px', textAlign: 'center', fontWeight: 800 }}>
-                      {prevKPI ? (
-                        <span style={{
-                          color: activeLeakDelta < 0 ? '#16a34a' : activeLeakDelta > 0 ? '#dc2626' : '#64748b',
-                          background: activeLeakDelta < 0 ? '#f0fdf4' : activeLeakDelta > 0 ? '#fef2f2' : '#f8fafc',
-                          padding: '3px 10px', borderRadius: '4px', fontSize: '12px'
-                        }}>
-                          {activeLeakDelta > 0 ? `↑ +${fmtINR(activeLeakDelta)}` : activeLeakDelta < 0 ? `↓ -${fmtINR(Math.abs(activeLeakDelta))}` : '• Stable'}
-                        </span>
-                      ) : (
-                        <span style={{ color: '#64748b', fontSize: '12px' }}>• Baseline</span>
-                      )}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                </TableBody>
+                <TableSummaryRow>
+                  <TableCell style={{ textAlign: 'left' }}>TOTAL MONTHLY LEAKAGE</TableCell>
+                  <TableCell style={{ textAlign: 'center' }}>
+                    {currentBreakdown.reduce((sum: number, item: any) => sum + (item.quantity || 0), 0).toLocaleString('en-IN')}
+                  </TableCell>
+                  <TableCell style={{ textAlign: 'right' }}>
+                    {fmtINR(activeLeakCur)}
+                  </TableCell>
+                  <TableCell style={{ textAlign: 'right' }}>
+                    100.0%
+                  </TableCell>
+                  <TableCell style={{ textAlign: 'center' }}>
+                    {prevKPI ? (
+                      <span style={{
+                        color: activeLeakDelta < 0 ? '#047857' : activeLeakDelta > 0 ? '#be123c' : '#475569',
+                        background: activeLeakDelta < 0 ? '#d1fae5' : activeLeakDelta > 0 ? '#ffe4e6' : '#e2e8f0',
+                        border: `1px solid ${activeLeakDelta < 0 ? '#34d399' : activeLeakDelta > 0 ? '#f87171' : '#cbd5e1'}`,
+                        padding: '3px 10px', borderRadius: '4px', fontSize: '12px', fontWeight: 700
+                      }}>
+                        {activeLeakDelta > 0 ? `↑ +${fmtINR(activeLeakDelta)}` : activeLeakDelta < 0 ? `↓ -${fmtINR(Math.abs(activeLeakDelta))}` : '• Stable'}
+                      </span>
+                    ) : (
+                      <span style={{ color: '#64748b', fontSize: '12px' }}>• Baseline</span>
+                    )}
+                  </TableCell>
+                </TableSummaryRow>
+              </Table>
             </div>
           </div>
         )}
@@ -853,54 +855,52 @@ export default function TabDashboard({
                 Performance breakdown across automated customer feedback touchpoints
               </div>
 
-              <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
-                  <thead>
-                    <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '12.5px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                      <th style={{ padding: '12px 14px', textAlign: 'left' }}>Survey Channel</th>
-                      <th style={{ padding: '12px 14px', textAlign: 'right' }}>Surveys Sent</th>
-                      <th style={{ padding: '12px 14px', textAlign: 'right' }}>Responded Count</th>
-                      <th style={{ padding: '12px 14px', textAlign: 'right' }}>Response Rate</th>
-                      <th style={{ padding: '12px 14px', textAlign: 'right' }}>Promoters &amp; Satisfied (4-5★)</th>
-                      <th style={{ padding: '12px 14px', textAlign: 'right' }}>Detractors (1-2★)</th>
-                      <th style={{ padding: '12px 14px', textAlign: 'right' }}>Net Promoter Score</th>
-                      <th style={{ padding: '12px 14px', textAlign: 'right' }}>Channel CSAT %</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
-                      <td style={{ padding: '12px 14px', textAlign: 'left', fontWeight: 700, color: '#2563eb' }}>WhatsApp Channel</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 600 }}>6,339</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 600 }}>2,690</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 600, color: '#475569' }}>42.4%</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 700, color: '#16a34a' }}>2,208 (82.1%)</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>292 (10.9%)</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 800, color: '#2563eb' }}>+61.3</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 800, color: '#16a34a' }}>82.1%</td>
-                    </tr>
-                    <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
-                      <td style={{ padding: '12px 14px', textAlign: 'left', fontWeight: 700, color: '#7e22ce' }}>IVR Call Channel</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 600 }}>4,231</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 600 }}>1,017</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 600, color: '#475569' }}>24.0%</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 700, color: '#16a34a' }}>882 (86.7%)</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>80 (7.9%)</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 800, color: '#2563eb' }}>+71.3</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 800, color: '#16a34a' }}>86.7%</td>
-                    </tr>
-                    <tr style={{ borderTop: '2px solid #cbd5e1', background: '#f8fafc', fontWeight: 800 }}>
-                      <td style={{ padding: '12px 14px', textAlign: 'left', color: '#0f172a' }}>Total / National Overall</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'right', color: '#0f172a' }}>10,570</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'right', color: '#0f172a' }}>3,707</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'right', color: '#0f172a' }}>35.1%</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'right', color: '#16a34a' }}>3,090 (83.4%)</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'right', color: '#0f172a' }}>372 (10.0%)</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'right', color: '#2563eb' }}>+63.9</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'right', color: '#16a34a', fontSize: '15px' }}>83.4%</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+              <Table density="comfortable">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead style={{ textAlign: 'left' }}>Survey Channel</TableHead>
+                    <TableHead style={{ textAlign: 'right' }}>Surveys Sent</TableHead>
+                    <TableHead style={{ textAlign: 'right' }}>Responded Count</TableHead>
+                    <TableHead style={{ textAlign: 'right' }}>Response Rate</TableHead>
+                    <TableHead style={{ textAlign: 'right' }}>Promoters &amp; Satisfied (4-5★)</TableHead>
+                    <TableHead style={{ textAlign: 'right' }}>Detractors (1-2★)</TableHead>
+                    <TableHead style={{ textAlign: 'right' }}>Net Promoter Score</TableHead>
+                    <TableHead style={{ textAlign: 'right' }}>Channel CSAT %</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell style={{ textAlign: 'left', fontWeight: 700, color: '#4E67EB' }}>WhatsApp Channel</TableCell>
+                    <TableCell style={{ textAlign: 'right', fontWeight: 600 }}>6,339</TableCell>
+                    <TableCell style={{ textAlign: 'right', fontWeight: 600 }}>2,690</TableCell>
+                    <TableCell style={{ textAlign: 'right', fontWeight: 600, color: '#475569' }}>42.4%</TableCell>
+                    <TableCell style={{ textAlign: 'right', fontWeight: 700, color: '#047857' }}>2,208 (82.1%)</TableCell>
+                    <TableCell style={{ textAlign: 'right', fontWeight: 700, color: '#be123c' }}>292 (10.9%)</TableCell>
+                    <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#1d4ed8' }}>+61.3</TableCell>
+                    <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#047857' }}>82.1%</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell style={{ textAlign: 'left', fontWeight: 700, color: '#7e22ce' }}>IVR Call Channel</TableCell>
+                    <TableCell style={{ textAlign: 'right', fontWeight: 600 }}>4,231</TableCell>
+                    <TableCell style={{ textAlign: 'right', fontWeight: 600 }}>1,017</TableCell>
+                    <TableCell style={{ textAlign: 'right', fontWeight: 600, color: '#475569' }}>24.0%</TableCell>
+                    <TableCell style={{ textAlign: 'right', fontWeight: 700, color: '#047857' }}>882 (86.7%)</TableCell>
+                    <TableCell style={{ textAlign: 'right', fontWeight: 700, color: '#be123c' }}>80 (7.9%)</TableCell>
+                    <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#1d4ed8' }}>+71.3</TableCell>
+                    <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#047857' }}>86.7%</TableCell>
+                  </TableRow>
+                </TableBody>
+                <TableSummaryRow>
+                  <TableCell style={{ textAlign: 'left' }}>Total / National Overall</TableCell>
+                  <TableCell style={{ textAlign: 'right' }}>10,570</TableCell>
+                  <TableCell style={{ textAlign: 'right' }}>3,707</TableCell>
+                  <TableCell style={{ textAlign: 'right' }}>35.1%</TableCell>
+                  <TableCell style={{ textAlign: 'right', color: '#047857' }}>3,090 (83.4%)</TableCell>
+                  <TableCell style={{ textAlign: 'right', color: '#be123c' }}>372 (10.0%)</TableCell>
+                  <TableCell style={{ textAlign: 'right', color: '#1d4ed8' }}>+63.9</TableCell>
+                  <TableCell style={{ textAlign: 'right', color: '#047857', fontSize: '15px' }}>83.4%</TableCell>
+                </TableSummaryRow>
+              </Table>
             </div>
           </div>
         )}

@@ -29,25 +29,25 @@
   --border-default: #e2e8f0;   
   --border-strong: #cbd5e1;    
   
-  /* Premium Vibrant Badges */
-  --badge-emerald-bg: #ecfdf5;
-  --badge-emerald-text: #047857;
-  --badge-emerald-border: #a7f3d0;
+  /* Premium Vibrant Badges (High Contrast Solid Fills) */
+  --badge-emerald-bg: #d1fae5;
+  --badge-emerald-text: #065f46;
+  --badge-emerald-border: #34d399;
   
-  --badge-cobalt-bg: #eff6ff;
-  --badge-cobalt-text: #1d4ed8;
-  --badge-cobalt-border: #bfdbfe;
+  --badge-cobalt-bg: #dbeafe;
+  --badge-cobalt-text: #1e40af;
+  --badge-cobalt-border: #60a5fa;
   
-  --badge-amber-bg: #fffbeb;
-  --badge-amber-text: #b45309;
-  --badge-amber-border: #fde68a;
+  --badge-amber-bg: #fef3c7;
+  --badge-amber-text: #92400e;
+  --badge-amber-border: #fbbf24;
   
-  --badge-crimson-bg: #fff1f2;
-  --badge-crimson-text: #be123c;
-  --badge-crimson-border: #fecdd3;
+  --badge-crimson-bg: #ffe4e6;
+  --badge-crimson-text: #9f1239;
+  --badge-crimson-border: #f87171;
   
-  --badge-slate-bg: #f8fafc;
-  --badge-slate-text: #475569;
+  --badge-slate-bg: #e2e8f0;
+  --badge-slate-text: #334155;
   --badge-slate-border: #cbd5e1;
   
   /* Semantic Status Colors */
@@ -192,38 +192,44 @@
 }
 
 .table-premium thead tr {
-  background-color: #f5f7ff;
-  border-bottom: 1px solid #bfdbfe;
+  background: linear-gradient(180deg, #1B264F 0%, #121b3b 100%);
+  border-bottom: 3px solid #4E67EB;
 }
 
 .table-premium th {
-  padding: 10px 14px;
-  font-size: 12px;
-  font-weight: 700;
-  color: #1e3a8a; /* Deep Cobalt Navy */
-  text-transform: none; /* Sentence case preferred for scan speed */
-  border-right: none; /* Removing grid-heavy vertical borders */
+  padding: 12px 14px;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-right: none;
 }
 
 .table-premium td {
-  padding: 10px 14px;
+  padding: 12px 14px;
   color: var(--text-primary);
-  border-bottom: 1px solid var(--border-subtle);
-  border-right: none; /* Removing grid-heavy vertical borders */
+  border-bottom: 1px solid #e2e8f0;
+  border-right: none;
   font-weight: 500;
   transition: var(--transition-fast);
 }
 
+.table-premium tbody tr:nth-child(even) td {
+  background-color: #f8fafc;
+}
+
 .table-premium tbody tr:hover td {
-  background-color: var(--bg-surface-hover);
+  background-color: #eef2ff;
 }
 
 .table-premium tr.summary-row-premium td {
-  border-top: 1px solid var(--border-strong);
-  background-color: var(--bg-surface-hover);
-  font-weight: 600;
-  font-size: 13px;
-  color: var(--text-primary);
+  border-top: 2px solid #1B264F;
+  border-bottom: 2px solid #1B264F;
+  background-color: #e0e7ff;
+  font-weight: 700;
+  font-size: 13.5px;
+  color: #1e1b4b;
 }
 
 .mockup-dashboard {
