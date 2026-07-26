@@ -52,26 +52,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
 
   const activeOrgKpi = data?.orgKpis?.by_month?.[selectedMonth] || data?.orgKpis?.all || { busms: [], asms: [], national: {} };
 
-  const busmList: any[] = (activeOrgKpi.busms || []).filter((b: any) => b.name && !b.name.toLowerCase().includes('unknown'));
-  const allAsmList: any[] = (activeOrgKpi.asms || []).filter((a: any) => a.name && !a.name.toLowerCase().includes('unknown') && a.busm && !a.busm.toLowerCase().includes('unknown'));
-  const nationalSummary: any = activeOrgKpi.national || {};
-
-  // Filter ASMs by clicked BUSM row (or show all if no row is clicked)
-  const filteredAsmList = selectedBusmRow
-    ? allAsmList.filter((a) => a.busm === selectedBusmRow)
-    : allAsmList;
-
-  // Calculate summary totals for filtered ASMs
-  const asmTotalWo = filteredAsmList.reduce((sum, a) => sum + (a.wo || 0), 0);
-  const asmAvgTat = filteredAsmList.length > 0 ? Math.round((filteredAsmList.reduce((sum, a) => sum + (a.tat || 0), 0) / filteredAsmList.length) * 10) / 10 : 0;
-  const asmAvgCpc = filteredAsmList.length > 0 ? Math.round(filteredAsmList.reduce((sum, a) => sum + (a.cpc || 0), 0) / filteredAsmList.length) : 0;
-  const asmAvgSah = filteredAsmList.length > 0 ? Math.round((filteredAsmList.reduce((sum, a) => sum + (a.sah || 0), 0) / filteredAsmList.length) * 10) / 10 : 0;
-  const asmAvgNps = filteredAsmList.length > 0 ? Math.round((filteredAsmList.reduce((sum, a) => sum + (a.nps || 0), 0) / filteredAsmList.length) * 10) / 10 : 0;
-  const asmAvgDiag = filteredAsmList.length > 0 ? Math.round((filteredAsmList.reduce((sum, a) => sum + (a.diag || 0), 0) / filteredAsmList.length) * 10) / 10 : 0;
-  const asmAvgCag = filteredAsmList.length > 0 ? Math.round((filteredAsmList.reduce((sum, a) => sum + (a.cag || 0), 0) / filteredAsmList.length) * 10) / 10 : 0;
-
-  // NPS data — Jun 2026 NPS survey snapshot (static; sourced from Jun26 NPS Data.xlsx)
-  // TODO: Replace with API-driven data when NPS survey data is ingested into the database
+  // NPS data — Jun 2026 NPS survey snapshot (sourced from Jun26 NPS Data.xlsx)
   const busmNpsData = [
     { name: 'Jitesh S Rath', total: 2336, rr: '33.6%', d: '12.6%', p: '15.3%', pr: '72.1%', nps: '59.5%', rank: 5 },
     { name: 'Rajesh Limbachia', total: 2154, rr: '36.0%', d: '10.3%', p: '9.0%', pr: '80.7%', nps: '70.4%', rank: 1 },
@@ -116,6 +97,62 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
     { name: 'Sushil R. Turkar', busm: 'Shivaprasad P U', total: 547, d: '4.9%', p: '16.0%', pr: '79.1%', nps: '74.2%', rank: 6 },
     { name: 'Vikram Singh Rajput', busm: 'Shivaprasad P U', total: 333, d: '9.8%', p: '14.3%', pr: '75.9%', nps: '66.1%', rank: 13 },
   ];
+
+  // Helper map for normalizing name comparisons
+  const normalizeKey = (s: string) => (s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const busmNpsMap = new Map(busmNpsData.map(b => [normalizeKey(b.name), b]));
+  const asmNpsMap = new Map(asmNpsData.map(a => [normalizeKey(a.name), a]));
+
+  const rawBusmList: any[] = (activeOrgKpi.busms || []).filter((b: any) => b.name && !b.name.toLowerCase().includes('unknown'));
+  const rawAllAsmList: any[] = (activeOrgKpi.asms || []).filter((a: any) => a.name && !a.name.toLowerCase().includes('unknown') && a.busm && !a.busm.toLowerCase().includes('unknown'));
+  const rawNationalSummary: any = activeOrgKpi.national || {};
+
+  const busmList = rawBusmList.map((b: any) => {
+    const npsInfo = busmNpsMap.get(normalizeKey(b.name));
+    const npsVal = npsInfo ? parseFloat(npsInfo.nps) : (b.nps || 0);
+    const npsRank = npsInfo ? npsInfo.rank : (b.ranks?.nps || 1);
+    return {
+      ...b,
+      nps: b.nps && b.nps > 0 ? b.nps : npsVal,
+      ranks: {
+        ...(b.ranks || {}),
+        nps: npsRank
+      }
+    };
+  });
+
+  const allAsmList = rawAllAsmList.map((a: any) => {
+    const npsInfo = asmNpsMap.get(normalizeKey(a.name));
+    const npsVal = npsInfo ? parseFloat(npsInfo.nps) : (a.nps || 0);
+    const npsRank = npsInfo ? npsInfo.rank : (a.ranks?.nps || 1);
+    return {
+      ...a,
+      nps: a.nps && a.nps > 0 ? a.nps : npsVal,
+      ranks: {
+        ...(a.ranks || {}),
+        nps: npsRank
+      }
+    };
+  });
+
+  const nationalSummary = {
+    ...rawNationalSummary,
+    nps: rawNationalSummary.nps && rawNationalSummary.nps > 0 ? rawNationalSummary.nps : 65.4
+  };
+
+  // Filter ASMs by clicked BUSM row (or show all if no row is clicked)
+  const filteredAsmList = selectedBusmRow
+    ? allAsmList.filter((a) => a.busm === selectedBusmRow)
+    : allAsmList;
+
+  // Calculate summary totals for filtered ASMs
+  const asmTotalWo = filteredAsmList.reduce((sum, a) => sum + (a.wo || 0), 0);
+  const asmAvgTat = filteredAsmList.length > 0 ? Math.round((filteredAsmList.reduce((sum, a) => sum + (a.tat || 0), 0) / filteredAsmList.length) * 10) / 10 : 0;
+  const asmAvgCpc = filteredAsmList.length > 0 ? Math.round(filteredAsmList.reduce((sum, a) => sum + (a.cpc || 0), 0) / filteredAsmList.length) : 0;
+  const asmAvgSah = filteredAsmList.length > 0 ? Math.round((filteredAsmList.reduce((sum, a) => sum + (a.sah || 0), 0) / filteredAsmList.length) * 10) / 10 : 0;
+  const asmAvgNps = filteredAsmList.length > 0 ? Math.round((filteredAsmList.reduce((sum, a) => sum + (a.nps || 0), 0) / filteredAsmList.length) * 10) / 10 : 0;
+  const asmAvgDiag = filteredAsmList.length > 0 ? Math.round((filteredAsmList.reduce((sum, a) => sum + (a.diag || 0), 0) / filteredAsmList.length) * 10) / 10 : 0;
+  const asmAvgCag = filteredAsmList.length > 0 ? Math.round((filteredAsmList.reduce((sum, a) => sum + (a.cag || 0), 0) / filteredAsmList.length) * 10) / 10 : 0;
 
   const topAspNpsData = [
     { code: 'ASP-1102652', name: 'CELL CARE SERVICES', asm: 'Abhishek Kumar', busm: 'Shivaprasad P U', total: 27, rr: '55.6%', d: '6.7%', p: '26.7%', pr: '66.7%', nps: '60.0%' },
