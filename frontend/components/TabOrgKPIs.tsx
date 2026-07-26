@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TableSummaryRow } from './ui/Table';
+import { DASHBOARD_DEFINITIONS } from '../constants/definitions';
 
 interface TabOrgKPIsProps {
   data: any;
@@ -1295,6 +1296,74 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             </table>
           </div>
         </div>
+      </div>
+
+      {/* SECTION FOOTER: KPI FORMULAS & OPERATIONAL REVIEW METHODOLOGY ACCORDION */}
+      <div className="panel" style={{ marginTop: '36px', marginBottom: '24px', padding: '0', overflow: 'hidden', border: '1px solid #e2e8f0', borderRadius: '12px', background: '#ffffff', boxShadow: 'var(--shadow-card)' }}>
+        <div
+          onClick={() => toggleTable('orgCalc')}
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: '16px 20px',
+            background: '#f8fafc',
+            borderBottom: collapsedTables.orgCalc ? 'none' : '1px solid #e2e8f0',
+            cursor: 'pointer',
+            userSelect: 'none'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span style={{ fontSize: '16px', fontWeight: 800, color: '#E50046' }}>
+              {collapsedTables.orgCalc ? '▶' : '▼'}
+            </span>
+            <div>
+              <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: '#0f172a' }}>
+                KPI Formulas &amp; Monthly Operational Review Methodology
+              </h3>
+              <span style={{ fontSize: '12px', color: '#64748b' }}>
+                Standardized calculation rules, data integrity definitions, and 5-step operational review cadence
+              </span>
+            </div>
+          </div>
+          <span style={{ background: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', padding: '6px 14px', borderRadius: '8px', fontSize: '13px', fontWeight: 800 }}>
+            {DASHBOARD_DEFINITIONS.kpiCalculations.length} Metric Definitions
+          </span>
+        </div>
+
+        {!collapsedTables.orgCalc && (
+          <div style={{ padding: '20px' }}>
+            <div className="panel" style={{ borderLeft: '4px solid var(--cobalt)', marginBottom: '20px', boxShadow: 'none', background: '#f8fafc', padding: '16px' }}>
+              <div style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a', marginBottom: '6px' }}>Suggested monthly operational review cycle</div>
+              <p style={{ margin: 0, fontSize: '12.5px', color: '#475569', lineHeight: '1.6' }}>
+                This view refreshes when new monthly spreadsheets are uploaded. The intended review pattern:
+                <b> 1) Scan</b> the org indicators and monthly exposures above for trends. <b>2) Drill down</b> in the Score Card tab to identify ASM/ASP outliers. 
+                <b> 3) Coach</b> - open the Coaching Card to pull targeted conversation talk tracks for 1:1 sessions. <b>4) Act</b> - nominate chronic poor performers for technical training. 
+                <b> 5) Re-measure</b> next month to verify if score profiles show performance improvement.
+              </p>
+            </div>
+
+            <div style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', marginBottom: '14px' }}>
+              How each KPI is calculated
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px', marginBottom: '16px' }}>
+              {DASHBOARD_DEFINITIONS.kpiCalculations.map((item, idx) => (
+                <div key={idx} style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '14px' }}>
+                  <div style={{ fontWeight: 700, fontSize: '13.5px', color: '#1e293b', marginBottom: '4px' }}>{item.title}</div>
+                  <div style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.5' }}>{item.definition}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{ marginTop: '14px', paddingTop: '10px', borderTop: '1px solid #e2e8f0', fontSize: '11.5px', color: '#64748b' }}>
+              {DASHBOARD_DEFINITIONS.kpiNote}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Executive Footnote */}
+      <div style={{ marginTop: '16px', padding: '14px 18px', background: '#ffffff', borderRadius: '10px', border: '1px solid #e2e8f0', fontSize: '11.5px', color: '#64748b', lineHeight: '1.6', boxShadow: 'var(--shadow-sm)' }}>
+        {DASHBOARD_DEFINITIONS.executiveFootnote}
       </div>
 
     </div>
