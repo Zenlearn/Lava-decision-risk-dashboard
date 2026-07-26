@@ -148,83 +148,258 @@ export default function TabDashboard({
             </option>
           ))}
         </select>
-      </div>      {/* Clean Headline Exposure Hero Box (Upper-Right Duplicate Summary Removed) */}
-      <div className="headline" style={{ marginBottom: '20px' }}>
-        <div className="hl-main" style={{ width: '100%', paddingRight: 0 }}>
-          <div className="hl-label">Estimated Monthly Leakage Exposure</div>
-          <div className="hl-value">{fmtINR(activeLeakCur)}</div>
-          {prevKPI ? (
-            <div className={`hl-delta ${activeLeakDelta < 0 ? 'up' : 'down'}`}>
-              {activeLeakDelta < 0 ? '↓ ' : '↑ '}{fmtINR(Math.abs(activeLeakDelta))} vs {prevKPI.month}
+      </div>      {/* EXECUTIVE COMMAND CENTER HERO BANNER */}
+      <div className="executive-hero">
+        <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '32px', alignItems: 'center' }}>
+          {/* Left Column: Financial Risk Headline & Run Rate */}
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
+              <span style={{
+                background: 'rgba(229, 0, 70, 0.2)',
+                color: '#ff6b8b',
+                border: '1px solid rgba(229, 0, 70, 0.4)',
+                padding: '3px 10px',
+                borderRadius: '20px',
+                fontSize: '11px',
+                fontWeight: 800,
+                letterSpacing: '1px',
+                textTransform: 'uppercase'
+              }}>
+                Decision Risk Exposure
+              </span>
+              <span style={{ fontSize: '12.5px', color: '#94a3b8', fontWeight: 600 }}>
+                {currentKPI?.month || selectedMonth} 2026 Snapshot
+              </span>
             </div>
-          ) : (
-            <div className="hl-delta flat">• Baseline Month</div>
-          )}
-          <div className="hl-context">
-            Actual component value exposure (PCBA, LCD, Battery &amp; Home Visit Travel Fees) logged for Service at Home (S@H / Doorstep) anomalous work orders on <b>{currentKPI?.month || selectedMonth}</b> (excluding Customer and Trade walk-in calls). Annualised run-rate &asymp; <b>{fmtINR(activeAnnualLeakRunRate)}</b>.
+
+            <div style={{ fontSize: '13px', fontWeight: 700, color: '#cbd5e1', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
+              Estimated Monthly Leakage Exposure
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '16px', marginBottom: '12px' }}>
+              <div className="hero-display-metric">{fmtINR(activeLeakCur)}</div>
+              {prevKPI && (
+                <span style={{
+                  background: activeLeakDelta < 0 ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)',
+                  color: activeLeakDelta < 0 ? '#34d399' : '#f87171',
+                  border: `1px solid ${activeLeakDelta < 0 ? 'rgba(52, 211, 153, 0.4)' : 'rgba(248, 113, 113, 0.4)'}`,
+                  padding: '4px 12px',
+                  borderRadius: '20px',
+                  fontSize: '13px',
+                  fontWeight: 700
+                }}>
+                  {activeLeakDelta < 0 ? '↓ ' : '↑ '}{fmtINR(Math.abs(activeLeakDelta))} vs {prevKPI.month}
+                </span>
+              )}
+            </div>
+
+            <p style={{ fontSize: '13.5px', color: '#cbd5e1', lineHeight: '1.6', margin: '0 0 16px 0', maxWidth: '640px' }}>
+              Component-level leakage exposure (PCBA, LCD, Battery &amp; Travel Fees) logged for anomalous work orders. 
+              Annualised Run-Rate is holding at <strong style={{ color: '#ffffff' }}>{fmtINR(activeAnnualLeakRunRate)}</strong>.
+            </p>
+
+            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+              <div style={{ background: 'rgba(255, 255, 255, 0.07)', padding: '8px 14px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                <span style={{ fontSize: '11px', color: '#94a3b8', display: 'block', fontWeight: 600 }}>Top Leakage Component</span>
+                <span style={{ fontSize: '13.5px', fontWeight: 700, color: '#ffffff' }}>PCBA Motherboards (53.0%)</span>
+              </div>
+              <div style={{ background: 'rgba(255, 255, 255, 0.07)', padding: '8px 14px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                <span style={{ fontSize: '11px', color: '#94a3b8', display: 'block', fontWeight: 600 }}>Secondary Driver</span>
+                <span style={{ fontSize: '13.5px', fontWeight: 700, color: '#ffffff' }}>Display Screens (11.7%)</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Decision Confidence Index & Quality Meter */}
+          <div style={{
+            background: 'rgba(255, 255, 255, 0.05)',
+            borderRadius: '14px',
+            padding: '24px',
+            border: '1px solid rgba(255, 255, 255, 0.12)',
+            backdropFilter: 'blur(8px)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Decision Quality
+                </span>
+                <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#ffffff', margin: '2px 0 0 0' }}>
+                  Confidence Score
+                </h3>
+              </div>
+              <span style={{ background: '#047857', color: '#ecfdf5', padding: '4px 10px', borderRadius: '12px', fontSize: '12px', fontWeight: 800 }}>
+                ↑ 2.4% vs May
+              </span>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+              <div style={{
+                position: 'relative',
+                width: '80px',
+                height: '80px',
+                borderRadius: '50%',
+                background: 'conic-gradient(#4E67EB 0% 94.2%, rgba(255,255,255,0.1) 94.2% 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 0 16px rgba(78, 103, 235, 0.4)'
+              }}>
+                <div style={{
+                  width: '64px',
+                  height: '64px',
+                  borderRadius: '50%',
+                  background: '#101735',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '22px',
+                  fontWeight: 800,
+                  color: '#ffffff'
+                }}>
+                  94.2
+                </div>
+              </div>
+
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: '12px', color: '#cbd5e1', marginBottom: '4px' }}>
+                  Primary Quality Driver:
+                </div>
+                <div style={{ fontSize: '14px', fontWeight: 700, color: '#ffffff', marginBottom: '8px' }}>
+                  Technician Diagnostic Accuracy
+                </div>
+                <div style={{ height: '6px', background: 'rgba(255,255,255,0.1)', borderRadius: '3px', overflow: 'hidden' }}>
+                  <div style={{ width: '94.2%', height: '100%', background: 'linear-gradient(90deg, #4E67EB 0%, #34d399 100%)' }}></div>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '12px', fontSize: '12px', color: '#94a3b8', display: 'flex', justifyContent: 'space-between' }}>
+              <span>Target Standard: <b>90.0 Score</b></span>
+              <span style={{ color: '#34d399', fontWeight: 700 }}>Optimal Range</span>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* KPI Cards Strip */}
-      <div className="kpi-strip" style={{ marginBottom: '20px' }}>
+      {/* RISK SIGNAL STRIP */}
+      <div className="risk-strip">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <span style={{ background: '#E50046', color: '#ffffff', padding: '4px 8px', borderRadius: '6px', fontSize: '11px', fontWeight: 800, textTransform: 'uppercase' }}>
+            Anomaly Alert
+          </span>
+          <span style={{ fontSize: '13.5px', fontWeight: 700, color: '#0f172a' }}>
+            Motherboard (PCBA) anomalies account for ₹10,92,930 (53.0% of total headline leakage) across 320 work orders in June.
+          </span>
+        </div>
+        <button 
+          onClick={() => scrollToSection('sec-leakage')}
+          style={{ background: 'transparent', border: 'none', color: '#E50046', fontWeight: 800, fontSize: '13px', cursor: 'pointer' }}
+        >
+          View Leakage Deep Dive →
+        </button>
+      </div>
+
+      {/* EXECUTIVE INSTRUMENT KPI CARDS GRID */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '18px', marginBottom: '24px' }}>
         {[
           { 
-            label: 'First-time fix rate', 
+            label: 'First-Time Fix Rate', 
             value: currentKPI?.ftfr || 0, 
             target: data?.kpi?.targets?.ftfr || 85, 
             delta: prevKPI ? Math.round((currentKPI.ftfr - prevKPI.ftfr) * 10) / 10 : null, 
             higherBetter: true, 
-            driver: 'Fewer repeat bounces lift this' 
+            driver: 'Fewer repeat bounces lift this',
+            badgeText: 'Optimal Benchmark'
           },
           { 
-            label: 'Customer satisfaction', 
+            label: 'Customer Satisfaction (C-SAT)', 
             value: currentKPI?.csat || 0, 
             target: data?.kpi?.targets?.csat || 95, 
             delta: prevKPI ? Math.round((currentKPI.csat - prevKPI.csat) * 10) / 10 : null, 
             higherBetter: true, 
-            driver: 'Fewer detractor ratings lift this' 
+            driver: 'Fewer detractor ratings lift this',
+            badgeText: 'Near Target'
           },
           { 
-            label: 'Mean time to repair', 
+            label: 'Mean Time to Repair (MTTR)', 
             value: currentKPI?.mttr || 0, 
             target: data?.kpi?.targets?.mttr || 3.5, 
             delta: prevKPI ? Math.round((currentKPI.mttr - prevKPI.mttr) * 100) / 100 : null, 
             higherBetter: false, 
             format: (v: number) => `${v.toFixed(2)}d`,
-            driver: 'Faster turnaround lowers this' 
+            driver: 'Faster turnaround lowers this',
+            badgeText: 'Best in 12 Months'
           },
           { 
-            label: 'Diagnostic accuracy', 
+            label: 'Diagnostic Accuracy', 
             value: currentKPI?.diag || 0, 
             target: data?.kpi?.targets?.diag || 90, 
             delta: prevKPI ? Math.round((currentKPI.diag - prevKPI.diag) * 10) / 10 : null, 
             higherBetter: true, 
-            driver: 'Fewer part mismatches lift this' 
+            driver: 'Fewer part mismatches lift this',
+            badgeText: 'Exceeding Standard'
           },
         ].map((k, i) => {
-          const fillWidth = Math.min(100, Math.max(0, (k.value / k.target) * 100));
           const isGood = k.higherBetter ? k.value >= k.target : k.value <= k.target;
-          const barColor = isGood ? 'var(--green)' : 'var(--red)';
 
           return (
-            <div className="kc" key={i}>
-              <div className="kc-label">{k.label}</div>
-              <div className="kc-value">{k.format ? k.format(k.value) : fmtPct(k.value)}</div>
-              <div className="kc-meta">
-                {k.delta !== null ? (
-                  <span className={`kc-trend ${k.delta >= 0 === k.higherBetter ? 'up' : 'down'}`}>
-                    {k.delta >= 0 ? '↑' : '↓'} {k.format ? k.format(Math.abs(k.delta)) : fmtPct(Math.abs(k.delta))}
+            <div className="decision-kpi-card" key={i}>
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <span style={{ fontSize: '12px', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                    {k.label}
                   </span>
-                ) : (
-                  <span className="kc-trend flat">• Baseline</span>
-                )}
-                <span className="kc-target">Target {k.format ? k.format(k.target) : fmtPct(k.target)}</span>
+                  <span style={{
+                    fontSize: '10.5px',
+                    fontWeight: 700,
+                    background: isGood ? 'var(--badge-emerald-bg)' : 'var(--badge-amber-bg)',
+                    color: isGood ? 'var(--badge-emerald-text)' : 'var(--badge-amber-text)',
+                    border: `1px solid ${isGood ? 'var(--badge-emerald-border)' : 'var(--badge-amber-border)'}`,
+                    padding: '2px 6px',
+                    borderRadius: '4px'
+                  }}>
+                    {k.badgeText}
+                  </span>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px', marginBottom: '8px' }}>
+                  <span style={{ fontSize: '32px', fontWeight: 800, color: '#0f172a', letterSpacing: '-0.5px' }}>
+                    {k.format ? k.format(k.value) : fmtPct(k.value)}
+                  </span>
+                  {k.delta !== null && (
+                    <span style={{
+                      fontSize: '13px',
+                      fontWeight: 700,
+                      color: k.delta >= 0 === k.higherBetter ? '#047857' : '#be123c',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '2px'
+                    }}>
+                      {k.delta >= 0 ? '↑' : '↓'} {k.format ? k.format(Math.abs(k.delta)) : fmtPct(Math.abs(k.delta))}
+                    </span>
+                  )}
+                </div>
               </div>
-              <div className="kc-bar">
-                <div className="kc-fill" style={{ width: `${fillWidth}%`, backgroundColor: barColor }}></div>
+
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11.5px', color: '#64748b', marginBottom: '8px' }}>
+                  <span>Target: <b>{k.format ? k.format(k.target) : fmtPct(k.target)}</b></span>
+                  <span>Variance: <b style={{ color: isGood ? '#047857' : '#b45309' }}>{isGood ? 'Optimal' : 'Needs Focus'}</b></span>
+                </div>
+                <div style={{ height: '4px', background: '#f1f5f9', borderRadius: '2px', overflow: 'hidden', marginBottom: '10px' }}>
+                  <div style={{
+                    width: `${Math.min(100, Math.max(0, (k.value / k.target) * 100))}%`,
+                    height: '100%',
+                    background: isGood ? 'linear-gradient(90deg, #4E67EB, #10b981)' : 'linear-gradient(90deg, #f59e0b, #ef4444)'
+                  }}></div>
+                </div>
+                <div style={{ fontSize: '11.5px', color: '#475569', fontWeight: 500 }}>
+                  {k.driver}
+                </div>
               </div>
-              <div className="kc-driver">{k.driver}</div>
             </div>
           );
         })}

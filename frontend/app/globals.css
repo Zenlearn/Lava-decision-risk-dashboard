@@ -6,19 +6,25 @@
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   
-  /* Semantic Backgrounds (Premium Light Theme) */
-  --bg-canvas: #f4f7fa;        /* Premium cool-tinted canvas instead of flat gray */
+  /* Brand Core Anchors */
+  --brand-primary: #1B264F;      /* Zenlearn Deep Space - Executive Anchor */
+  --brand-secondary: #4E67EB;    /* Zenlearn Cobalt - Interaction & Trends */
+  --brand-accent: #E50046;       /* Lava Crimson - Critical Risk Only */
+  
+  /* Semantic Backgrounds (Cool Tinted Executive Theme) */
+  --bg-canvas: #f4f7fa;        /* Premium cool-tinted canvas */
   --bg-surface: #ffffff;       /* Card/Panel background */
   --bg-surface-hover: #f8faff; /* Subtle icy cobalt tint on hover */
   --bg-surface-selected: #eff6ff;
+  --bg-hero: linear-gradient(135deg, #1B264F 0%, #101735 60%, #182245 100%); /* Deep Space Command Banner */
   
   /* Semantic Typography */
-  --text-primary: #0b1120;     /* Rich navy-black for maximum contrast */
+  --text-primary: #0b1120;     /* Deep navy-black for maximum contrast */
   --text-secondary: #334155;   /* Clear, legible subtext */
   --text-tertiary: #64748b;    /* Muted text */
-  --text-inverse: #ffffff;     /* Text on dark backgrounds */
+  --text-inverse: #ffffff;     /* Text on dark hero backgrounds */
   
-  /* Semantic Borders */
+  /* Semantic Borders (Minimalist) */
   --border-subtle: #f1f5f9;    
   --border-default: #e2e8f0;   
   --border-strong: #cbd5e1;    
@@ -50,19 +56,16 @@
   --status-danger: #ef4444;
   --status-info: #3b82f6;
   
-  /* Brand Tokens */
-  --brand-primary: #1B264F;      /* Zenlearn Deep Space */
-  --brand-secondary: #4E67EB;    /* Zenlearn Cobalt */
-  --brand-accent: #E50046;       /* Lava Crimson */
-  
-  /* Shadows and Transitions */
-  --shadow-sm: 0 2px 4px rgba(27, 38, 79, 0.04);
-  --shadow-md: 0 4px 12px -2px rgba(27, 38, 79, 0.08), 0 2px 6px -1px rgba(27, 38, 79, 0.04);
-  --shadow-lg: 0 12px 24px -4px rgba(27, 38, 79, 0.1);
+  /* 5-Level Elevation Shadow Hierarchy */
+  --shadow-sm: 0 2px 4px rgba(27, 38, 79, 0.03);
+  --shadow-surface: 0 2px 8px rgba(27, 38, 79, 0.04);
+  --shadow-card: 0 6px 20px -4px rgba(27, 38, 79, 0.07), 0 2px 6px -1px rgba(27, 38, 79, 0.03);
+  --shadow-hero: 0 16px 36px -8px rgba(27, 38, 79, 0.22), 0 4px 12px rgba(27, 38, 79, 0.1);
+  --shadow-popover: 0 24px 48px -12px rgba(11, 17, 32, 0.28);
   --transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-normal: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   
-  /* (Legacy tokens kept temporarily to avoid breaking other un-migrated tabs immediately) */
+  /* Legacy tokens mapping */
   --color-bg: var(--bg-canvas);
   --color-card: var(--bg-surface);
   --deep: var(--brand-primary);
@@ -97,6 +100,95 @@
   font-family: var(--font-sans);
   font-size: 13px;
   color: var(--text-primary);
+}
+
+/* ─── CXO Product Language Componentry ─── */
+.executive-hero {
+  background: var(--bg-hero);
+  border-radius: 16px;
+  padding: 32px;
+  color: var(--text-inverse);
+  box-shadow: var(--shadow-hero);
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.executive-hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(78, 103, 235, 0.18) 0%, rgba(229, 0, 70, 0.08) 50%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-display-metric {
+  font-family: var(--font-heading);
+  font-size: 52px;
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  line-height: 1.05;
+}
+
+.decision-kpi-card {
+  background: var(--bg-surface);
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-subtle);
+  transition: var(--transition-fast);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.decision-kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -6px rgba(27, 38, 79, 0.12);
+  border-color: #cbd5e1;
+}
+
+.signal-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px 24px;
+  border-left: 4px solid var(--brand-secondary);
+  box-shadow: var(--shadow-surface);
+  border-top: 1px solid var(--border-subtle);
+  border-right: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.signal-card-danger {
+  border-left-color: var(--brand-accent);
+}
+
+.signal-card-success {
+  border-left-color: var(--status-success);
+}
+
+.narrative-panel {
+  background: linear-gradient(180deg, #ffffff 0%, #f8faff 100%);
+  border-radius: 14px;
+  padding: 24px;
+  border: 1px solid #e0e7ff;
+  box-shadow: var(--shadow-card);
+}
+
+.risk-strip {
+  background: linear-gradient(90deg, #fff1f2 0%, #ffffff 100%);
+  border: 1px solid #fecdd3;
+  border-left: 4px solid var(--brand-accent);
+  border-radius: 10px;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
 }
 
 .table-premium thead tr {

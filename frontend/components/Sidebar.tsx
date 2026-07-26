@@ -62,39 +62,48 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
 
       {/* Brand Header */}
       <div style={{
-        padding: '20px 16px',
-        borderBottom: '1px solid #f1f5f9',
+        padding: '24px 20px 20px 20px',
+        borderBottom: '1px solid #e2e8f0',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'flex-start',
-        gap: '10px'
+        gap: '12px',
+        background: 'linear-gradient(180deg, #1B264F 0%, #151e3f 100%)',
+        color: '#ffffff',
+        boxShadow: '0 4px 12px rgba(27, 38, 79, 0.15)'
       }}>
         {/* ZenLearn Logo */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'flex-start',
-          marginBottom: '6px'
+          background: '#ffffff',
+          padding: '4px 8px',
+          borderRadius: '6px'
         }}>
           <img
             src="/logo_compressed.jpeg"
             alt="ZenLearn Logo"
             style={{
-              height: '32px',
+              height: '28px',
               width: 'auto',
               objectFit: 'contain',
-              display: 'block',
-              borderRadius: '4px'
+              display: 'block'
             }}
           />
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
-          <span style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', letterSpacing: '-0.3px' }}>
-            ZenLearn
-          </span>
-          <span style={{ fontSize: '10px', color: '#E50046', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px' }}>
-            Decision Intel
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '16px', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.3px', fontFamily: 'var(--font-heading)' }}>
+              ZenLearn
+            </span>
+            <span style={{ background: 'rgba(229, 0, 70, 0.3)', color: '#ff6b8b', fontSize: '9.5px', fontWeight: 800, padding: '2px 6px', borderRadius: '4px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+              PRO
+            </span>
+          </div>
+          <span style={{ fontSize: '10.5px', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>
+            Decision Intelligence
           </span>
         </div>
       </div>
