@@ -12,6 +12,14 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
   const [selectedBusmRow, setSelectedBusmRow] = useState<string | null>(null);
   const [collapsedTables, setCollapsedTables] = useState<Record<string, boolean>>({});
 
+  const getRankBadgeStyle = (rank: number) => {
+    if (rank <= 3) return { background: 'var(--badge-emerald-bg)', color: 'var(--badge-emerald-text)', border: `1px solid var(--badge-emerald-border)` };
+    if (rank <= 10) return { background: 'var(--badge-cobalt-bg)', color: 'var(--badge-cobalt-text)', border: `1px solid var(--badge-cobalt-border)` };
+    if (rank <= 20) return { background: 'var(--badge-amber-bg)', color: 'var(--badge-amber-text)', border: `1px solid var(--badge-amber-border)` };
+    return { background: 'var(--badge-slate-bg)', color: 'var(--badge-slate-text)', border: `1px solid var(--badge-slate-border)` };
+  };
+
+
   const toggleTable = (key: string) => {
     setCollapsedTables(prev => ({ ...prev, [key]: !prev[key] }));
   };
@@ -314,7 +322,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                       <TableCell style={{ textAlign: 'right' }}>
                         <span style={{ fontWeight: 600 }}>{r.tat}%</span>
                         {r.ranks?.tat && (
-                          <span style={{ fontSize: '10.5px', fontWeight: 700, background: 'var(--bg-surface-selected)', color: 'var(--brand-secondary)', border: '1px solid var(--border-strong)', padding: '1px 5px', borderRadius: '4px', marginLeft: '6px' }}>
+                          <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.tat) }}>
                             #{r.ranks.tat}
                           </span>
                         )}
@@ -322,7 +330,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                       <TableCell style={{ textAlign: 'right' }}>
                         <span style={{ fontWeight: 600 }}>₹{r.cpc}</span>
                         {r.ranks?.cpc && (
-                          <span style={{ fontSize: '10.5px', fontWeight: 700, background: 'var(--bg-surface-selected)', color: 'var(--brand-secondary)', border: '1px solid var(--border-strong)', padding: '1px 5px', borderRadius: '4px', marginLeft: '6px' }}>
+                          <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.cpc) }}>
                             #{r.ranks.cpc}
                           </span>
                         )}
@@ -330,7 +338,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                       <TableCell style={{ textAlign: 'right' }}>
                         <span style={{ fontWeight: 600 }}>{r.sah}%</span>
                         {r.ranks?.sah && (
-                          <span style={{ fontSize: '10.5px', fontWeight: 700, background: 'var(--bg-surface-selected)', color: 'var(--brand-secondary)', border: '1px solid var(--border-strong)', padding: '1px 5px', borderRadius: '4px', marginLeft: '6px' }}>
+                          <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.sah) }}>
                             #{r.ranks.sah}
                           </span>
                         )}
@@ -338,7 +346,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                       <TableCell style={{ textAlign: 'right' }}>
                         <span style={{ fontWeight: 600 }}>{r.nps}%</span>
                         {r.ranks?.nps && (
-                          <span style={{ fontSize: '10.5px', fontWeight: 700, background: 'var(--bg-surface-selected)', color: 'var(--brand-secondary)', border: '1px solid var(--border-strong)', padding: '1px 5px', borderRadius: '4px', marginLeft: '6px' }}>
+                          <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.nps) }}>
                             #{r.ranks.nps}
                           </span>
                         )}
@@ -346,7 +354,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                       <TableCell style={{ textAlign: 'right' }}>
                         <span style={{ fontWeight: 600 }}>{r.diag}%</span>
                         {r.ranks?.diag && (
-                          <span style={{ fontSize: '10.5px', fontWeight: 700, background: 'var(--bg-surface-selected)', color: 'var(--brand-secondary)', border: '1px solid var(--border-strong)', padding: '1px 5px', borderRadius: '4px', marginLeft: '6px' }}>
+                          <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.diag) }}>
                             #{r.ranks.diag}
                           </span>
                         )}
@@ -354,7 +362,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                       <TableCell style={{ textAlign: 'right' }}>
                         <span style={{ fontWeight: 600 }}>{r.cag}%</span>
                         {r.ranks?.cag && (
-                          <span style={{ fontSize: '10.5px', fontWeight: 700, background: 'var(--bg-surface-selected)', color: 'var(--brand-secondary)', border: '1px solid var(--border-strong)', padding: '1px 5px', borderRadius: '4px', marginLeft: '6px' }}>
+                          <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.cag) }}>
                             #{r.ranks.cag}
                           </span>
                         )}
@@ -428,7 +436,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                       <TableCell style={{ textAlign: 'right' }}>
                         <span style={{ fontWeight: 600 }}>{r.tat}%</span>
                         {r.ranks?.tat && (
-                          <span style={{ fontSize: '10px', fontWeight: 700, background: 'var(--bg-surface-selected)', color: 'var(--brand-secondary)', border: '1px solid var(--border-strong)', padding: '1px 4px', borderRadius: '4px', marginLeft: '4px' }}>
+                          <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.tat) }}>
                             #{r.ranks.tat}
                           </span>
                         )}
@@ -436,7 +444,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                       <TableCell style={{ textAlign: 'right' }}>
                         <span style={{ fontWeight: 600 }}>₹{r.cpc}</span>
                         {r.ranks?.cpc && (
-                          <span style={{ fontSize: '10px', fontWeight: 700, background: 'var(--bg-surface-selected)', color: 'var(--brand-secondary)', border: '1px solid var(--border-strong)', padding: '1px 4px', borderRadius: '4px', marginLeft: '4px' }}>
+                          <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.cpc) }}>
                             #{r.ranks.cpc}
                           </span>
                         )}
@@ -444,7 +452,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                       <TableCell style={{ textAlign: 'right' }}>
                         <span style={{ fontWeight: 600 }}>{r.sah}%</span>
                         {r.ranks?.sah && (
-                          <span style={{ fontSize: '10px', fontWeight: 700, background: 'var(--bg-surface-selected)', color: 'var(--brand-secondary)', border: '1px solid var(--border-strong)', padding: '1px 4px', borderRadius: '4px', marginLeft: '4px' }}>
+                          <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.sah) }}>
                             #{r.ranks.sah}
                           </span>
                         )}
@@ -452,7 +460,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                       <TableCell style={{ textAlign: 'right' }}>
                         <span style={{ fontWeight: 600 }}>{r.nps}%</span>
                         {r.ranks?.nps && (
-                          <span style={{ fontSize: '10px', fontWeight: 700, background: 'var(--bg-surface-selected)', color: 'var(--brand-secondary)', border: '1px solid var(--border-strong)', padding: '1px 4px', borderRadius: '4px', marginLeft: '4px' }}>
+                          <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.nps) }}>
                             #{r.ranks.nps}
                           </span>
                         )}
@@ -460,7 +468,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                       <TableCell style={{ textAlign: 'right' }}>
                         <span style={{ fontWeight: 600 }}>{r.diag}%</span>
                         {r.ranks?.diag && (
-                          <span style={{ fontSize: '10px', fontWeight: 700, background: 'var(--bg-surface-selected)', color: 'var(--brand-secondary)', border: '1px solid var(--border-strong)', padding: '1px 4px', borderRadius: '4px', marginLeft: '4px' }}>
+                          <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.diag) }}>
                             #{r.ranks.diag}
                           </span>
                         )}
@@ -468,7 +476,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                       <TableCell style={{ textAlign: 'right' }}>
                         <span style={{ fontWeight: 600 }}>{r.cag}%</span>
                         {r.ranks?.cag && (
-                          <span style={{ fontSize: '10px', fontWeight: 700, background: 'var(--bg-surface-selected)', color: 'var(--brand-secondary)', border: '1px solid var(--border-strong)', padding: '1px 4px', borderRadius: '4px', marginLeft: '4px' }}>
+                          <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.cag) }}>
                             #{r.ranks.cag}
                           </span>
                         )}

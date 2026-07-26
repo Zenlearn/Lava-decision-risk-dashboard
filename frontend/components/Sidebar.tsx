@@ -46,10 +46,10 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
   return (
     <aside className="zen-sidebar" style={{
       width: '260px',
-      // Enterprise Light Theme
-      background: '#ffffff',
+      // Premium Light Theme
+      background: 'linear-gradient(180deg, #ffffff 0%, #f4f7fa 100%)',
       borderRight: '1px solid #e2e8f0',
-      boxShadow: '1px 0 10px rgba(0, 0, 0, 0.02)',
+      boxShadow: '1px 0 16px rgba(15, 23, 42, 0.03)',
       display: 'flex',
       flexDirection: 'column',
       height: '100vh',
@@ -116,8 +116,8 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
                 padding: '10px 14px',
                 borderRadius: '8px',
                 border: 'none',
-                background: isActive ? '#f8fafc' : 'transparent',
-                color: isActive ? '#0f172a' : '#475569',
+                background: isActive ? 'linear-gradient(90deg, #eff6ff 0%, transparent 100%)' : 'transparent',
+                color: isActive ? '#0b1120' : '#475569',
                 borderLeft: isActive ? '3px solid #E50046' : '3px solid transparent',
                 textAlign: 'left',
                 fontSize: '13.5px',
@@ -128,8 +128,8 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
               }}
               onMouseEnter={(e) => {
                 if (!isActive) {
-                  e.currentTarget.style.background = '#f8fafc';
-                  e.currentTarget.style.color = '#0f172a';
+                  e.currentTarget.style.background = '#f4f7fa';
+                  e.currentTarget.style.color = '#0b1120';
                 }
               }}
               onMouseLeave={(e) => {
