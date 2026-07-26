@@ -13,6 +13,14 @@ export const DASHBOARD_DEFINITIONS = {
       definition: 'Share of responding customers who rated 4 or 5, on Lava\'s 1–5 post-service scale: (ratings of 4 or 5 ÷ all ratings of 1–5) × 100. "No Response" rows are excluded from both numerator and denominator. Roughly half of customers do not respond.'
     },
     {
+      title: 'Net Promoter Score (NPS)',
+      definition: 'Calculated on Lava\'s 1–5 post-service survey scale as: % Promoters (Rating 5) − % Detractors (Ratings 1 & 2). Ratings 3 & 4 are classified as Passives and excluded from the net score calculation. Expressed as a net score from -100% to +100%.'
+    },
+    {
+      title: 'Response Rate (RR %)',
+      definition: 'Share of total dispatched customer surveys that returned a completed rating: (Total Responded Surveys [Ratings 1 to 5] ÷ Total Surveys Sent [Grand Total]) × 100. "No Response" and Language/System error calls (LS) are excluded from the numerator.'
+    },
+    {
       title: 'Mean time to repair (MTTR)',
       definition: 'Average turnaround in days for that month = mean of (Delivery Date − Creation Date) across all work orders. Reported to two decimals.'
     },
@@ -21,8 +29,8 @@ export const DASHBOARD_DEFINITIONS = {
       definition: '1 − (mismatch-that-bounced work orders ÷ total work orders) × 100. A "mismatch-that-bounced" is a hardware symptom closed with a software-only action that then returned for service — a confirmed mis-diagnosis. A leading indicator of FTFR.'
     }
   ],
-  kpiNote: 'All counts are for the latest month unless stated. Leakage calculations filter strictly for Service at Home (S@H) work orders, excluding Customer Walk-in and Trade Walk-in calls. Targets: C-SAT 95% is Lava\'s published standard; FTFR, MTTR and diagnostic-accuracy targets shown on the cards are indicative and should be confirmed with Lava.',
-  executiveFootnote: 'These four KPIs are expressed in Lava’s own service language. Each is driven by an underlying decision-risk signal measured in the Score Card and Evidence tabs: bounces → first-time fix, detractors → satisfaction, turnaround → MTTR, mis-fixes that bounce → diagnostic accuracy. Rupee figures reflect Service at Home (S@H) doorstep exposure using component costs set in the Part Exposure tab (excluding walk-in calls). CSAT target (95%) is Lava’s published standard; other targets are indicative and should be confirmed with Lava.',
+  kpiNote: 'All counts are for the latest month unless stated. Leakage calculations filter strictly for Service at Home (S@H) work orders, excluding Customer Walk-in and Trade Walk-in calls. NPS logic: Promoters (Rating 5), Passives (Ratings 3 & 4), Detractors (Ratings 1 & 2). Targets: C-SAT 95% is Lava\'s published standard; FTFR, MTTR and diagnostic-accuracy targets shown on the cards are indicative and should be confirmed with Lava.',
+  executiveFootnote: 'These KPIs are expressed in Lava’s own service language. Each is driven by an underlying decision-risk signal measured in the Score Card and Evidence tabs: bounces → first-time fix, detractors → satisfaction & NPS, turnaround → MTTR, mis-fixes that bounce → diagnostic accuracy. Rupee figures reflect Service at Home (S@H) doorstep exposure using component costs set in the Part Exposure tab (excluding walk-in calls). CSAT target (95%) is Lava’s published standard; other targets are indicative and should be confirmed with Lava.',
   globalFooter: 'ZenLearn Decision Risk Measurement - built for verification, not accusation - all rupee values provisional pending Lava part-cost master',
   
   cohortThresholds: {
