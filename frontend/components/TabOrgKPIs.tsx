@@ -2129,10 +2129,10 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
           </div>
         </div>
 
-        {/* S@H Cancellation % & Reschedule % Calculation Formula Footnote */}
+        {/* S@H Cancellation %, Reschedule %, and Same Day Attend % Calculation Formula Footnote */}
         <div style={{ marginTop: '12px', paddingTop: '10px', borderTop: '1px solid #cbd5e1', fontSize: '11px', color: '#334155', lineHeight: '1.7' }}>
           <div style={{ fontWeight: 800, color: '#0f172a', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.03em', fontSize: '11.5px' }}>
-            Service at Home (S@H) Cancellation % &amp; Reschedule % Calculation Formulas:
+            Service at Home (S@H) Calculation Formulas &amp; Master Data Filters:
           </div>
           <div>
             • <strong>S@H Cancellation % Formula:</strong> Calculated strictly by filtering column <code>Final Remarks == "Canceled"</code> in <code>S@H Raw Detail 28 Jul 2026.xlsx</code>. <br />
@@ -2141,6 +2141,10 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
           <div style={{ marginTop: '4px' }}>
             • <strong>S@H Reschedule % Formula:</strong> Calculated strictly by filtering column <code>Final Remarks</code> for <code>"Reshedule"</code>, <code>"Outside TAT-Reshedule"</code>, and <code>"Within TAT-Reshedule"</code>. <br />
             &nbsp;&nbsp;<code>Reschedule %</code> = [ Count of Appointments where <em>Final Remarks in Reschedule Statuses</em> ] ÷ [ Total Appointments for BUSM / ASM / Month ] × 100
+          </div>
+          <div style={{ marginTop: '4px' }}>
+            • <strong>S@H Same Day Attend % Formula:</strong> Calculated strictly by filtering column <code>Final Remarks == "Within TAT"</code>. <br />
+            &nbsp;&nbsp;<code>Same Day Attend %</code> = [ Count of Appointments where <em>Final Remarks == "Within TAT"</em> ] ÷ [ Total Appointments for BUSM / ASM / Month ] × 100
           </div>
         </div>
       </div>
