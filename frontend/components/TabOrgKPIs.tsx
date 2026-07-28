@@ -299,13 +299,10 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
       
       {/* SECTION HEADER & MONTH SELECTOR */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '16px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <div className="bar" style={{ background: '#E50046' }}></div>
           <span style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>
             Organization KPIs &amp; Regional Performance Scorecards
-          </span>
-          <span style={{ fontSize: '12px', fontWeight: 800, background: '#eff6ff', color: '#1d4ed8', border: '1.5px solid #bfdbfe', padding: '4px 12px', borderRadius: '16px', display: 'inline-flex', alignItems: 'center', gap: '6px', boxShadow: '0 1px 2px rgba(0,0,0,0.04)' }}>
-            🌐 Universal Filter: Model Type = 'Smart' &amp; 'Element'
           </span>
         </div>
 
@@ -426,7 +423,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <span style={{ fontSize: '12px', fontWeight: 800, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em', whiteSpace: 'nowrap' }}>Model Type</span>
           <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-            {['Smart & Element', 'Smart', 'Element', 'All (Incl. Feature & Tablet)'].map((mt) => (
+            {['All', 'Smart', 'Element', 'Feature', 'Tablet'].map((mt) => (
               <button
                 key={mt}
                 onClick={() => setModelTypeFilter(mt)}
@@ -442,36 +439,31 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   transition: 'all 0.15s ease',
                 }}
               >
-                {mt} {mt === 'Smart & Element' && '✓ (Universal Scope)'}
+                {mt}
               </button>
             ))}
           </div>
         </div>
 
         {/* Clear filters */}
-        {(segmentFilter !== 'All' || modelTypeFilter !== 'Smart & Element') && (
+        {(segmentFilter !== 'All' || modelTypeFilter !== 'All') && (
           <button
-            onClick={() => { setSegmentFilter('All'); setModelTypeFilter('Smart & Element'); }}
+            onClick={() => { setSegmentFilter('All'); setModelTypeFilter('All'); }}
             style={{
               marginLeft: 'auto',
               padding: '5px 12px',
               borderRadius: '8px',
-              border: '1.5px solid #cbd5e1',
-              background: '#f8fafc',
-              color: '#475569',
+              border: '1.5px solid #f87171',
+              background: '#fff5f5',
+              color: '#dc2626',
               fontSize: '12px',
               fontWeight: 700,
               cursor: 'pointer',
             }}
           >
-            Reset Filters
+            ✕ Clear Filters
           </button>
         )}
-
-        {/* Active filter note */}
-        <div style={{ width: '100%', fontSize: '11px', color: '#1d4ed8', fontWeight: 600, marginTop: '4px', fontStyle: 'italic', background: '#eff6ff', padding: '6px 12px', borderRadius: '6px', border: '1px solid #bfdbfe' }}>
-          🌐 Universal Filter Active: Dashboard calculations &amp; metrics are restricted strictly to Model type = 'Smart' &amp; 'Element' (Feature Phones &amp; Tablets excluded).
-        </div>
       </div>
 
       {/* SECTION 1: OVERALL REGIONAL PERFORMANCE SCORECARDS */}

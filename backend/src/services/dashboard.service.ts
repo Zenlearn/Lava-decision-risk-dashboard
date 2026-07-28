@@ -587,6 +587,7 @@ export async function getFullDashboardData(filters?: {
     const asm = wo.serviceCentre.dealer.name;
     const busm = wo.serviceCentre.dealer.region.name;
     const model = String(raw[FIELD_MAP.model] || '');
+    const modelType = String(raw[FIELD_MAP.modelType] || raw['Model type'] || raw['Model Type'] || '').trim();
     const symptomRaw = String(raw[FIELD_MAP.symptomDesc] || '');
     const rawActionStr = String(raw['Action Code Desc'] || raw['Action Taken'] || '').trim();
     const actionRaw = rawActionStr !== '' ? rawActionStr : 'UNSPECIFIED / NOT RECORDED';
