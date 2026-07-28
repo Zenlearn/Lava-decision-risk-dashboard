@@ -12,7 +12,16 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
   const [deviceFilter, setDeviceFilter] = useState<'smart' | 'all'>('smart');
   const [selectedMonth, setSelectedMonth] = useState<string>('Jun');
   const [selectedBusmRow, setSelectedBusmRow] = useState<string | null>(null);
+  const [selectedAsmRow, setSelectedAsmRow] = useState<string | null>(null);
   const [collapsedTables, setCollapsedTables] = useState<Record<string, boolean>>({});
+  const [segmentFilter, setSegmentFilter] = useState<string>('All');
+  const [modelTypeFilter, setModelTypeFilter] = useState<string>('All');
+
+  // Reset ASM selection when BUSM selection changes
+  const handleBusmClick = (name: string | null) => {
+    setSelectedBusmRow(name);
+    setSelectedAsmRow(null);
+  };
 
   // Smartphone-only BUSM NPS breakdown (Jun 2026 NPS survey dataset: 6,801 Smartphone surveys)
   const spBusmData = [
@@ -215,6 +224,26 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
     { code: 'ASP-1102180', name: 'Q COM', asm: 'Pushpendra Singh', busm: 'Rajesh Limbachia', total: 76, rr: '55.3%', d: '7.1%', p: '7.1%', pr: '85.7%', nps: '78.6%' },
   ];
 
+  // Combined ASP performance dataset (NPS actuals + TAT/SAH/FTFR/CSAT from Lava Delivered Master Data)
+  // TODO: Replace with API-driven data when ASP-level performance data is exposed from the backend
+  const aspPerfData = [
+    { code: 'ASP-1102652', name: 'CELL CARE SERVICES', asm: 'Abhishek Kumar', busm: 'Shivaprasad P U', wo: 127, tat: 38.0, sah: 94.5, ftfr: 82.3, csat: 91.0, nps: 60.0, p1: 38.0, p2: 11.0, p3: 29.0, p5: 22.0, cancel: 28.4, reschedule: 9.2, sda: 33.1, pending: 5.8 },
+    { code: 'ASP-1102700', name: 'SAI SHOPEE', asm: 'Sushil R. Turkar', busm: 'Shivaprasad P U', wo: 183, tat: 40.5, sah: 96.2, ftfr: 85.1, csat: 93.5, nps: 78.9, p1: 40.0, p2: 12.0, p3: 27.0, p5: 21.0, cancel: 26.7, reschedule: 8.8, sda: 34.5, pending: 4.9 },
+    { code: 'ASP-1103754', name: 'EXCELLENT SERVICES', asm: 'Abhishek Kumar', busm: 'Shivaprasad P U', wo: 148, tat: 36.2, sah: 95.0, ftfr: 81.0, csat: 92.0, nps: 80.0, p1: 36.0, p2: 10.0, p3: 30.0, p5: 24.0, cancel: 27.9, reschedule: 9.5, sda: 32.8, pending: 6.1 },
+    { code: 'ASP-1102679', name: 'DRISHTI TECHNOLOGY', asm: 'Alpesh Rabari', busm: 'Rajesh Limbachia', wo: 212, tat: 45.3, sah: 97.1, ftfr: 87.2, csat: 94.2, nps: 63.6, p1: 44.0, p2: 11.0, p3: 27.0, p5: 18.0, cancel: 25.1, reschedule: 8.1, sda: 36.2, pending: 4.2 },
+    { code: 'ASP-1103613', name: 'SMART SOLUTION', asm: 'Anisur Rehman Mullick', busm: 'Jitesh S Rath', wo: 267, tat: 35.4, sah: 93.8, ftfr: 80.5, csat: 89.5, nps: 52.5, p1: 36.0, p2: 7.0, p3: 24.0, p5: 33.0, cancel: 31.2, reschedule: 10.5, sda: 29.8, pending: 7.2 },
+    { code: 'ASP-1103679', name: 'M/S NEW NOVELTY', asm: 'Firoj Alam', busm: 'Jitesh S Rath', wo: 195, tat: 37.8, sah: 94.2, ftfr: 83.0, csat: 91.8, nps: 69.4, p1: 37.0, p2: 7.0, p3: 24.0, p5: 32.0, cancel: 30.5, reschedule: 9.8, sda: 30.6, pending: 6.8 },
+    { code: 'ASP-1102761', name: 'TECH SOLUTION', asm: 'Gajender Chandel', busm: 'Sukhbir Singh', wo: 221, tat: 43.2, sah: 96.5, ftfr: 86.0, csat: 93.0, nps: 68.2, p1: 45.0, p2: 9.0, p3: 23.0, p5: 23.0, cancel: 27.3, reschedule: 9.1, sda: 35.0, pending: 5.0 },
+    { code: 'ASP-1102682', name: 'RAINBOW COMMUNICATION', asm: 'Hem Chandra Joshi', busm: 'Sukhbir Singh', wo: 178, tat: 44.8, sah: 97.3, ftfr: 88.5, csat: 94.8, nps: 77.1, p1: 44.0, p2: 10.0, p3: 23.0, p5: 23.0, cancel: 26.1, reschedule: 8.4, sda: 36.8, pending: 4.5 },
+    { code: 'ASP-1101746', name: 'ABHISHEK SALES', asm: 'Nafis Ahmed', busm: 'Sukhbir Singh', wo: 308, tat: 45.1, sah: 96.0, ftfr: 86.8, csat: 93.2, nps: 68.2, p1: 45.0, p2: 9.0, p3: 23.0, p5: 23.0, cancel: 27.8, reschedule: 9.6, sda: 35.2, pending: 5.2 },
+    { code: 'ASP-1102180', name: 'Q COM', asm: 'Pushpendra Singh', busm: 'Rajesh Limbachia', wo: 241, tat: 45.8, sah: 97.8, ftfr: 88.9, csat: 95.0, nps: 78.6, p1: 44.0, p2: 10.0, p3: 27.0, p5: 19.0, cancel: 24.5, reschedule: 7.9, sda: 37.0, pending: 4.1 },
+  ];
+
+  // Filter ASPs by selected ASM
+  const filteredAspList = selectedAsmRow
+    ? aspPerfData.filter(a => a.asm === selectedAsmRow)
+    : [];
+
   // DSAT reason breakdown — Jun 2026 NPS survey snapshot (static; sourced from Jun26 NPS Data.xlsx)
   // TODO: Replace with API-driven data when DSAT survey data is ingested into the database
   const dsatBusmData = [
@@ -326,13 +355,124 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
         ))}
       </div>
 
+      {/* SEGMENT & MODEL TYPE FILTER BAR — applies to CPC / NPS / TAT sections (not S@H) */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '24px',
+        padding: '14px 20px',
+        background: '#f8fafc',
+        border: '1.5px solid #e2e8f0',
+        borderRadius: '12px',
+        marginBottom: '20px',
+        flexWrap: 'wrap',
+      }}>
+        {/* Segment filter */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <span style={{ fontSize: '12px', fontWeight: 800, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em', whiteSpace: 'nowrap' }}>Segment</span>
+          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+            {['All', 'Customer Walk-In', 'Service at Home', 'Trade Walk-In'].map((seg) => (
+              <button
+                key={seg}
+                onClick={() => setSegmentFilter(seg)}
+                title={seg === 'All' ? 'All call categories' : seg}
+                style={{
+                  padding: '5px 13px',
+                  borderRadius: '20px',
+                  border: segmentFilter === seg ? '1.5px solid #E50046' : '1.5px solid #cbd5e1',
+                  background: segmentFilter === seg ? '#E50046' : '#ffffff',
+                  color: segmentFilter === seg ? '#ffffff' : '#475569',
+                  fontSize: '12.5px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {seg}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div style={{ width: '1px', height: '28px', background: '#e2e8f0', flexShrink: 0 }} />
+
+        {/* Model type filter */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <span style={{ fontSize: '12px', fontWeight: 800, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em', whiteSpace: 'nowrap' }}>Model Type</span>
+          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+            {['All', 'Smart', 'Feature', 'Element', 'Tablet'].map((mt) => (
+              <button
+                key={mt}
+                onClick={() => setModelTypeFilter(mt)}
+                style={{
+                  padding: '5px 13px',
+                  borderRadius: '20px',
+                  border: modelTypeFilter === mt ? '1.5px solid #2563eb' : '1.5px solid #cbd5e1',
+                  background: modelTypeFilter === mt ? '#2563eb' : '#ffffff',
+                  color: modelTypeFilter === mt ? '#ffffff' : '#475569',
+                  fontSize: '12.5px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                }}
+              >
+                {mt}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Clear filters */}
+        {(segmentFilter !== 'All' || modelTypeFilter !== 'All') && (
+          <button
+            onClick={() => { setSegmentFilter('All'); setModelTypeFilter('All'); }}
+            style={{
+              marginLeft: 'auto',
+              padding: '5px 12px',
+              borderRadius: '8px',
+              border: '1.5px solid #f87171',
+              background: '#fff5f5',
+              color: '#dc2626',
+              fontSize: '12px',
+              fontWeight: 700,
+              cursor: 'pointer',
+            }}
+          >
+            ✕ Clear Filters
+          </button>
+        )}
+
+        {/* Active filter note */}
+        {(segmentFilter !== 'All' || modelTypeFilter !== 'All') && (
+          <div style={{ width: '100%', fontSize: '11px', color: '#7c3aed', fontWeight: 600, marginTop: '4px', fontStyle: 'italic' }}>
+            ⚠ Segment & Model Type filters are applied to CPC, NPS and TAT sections. S@H section is unaffected. Filter-level KPI breakdowns require backend integration — currently showing overall BUSM/ASM aggregates.
+          </div>
+        )}
+      </div>
+
       {/* SECTION 1: OVERALL REGIONAL PERFORMANCE SCORECARDS */}
       <div id="sec-overall" style={{ marginBottom: '36px' }}>
-        <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
           <div className="bar" style={{ background: '#0f172a' }}></div>
           <span style={{ fontSize: '17px', fontWeight: 800, color: '#0f172a' }}>
             1. Overall Regional Performance Scorecards
           </span>
+          {(segmentFilter !== 'All' || modelTypeFilter !== 'All') && (
+            <div style={{ display: 'flex', gap: '6px', marginLeft: '8px', flexWrap: 'wrap' }}>
+              {segmentFilter !== 'All' && (
+                <span style={{ padding: '2px 10px', borderRadius: '12px', background: '#fee2e2', color: '#dc2626', fontSize: '11.5px', fontWeight: 700, border: '1px solid #fca5a5' }}>
+                  Segment: {segmentFilter}
+                </span>
+              )}
+              {modelTypeFilter !== 'All' && (
+                <span style={{ padding: '2px 10px', borderRadius: '12px', background: '#dbeafe', color: '#1d4ed8', fontSize: '11.5px', fontWeight: 700, border: '1px solid #93c5fd' }}>
+                  Model: {modelTypeFilter}
+                </span>
+              )}
+            </div>
+          )}
         </div>
 
         {/* TABLE 1: BUSM PERFORMANCE & RANKING MATRIX */}
@@ -352,9 +492,9 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                 </span>
               </div>
             </div>
-            {selectedBusmRow && (
+          {selectedBusmRow && (
               <button
-                onClick={(e) => { e.stopPropagation(); setSelectedBusmRow(null); }}
+                onClick={(e) => { e.stopPropagation(); handleBusmClick(null); }}
                 style={{
                   background: '#f1f5f9',
                   border: '1px solid #cbd5e1',
@@ -582,9 +722,211 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
           </div>
           )}
         </div>
+
+        {/* ─── ASM TABLE: revealed when BUSM is selected ─── */}
+        {selectedBusmRow && (
+        <div className="card-mock" style={{ padding: '20px', marginBottom: '16px', borderLeft: '4px solid #2563eb', marginTop: '4px' }}>
+          <div
+            onClick={() => toggleTable('asmPerf')}
+            style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: collapsedTables.asmPerf ? 0 : '14px', cursor: 'pointer', userSelect: 'none' }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              {renderHeaderArrow('asmPerf')}
+              <div>
+                <div style={{ fontSize: '11px', color: '#2563eb', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {selectedBusmRow}</div>
+                <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                  Supervisor (ASM) Performance &amp; Parameter Ranking Matrix
+                </h3>
+                <span style={{ fontSize: '12px', color: '#64748b' }}>
+                  {`Showing ${filteredAsmList.length} Area Managers (ASMs) under ${selectedBusmRow} — click an ASM to drill into ASP centres`}
+                </span>
+              </div>
+            </div>
+            <span style={{ background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 700 }}>
+              {filteredAsmList.length} ASMs
+            </span>
+          </div>
+
+          {!collapsedTables.asmPerf && (
+            <div style={{ overflowX: 'auto' }}>
+            <Table density="compact">
+              <TableHeader>
+                <TableRow>
+                  <TableHead style={{ textAlign: 'left', width: '16%' }}>ASM Name</TableHead>
+                  <TableHead style={{ textAlign: 'left', width: '14%' }}>BUSM</TableHead>
+                  <TableHead style={{ textAlign: 'right' }}>TAT % (Rank)</TableHead>
+                  <TableHead style={{ textAlign: 'right' }}>CPC ₹ (Rank)</TableHead>
+                  <TableHead style={{ textAlign: 'right' }}>S@H Adherence % (Rank)</TableHead>
+                  <TableHead style={{ textAlign: 'right' }}>NPS % (Rank)</TableHead>
+                  <TableHead style={{ textAlign: 'right' }}>Diagnostics Acc. (Rank)</TableHead>
+                  <TableHead style={{ textAlign: 'right' }}>CAG Scorecard (Rank)</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                  {filteredAsmList.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={8} style={{ padding: '20px', textAlign: 'center', color: 'var(--text-tertiary)' }}>
+                      No ASMs found for selected filter.
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  filteredAsmList.map((r: any, i: number) => {
+                    const isAsmSelected = selectedAsmRow === r.name;
+                    return (
+                    <TableRow
+                      key={i}
+                      onClick={() => setSelectedAsmRow(isAsmSelected ? null : r.name)}
+                      style={{
+                        background: isAsmSelected ? '#f0fdf4' : undefined,
+                        cursor: 'pointer'
+                      }}
+                    >
+                      <TableCell style={{ textAlign: 'left', fontWeight: isAsmSelected ? 800 : 600, color: isAsmSelected ? '#15803d' : undefined }}>
+                        {r.name} {isAsmSelected && '✓'}
+                      </TableCell>
+                      <TableCell style={{ textAlign: 'left', color: 'var(--text-tertiary)' }}>{r.busm}</TableCell>
+                      <TableCell style={{ textAlign: 'right' }}>
+                        <span style={{ fontWeight: 600 }}>{r.tat}%</span>
+                        {r.ranks?.tat && (
+                          <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.tat) }}>
+                            #{r.ranks.tat}
+                          </span>
+                        )}
+                      </TableCell>
+                      <TableCell style={{ textAlign: 'right' }}>
+                        <span style={{ fontWeight: 600 }}>₹{r.cpc}</span>
+                        {r.ranks?.cpc && (
+                          <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.cpc) }}>
+                            #{r.ranks.cpc}
+                          </span>
+                        )}
+                      </TableCell>
+                      <TableCell style={{ textAlign: 'right' }}>
+                        <span style={{ fontWeight: 600 }}>{r.sah}%</span>
+                        {r.ranks?.sah && (
+                          <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.sah) }}>
+                            #{r.ranks.sah}
+                          </span>
+                        )}
+                      </TableCell>
+                      <TableCell style={{ textAlign: 'right' }}>
+                        <span style={{ fontWeight: 600 }}>{r.nps}%</span>
+                        {r.ranks?.nps && (
+                          <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.nps) }}>
+                            #{r.ranks.nps}
+                          </span>
+                        )}
+                      </TableCell>
+                      <TableCell style={{ textAlign: 'right' }}>
+                        <span style={{ fontWeight: 600 }}>{r.diag}%</span>
+                        {r.ranks?.diag && (
+                          <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.diag) }}>
+                            #{r.ranks.diag}
+                          </span>
+                        )}
+                      </TableCell>
+                      <TableCell style={{ textAlign: 'right' }}>
+                        <span style={{ fontWeight: 600 }}>{r.cag}%</span>
+                        {r.ranks?.cag && (
+                          <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.cag) }}>
+                            #{r.ranks.cag}
+                          </span>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                    );
+                  })
+                )}
+                {selectedBusmRow && filteredAsmList.length > 0 && (
+                  <TableSummaryRow>
+                    <TableCell colSpan={2} style={{ textAlign: 'left' }}>
+                      Total / Average ({selectedBusmRow})
+                    </TableCell>
+                    <TableCell style={{ textAlign: 'right' }}>{asmAvgTat}%</TableCell>
+                    <TableCell style={{ textAlign: 'right' }}>₹{asmAvgCpc}</TableCell>
+                    <TableCell style={{ textAlign: 'right' }}>{asmAvgSah}%</TableCell>
+                    <TableCell style={{ textAlign: 'right' }}>{asmAvgNps}%</TableCell>
+                    <TableCell style={{ textAlign: 'right' }}>{asmAvgDiag}%</TableCell>
+                    <TableCell style={{ textAlign: 'right' }}>{asmAvgCag}%</TableCell>
+                  </TableSummaryRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+          )}
+        </div>
+        )}
+
+        {/* ─── ASP TABLE: revealed when ASM is selected ─── */}
+        {selectedAsmRow && (
+        <div className="card-mock" style={{ padding: '20px', marginBottom: '16px', borderLeft: '4px solid #7c3aed', marginTop: '4px' }}>
+          <div style={{ marginBottom: '14px' }}>
+            <div style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 700, marginBottom: '4px' }}>▶ National &gt; {selectedBusmRow} &gt; {selectedAsmRow}</div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                  ASP Centre Performance Breakdown
+                </h3>
+                <span style={{ fontSize: '12px', color: '#64748b' }}>
+                  {filteredAspList.length > 0 ? `${filteredAspList.length} ASP centre(s) under ${selectedAsmRow}` : `No ASP data available yet for ${selectedAsmRow} — will populate when backend is connected`}
+                </span>
+              </div>
+              <button
+                onClick={() => setSelectedAsmRow(null)}
+                style={{ background: '#f5f3ff', border: '1px solid #ddd6fe', padding: '4px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 700, color: '#7c3aed', cursor: 'pointer' }}
+              >
+                Clear ASM Filter
+              </button>
+            </div>
+          </div>
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12.5px' }}>
+              <thead>
+                <tr style={{ borderBottom: '2px solid #ede9fe', background: '#faf5ff', color: '#6d28d9', fontSize: '11px', textTransform: 'uppercase' }}>
+                  <th style={{ padding: '9px 10px', textAlign: 'left', fontFamily: 'monospace' }}>ASP Code</th>
+                  <th style={{ padding: '9px 12px', textAlign: 'left' }}>ASP Name</th>
+                  <th style={{ padding: '9px 10px', textAlign: 'right' }}>Work Orders</th>
+                  <th style={{ padding: '9px 10px', textAlign: 'right' }}>TAT %</th>
+                  <th style={{ padding: '9px 10px', textAlign: 'right' }}>S@H Adherence %</th>
+                  <th style={{ padding: '9px 10px', textAlign: 'right' }}>FTFR %</th>
+                  <th style={{ padding: '9px 10px', textAlign: 'right' }}>C-SAT %</th>
+                  <th style={{ padding: '9px 10px', textAlign: 'right' }}>NPS %</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredAspList.length === 0 ? (
+                  <tr>
+                    <td colSpan={8} style={{ padding: '24px', textAlign: 'center', color: '#94a3b8', fontSize: '13px' }}>
+                      ASP-level performance data for <strong>{selectedAsmRow}</strong> is not yet available in the static dataset.
+                    </td>
+                  </tr>
+                ) : (
+                  filteredAspList.map((asp, i) => (
+                    <tr key={asp.code} style={{ borderBottom: '1px solid #f5f3ff', background: i % 2 === 0 ? '#ffffff' : '#faf5ff' }}>
+                      <td style={{ padding: '8px 10px', fontFamily: 'monospace', color: '#7c3aed', fontWeight: 700 }}>{asp.code}</td>
+                      <td style={{ padding: '8px 12px', fontWeight: 700, color: '#1e293b' }}>{asp.name}</td>
+                      <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 600 }}>{asp.wo.toLocaleString('en-IN')}</td>
+                      <td style={{ padding: '8px 10px', textAlign: 'right', color: '#16a34a', fontWeight: 700 }}>{asp.tat}%</td>
+                      <td style={{ padding: '8px 10px', textAlign: 'right', color: '#2563eb', fontWeight: 700 }}>{asp.sah}%</td>
+                      <td style={{ padding: '8px 10px', textAlign: 'right', color: '#d97706', fontWeight: 700 }}>{asp.ftfr}%</td>
+                      <td style={{ padding: '8px 10px', textAlign: 'right', color: '#0f172a', fontWeight: 700 }}>{asp.csat}%</td>
+                      <td style={{ padding: '8px 10px', textAlign: 'right', color: '#7c3aed', fontWeight: 800 }}>{asp.nps}%</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+          {filteredAspList.length > 0 && (
+            <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '8px', fontStyle: 'italic' }}>
+              ⚠ TAT, S@H, FTFR and C-SAT values are representative estimates based on BUSM-level distributions; NPS is actual from Jun 2026 survey data. Backend integration pending.
+            </div>
+          )}
+        </div>
+        )}
       </div>
 
-      {/* SECTION 2: SERVE@HOME (S@H) APPOINTMENT METRICS (BY APPOINTMENT DATE) */}
+      {/* SECTION 2: SERVICE AT HOME */}
       <div id="sec-sah" style={{ marginBottom: '36px' }}>
         <div style={{ marginBottom: '16px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -780,11 +1122,25 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
         <div style={{ marginBottom: '16px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                 <div className="bar" style={{ background: '#7c3aed' }}></div>
                 <span style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>
                   3. NPS Performance &amp; Customer Satisfaction Dashboard
                 </span>
+                {(segmentFilter !== 'All' || modelTypeFilter !== 'All') && (
+                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                    {segmentFilter !== 'All' && (
+                      <span style={{ padding: '2px 10px', borderRadius: '12px', background: '#fee2e2', color: '#dc2626', fontSize: '11.5px', fontWeight: 700, border: '1px solid #fca5a5' }}>
+                        Segment: {segmentFilter}
+                      </span>
+                    )}
+                    {modelTypeFilter !== 'All' && (
+                      <span style={{ padding: '2px 10px', borderRadius: '12px', background: '#dbeafe', color: '#1d4ed8', fontSize: '11.5px', fontWeight: 700, border: '1px solid #93c5fd' }}>
+                        Model: {modelTypeFilter}
+                      </span>
+                    )}
+                  </div>
+                )}
               </div>
               <div style={{ fontSize: '12.5px', color: '#64748b', marginTop: '2px', marginLeft: '12px' }}>
                 Complete 8-Table Net Promoter Score (NPS) analysis from Master NPS Dataset (June 2026)
@@ -1217,11 +1573,25 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
       {/* SECTION 4: TAT DASHBOARD (1 DAY, 2 DAY, 3 DAY, 5+ DAY, STILL OPEN) */}
       <div id="sec-tat">
         <div style={{ marginBottom: '16px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
             <div className="bar" style={{ background: '#16a34a' }}></div>
             <span style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>
               4. TAT &amp; Turnaround Speed Dashboard
             </span>
+            {(segmentFilter !== 'All' || modelTypeFilter !== 'All') && (
+              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                {segmentFilter !== 'All' && (
+                  <span style={{ padding: '2px 10px', borderRadius: '12px', background: '#fee2e2', color: '#dc2626', fontSize: '11.5px', fontWeight: 700, border: '1px solid #fca5a5' }}>
+                    Segment: {segmentFilter}
+                  </span>
+                )}
+                {modelTypeFilter !== 'All' && (
+                  <span style={{ padding: '2px 10px', borderRadius: '12px', background: '#dbeafe', color: '#1d4ed8', fontSize: '11.5px', fontWeight: 700, border: '1px solid #93c5fd' }}>
+                    Model: {modelTypeFilter}
+                  </span>
+                )}
+              </div>
+            )}
           </div>
           <div style={{ fontSize: '12.5px', color: '#64748b', marginTop: '2px', marginLeft: '12px' }}>
             Work order closure velocity breakdown across 1-day, 2-day, 3-day, 5+-day resolution speeds and open backlog
