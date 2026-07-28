@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TableSummaryRow } from './ui/Table';
 import { DASHBOARD_DEFINITIONS } from '../constants/definitions';
 import { REPAIR_CPC_DATA, REPLACEMENT_CPC_DATA } from '../constants/cpcData';
+import { ALL_ASP_PERF_DATA } from '../constants/aspData';
 
 interface TabOrgKPIsProps {
   data: any;
@@ -259,9 +260,9 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
     { code: 'ASP-1102180', name: 'Q COM', asm: 'Pushpendra Singh', busm: 'Rajesh Limbachia', wo: 241, tat: 45.8, sah: 97.8, ftfr: 88.9, csat: 95.0, nps: 78.6, p1: 44.0, p2: 10.0, p3: 27.0, p5: 19.0, cancel: 24.5, reschedule: 7.9, sda: 37.0, pending: 4.1 },
   ];
 
-  // Filter ASPs by selected ASM
+  // Filter ASPs by selected ASM (sourced from ALL_ASP_PERF_DATA covering all 610 ASP centres across the nation)
   const filteredAspList = selectedAsmRow
-    ? aspPerfData.filter(a => a.asm === selectedAsmRow)
+    ? ALL_ASP_PERF_DATA.filter(a => a.asm === selectedAsmRow)
     : [];
 
   // DSAT reason breakdown — Jun 2026 NPS survey snapshot (static; sourced from Jun26 NPS Data.xlsx)
@@ -618,8 +619,8 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
           )}
         </div>
 
-        {/* TABLE 2: ASM BREAKDOWN MATRIX */}
-        <div className="card-mock" style={{ padding: '20px' }}>
+        {/* TABLE 2: ASM BREAKDOWN MATRIX (SINGLE INTERACTIVE TABLE) */}
+        <div className="card-mock" style={{ padding: '20px', marginBottom: '16px', borderLeft: selectedBusmRow ? '4px solid #2563eb' : undefined }}>
           <div 
             onClick={() => toggleTable('asmPerf')}
             style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: collapsedTables.asmPerf ? 0 : '14px', cursor: 'pointer', userSelect: 'none' }}
@@ -627,137 +628,19 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
               {renderHeaderArrow('asmPerf')}
               <div>
+                {selectedBusmRow && (
+                  <div style={{ fontSize: '11px', color: '#2563eb', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {selectedBusmRow}</div>
+                )}
                 <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
                   Supervisor (ASM) Performance &amp; Parameter Ranking Matrix
                 </h3>
                 <span style={{ fontSize: '12px', color: '#64748b' }}>
-                  {selectedBusmRow ? `Showing Area Managers (ASMs) under ${selectedBusmRow}` : 'Showing all Area Managers (ASMs) across the organization'}
+                  {selectedBusmRow ? `Showing ${filteredAsmList.length} Area Managers (ASMs) under ${selectedBusmRow} — click an ASM to drill into ASP centres` : 'Showing all Area Managers (ASMs) across the organization — click an ASM to drill into ASP centres'}
                 </span>
               </div>
             </div>
-            <span style={{ background: '#f1f5f9', color: '#475569', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 700 }}>
+            <span style={{ background: selectedBusmRow ? '#eff6ff' : '#f1f5f9', color: selectedBusmRow ? '#1d4ed8' : '#475569', border: selectedBusmRow ? '1px solid #bfdbfe' : undefined, padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 700 }}>
               Count: {filteredAsmList.length} ASMs
-            </span>
-          </div>
-
-          {!collapsedTables.asmPerf && (
-            <div style={{ overflowX: 'auto' }}>
-            <Table density="compact">
-              <TableHeader>
-                <TableRow>
-                  <TableHead style={{ textAlign: 'left', width: '16%' }}>ASM Name</TableHead>
-                  <TableHead style={{ textAlign: 'left', width: '14%' }}>BUSM</TableHead>
-                  <TableHead style={{ textAlign: 'right' }}>TAT % (Rank)</TableHead>
-                  <TableHead style={{ textAlign: 'right' }}>CPC ₹ (Rank)</TableHead>
-                  <TableHead style={{ textAlign: 'right' }}>S@H Adherence % (Rank)</TableHead>
-                  <TableHead style={{ textAlign: 'right' }}>NPS % (Rank)</TableHead>
-                  <TableHead style={{ textAlign: 'right' }}>Diagnostics Acc. (Rank)</TableHead>
-                  <TableHead style={{ textAlign: 'right' }}>CAG Scorecard (Rank)</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                  {filteredAsmList.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={8} style={{ padding: '20px', textAlign: 'center', color: 'var(--text-tertiary)' }}>
-                      No ASMs found for selected filter.
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  filteredAsmList.map((r: any, i: number) => (
-                    <TableRow key={i}>
-                      <TableCell style={{ textAlign: 'left', fontWeight: 600 }}>{r.name}</TableCell>
-                      <TableCell style={{ textAlign: 'left', color: 'var(--text-tertiary)' }}>{r.busm}</TableCell>
-                      <TableCell style={{ textAlign: 'right' }}>
-                        <span style={{ fontWeight: 600 }}>{r.tat}%</span>
-                        {r.ranks?.tat && (
-                          <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.tat) }}>
-                            #{r.ranks.tat}
-                          </span>
-                        )}
-                      </TableCell>
-                      <TableCell style={{ textAlign: 'right' }}>
-                        <span style={{ fontWeight: 600 }}>₹{r.cpc}</span>
-                        {r.ranks?.cpc && (
-                          <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.cpc) }}>
-                            #{r.ranks.cpc}
-                          </span>
-                        )}
-                      </TableCell>
-                      <TableCell style={{ textAlign: 'right' }}>
-                        <span style={{ fontWeight: 600 }}>{r.sah}%</span>
-                        {r.ranks?.sah && (
-                          <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.sah) }}>
-                            #{r.ranks.sah}
-                          </span>
-                        )}
-                      </TableCell>
-                      <TableCell style={{ textAlign: 'right' }}>
-                        <span style={{ fontWeight: 600 }}>{r.nps}%</span>
-                        {r.ranks?.nps && (
-                          <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.nps) }}>
-                            #{r.ranks.nps}
-                          </span>
-                        )}
-                      </TableCell>
-                      <TableCell style={{ textAlign: 'right' }}>
-                        <span style={{ fontWeight: 600 }}>{r.diag}%</span>
-                        {r.ranks?.diag && (
-                          <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.diag) }}>
-                            #{r.ranks.diag}
-                          </span>
-                        )}
-                      </TableCell>
-                      <TableCell style={{ textAlign: 'right' }}>
-                        <span style={{ fontWeight: 600 }}>{r.cag}%</span>
-                        {r.ranks?.cag && (
-                          <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.cag) }}>
-                            #{r.ranks.cag}
-                          </span>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
-                {selectedBusmRow && filteredAsmList.length > 0 && (
-                  <TableSummaryRow>
-                    <TableCell colSpan={2} style={{ textAlign: 'left' }}>
-                      Total / Average ({selectedBusmRow})
-                    </TableCell>
-                    <TableCell style={{ textAlign: 'right' }}>{asmAvgTat}%</TableCell>
-                    <TableCell style={{ textAlign: 'right' }}>₹{asmAvgCpc}</TableCell>
-                    <TableCell style={{ textAlign: 'right' }}>{asmAvgSah}%</TableCell>
-                    <TableCell style={{ textAlign: 'right' }}>{asmAvgNps}%</TableCell>
-                    <TableCell style={{ textAlign: 'right' }}>{asmAvgDiag}%</TableCell>
-                    <TableCell style={{ textAlign: 'right' }}>{asmAvgCag}%</TableCell>
-                  </TableSummaryRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
-          )}
-        </div>
-
-        {/* ─── ASM TABLE: revealed when BUSM is selected ─── */}
-        {selectedBusmRow && (
-        <div className="card-mock" style={{ padding: '20px', marginBottom: '16px', borderLeft: '4px solid #2563eb', marginTop: '4px' }}>
-          <div
-            onClick={() => toggleTable('asmPerf')}
-            style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: collapsedTables.asmPerf ? 0 : '14px', cursor: 'pointer', userSelect: 'none' }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-              {renderHeaderArrow('asmPerf')}
-              <div>
-                <div style={{ fontSize: '11px', color: '#2563eb', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {selectedBusmRow}</div>
-                <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                  Supervisor (ASM) Performance &amp; Parameter Ranking Matrix
-                </h3>
-                <span style={{ fontSize: '12px', color: '#64748b' }}>
-                  {`Showing ${filteredAsmList.length} Area Managers (ASMs) under ${selectedBusmRow} — click an ASM to drill into ASP centres`}
-                </span>
-              </div>
-            </div>
-            <span style={{ background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 700 }}>
-              {filteredAsmList.length} ASMs
             </span>
           </div>
 
@@ -787,67 +670,67 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   filteredAsmList.map((r: any, i: number) => {
                     const isAsmSelected = selectedAsmRow === r.name;
                     return (
-                    <TableRow
-                      key={i}
-                      onClick={() => setSelectedAsmRow(isAsmSelected ? null : r.name)}
-                      style={{
-                        background: isAsmSelected ? '#f0fdf4' : undefined,
-                        cursor: 'pointer'
-                      }}
-                    >
-                      <TableCell style={{ textAlign: 'left', fontWeight: isAsmSelected ? 800 : 600, color: isAsmSelected ? '#15803d' : undefined }}>
-                        {r.name} {isAsmSelected && '✓'}
-                      </TableCell>
-                      <TableCell style={{ textAlign: 'left', color: 'var(--text-tertiary)' }}>{r.busm}</TableCell>
-                      <TableCell style={{ textAlign: 'right' }}>
-                        <span style={{ fontWeight: 600 }}>{r.tat}%</span>
-                        {r.ranks?.tat && (
-                          <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.tat) }}>
-                            #{r.ranks.tat}
-                          </span>
-                        )}
-                      </TableCell>
-                      <TableCell style={{ textAlign: 'right' }}>
-                        <span style={{ fontWeight: 600 }}>₹{r.cpc}</span>
-                        {r.ranks?.cpc && (
-                          <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.cpc) }}>
-                            #{r.ranks.cpc}
-                          </span>
-                        )}
-                      </TableCell>
-                      <TableCell style={{ textAlign: 'right' }}>
-                        <span style={{ fontWeight: 600 }}>{r.sah}%</span>
-                        {r.ranks?.sah && (
-                          <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.sah) }}>
-                            #{r.ranks.sah}
-                          </span>
-                        )}
-                      </TableCell>
-                      <TableCell style={{ textAlign: 'right' }}>
-                        <span style={{ fontWeight: 600 }}>{r.nps}%</span>
-                        {r.ranks?.nps && (
-                          <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.nps) }}>
-                            #{r.ranks.nps}
-                          </span>
-                        )}
-                      </TableCell>
-                      <TableCell style={{ textAlign: 'right' }}>
-                        <span style={{ fontWeight: 600 }}>{r.diag}%</span>
-                        {r.ranks?.diag && (
-                          <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.diag) }}>
-                            #{r.ranks.diag}
-                          </span>
-                        )}
-                      </TableCell>
-                      <TableCell style={{ textAlign: 'right' }}>
-                        <span style={{ fontWeight: 600 }}>{r.cag}%</span>
-                        {r.ranks?.cag && (
-                          <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.cag) }}>
-                            #{r.ranks.cag}
-                          </span>
-                        )}
-                      </TableCell>
-                    </TableRow>
+                      <TableRow
+                        key={i}
+                        onClick={() => setSelectedAsmRow(isAsmSelected ? null : r.name)}
+                        style={{
+                          background: isAsmSelected ? '#f0fdf4' : undefined,
+                          cursor: 'pointer'
+                        }}
+                      >
+                        <TableCell style={{ textAlign: 'left', fontWeight: isAsmSelected ? 800 : 600, color: isAsmSelected ? '#15803d' : undefined }}>
+                          {r.name} {isAsmSelected && '✓'}
+                        </TableCell>
+                        <TableCell style={{ textAlign: 'left', color: 'var(--text-tertiary)' }}>{r.busm}</TableCell>
+                        <TableCell style={{ textAlign: 'right' }}>
+                          <span style={{ fontWeight: 600 }}>{r.tat}%</span>
+                          {r.ranks?.tat && (
+                            <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.tat, 35) }}>
+                              #{r.ranks.tat}
+                            </span>
+                          )}
+                        </TableCell>
+                        <TableCell style={{ textAlign: 'right' }}>
+                          <span style={{ fontWeight: 600 }}>₹{r.cpc}</span>
+                          {r.ranks?.cpc && (
+                            <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.cpc, 35) }}>
+                              #{r.ranks.cpc}
+                            </span>
+                          )}
+                        </TableCell>
+                        <TableCell style={{ textAlign: 'right' }}>
+                          <span style={{ fontWeight: 600 }}>{r.sah}%</span>
+                          {r.ranks?.sah && (
+                            <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.sah, 35) }}>
+                              #{r.ranks.sah}
+                            </span>
+                          )}
+                        </TableCell>
+                        <TableCell style={{ textAlign: 'right' }}>
+                          <span style={{ fontWeight: 600 }}>{r.nps}%</span>
+                          {r.ranks?.nps && (
+                            <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.nps, 35) }}>
+                              #{r.ranks.nps}
+                            </span>
+                          )}
+                        </TableCell>
+                        <TableCell style={{ textAlign: 'right' }}>
+                          <span style={{ fontWeight: 600 }}>{r.diag}%</span>
+                          {r.ranks?.diag && (
+                            <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.diag, 35) }}>
+                              #{r.ranks.diag}
+                            </span>
+                          )}
+                        </TableCell>
+                        <TableCell style={{ textAlign: 'right' }}>
+                          <span style={{ fontWeight: 600 }}>{r.cag}%</span>
+                          {r.ranks?.cag && (
+                            <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(r.ranks.cag, 35) }}>
+                              #{r.ranks.cag}
+                            </span>
+                          )}
+                        </TableCell>
+                      </TableRow>
                     );
                   })
                 )}
@@ -869,7 +752,6 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
           </div>
           )}
         </div>
-        )}
 
         {/* ─── ASP TABLE: revealed when ASM is selected ─── */}
         {selectedAsmRow && (
