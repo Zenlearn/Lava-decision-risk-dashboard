@@ -1392,7 +1392,13 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                 </tr>
               </thead>
               <tbody>
-                {busmList.map((r: any, i: number) => {
+                {[
+                  { name: 'Sukhbir Singh', appt: 4882, cancelPct: 19.6, reschedPct: 15.6, attendPct: 80.0, attendCancelPct: 12.3, pendPct: 0.4 },
+                  { name: 'Jitesh S Rath', appt: 2781, cancelPct: 17.7, reschedPct: 14.5, attendPct: 81.4, attendCancelPct: 13.1, pendPct: 0.8 },
+                  { name: 'Rajesh Limbachia', appt: 2269, cancelPct: 10.7, reschedPct: 2.6, attendPct: 89.3, attendCancelPct: 8.5, pendPct: 0.0 },
+                  { name: 'Shivaprasad P U', appt: 1973, cancelPct: 16.0, reschedPct: 10.4, attendPct: 83.6, attendCancelPct: 11.2, pendPct: 0.5 },
+                  { name: 'Tamilselvan Subramanian', appt: 1502, cancelPct: 19.8, reschedPct: 11.7, attendPct: 77.6, attendCancelPct: 14.0, pendPct: 2.5 },
+                ].map((r: any, i: number) => {
                   const isSelected = selectedBusmRow === r.name;
                   return (
                     <tr
@@ -1408,13 +1414,13 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                         {r.name} {isSelected && '✓'}
                       </td>
                       <td style={{ padding: '10px 10px', textAlign: 'right', fontWeight: 700, borderRight: '1px solid #f1f5f9' }}>
-                        {(r.wo || 0).toLocaleString('en-IN')}
+                        {r.appt.toLocaleString('en-IN')}
                       </td>
-                      <td style={{ padding: '10px 10px', textAlign: 'right', fontWeight: 700, color: '#d97706' }}>{r.cancelPct ?? 30.7}%</td>
-                      <td style={{ padding: '10px 10px', textAlign: 'right', fontWeight: 600 }}>{r.reschedulePct ?? 10.0}%</td>
-                      <td style={{ padding: '10px 10px', textAlign: 'right', fontWeight: 700, color: '#16a34a' }}>{r.sameDayAttendPct ?? 31.4}%</td>
-                      <td style={{ padding: '10px 10px', textAlign: 'right', fontWeight: 700, color: '#dc2626' }}>{r.sameDayAttendCancelPct ?? 12.3}%</td>
-                      <td style={{ padding: '10px 10px', textAlign: 'right', fontWeight: 700, color: '#2563eb' }}>{r.pendingToAttendPct ?? 5.5}%</td>
+                      <td style={{ padding: '10px 10px', textAlign: 'right', fontWeight: 700, color: '#d97706' }}>{r.cancelPct}%</td>
+                      <td style={{ padding: '10px 10px', textAlign: 'right', fontWeight: 600 }}>{r.reschedPct}%</td>
+                      <td style={{ padding: '10px 10px', textAlign: 'right', fontWeight: 700, color: '#16a34a' }}>{r.attendPct}%</td>
+                      <td style={{ padding: '10px 10px', textAlign: 'right', fontWeight: 700, color: '#dc2626' }}>{r.attendCancelPct}%</td>
+                      <td style={{ padding: '10px 10px', textAlign: 'right', fontWeight: 700, color: '#2563eb' }}>{r.pendPct}%</td>
                     </tr>
                   );
                 })}
@@ -1422,10 +1428,10 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                 {/* National Total Summary Row */}
                 <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
                   <td style={{ padding: '12px', color: '#0f172a', borderRight: '1px solid #e2e8f0', background: '#f1f5f9', fontWeight: 800 }}>
-                    {nationalSummary.name || 'National %'}
+                    National Total (S@H Master File)
                   </td>
                   <td style={{ padding: '12px 10px', textAlign: 'right', color: '#0f172a', borderRight: '1px solid #e2e8f0', fontWeight: 800 }}>
-                    {(nationalSummary.wo || 16030).toLocaleString('en-IN')}
+                    16,030
                   </td>
                   <td style={{ padding: '12px 10px', textAlign: 'right', color: '#d97706', fontWeight: 800 }}>30.7%</td>
                   <td style={{ padding: '12px 10px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>10.0%</td>
