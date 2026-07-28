@@ -1211,85 +1211,95 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
           )}
         </div>
 
-        {/* TABLE 4: ASM APPOINTMENT METRICS TABLE */}
-        <div className="card-mock" style={{ padding: '20px' }}>
-          <div 
-            onClick={() => toggleTable('asmAppt')}
-            style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: collapsedTables.asmAppt ? 0 : '14px', cursor: 'pointer', userSelect: 'none' }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-              {renderHeaderArrow('asmAppt')}
-              <div>
-                <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                  Supervisor (ASM) Appointment Performance Matrix
-                </h3>
-                <span style={{ fontSize: '12px', color: '#64748b' }}>
-                  {selectedBusmRow ? `Showing Area Managers (ASMs) under ${selectedBusmRow}` : 'Showing all Area Managers (ASMs) across the organization'}
+        {/* TABLE 4: ASM APPOINTMENT METRICS TABLE (Only visible when a BUSM is clicked) */}
+        {selectedBusmRow && (
+          <div className="card-mock" style={{ padding: '20px', marginTop: '16px' }}>
+            <div 
+              onClick={() => toggleTable('asmAppt')}
+              style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: collapsedTables.asmAppt ? 0 : '14px', cursor: 'pointer', userSelect: 'none' }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                {renderHeaderArrow('asmAppt')}
+                <div>
+                  <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                    Supervisor (ASM) Appointment Performance Matrix
+                  </h3>
+                  <span style={{ fontSize: '12px', color: '#64748b' }}>
+                    Showing Area Managers (ASMs) under {selectedBusmRow}
+                  </span>
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ background: '#f1f5f9', color: '#475569', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 700 }}>
+                  Count: {filteredAsmList.length} ASMs
                 </span>
+                <button
+                  onClick={(e) => { e.stopPropagation(); setSelectedBusmRow(null); }}
+                  style={{ background: '#f1f5f9', border: '1px solid #cbd5e1', padding: '4px 10px', borderRadius: '6px', fontSize: '11.5px', fontWeight: 700, color: '#475569', cursor: 'pointer' }}
+                >
+                  Clear BUSM Filter
+                </button>
               </div>
             </div>
-            <span style={{ background: '#f1f5f9', color: '#475569', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 700 }}>
-              Count: {filteredAsmList.length} ASMs
-            </span>
-          </div>
 
-          {!collapsedTables.asmAppt && (
-            <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12.5px', lineHeight: '1.3' }}>
-              <thead>
-                <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                  <th style={{ padding: '10px 12px', textAlign: 'left', borderRight: '1px solid #e2e8f0', width: '16%' }}>ASM Name</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'left', borderRight: '1px solid #e2e8f0', width: '14%' }}>BUSM</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', borderRight: '1px solid #e2e8f0' }}>Total Appointments</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right' }}>Cancellation %</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right' }}>Reschedule %</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right' }}>Same Day Attend %</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right' }}>Same Day Attend without Cancellation %</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right' }}>Pending to Attend %</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentSahDataset.asm.filter((a: any) => !selectedBusmRow || a.busm === selectedBusmRow).length === 0 ? (
-                  <tr>
-                    <td colSpan={8} style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>
-                      No ASMs found for selected filter in {selectedMonth}.
-                    </td>
+            {!collapsedTables.asmAppt && (
+              <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12.5px', lineHeight: '1.3' }}>
+                <thead>
+                  <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                    <th style={{ padding: '10px 12px', textAlign: 'left', borderRight: '1px solid #e2e8f0', width: '16%' }}>ASM Name</th>
+                    <th style={{ padding: '10px 10px', textAlign: 'left', borderRight: '1px solid #e2e8f0', width: '14%' }}>BUSM</th>
+                    <th style={{ padding: '10px 10px', textAlign: 'right', borderRight: '1px solid #e2e8f0' }}>Total Appointments</th>
+                    <th style={{ padding: '10px 10px', textAlign: 'right' }}>Cancellation %</th>
+                    <th style={{ padding: '10px 10px', textAlign: 'right' }}>Reschedule %</th>
+                    <th style={{ padding: '10px 10px', textAlign: 'right' }}>Same Day Attend %</th>
+                    <th style={{ padding: '10px 10px', textAlign: 'right' }}>Same Day Attend without Cancellation %</th>
+                    <th style={{ padding: '10px 10px', textAlign: 'right' }}>Pending to Attend %</th>
                   </tr>
-                ) : (
-                  currentSahDataset.asm.filter((a: any) => !selectedBusmRow || a.busm === selectedBusmRow).map((r: any, i: number) => (
-                    <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                      <td style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 700, color: '#1e293b' }}>{r.name}</td>
-                      <td style={{ padding: '8px 10px', textAlign: 'left', color: '#64748b', borderRight: '1px solid #f1f5f9' }}>{r.busm}</td>
-                      <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, borderRight: '1px solid #f1f5f9' }}>
-                        {r.total.toLocaleString('en-IN')}
+                </thead>
+                <tbody>
+                  {currentSahDataset.asm.filter((a: any) => a.busm === selectedBusmRow).length === 0 ? (
+                    <tr>
+                      <td colSpan={8} style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>
+                        No ASMs found for {selectedBusmRow} in {selectedMonth}.
                       </td>
-                      <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#d97706' }}>{r.cancel}</td>
-                      <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 600 }}>{r.resched}</td>
-                      <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#16a34a' }}>{r.same_day}</td>
-                      <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#dc2626' }}>{r.same_day_cancel}</td>
-                      <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#2563eb' }}>{r.pending}</td>
                     </tr>
-                  ))
-                )}
+                  ) : (
+                    currentSahDataset.asm.filter((a: any) => a.busm === selectedBusmRow).map((r: any, i: number) => (
+                      <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                        <td style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 700, color: '#1e293b' }}>{r.name}</td>
+                        <td style={{ padding: '8px 10px', textAlign: 'left', color: '#64748b', borderRight: '1px solid #f1f5f9' }}>{r.busm}</td>
+                        <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, borderRight: '1px solid #f1f5f9' }}>
+                          {r.total.toLocaleString('en-IN')}
+                        </td>
+                        <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#d97706' }}>{r.cancel}</td>
+                        <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 600 }}>{r.resched}</td>
+                        <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#16a34a' }}>{r.same_day}</td>
+                        <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#dc2626' }}>{r.same_day_cancel}</td>
+                        <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#2563eb' }}>{r.pending}</td>
+                      </tr>
+                    ))
+                  )}
 
-                {/* Total Summary Row for ASMs */}
-                <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
-                  <td style={{ padding: '10px 12px', color: '#0f172a', background: '#f1f5f9', fontWeight: 800 }}>Total / Average</td>
-                  <td style={{ padding: '10px 10px', color: '#64748b', borderRight: '1px solid #e2e8f0' }}>{selectedBusmRow || 'All Regions'}</td>
-                  <td style={{ padding: '10px 10px', textAlign: 'right', color: '#0f172a', borderRight: '1px solid #e2e8f0', fontWeight: 800 }}>
-                    {currentSahDataset.asm.filter((a: any) => !selectedBusmRow || a.busm === selectedBusmRow).reduce((sum: number, a: any) => sum + (a.total || 0), 0).toLocaleString('en-IN')}
-                  </td>
-                  <td style={{ padding: '10px 10px', textAlign: 'right', color: '#d97706', fontWeight: 800 }}>17.2%</td>
-                  <td style={{ padding: '10px 10px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>12.0%</td>
-                  <td style={{ padding: '10px 10px', textAlign: 'right', color: '#16a34a', fontWeight: 800 }}>82.1%</td>
-                  <td style={{ padding: '10px 10px', textAlign: 'right', color: '#dc2626', fontWeight: 800 }}>11.8%</td>
-                  <td style={{ padding: '10px 10px', textAlign: 'right', color: '#2563eb', fontWeight: 800 }}>0.7%</td>
-                </tr>
-              </tbody>
-            </table>
+                  {/* Total Summary Row for ASMs */}
+                  <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
+                    <td style={{ padding: '10px 12px', color: '#0f172a', background: '#f1f5f9', fontWeight: 800 }}>Total / Average</td>
+                    <td style={{ padding: '10px 10px', color: '#64748b', borderRight: '1px solid #e2e8f0' }}>{selectedBusmRow}</td>
+                    <td style={{ padding: '10px 10px', textAlign: 'right', color: '#0f172a', borderRight: '1px solid #e2e8f0', fontWeight: 800 }}>
+                      {currentSahDataset.asm.filter((a: any) => a.busm === selectedBusmRow).reduce((sum: number, a: any) => sum + (a.total || 0), 0).toLocaleString('en-IN')}
+                    </td>
+                    <td style={{ padding: '10px 10px', textAlign: 'right', color: '#d97706', fontWeight: 800 }}>17.2%</td>
+                    <td style={{ padding: '10px 10px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>12.0%</td>
+                    <td style={{ padding: '10px 10px', textAlign: 'right', color: '#16a34a', fontWeight: 800 }}>82.1%</td>
+                    <td style={{ padding: '10px 10px', textAlign: 'right', color: '#dc2626', fontWeight: 800 }}>11.8%</td>
+                    <td style={{ padding: '10px 10px', textAlign: 'right', color: '#2563eb', fontWeight: 800 }}>0.7%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            )}
           </div>
-          )}
-        </div>
+        )}
       </div>
 
       {/* SECTION 3: NPS DASHBOARD (8 TABLES FROM EXCEL) */}
@@ -1454,163 +1464,166 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
           </div>
         </div>
 
-        {/* NPS TABLE 2: ASM LEVEL NPS BREAKDOWN */}
-        <div className="card-mock" style={{ padding: '20px', marginBottom: '24px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-            <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-              Table 2: Supervisor (ASM) Wise NPS Performance Breakdown {selectedBusmRow ? `(Filtered: ${selectedBusmRow})` : ''}
-            </h3>
-            <span style={{ fontSize: '12px', color: '#64748b' }}>
-              Showing {(deviceFilter === 'smart' ? spAsmData : asmNpsData).filter(r => !selectedBusmRow || r.busm === selectedBusmRow).length} Supervisors
-            </span>
-          </div>
+        {/* NPS TABLE 2 & 3 (Only visible when a BUSM is clicked) */}
+        {selectedBusmRow && (
+          <>
+            {/* NPS TABLE 2: ASM LEVEL NPS BREAKDOWN */}
+            <div className="card-mock" style={{ padding: '20px', marginBottom: '24px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                  Table 2: Supervisor (ASM) Wise NPS Performance Breakdown (Filtered: {selectedBusmRow})
+                </h3>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontSize: '12px', color: '#64748b' }}>
+                    Showing {(deviceFilter === 'smart' ? spAsmData : asmNpsData).filter(r => r.busm === selectedBusmRow).length} Supervisors
+                  </span>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); setSelectedBusmRow(null); }}
+                    style={{ background: '#f1f5f9', border: '1px solid #cbd5e1', padding: '4px 10px', borderRadius: '6px', fontSize: '11.5px', fontWeight: 700, color: '#475569', cursor: 'pointer' }}
+                  >
+                    Clear BUSM Filter
+                  </button>
+                </div>
+              </div>
 
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12.5px' }}>
-              <thead>
-                <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '11px', textTransform: 'uppercase' }}>
-                  <th style={{ padding: '10px 12px', textAlign: 'left' }}>ASM Name</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'left' }}>BUSM</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right' }}>Surveys</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', color: '#dc2626' }}>Detractor %</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', color: '#d97706' }}>Passive %</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', color: '#16a34a' }}>Promoter %</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', color: '#2563eb' }}>NPS %</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'center' }}>Rank</th>
-                </tr>
-              </thead>
-              <tbody>
-                {(deviceFilter === 'smart' ? spAsmData : asmNpsData)
-                  .filter(r => !selectedBusmRow || r.busm === selectedBusmRow)
-                  .map((r, i) => (
-                    <tr key={i} style={{ borderBottom: '1px solid #f1f5f9', background: selectedBusmRow && r.busm === selectedBusmRow ? '#eff6ff' : undefined }}>
-                      <td style={{ padding: '8px 12px', fontWeight: 700, color: '#1e293b' }}>{r.name}</td>
-                      <td style={{ padding: '8px 10px', color: '#64748b', fontWeight: selectedBusmRow && r.busm === selectedBusmRow ? 700 : 400 }}>{r.busm}</td>
-                      <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 600 }}>{r.total.toLocaleString('en-IN')}</td>
-                      <td style={{ padding: '8px 10px', textAlign: 'right', color: '#dc2626', fontWeight: 700 }}>{r.d}</td>
-                      <td style={{ padding: '8px 10px', textAlign: 'right', color: '#d97706' }}>{r.p}</td>
-                      <td style={{ padding: '8px 10px', textAlign: 'right', color: '#16a34a', fontWeight: 700 }}>{r.pr}</td>
-                      <td style={{ padding: '8px 10px', textAlign: 'right', color: '#2563eb', fontWeight: 800 }}>+{r.nps}</td>
-                      <td style={{ padding: '8px 10px', textAlign: 'center' }}>
-                        <span style={{ fontSize: '10px', fontWeight: 800, padding: '1px 5px', borderRadius: '4px', ...getRankBadgeStyle(r.rank, 35) }}>
-                          #{r.rank}
-                        </span>
-                      </td>
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12.5px' }}>
+                  <thead>
+                    <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '11px', textTransform: 'uppercase' }}>
+                      <th style={{ padding: '10px 12px', textAlign: 'left' }}>ASM Name</th>
+                      <th style={{ padding: '10px 10px', textAlign: 'left' }}>BUSM</th>
+                      <th style={{ padding: '10px 10px', textAlign: 'right' }}>Surveys</th>
+                      <th style={{ padding: '10px 10px', textAlign: 'right', color: '#dc2626' }}>Detractor %</th>
+                      <th style={{ padding: '10px 10px', textAlign: 'right', color: '#d97706' }}>Passive %</th>
+                      <th style={{ padding: '10px 10px', textAlign: 'right', color: '#16a34a' }}>Promoter %</th>
+                      <th style={{ padding: '10px 10px', textAlign: 'right', color: '#2563eb' }}>NPS %</th>
+                      <th style={{ padding: '10px 10px', textAlign: 'center' }}>Rank</th>
                     </tr>
-                  ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+                  </thead>
+                  <tbody>
+                    {(deviceFilter === 'smart' ? spAsmData : asmNpsData)
+                      .filter(r => r.busm === selectedBusmRow)
+                      .map((r, i) => (
+                        <tr key={i} style={{ borderBottom: '1px solid #f1f5f9', background: '#eff6ff' }}>
+                          <td style={{ padding: '8px 12px', fontWeight: 700, color: '#1e293b' }}>{r.name}</td>
+                          <td style={{ padding: '8px 10px', color: '#64748b', fontWeight: 700 }}>{r.busm}</td>
+                          <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 600 }}>{r.total.toLocaleString('en-IN')}</td>
+                          <td style={{ padding: '8px 10px', textAlign: 'right', color: '#dc2626', fontWeight: 700 }}>{r.d}</td>
+                          <td style={{ padding: '8px 10px', textAlign: 'right', color: '#d97706' }}>{r.p}</td>
+                          <td style={{ padding: '8px 10px', textAlign: 'right', color: '#16a34a', fontWeight: 700 }}>{r.pr}</td>
+                          <td style={{ padding: '8px 10px', textAlign: 'right', color: '#2563eb', fontWeight: 800 }}>+{r.nps}</td>
+                          <td style={{ padding: '8px 10px', textAlign: 'center' }}>
+                            <span style={{ fontSize: '10px', fontWeight: 800, padding: '1px 5px', borderRadius: '4px', ...getRankBadgeStyle(r.rank, 35) }}>
+                              #{r.rank}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
 
-        {/* NPS TABLE 3: ASP CENTER WISE NPS BREAKDOWN */}
-        <div className="card-mock" style={{ padding: '20px', marginBottom: '24px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-            <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-              Table 3: Top ASP Center Wise NPS Performance Breakdown {selectedBusmRow ? `(Filtered: ${selectedBusmRow})` : ''}
-            </h3>
-            <span style={{ fontSize: '12px', color: '#64748b' }}>
-              Showing {topAspNpsData.filter(r => !selectedBusmRow || r.busm === selectedBusmRow).length} ASP Centers
-            </span>
-          </div>
+            {/* NPS TABLE 3: ASP CENTER WISE NPS BREAKDOWN */}
+            <div className="card-mock" style={{ padding: '20px', marginBottom: '24px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                  Table 3: Top ASP Center Wise NPS Performance Breakdown (Filtered: {selectedBusmRow})
+                </h3>
+                <span style={{ fontSize: '12px', color: '#64748b' }}>
+                  Showing {topAspNpsData.filter(r => r.busm === selectedBusmRow).length} ASP Centers
+                </span>
+              </div>
 
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12.5px' }}>
-              <thead>
-                <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '11px', textTransform: 'uppercase' }}>
-                  <th style={{ padding: '10px 10px', textAlign: 'left', fontFamily: 'monospace' }}>ASP Code</th>
-                  <th style={{ padding: '10px 12px', textAlign: 'left' }}>ASP Name</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'left' }}>Supervisor (ASM)</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'left' }}>BUSM</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right' }}>Surveys</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right' }}>Response Rate %</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', color: '#dc2626' }}>Detractor %</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', color: '#d97706' }}>Passive %</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', color: '#16a34a' }}>Promoter %</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', color: '#2563eb' }}>NPS %</th>
-                </tr>
-              </thead>
-              <tbody>
-                {topAspNpsData
-                  .filter(r => !selectedBusmRow || r.busm === selectedBusmRow)
-                  .slice()
-                  .sort((a, b) => parseFloat(b.nps) - parseFloat(a.nps))
-                  .map((r, i) => {
-                    const rank = i + 1;
-                    return (
-                      <tr key={r.code} style={{ borderBottom: '1px solid #f1f5f9', background: selectedBusmRow && r.busm === selectedBusmRow ? '#eff6ff' : undefined }}>
-                        <td style={{ padding: '8px 10px', fontFamily: 'monospace', color: '#64748b' }}>{r.code}</td>
-                        <td style={{ padding: '8px 12px', fontWeight: 700, color: '#1e293b' }}>{r.name}</td>
-                        <td style={{ padding: '8px 10px', color: '#64748b' }}>{r.asm}</td>
-                        <td style={{ padding: '8px 10px', color: '#64748b', fontWeight: selectedBusmRow && r.busm === selectedBusmRow ? 700 : 400 }}>{r.busm}</td>
-                        <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 600 }}>{r.total}</td>
-                        <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 600 }}>{r.rr}</td>
-                        <td style={{ padding: '8px 10px', textAlign: 'right', color: '#dc2626', fontWeight: 700 }}>{r.d}</td>
-                        <td style={{ padding: '8px 10px', textAlign: 'right', color: '#d97706' }}>{r.p}</td>
-                        <td style={{ padding: '8px 10px', textAlign: 'right', color: '#16a34a', fontWeight: 700 }}>{r.pr}</td>
-                        <td style={{ padding: '8px 10px', textAlign: 'right' }}>
-                          <span style={{ color: '#2563eb', fontWeight: 800 }}>+{r.nps}</span>
-                          <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', padding: '1px 5px', borderRadius: '4px', marginLeft: '6px' }}>#{rank}</span>
-                        </td>
-                      </tr>
-                    );
-                  })}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* NPS TABLES 4 & 5: DETRACTOR (DSAT) REASONS BREAKDOWN */}
-        <div className="card-mock" style={{ padding: '20px', marginBottom: '24px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-            <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-              Table 4 &amp; 5: Detractor (DSAT) Root Cause Reasons Matrix by BUSM {selectedBusmRow ? `(Filtered: ${selectedBusmRow})` : ''}
-            </h3>
-          </div>
-
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
-              <thead>
-                <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '11px', textTransform: 'uppercase' }}>
-                  <th style={{ padding: '10px 12px', textAlign: 'left' }}>BUSM Name</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', color: '#d97706' }}>Delay in Service</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', color: '#dc2626' }}>Repair Quality</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right' }}>ASP Behaviour</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right' }}>Replacement / Product Quality Issue</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right' }}>High Repair Cost</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right' }}>Deny in Service</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', fontWeight: 800 }}>Total DSAT</th>
-                </tr>
-              </thead>
-              <tbody>
-                {dsatBusmData
-                  .filter(r => !selectedBusmRow || r.name === selectedBusmRow)
-                  .map((r, i) => (
-                    <tr key={i} style={{ borderBottom: '1px solid #f1f5f9', background: selectedBusmRow && r.name === selectedBusmRow ? '#eff6ff' : undefined }}>
-                      <td style={{ padding: '9px 12px', fontWeight: 700, color: '#1e293b' }}>{r.name}</td>
-                      <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 700, color: '#d97706' }}>{r.delay}</td>
-                      <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 700, color: '#dc2626' }}>{r.repair}</td>
-                      <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 600 }}>{r.aspBehav}</td>
-                      <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 600 }}>{r.replace}</td>
-                      <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 600 }}>{r.cost}</td>
-                      <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 600 }}>{r.deny}</td>
-                      <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 800, color: '#0f172a' }}>{r.total}</td>
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12.5px' }}>
+                  <thead>
+                    <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '11px', textTransform: 'uppercase' }}>
+                      <th style={{ padding: '10px 10px', textAlign: 'left', fontFamily: 'monospace' }}>ASP Code</th>
+                      <th style={{ padding: '10px 12px', textAlign: 'left' }}>ASP Name</th>
+                      <th style={{ padding: '10px 10px', textAlign: 'left' }}>Supervisor (ASM)</th>
+                      <th style={{ padding: '10px 10px', textAlign: 'left' }}>BUSM</th>
+                      <th style={{ padding: '10px 10px', textAlign: 'right' }}>Surveys</th>
+                      <th style={{ padding: '10px 10px', textAlign: 'right' }}>Response Rate %</th>
+                      <th style={{ padding: '10px 10px', textAlign: 'right', color: '#dc2626' }}>Detractor %</th>
+                      <th style={{ padding: '10px 10px', textAlign: 'right', color: '#d97706' }}>Passive %</th>
+                      <th style={{ padding: '10px 10px', textAlign: 'right', color: '#16a34a' }}>Promoter %</th>
+                      <th style={{ padding: '10px 10px', textAlign: 'right', color: '#2563eb' }}>NPS %</th>
                     </tr>
-                  ))}
-                <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
-                  <td style={{ padding: '10px 12px', color: '#0f172a', background: '#f1f5f9' }}>Grand Total</td>
-                  <td style={{ padding: '10px 10px', textAlign: 'right', color: '#d97706' }}>131</td>
-                  <td style={{ padding: '10px 10px', textAlign: 'right', color: '#dc2626' }}>95</td>
-                  <td style={{ padding: '10px 10px', textAlign: 'right', color: '#0f172a' }}>38</td>
-                  <td style={{ padding: '10px 10px', textAlign: 'right', color: '#0f172a' }}>20</td>
-                  <td style={{ padding: '10px 10px', textAlign: 'right', color: '#0f172a' }}>16</td>
-                  <td style={{ padding: '10px 10px', textAlign: 'right', color: '#0f172a' }}>10</td>
-                  <td style={{ padding: '10px 10px', textAlign: 'right', color: '#0f172a' }}>350</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+                  </thead>
+                  <tbody>
+                    {topAspNpsData
+                      .filter(r => r.busm === selectedBusmRow)
+                      .slice()
+                      .sort((a, b) => parseFloat(b.nps) - parseFloat(a.nps))
+                      .map((r, i) => {
+                        const rank = i + 1;
+                        return (
+                          <tr key={r.code} style={{ borderBottom: '1px solid #f1f5f9', background: '#eff6ff' }}>
+                            <td style={{ padding: '8px 10px', fontFamily: 'monospace', color: '#64748b' }}>{r.code}</td>
+                            <td style={{ padding: '8px 12px', fontWeight: 700, color: '#1e293b' }}>{r.name}</td>
+                            <td style={{ padding: '8px 10px', color: '#64748b' }}>{r.asm}</td>
+                            <td style={{ padding: '8px 10px', color: '#64748b', fontWeight: 700 }}>{r.busm}</td>
+                            <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 600 }}>{r.total}</td>
+                            <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 600 }}>{r.rr}</td>
+                            <td style={{ padding: '8px 10px', textAlign: 'right', color: '#dc2626', fontWeight: 700 }}>{r.d}</td>
+                            <td style={{ padding: '8px 10px', textAlign: 'right', color: '#d97706' }}>{r.p}</td>
+                            <td style={{ padding: '8px 10px', textAlign: 'right', color: '#16a34a', fontWeight: 700 }}>{r.pr}</td>
+                            <td style={{ padding: '8px 10px', textAlign: 'right' }}>
+                              <span style={{ color: '#2563eb', fontWeight: 800 }}>+{r.nps}</span>
+                              <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', padding: '1px 5px', borderRadius: '4px', marginLeft: '6px' }}>#{rank}</span>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* NPS TABLES 4 & 5: DETRACTOR (DSAT) REASONS BREAKDOWN */}
+            <div className="card-mock" style={{ padding: '20px', marginBottom: '24px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                  Table 4 &amp; 5: Detractor (DSAT) Root Cause Reasons Matrix by BUSM (Filtered: {selectedBusmRow})
+                </h3>
+              </div>
+
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
+                  <thead>
+                    <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '11px', textTransform: 'uppercase' }}>
+                      <th style={{ padding: '10px 12px', textAlign: 'left' }}>BUSM Name</th>
+                      <th style={{ padding: '10px 10px', textAlign: 'right', color: '#d97706' }}>Delay in Service</th>
+                      <th style={{ padding: '10px 10px', textAlign: 'right', color: '#dc2626' }}>Repair Quality</th>
+                      <th style={{ padding: '10px 10px', textAlign: 'right' }}>ASP Behaviour</th>
+                      <th style={{ padding: '10px 10px', textAlign: 'right' }}>Replacement / Product Quality Issue</th>
+                      <th style={{ padding: '10px 10px', textAlign: 'right' }}>High Repair Cost</th>
+                      <th style={{ padding: '10px 10px', textAlign: 'right' }}>Deny in Service</th>
+                      <th style={{ padding: '10px 10px', textAlign: 'right', fontWeight: 800 }}>Total DSAT</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {dsatBusmData
+                      .filter(r => r.name === selectedBusmRow)
+                      .map((r, i) => (
+                        <tr key={i} style={{ borderBottom: '1px solid #f1f5f9', background: '#eff6ff' }}>
+                          <td style={{ padding: '9px 12px', fontWeight: 700, color: '#1e293b' }}>{r.name}</td>
+                          <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 700, color: '#d97706' }}>{r.delay}</td>
+                          <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 700, color: '#dc2626' }}>{r.repair}</td>
+                          <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 600 }}>{r.aspBehav}</td>
+                          <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 600 }}>{r.replace}</td>
+                          <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 600 }}>{r.cost}</td>
+                          <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 600 }}>{r.deny}</td>
+                          <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 800, color: '#0f172a' }}>{r.total}</td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </>
+        )}
 
         {/* NPS TABLE 6: OVERALL DEVICE CATEGORY NPS COMPARISON */}
         <div className="card-mock" style={{ padding: '20px', marginBottom: '24px' }}>
@@ -1916,114 +1929,124 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
           </div>
         </div>
 
-        {/* TAT TABLE 2: ASM LEVEL TAT CLOSURE MATRIX */}
-        <div className="card-mock" style={{ padding: '20px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-            <div>
-              <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                Supervisor (ASM) TAT Closure Velocity Matrix
-              </h3>
-              <span style={{ fontSize: '12px', color: '#64748b' }}>
-                {selectedBusmRow ? `Showing Area Managers (ASMs) under ${selectedBusmRow}` : 'Showing all Area Managers (ASMs) across the organization'}
-              </span>
+        {/* TAT TABLE 2: ASM LEVEL TAT CLOSURE MATRIX (Only visible when a BUSM is clicked) */}
+        {selectedBusmRow && (
+          <div className="card-mock" style={{ padding: '20px', marginTop: '16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+              <div>
+                <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                  Supervisor (ASM) TAT Closure Velocity Matrix
+                </h3>
+                <span style={{ fontSize: '12px', color: '#64748b' }}>
+                  Showing Area Managers (ASMs) under {selectedBusmRow}
+                </span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ background: '#f1f5f9', color: '#475569', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 700 }}>
+                  Count: {filteredAsmList.length} ASMs
+                </span>
+                <button
+                  onClick={(e) => { e.stopPropagation(); setSelectedBusmRow(null); }}
+                  style={{ background: '#f1f5f9', border: '1px solid #cbd5e1', padding: '4px 10px', borderRadius: '6px', fontSize: '11.5px', fontWeight: 700, color: '#475569', cursor: 'pointer' }}
+                >
+                  Clear BUSM Filter
+                </button>
+              </div>
             </div>
-            <span style={{ background: '#f1f5f9', color: '#475569', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 700 }}>
-              Count: {filteredAsmList.length} ASMs
-            </span>
-          </div>
 
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12.5px', lineHeight: '1.3' }}>
-              <thead>
-                <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                  <th style={{ padding: '10px 12px', textAlign: 'left', borderRight: '1px solid #e2e8f0', width: '16%' }}>ASM Name</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'left', borderRight: '1px solid #e2e8f0', width: '14%' }}>BUSM</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', borderRight: '1px solid #e2e8f0' }}>Total Work Orders</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', color: '#16a34a' }}>1 Day Closure</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', color: '#2563eb' }}>2 Day Closure</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', color: '#d97706' }}>3 Day Closure</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', color: '#dc2626' }}>5+ Day Closure</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', color: '#7c3aed' }}>Still Open</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredAsmList.length === 0 ? (
-                  <tr>
-                    <td colSpan={8} style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>
-                      No ASMs found for selected filter.
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12.5px', lineHeight: '1.3' }}>
+                <thead>
+                  <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                    <th style={{ padding: '10px 12px', textAlign: 'left', borderRight: '1px solid #e2e8f0', width: '16%' }}>ASM Name</th>
+                    <th style={{ padding: '10px 10px', textAlign: 'left', borderRight: '1px solid #e2e8f0', width: '14%' }}>BUSM</th>
+                    <th style={{ padding: '10px 10px', textAlign: 'right', borderRight: '1px solid #e2e8f0' }}>Total Work Orders</th>
+                    <th style={{ padding: '10px 10px', textAlign: 'right', color: '#16a34a' }}>1 Day Closure</th>
+                    <th style={{ padding: '10px 10px', textAlign: 'right', color: '#2563eb' }}>2 Day Closure</th>
+                    <th style={{ padding: '10px 10px', textAlign: 'right', color: '#d97706' }}>3 Day Closure</th>
+                    <th style={{ padding: '10px 10px', textAlign: 'right', color: '#dc2626' }}>5+ Day Closure</th>
+                    <th style={{ padding: '10px 10px', textAlign: 'right', color: '#7c3aed' }}>Still Open</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredAsmList.length === 0 ? (
+                    <tr>
+                      <td colSpan={8} style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>
+                        No ASMs found for {selectedBusmRow}.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredAsmList.map((r: any, i: number) => {
+                      const woVal = r.wo || 0;
+                      const rawTc = r.tatClosure || {};
+                      // Inherit per-BUSM TAT distribution for ASMs — each ASM reflects their BUSM's real velocity
+                      const ASM_BUSM_TAT: Record<string, { p1: number; p2: number; p3: number; p5: number }> = {
+                        'Jitesh S Rath':            { p1: 36.7, p2:  6.9, p3: 23.9, p5: 32.6 },
+                        'Sukhbir Singh':            { p1: 44.5, p2:  9.4, p3: 22.8, p5: 23.2 },
+                        'Tamilselvan Subramanian':  { p1: 31.8, p2: 11.2, p3: 27.7, p5: 29.3 },
+                        'Shivaprasad P U':          { p1: 38.0, p2: 10.7, p3: 29.0, p5: 22.3 },
+                        'Rajesh Limbachia':         { p1: 44.3, p2: 10.3, p3: 27.1, p5: 18.3 },
+                      };
+                      const aDist = ASM_BUSM_TAT[r.busm] || { p1: 26.9, p2: 12.0, p3: 21.0, p5: 40.1 };
+                      const ac1dFb = Math.round(woVal * aDist.p1 / 100);
+                      const ac2dFb = Math.round(woVal * aDist.p2 / 100);
+                      const ac3dFb = Math.round(woVal * aDist.p3 / 100);
+                      const ac5dFb = Math.round(woVal * aDist.p5 / 100);
+                      const tc = {
+                        c1d: rawTc.c1d || ac1dFb,
+                        tat1dPct: rawTc.tat1dPct || (woVal > 0 ? aDist.p1 : 0),
+                        c2d: rawTc.c2d || ac2dFb,
+                        tat2dPct: rawTc.tat2dPct || (woVal > 0 ? aDist.p2 : 0),
+                        c3d: rawTc.c3d || ac3dFb,
+                        tat3dPct: rawTc.tat3dPct || (woVal > 0 ? aDist.p3 : 0),
+                        c5d: rawTc.c5d || ac5dFb,
+                        tat5dPct: rawTc.tat5dPct || (woVal > 0 ? aDist.p5 : 0),
+                        cStillOpen: rawTc.cStillOpen || Math.max(0, woVal - ac1dFb - ac2dFb - ac3dFb - ac5dFb),
+                        stillOpenPct: rawTc.stillOpenPct || (woVal > 0 ? Math.max(0, +(100 - aDist.p1 - aDist.p2 - aDist.p3 - aDist.p5).toFixed(1)) : 0),
+                      };
+                      return (
+                        <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                          <td style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 700, color: '#1e293b' }}>{r.name}</td>
+                          <td style={{ padding: '8px 10px', textAlign: 'left', color: '#64748b', borderRight: '1px solid #f1f5f9' }}>{r.busm}</td>
+                          <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, borderRight: '1px solid #f1f5f9' }}>
+                            {(r.wo || 0).toLocaleString('en-IN')}
+                          </td>
+                          <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#16a34a' }}>
+                            {(tc.c1d || 0).toLocaleString('en-IN')} <span style={{ fontSize: '10.5px', color: '#64748b' }}>({tc.tat1dPct}%)</span>
+                          </td>
+                          <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 600, color: '#2563eb' }}>
+                            {(tc.c2d || 0).toLocaleString('en-IN')} <span style={{ fontSize: '10.5px', color: '#64748b' }}>({tc.tat2dPct}%)</span>
+                          </td>
+                          <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 600, color: '#d97706' }}>
+                            {(tc.c3d || 0).toLocaleString('en-IN')} <span style={{ fontSize: '10.5px', color: '#64748b' }}>({tc.tat3dPct}%)</span>
+                          </td>
+                          <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#dc2626' }}>
+                            {(tc.c5d || 0).toLocaleString('en-IN')} <span style={{ fontSize: '10.5px', color: '#64748b' }}>({tc.tat5dPct}%)</span>
+                          </td>
+                          <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#7c3aed' }}>
+                            {(tc.cStillOpen || 0).toLocaleString('en-IN')} <span style={{ fontSize: '10.5px', color: '#64748b' }}>({tc.stillOpenPct}%)</span>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+
+                  {/* Total Summary Row for ASMs */}
+                  <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
+                    <td style={{ padding: '10px 12px', color: '#0f172a', background: '#f1f5f9', fontWeight: 800 }}>Total / Average</td>
+                    <td style={{ padding: '10px 10px', color: '#64748b', borderRight: '1px solid #e2e8f0' }}>{selectedBusmRow}</td>
+                    <td style={{ padding: '10px 10px', textAlign: 'right', color: '#0f172a', borderRight: '1px solid #e2e8f0', fontWeight: 800 }}>
+                      {asmTotalWo.toLocaleString('en-IN')}
+                    </td>
+                    <td colSpan={5} style={{ padding: '10px 10px', textAlign: 'center', color: '#64748b', fontSize: '11px', textTransform: 'uppercase' }}>
+                      Regional TAT Closure Velocity Total
                     </td>
                   </tr>
-                ) : (
-                  filteredAsmList.map((r: any, i: number) => {
-                    const woVal = r.wo || 0;
-                    const rawTc = r.tatClosure || {};
-                    // Inherit per-BUSM TAT distribution for ASMs — each ASM reflects their BUSM's real velocity
-                    const ASM_BUSM_TAT: Record<string, { p1: number; p2: number; p3: number; p5: number }> = {
-                      'Jitesh S Rath':            { p1: 36.7, p2:  6.9, p3: 23.9, p5: 32.6 },
-                      'Sukhbir Singh':            { p1: 44.5, p2:  9.4, p3: 22.8, p5: 23.2 },
-                      'Tamilselvan Subramanian':  { p1: 31.8, p2: 11.2, p3: 27.7, p5: 29.3 },
-                      'Shivaprasad P U':          { p1: 38.0, p2: 10.7, p3: 29.0, p5: 22.3 },
-                      'Rajesh Limbachia':         { p1: 44.3, p2: 10.3, p3: 27.1, p5: 18.3 },
-                    };
-                    const aDist = ASM_BUSM_TAT[r.busm] || { p1: 26.9, p2: 12.0, p3: 21.0, p5: 40.1 };
-                    const ac1dFb = Math.round(woVal * aDist.p1 / 100);
-                    const ac2dFb = Math.round(woVal * aDist.p2 / 100);
-                    const ac3dFb = Math.round(woVal * aDist.p3 / 100);
-                    const ac5dFb = Math.round(woVal * aDist.p5 / 100);
-                    const tc = {
-                      c1d: rawTc.c1d || ac1dFb,
-                      tat1dPct: rawTc.tat1dPct || (woVal > 0 ? aDist.p1 : 0),
-                      c2d: rawTc.c2d || ac2dFb,
-                      tat2dPct: rawTc.tat2dPct || (woVal > 0 ? aDist.p2 : 0),
-                      c3d: rawTc.c3d || ac3dFb,
-                      tat3dPct: rawTc.tat3dPct || (woVal > 0 ? aDist.p3 : 0),
-                      c5d: rawTc.c5d || ac5dFb,
-                      tat5dPct: rawTc.tat5dPct || (woVal > 0 ? aDist.p5 : 0),
-                      cStillOpen: rawTc.cStillOpen || Math.max(0, woVal - ac1dFb - ac2dFb - ac3dFb - ac5dFb),
-                      stillOpenPct: rawTc.stillOpenPct || (woVal > 0 ? Math.max(0, +(100 - aDist.p1 - aDist.p2 - aDist.p3 - aDist.p5).toFixed(1)) : 0),
-                    };
-                    return (
-                      <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                        <td style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 700, color: '#1e293b' }}>{r.name}</td>
-                        <td style={{ padding: '8px 10px', textAlign: 'left', color: '#64748b', borderRight: '1px solid #f1f5f9' }}>{r.busm}</td>
-                        <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, borderRight: '1px solid #f1f5f9' }}>
-                          {(r.wo || 0).toLocaleString('en-IN')}
-                        </td>
-                        <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#16a34a' }}>
-                          {(tc.c1d || 0).toLocaleString('en-IN')} <span style={{ fontSize: '10.5px', color: '#64748b' }}>({tc.tat1dPct}%)</span>
-                        </td>
-                        <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 600, color: '#2563eb' }}>
-                          {(tc.c2d || 0).toLocaleString('en-IN')} <span style={{ fontSize: '10.5px', color: '#64748b' }}>({tc.tat2dPct}%)</span>
-                        </td>
-                        <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 600, color: '#d97706' }}>
-                          {(tc.c3d || 0).toLocaleString('en-IN')} <span style={{ fontSize: '10.5px', color: '#64748b' }}>({tc.tat3dPct}%)</span>
-                        </td>
-                        <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#dc2626' }}>
-                          {(tc.c5d || 0).toLocaleString('en-IN')} <span style={{ fontSize: '10.5px', color: '#64748b' }}>({tc.tat5dPct}%)</span>
-                        </td>
-                        <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#7c3aed' }}>
-                          {(tc.cStillOpen || 0).toLocaleString('en-IN')} <span style={{ fontSize: '10.5px', color: '#64748b' }}>({tc.stillOpenPct}%)</span>
-                        </td>
-                      </tr>
-                    );
-                  })
-                )}
-
-                {/* Total Summary Row for ASMs */}
-                <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
-                  <td style={{ padding: '10px 12px', color: '#0f172a', background: '#f1f5f9', fontWeight: 800 }}>Total / Average</td>
-                  <td style={{ padding: '10px 10px', color: '#64748b', borderRight: '1px solid #e2e8f0' }}>{selectedBusmRow || 'All Regions'}</td>
-                  <td style={{ padding: '10px 10px', textAlign: 'right', color: '#0f172a', borderRight: '1px solid #e2e8f0', fontWeight: 800 }}>
-                    {asmTotalWo.toLocaleString('en-IN')}
-                  </td>
-                  <td colSpan={5} style={{ padding: '10px 10px', textAlign: 'center', color: '#64748b', fontSize: '11px', textTransform: 'uppercase' }}>
-                    Regional TAT Closure Velocity Total
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* SECTION FOOTER: KPI FORMULAS & OPERATIONAL REVIEW METHODOLOGY ACCORDION */}
@@ -2143,12 +2166,12 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             &nbsp;&nbsp;<code>Reschedule %</code> = [ Count of Appointments where <em>Final Remarks in Reschedule Statuses</em> ] ÷ [ Total Appointments for BUSM / ASM / Month ] × 100
           </div>
           <div style={{ marginTop: '4px' }}>
-            • <strong>S@H Same Day Attend % Formula:</strong> Calculated strictly by filtering column <code>Final Remarks == "Within TAT"</code>. <br />
-            &nbsp;&nbsp;<code>Same Day Attend %</code> = [ Count of Appointments where <em>Final Remarks == "Within TAT"</em> ] ÷ [ Total Appointments for BUSM / ASM / Month ] × 100
+            • <strong>S@H Same Day Attend % Formula:</strong> Calculated by filtering <code>Final Remarks</code> for <code>"Within TAT"</code> and <code>"Within TAT-Reshedule"</code> in the numerator. <br />
+            &nbsp;&nbsp;<code>Same Day Attend %</code> = [ Count of <em>Final Remarks in ("Within TAT", "Within TAT-Reshedule")</em> ] ÷ [ Total Appointments for BUSM / ASM / Month ] × 100
           </div>
           <div style={{ marginTop: '4px' }}>
-            • <strong>S@H Same Day Attend without Cancellation % Formula:</strong> Calculated by filtering <code>Final Remarks == "Within TAT"</code> over net non-canceled cases. <br />
-            &nbsp;&nbsp;<code>Same Day Attend without Cancellation %</code> = [ Count of <em>Final Remarks == "Within TAT"</em> ] ÷ [ Total Appointments − Count of <em>Final Remarks == "Canceled"</em> ] × 100
+            • <strong>S@H Same Day Attend without Cancellation % Formula:</strong> Calculated by filtering <code>Final Remarks</code> for <code>"Within TAT"</code> and <code>"Within TAT-Reshedule"</code> over net non-canceled cases. <br />
+            &nbsp;&nbsp;<code>Same Day Attend without Cancellation %</code> = [ Count of <em>Final Remarks in ("Within TAT", "Within TAT-Reshedule")</em> ] ÷ [ Total Appointments − Count of <em>Final Remarks == "Canceled"</em> ] × 100
           </div>
           <div style={{ marginTop: '4px' }}>
             • <strong>S@H Pending to Attend % Formula:</strong> Calculated strictly by filtering column <code>Final Remarks == "Appointment Created No Action"</code>. <br />
