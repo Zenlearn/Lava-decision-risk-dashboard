@@ -9,9 +9,57 @@ interface TabOrgKPIsProps {
 }
 
 export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
+  const [deviceFilter, setDeviceFilter] = useState<'smart' | 'all'>('smart');
   const [selectedMonth, setSelectedMonth] = useState<string>('Jun');
   const [selectedBusmRow, setSelectedBusmRow] = useState<string | null>(null);
   const [collapsedTables, setCollapsedTables] = useState<Record<string, boolean>>({});
+
+  // Smartphone-only BUSM NPS breakdown (Jun 2026 NPS survey dataset: 6,801 Smartphone surveys)
+  const spBusmData = [
+    { name: 'Rajesh Limbachia', total: 1440, rr: '44.8%', d: '9.5%', p: '9.3%', pr: '81.2%', nps: '71.8%', rank: 1 },
+    { name: 'Tamilselvan Subramanian', total: 868, rr: '57.3%', d: '7.0%', p: '18.5%', pr: '74.4%', nps: '67.4%', rank: 2 },
+    { name: 'Shivaprasad P U', total: 1161, rr: '44.5%', d: '9.7%', p: '14.7%', pr: '75.6%', nps: '66.0%', rank: 3 },
+    { name: 'Sukhbir Singh', total: 2236, rr: '45.3%', d: '11.7%', p: '15.1%', pr: '73.2%', nps: '61.6%', rank: 4 },
+    { name: 'Jitesh S Rath', total: 1096, rr: '47.7%', d: '13.2%', p: '15.9%', pr: '70.9%', nps: '57.7%', rank: 5 },
+  ];
+
+  // Smartphone-only ASM NPS breakdown (Jun 2026 NPS survey dataset)
+  const spAsmData = [
+    { name: 'Soukeen Khan', busm: 'Rajesh Limbachia', total: 219, d: '8.4%', p: '0.9%', pr: '90.7%', nps: '82.2%', rank: 1 },
+    { name: 'Arjun Singh', busm: 'Tamilselvan Subramanian', total: 191, d: '2.7%', p: '13.7%', pr: '83.6%', nps: '80.8%', rank: 2 },
+    { name: 'Pushpendra Singh', busm: 'Rajesh Limbachia', total: 277, d: '6.1%', p: '7.4%', pr: '86.5%', nps: '80.4%', rank: 3 },
+    { name: 'Prasanta Barik', busm: 'Tamilselvan Subramanian', total: 165, d: '7.1%', p: '9.2%', pr: '83.7%', nps: '76.5%', rank: 4 },
+    { name: 'Hem Chandra Joshi', busm: 'Sukhbir Singh', total: 264, d: '5.5%', p: '14.7%', pr: '79.8%', nps: '74.3%', rank: 5 },
+    { name: 'D C Manikantha', busm: 'Shivaprasad P U', total: 220, d: '7.8%', p: '11.1%', pr: '81.1%', nps: '73.3%', rank: 6 },
+    { name: 'Firoj Alam', busm: 'Jitesh S Rath', total: 203, d: '7.8%', p: '11.8%', pr: '80.4%', nps: '72.5%', rank: 7 },
+    { name: 'Gulam Moula Laskar', busm: 'Jitesh S Rath', total: 202, d: '7.3%', p: '13.4%', pr: '79.3%', nps: '72.0%', rank: 8 },
+    { name: 'Sushil R. Turkar', busm: 'Shivaprasad P U', total: 237, d: '4.2%', p: '19.8%', pr: '76.0%', nps: '71.9%', rank: 9 },
+    { name: 'Raja R', busm: 'Tamilselvan Subramanian', total: 66, d: '2.5%', p: '25.0%', pr: '72.5%', nps: '70.0%', rank: 10 },
+    { name: 'Alpesh Rabari', busm: 'Rajesh Limbachia', total: 273, d: '7.8%', p: '15.5%', pr: '76.7%', nps: '69.0%', rank: 11 },
+    { name: 'Gajender Chandel', busm: 'Sukhbir Singh', total: 195, d: '9.6%', p: '12.3%', pr: '78.1%', nps: '68.5%', rank: 12 },
+    { name: 'Shyam Sunder Dixit', busm: 'Rajesh Limbachia', total: 212, d: '12.2%', p: '9.5%', pr: '78.4%', nps: '66.2%', rank: 13 },
+    { name: 'Koshi Jain', busm: 'Rajesh Limbachia', total: 322, d: '11.1%', p: '12.7%', pr: '76.2%', nps: '65.1%', rank: 14 },
+    { name: 'K.Venkateswarlu', busm: 'Tamilselvan Subramanian', total: 87, d: '6.9%', p: '22.4%', pr: '70.7%', nps: '63.8%', rank: 15 },
+    { name: 'Vikram Singh Rajput', busm: 'Shivaprasad P U', total: 148, d: '12.2%', p: '12.2%', pr: '75.7%', nps: '63.5%', rank: 16 },
+    { name: 'Abhishek Kumar', busm: 'Shivaprasad P U', total: 172, d: '12.0%', p: '13.3%', pr: '74.7%', nps: '62.7%', rank: 17 },
+    { name: 'Sathish Kumar B', busm: 'Tamilselvan Subramanian', total: 90, d: '10.4%', p: '16.7%', pr: '72.9%', nps: '62.5%', rank: 18 },
+    { name: 'Dnyaneshwar R Shelar', busm: 'Shivaprasad P U', total: 250, d: '10.2%', p: '17.8%', pr: '72.0%', nps: '61.9%', rank: 19 },
+    { name: 'Mohd. Shadan Aaqil', busm: 'Sukhbir Singh', total: 177, d: '7.9%', p: '22.4%', pr: '69.7%', nps: '61.8%', rank: 20 },
+    { name: 'Madhukesh Sharma', busm: 'Sukhbir Singh', total: 391, d: '13.1%', p: '12.1%', pr: '74.9%', nps: '61.8%', rank: 21 },
+    { name: 'Sathya S', busm: 'Shivaprasad P U', total: 134, d: '14.1%', p: '10.9%', pr: '75.0%', nps: '60.9%', rank: 22 },
+    { name: 'AniketKumar Pandey', busm: 'Rajesh Limbachia', total: 137, d: '14.9%', p: '9.5%', pr: '75.7%', nps: '60.8%', rank: 23 },
+    { name: 'Nafis Ahmed', busm: 'Sukhbir Singh', total: 206, d: '14.1%', p: '11.8%', pr: '74.1%', nps: '60.0%', rank: 24 },
+    { name: 'Deepan S', busm: 'Tamilselvan Subramanian', total: 76, d: '7.7%', p: '25.0%', pr: '67.3%', nps: '59.6%', rank: 25 },
+    { name: 'Kamal kant', busm: 'Sukhbir Singh', total: 211, d: '12.1%', p: '16.2%', pr: '71.7%', nps: '59.6%', rank: 26 },
+    { name: 'Prashanth Kumar', busm: 'Tamilselvan Subramanian', total: 100, d: '7.8%', p: '25.0%', pr: '67.2%', nps: '59.4%', rank: 27 },
+    { name: 'Praveendas K', busm: 'Tamilselvan Subramanian', total: 93, d: '10.9%', p: '20.3%', pr: '68.8%', nps: '57.8%', rank: 28 },
+    { name: 'Arun Bhatia', busm: 'Sukhbir Singh', total: 512, d: '12.7%', p: '17.5%', pr: '69.8%', nps: '57.1%', rank: 29 },
+    { name: 'Ashwani kumar', busm: 'Sukhbir Singh', total: 280, d: '14.3%', p: '14.3%', pr: '71.4%', nps: '57.1%', rank: 30 },
+    { name: 'Md Tanweer Alam', busm: 'Jitesh S Rath', total: 172, d: '15.1%', p: '17.4%', pr: '67.4%', nps: '52.3%', rank: 31 },
+    { name: 'Anisur Rehman Mullick', busm: 'Jitesh S Rath', total: 209, d: '17.1%', p: '14.4%', pr: '68.5%', nps: '51.4%', rank: 32 },
+    { name: 'Awadhesh Kumar Singh', busm: 'Jitesh S Rath', total: 184, d: '18.1%', p: '15.7%', pr: '66.3%', nps: '48.2%', rank: 33 },
+    { name: 'Rahul Kumar', busm: 'Jitesh S Rath', total: 126, d: '13.6%', p: '27.1%', pr: '59.3%', nps: '45.8%', rank: 34 },
+  ];
 
   const getRankBadgeStyle = (rank: any) => {
     const parsedRank = typeof rank === 'string' ? parseInt(rank.replace(/[^0-9]/g, ''), 10) : Number(rank);
@@ -195,15 +243,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
     { name: 'Tamilselvan Subramanian', total: 1179, d: '13.3%', p: '11.2%', pr: '75.5%', nps: '62.1%' },
   ];
 
-  // Smartphone BUSM NPS breakdown — Jun 2026 NPS survey snapshot (static; sourced from Jun26 NPS Data.xlsx)
-  // TODO: Replace with API-driven data when NPS survey data is ingested into the database
-  const spBusmData = [
-    { name: 'Jitesh S Rath', total: 1096, d: '14.1%', p: '21.5%', pr: '64.4%', nps: '50.3%' },
-    { name: 'Rajesh Limbachia', total: 1440, d: '8.1%', p: '17.0%', pr: '74.9%', nps: '66.8%' },
-    { name: 'Shivaprasad P U', total: 1161, d: '10.3%', p: '23.5%', pr: '66.2%', nps: '55.9%' },
-    { name: 'Sukhbir Singh', total: 2236, d: '10.9%', p: '20.8%', pr: '68.3%', nps: '57.4%' },
-    { name: 'Tamilselvan Subramanian', total: 868, d: '3.1%', p: '33.4%', pr: '63.5%', nps: '60.4%' },
-  ];
+
 
   return (
     <div className="view-mock on" style={{ paddingBottom: '60px' }}>
@@ -738,22 +778,93 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
       {/* SECTION 3: NPS DASHBOARD (8 TABLES FROM EXCEL) */}
       <div id="sec-nps" style={{ marginBottom: '36px' }}>
         <div style={{ marginBottom: '16px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <div className="bar" style={{ background: '#7c3aed' }}></div>
-            <span style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>
-              3. NPS Performance &amp; Customer Satisfaction Dashboard
-            </span>
-          </div>
-          <div style={{ fontSize: '12.5px', color: '#64748b', marginTop: '2px', marginLeft: '12px' }}>
-            Complete 8-Table Net Promoter Score (NPS) analysis from Master NPS Dataset (June 2026)
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div className="bar" style={{ background: '#7c3aed' }}></div>
+                <span style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>
+                  3. NPS Performance &amp; Customer Satisfaction Dashboard
+                </span>
+              </div>
+              <div style={{ fontSize: '12.5px', color: '#64748b', marginTop: '2px', marginLeft: '12px' }}>
+                Complete 8-Table Net Promoter Score (NPS) analysis from Master NPS Dataset (June 2026)
+              </div>
+            </div>
+
+            {/* DEVICE TYPE FILTER TOGGLE */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#f8fafc', padding: '6px 12px', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+              <span style={{ fontSize: '12px', fontWeight: 700, color: '#475569' }}>Device Scope:</span>
+              <button
+                onClick={() => setDeviceFilter('smart')}
+                style={{
+                  padding: '5px 14px',
+                  borderRadius: '20px',
+                  fontSize: '12px',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  border: '1px solid',
+                  borderColor: deviceFilter === 'smart' ? '#4E67EB' : '#cbd5e1',
+                  background: deviceFilter === 'smart' ? '#1B264F' : '#ffffff',
+                  color: deviceFilter === 'smart' ? '#ffffff' : '#64748b',
+                  boxShadow: deviceFilter === 'smart' ? '0 2px 4px rgba(78, 103, 235, 0.25)' : 'none',
+                  transition: 'all 0.15s ease'
+                }}
+              >
+                📱 Smart Phone Only (Default)
+              </button>
+              <button
+                onClick={() => setDeviceFilter('all')}
+                style={{
+                  padding: '5px 14px',
+                  borderRadius: '20px',
+                  fontSize: '12px',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  border: '1px solid',
+                  borderColor: deviceFilter === 'all' ? '#4E67EB' : '#cbd5e1',
+                  background: deviceFilter === 'all' ? '#1B264F' : '#ffffff',
+                  color: deviceFilter === 'all' ? '#ffffff' : '#64748b',
+                  boxShadow: deviceFilter === 'all' ? '0 2px 4px rgba(78, 103, 235, 0.25)' : 'none',
+                  transition: 'all 0.15s ease'
+                }}
+              >
+                📊 All Devices (Combined)
+              </button>
+            </div>
           </div>
         </div>
 
         {/* NPS TABLE 1: BUSM LEVEL NPS BREAKDOWN */}
         <div className="card-mock" style={{ padding: '20px', marginBottom: '24px' }}>
-          <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', marginBottom: '12px' }}>
-            Table 1: BUSM Wise NPS Performance Breakdown
-          </h3>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+            <div>
+              <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                Table 1: BUSM Wise NPS Performance Breakdown ({deviceFilter === 'smart' ? 'Smart Phone Only' : 'All Devices Combined'})
+              </h3>
+              <span style={{ fontSize: '12px', color: '#64748b' }}>
+                Click any BUSM row below to filter Supervisors (ASMs), ASP Centers, and DSAT root causes below
+              </span>
+            </div>
+
+            {selectedBusmRow && (
+              <button
+                onClick={(e) => { e.stopPropagation(); setSelectedBusmRow(null); }}
+                style={{
+                  background: '#f1f5f9',
+                  border: '1px solid #cbd5e1',
+                  padding: '4px 12px',
+                  borderRadius: '6px',
+                  fontSize: '12px',
+                  fontWeight: 700,
+                  color: '#475569',
+                  cursor: 'pointer',
+                }}
+              >
+                Clear BUSM Filter ({selectedBusmRow})
+              </button>
+            )}
+          </div>
+
           <div style={{ overflowX: 'auto' }}>
             <Table density="comfortable">
               <TableHeader>
@@ -769,31 +880,43 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {busmNpsData.map((r, i) => (
-                  <TableRow key={i}>
-                    <TableCell style={{ textAlign: 'left', fontWeight: 700, color: '#1e293b' }}>{r.name}</TableCell>
-                    <TableCell style={{ textAlign: 'right', fontWeight: 600 }}>{r.total.toLocaleString('en-IN')}</TableCell>
-                    <TableCell style={{ textAlign: 'right', fontWeight: 700, color: '#1e40af' }}>{r.rr}</TableCell>
-                    <TableCell style={{ textAlign: 'right', color: '#be123c', fontWeight: 700 }}>{r.d}</TableCell>
-                    <TableCell style={{ textAlign: 'right', color: '#92400e', fontWeight: 600 }}>{r.p}</TableCell>
-                    <TableCell style={{ textAlign: 'right', color: '#065f46', fontWeight: 700 }}>{r.pr}</TableCell>
-                    <TableCell style={{ textAlign: 'right', color: '#1d4ed8', fontWeight: 800 }}>+{r.nps}</TableCell>
-                    <TableCell style={{ textAlign: 'center' }}>
-                      <span style={{ fontSize: '11px', fontWeight: 800, background: 'var(--badge-cobalt-bg)', color: 'var(--badge-cobalt-text)', border: '1px solid var(--badge-cobalt-border)', padding: '2px 7px', borderRadius: '4px' }}>
-                        #{r.rank}
-                      </span>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {(deviceFilter === 'smart' ? spBusmData : busmNpsData).map((r, i) => {
+                  const isSelected = selectedBusmRow === r.name;
+                  return (
+                    <TableRow
+                      key={i}
+                      onClick={() => setSelectedBusmRow(isSelected ? null : r.name)}
+                      style={{
+                        background: isSelected ? 'var(--bg-surface-selected)' : undefined,
+                        cursor: 'pointer'
+                      }}
+                    >
+                      <TableCell style={{ textAlign: 'left', fontWeight: isSelected ? 800 : 700, color: isSelected ? 'var(--brand-secondary)' : '#1e293b' }}>
+                        {r.name} {isSelected && '✓'}
+                      </TableCell>
+                      <TableCell style={{ textAlign: 'right', fontWeight: 600 }}>{r.total.toLocaleString('en-IN')}</TableCell>
+                      <TableCell style={{ textAlign: 'right', fontWeight: 700, color: '#1e40af' }}>{r.rr}</TableCell>
+                      <TableCell style={{ textAlign: 'right', color: '#be123c', fontWeight: 700 }}>{r.d}</TableCell>
+                      <TableCell style={{ textAlign: 'right', color: '#92400e', fontWeight: 600 }}>{r.p}</TableCell>
+                      <TableCell style={{ textAlign: 'right', color: '#065f46', fontWeight: 700 }}>{r.pr}</TableCell>
+                      <TableCell style={{ textAlign: 'right', color: '#1d4ed8', fontWeight: 800 }}>+{r.nps}</TableCell>
+                      <TableCell style={{ textAlign: 'center' }}>
+                        <span style={{ fontSize: '11px', fontWeight: 800, background: 'var(--badge-cobalt-bg)', color: 'var(--badge-cobalt-text)', border: '1px solid var(--badge-cobalt-border)', padding: '2px 7px', borderRadius: '4px' }}>
+                          #{r.rank}
+                        </span>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
               <TableSummaryRow>
                 <TableCell style={{ textAlign: 'left' }}>National Overall</TableCell>
-                <TableCell style={{ textAlign: 'right' }}>12,151</TableCell>
-                <TableCell style={{ textAlign: 'right', color: '#1e40af' }}>36.6%</TableCell>
-                <TableCell style={{ textAlign: 'right', color: '#be123c' }}>10.5%</TableCell>
-                <TableCell style={{ textAlign: 'right' }}>13.6%</TableCell>
-                <TableCell style={{ textAlign: 'right', color: '#065f46' }}>75.9%</TableCell>
-                <TableCell style={{ textAlign: 'right', color: '#1d4ed8' }}>+65.4</TableCell>
+                <TableCell style={{ textAlign: 'right' }}>{deviceFilter === 'smart' ? '6,801' : '12,151'}</TableCell>
+                <TableCell style={{ textAlign: 'right', color: '#1e40af' }}>{deviceFilter === 'smart' ? '46.5%' : '36.6%'}</TableCell>
+                <TableCell style={{ textAlign: 'right', color: '#be123c' }}>{deviceFilter === 'smart' ? '10.3%' : '10.5%'}</TableCell>
+                <TableCell style={{ textAlign: 'right' }}>{deviceFilter === 'smart' ? '15.2%' : '13.6%'}</TableCell>
+                <TableCell style={{ textAlign: 'right', color: '#065f46' }}>{deviceFilter === 'smart' ? '74.5%' : '75.9%'}</TableCell>
+                <TableCell style={{ textAlign: 'right', color: '#1d4ed8' }}>{deviceFilter === 'smart' ? '+64.2' : '+65.4'}</TableCell>
                 <TableCell style={{ textAlign: 'center' }}>-</TableCell>
               </TableSummaryRow>
             </Table>
@@ -802,9 +925,15 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
 
         {/* NPS TABLE 2: ASM LEVEL NPS BREAKDOWN */}
         <div className="card-mock" style={{ padding: '20px', marginBottom: '24px' }}>
-          <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', marginBottom: '12px' }}>
-            Table 2: Supervisor (ASM) Wise NPS Performance Breakdown
-          </h3>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+            <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+              Table 2: Supervisor (ASM) Wise NPS Performance Breakdown {selectedBusmRow ? `(Filtered: ${selectedBusmRow})` : ''}
+            </h3>
+            <span style={{ fontSize: '12px', color: '#64748b' }}>
+              Showing {(deviceFilter === 'smart' ? spAsmData : asmNpsData).filter(r => !selectedBusmRow || r.busm === selectedBusmRow).length} Supervisors
+            </span>
+          </div>
+
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12.5px' }}>
               <thead>
@@ -820,22 +949,24 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                 </tr>
               </thead>
               <tbody>
-                {asmNpsData.map((r, i) => (
-                  <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                    <td style={{ padding: '8px 12px', fontWeight: 700, color: '#1e293b' }}>{r.name}</td>
-                    <td style={{ padding: '8px 10px', color: '#64748b' }}>{r.busm}</td>
-                    <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 600 }}>{r.total.toLocaleString('en-IN')}</td>
-                    <td style={{ padding: '8px 10px', textAlign: 'right', color: '#dc2626', fontWeight: 700 }}>{r.d}</td>
-                    <td style={{ padding: '8px 10px', textAlign: 'right', color: '#d97706' }}>{r.p}</td>
-                    <td style={{ padding: '8px 10px', textAlign: 'right', color: '#16a34a', fontWeight: 700 }}>{r.pr}</td>
-                    <td style={{ padding: '8px 10px', textAlign: 'right', color: '#2563eb', fontWeight: 800 }}>{r.nps}</td>
-                    <td style={{ padding: '8px 10px', textAlign: 'center' }}>
-                      <span style={{ fontSize: '10px', fontWeight: 800, background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', padding: '1px 5px', borderRadius: '4px' }}>
-                        #{r.rank}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
+                {(deviceFilter === 'smart' ? spAsmData : asmNpsData)
+                  .filter(r => !selectedBusmRow || r.busm === selectedBusmRow)
+                  .map((r, i) => (
+                    <tr key={i} style={{ borderBottom: '1px solid #f1f5f9', background: selectedBusmRow && r.busm === selectedBusmRow ? '#eff6ff' : undefined }}>
+                      <td style={{ padding: '8px 12px', fontWeight: 700, color: '#1e293b' }}>{r.name}</td>
+                      <td style={{ padding: '8px 10px', color: '#64748b', fontWeight: selectedBusmRow && r.busm === selectedBusmRow ? 700 : 400 }}>{r.busm}</td>
+                      <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 600 }}>{r.total.toLocaleString('en-IN')}</td>
+                      <td style={{ padding: '8px 10px', textAlign: 'right', color: '#dc2626', fontWeight: 700 }}>{r.d}</td>
+                      <td style={{ padding: '8px 10px', textAlign: 'right', color: '#d97706' }}>{r.p}</td>
+                      <td style={{ padding: '8px 10px', textAlign: 'right', color: '#16a34a', fontWeight: 700 }}>{r.pr}</td>
+                      <td style={{ padding: '8px 10px', textAlign: 'right', color: '#2563eb', fontWeight: 800 }}>+{r.nps}</td>
+                      <td style={{ padding: '8px 10px', textAlign: 'center' }}>
+                        <span style={{ fontSize: '10px', fontWeight: 800, background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', padding: '1px 5px', borderRadius: '4px' }}>
+                          #{r.rank}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
@@ -843,9 +974,15 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
 
         {/* NPS TABLE 3: ASP CENTER WISE NPS BREAKDOWN */}
         <div className="card-mock" style={{ padding: '20px', marginBottom: '24px' }}>
-          <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', marginBottom: '12px' }}>
-            Table 3: Top ASP Center Wise NPS Performance Breakdown
-          </h3>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+            <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+              Table 3: Top ASP Center Wise NPS Performance Breakdown {selectedBusmRow ? `(Filtered: ${selectedBusmRow})` : ''}
+            </h3>
+            <span style={{ fontSize: '12px', color: '#64748b' }}>
+              Showing {topAspNpsData.filter(r => !selectedBusmRow || r.busm === selectedBusmRow).length} ASP Centers
+            </span>
+          </div>
+
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12.5px' }}>
               <thead>
@@ -864,28 +1001,29 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
               </thead>
               <tbody>
                 {topAspNpsData
+                  .filter(r => !selectedBusmRow || r.busm === selectedBusmRow)
                   .slice()
                   .sort((a, b) => parseFloat(b.nps) - parseFloat(a.nps))
-                  .map((r, i, sorted) => {
+                  .map((r, i) => {
                     const rank = i + 1;
                     return (
-                  <tr key={r.code} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                    <td style={{ padding: '8px 10px', fontFamily: 'monospace', color: '#64748b' }}>{r.code}</td>
-                    <td style={{ padding: '8px 12px', fontWeight: 700, color: '#1e293b' }}>{r.name}</td>
-                    <td style={{ padding: '8px 10px', color: '#64748b' }}>{r.asm}</td>
-                    <td style={{ padding: '8px 10px', color: '#64748b' }}>{r.busm}</td>
-                    <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 600 }}>{r.total}</td>
-                    <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 600 }}>{r.rr}</td>
-                    <td style={{ padding: '8px 10px', textAlign: 'right', color: '#dc2626', fontWeight: 700 }}>{r.d}</td>
-                    <td style={{ padding: '8px 10px', textAlign: 'right', color: '#d97706' }}>{r.p}</td>
-                    <td style={{ padding: '8px 10px', textAlign: 'right', color: '#16a34a', fontWeight: 700 }}>{r.pr}</td>
-                    <td style={{ padding: '8px 10px', textAlign: 'right' }}>
-                      <span style={{ color: '#2563eb', fontWeight: 800 }}>{r.nps}</span>
-                      <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', padding: '1px 5px', borderRadius: '4px', marginLeft: '6px' }}>#{rank}</span>
-                    </td>
-                  </tr>
-                  );
-                })}
+                      <tr key={r.code} style={{ borderBottom: '1px solid #f1f5f9', background: selectedBusmRow && r.busm === selectedBusmRow ? '#eff6ff' : undefined }}>
+                        <td style={{ padding: '8px 10px', fontFamily: 'monospace', color: '#64748b' }}>{r.code}</td>
+                        <td style={{ padding: '8px 12px', fontWeight: 700, color: '#1e293b' }}>{r.name}</td>
+                        <td style={{ padding: '8px 10px', color: '#64748b' }}>{r.asm}</td>
+                        <td style={{ padding: '8px 10px', color: '#64748b', fontWeight: selectedBusmRow && r.busm === selectedBusmRow ? 700 : 400 }}>{r.busm}</td>
+                        <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 600 }}>{r.total}</td>
+                        <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 600 }}>{r.rr}</td>
+                        <td style={{ padding: '8px 10px', textAlign: 'right', color: '#dc2626', fontWeight: 700 }}>{r.d}</td>
+                        <td style={{ padding: '8px 10px', textAlign: 'right', color: '#d97706' }}>{r.p}</td>
+                        <td style={{ padding: '8px 10px', textAlign: 'right', color: '#16a34a', fontWeight: 700 }}>{r.pr}</td>
+                        <td style={{ padding: '8px 10px', textAlign: 'right' }}>
+                          <span style={{ color: '#2563eb', fontWeight: 800 }}>+{r.nps}</span>
+                          <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', padding: '1px 5px', borderRadius: '4px', marginLeft: '6px' }}>#{rank}</span>
+                        </td>
+                      </tr>
+                    );
+                  })}
               </tbody>
             </table>
           </div>
@@ -893,9 +1031,12 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
 
         {/* NPS TABLES 4 & 5: DETRACTOR (DSAT) REASONS BREAKDOWN */}
         <div className="card-mock" style={{ padding: '20px', marginBottom: '24px' }}>
-          <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', marginBottom: '12px' }}>
-            Table 4 &amp; 5: Detractor (DSAT) Root Cause Reasons Matrix by BUSM
-          </h3>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+            <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+              Table 4 &amp; 5: Detractor (DSAT) Root Cause Reasons Matrix by BUSM {selectedBusmRow ? `(Filtered: ${selectedBusmRow})` : ''}
+            </h3>
+          </div>
+
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
               <thead>
@@ -911,18 +1052,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                 </tr>
               </thead>
               <tbody>
-                {dsatBusmData.map((r, i) => (
-                  <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                    <td style={{ padding: '9px 12px', fontWeight: 700, color: '#1e293b' }}>{r.name}</td>
-                    <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 700, color: '#d97706' }}>{r.delay}</td>
-                    <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 700, color: '#dc2626' }}>{r.repair}</td>
-                    <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 600 }}>{r.aspBehav}</td>
-                    <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 600 }}>{r.replace}</td>
-                    <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 600 }}>{r.cost}</td>
-                    <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 600 }}>{r.deny}</td>
-                    <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 800, color: '#0f172a' }}>{r.total}</td>
-                  </tr>
-                ))}
+                {dsatBusmData
+                  .filter(r => !selectedBusmRow || r.name === selectedBusmRow)
+                  .map((r, i) => (
+                    <tr key={i} style={{ borderBottom: '1px solid #f1f5f9', background: selectedBusmRow && r.name === selectedBusmRow ? '#eff6ff' : undefined }}>
+                      <td style={{ padding: '9px 12px', fontWeight: 700, color: '#1e293b' }}>{r.name}</td>
+                      <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 700, color: '#d97706' }}>{r.delay}</td>
+                      <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 700, color: '#dc2626' }}>{r.repair}</td>
+                      <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 600 }}>{r.aspBehav}</td>
+                      <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 600 }}>{r.replace}</td>
+                      <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 600 }}>{r.cost}</td>
+                      <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 600 }}>{r.deny}</td>
+                      <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 800, color: '#0f172a' }}>{r.total}</td>
+                    </tr>
+                  ))}
                 <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
                   <td style={{ padding: '10px 12px', color: '#0f172a', background: '#f1f5f9' }}>Grand Total</td>
                   <td style={{ padding: '10px 10px', textAlign: 'right', color: '#d97706' }}>131</td>
