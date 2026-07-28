@@ -3,6 +3,7 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TableSum
 import { DASHBOARD_DEFINITIONS } from '../constants/definitions';
 import { REPAIR_CPC_DATA, REPLACEMENT_CPC_DATA } from '../constants/cpcData';
 import { ALL_ASP_PERF_DATA } from '../constants/aspData';
+import { DYNAMIC_CPC_DATA_BY_MONTH } from '../constants/cpcDataDynamic';
 
 interface TabOrgKPIsProps {
   data: any;
@@ -129,6 +130,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
   );
 
   const activeOrgKpi = data?.orgKpis?.by_month?.[selectedMonth] || data?.orgKpis?.all || { busms: [], asms: [], national: {} };
+  const currentCpcDataset = DYNAMIC_CPC_DATA_BY_MONTH[selectedMonth] || DYNAMIC_CPC_DATA_BY_MONTH['Jun'];
 
   // NPS data — Jun 2026 NPS survey snapshot (sourced from Jun26 NPS Data.xlsx)
   const busmNpsData = [
@@ -330,6 +332,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             <option value="Jun">June 2026</option>
             <option value="May">May 2026</option>
             <option value="Apr">April 2026</option>
+            <option value="All">All Months (Apr - Jun '26)</option>
           </select>
         </div>
       </div>
@@ -825,13 +828,16 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
       <div id="sec-cpc" style={{ marginBottom: '36px' }}>
         <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
               <div className="bar" style={{ background: '#d97706' }}></div>
               <span style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>
                 CPC Breakdown — Combined Repair &amp; Replacement Cost Analysis
               </span>
               <span style={{ fontSize: '11.5px', fontWeight: 800, background: '#fef3c7', color: '#b45309', border: '1px solid #fde68a', padding: '2px 8px', borderRadius: '12px' }}>
-                Calculated from Master Data (Apr-Jun '26)
+                Active Month: {selectedMonth === 'All' ? 'All Months (Apr-Jun)' : selectedMonth === 'Jun' ? 'June 2026' : selectedMonth === 'May' ? 'May 2026' : 'April 2026'}
+              </span>
+              <span style={{ fontSize: '11.5px', fontWeight: 800, background: '#f0fdf4', color: '#15803d', border: '1px solid #bbf7d0', padding: '2px 8px', borderRadius: '12px' }}>
+                Filters: Warranty = "Yes" &amp; ELS Status ≠ "No"
               </span>
             </div>
             <div style={{ fontSize: '12.5px', color: '#64748b', marginTop: '2px', marginLeft: '12px' }}>
@@ -878,11 +884,10 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {REPAIR_CPC_DATA.busm.map((rRepair, i) => {
-                const rRepl = REPLACEMENT_CPC_DATA.busm.find(b => b.busm === rRepair.busm) || { count: 0, avg: 0 };
+              {currentCpcDataset.busm.map((rRepair: any, i: number) => {
                 const isSelected = cpcBusmRepair === rRepair.busm;
-                const repairTotal = Math.round(rRepair.count * rRepair.avg);
-                const replTotal = Math.round(rRepl.count * rRepl.avg);
+                const repairTotal = Math.round(rRepair.repair_count * rRepair.repair_avg);
+                const replTotal = Math.round(rRepair.repl_count * rRepair.repl_avg);
                 const combinedTotal = repairTotal + replTotal;
 
                 return (
@@ -901,19 +906,19 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                       {rRepair.busm} {isSelected && '✓'}
                     </TableCell>
                     <TableCell style={{ textAlign: 'right', fontWeight: 600, borderLeft: '1px solid #f1f5f9' }}>
-                      {rRepair.count.toLocaleString('en-IN')}
+                      {rRepair.repair_count.toLocaleString('en-IN')}
                     </TableCell>
                     <TableCell style={{ textAlign: 'right', fontWeight: 700, color: '#d97706' }}>
-                      ₹{rRepair.avg.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      ₹{rRepair.repair_avg.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </TableCell>
                     <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#b45309', borderRight: '1px solid #f1f5f9' }}>
                       ₹{repairTotal.toLocaleString('en-IN')}
                     </TableCell>
                     <TableCell style={{ textAlign: 'right', fontWeight: 600 }}>
-                      {rRepl.count.toLocaleString('en-IN')}
+                      {rRepair.repl_count.toLocaleString('en-IN')}
                     </TableCell>
                     <TableCell style={{ textAlign: 'right', fontWeight: 700, color: '#2563eb' }}>
-                      ₹{rRepl.avg.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      ₹{rRepair.repl_avg.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </TableCell>
                     <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#1d4ed8', borderRight: '1px solid #f1f5f9' }}>
                       ₹{replTotal.toLocaleString('en-IN')}
@@ -928,25 +933,25 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             <TableSummaryRow>
               <TableCell style={{ textAlign: 'left', fontWeight: 800 }}>National Total / Average</TableCell>
               <TableCell style={{ textAlign: 'right', fontWeight: 800, borderLeft: '1px solid #cbd5e1' }}>
-                {REPAIR_CPC_DATA.national_count.toLocaleString('en-IN')}
+                {currentCpcDataset.national_repair_count.toLocaleString('en-IN')}
               </TableCell>
               <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#d97706' }}>
-                ₹{REPAIR_CPC_DATA.national_avg.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                ₹{currentCpcDataset.national_repair_avg.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </TableCell>
               <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#b45309', borderRight: '1px solid #cbd5e1' }}>
-                ₹{Math.round(REPAIR_CPC_DATA.national_count * REPAIR_CPC_DATA.national_avg).toLocaleString('en-IN')}
+                ₹{Math.round(currentCpcDataset.national_repair_count * currentCpcDataset.national_repair_avg).toLocaleString('en-IN')}
               </TableCell>
               <TableCell style={{ textAlign: 'right', fontWeight: 800 }}>
-                {REPLACEMENT_CPC_DATA.national_count.toLocaleString('en-IN')}
+                {currentCpcDataset.national_repl_count.toLocaleString('en-IN')}
               </TableCell>
               <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#2563eb' }}>
-                ₹{REPLACEMENT_CPC_DATA.national_avg.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                ₹{currentCpcDataset.national_repl_avg.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </TableCell>
               <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#1d4ed8', borderRight: '1px solid #cbd5e1' }}>
-                ₹{Math.round(REPLACEMENT_CPC_DATA.national_count * REPLACEMENT_CPC_DATA.national_avg).toLocaleString('en-IN')}
+                ₹{Math.round(currentCpcDataset.national_repl_count * currentCpcDataset.national_repl_avg).toLocaleString('en-IN')}
               </TableCell>
               <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#0f172a', background: '#f1f5f9' }}>
-                ₹{Math.round((REPAIR_CPC_DATA.national_count * REPAIR_CPC_DATA.national_avg) + (REPLACEMENT_CPC_DATA.national_count * REPLACEMENT_CPC_DATA.national_avg)).toLocaleString('en-IN')}
+                ₹{Math.round((currentCpcDataset.national_repair_count * currentCpcDataset.national_repair_avg) + (currentCpcDataset.national_repl_count * currentCpcDataset.national_repl_avg)).toLocaleString('en-IN')}
               </TableCell>
             </TableSummaryRow>
           </Table>
@@ -960,7 +965,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
               <div>
                 <div style={{ fontSize: '11px', color: '#b45309', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {cpcBusmRepair}</div>
                 <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                  Supervisor (ASM) Combined Repair &amp; Replacement Cost Breakdown — {cpcBusmRepair}
+                  Supervisor (ASM) Combined Repair &amp; Replacement Cost Breakdown — {cpcBusmRepair} ({selectedMonth})
                 </h3>
                 <span style={{ fontSize: '12px', color: '#64748b' }}>
                   Click an ASM row to view ASP centres under that supervisor
@@ -984,11 +989,10 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {REPAIR_CPC_DATA.asm.filter(a => a.busm === cpcBusmRepair).map((rRepair, i) => {
-                  const rRepl = REPLACEMENT_CPC_DATA.asm.find(a => a.asm === rRepair.asm) || { count: 0, avg: 0 };
+                {currentCpcDataset.asm.filter((a: any) => a.busm === cpcBusmRepair).map((rRepair: any, i: number) => {
                   const isAsmSelected = cpcAsmRepair === rRepair.asm;
-                  const repairTotal = Math.round(rRepair.count * rRepair.avg);
-                  const replTotal = Math.round(rRepl.count * rRepl.avg);
+                  const repairTotal = Math.round(rRepair.repair_count * rRepair.repair_avg);
+                  const replTotal = Math.round(rRepair.repl_count * rRepair.repl_avg);
                   const combinedTotal = repairTotal + replTotal;
 
                   return (
@@ -1001,16 +1005,16 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                         {rRepair.asm} {isAsmSelected && '✓'}
                       </TableCell>
                       <TableCell style={{ textAlign: 'left', color: '#64748b' }}>{rRepair.busm}</TableCell>
-                      <TableCell style={{ textAlign: 'right', fontWeight: 600, borderLeft: '1px solid #f1f5f9' }}>{rRepair.count.toLocaleString('en-IN')}</TableCell>
+                      <TableCell style={{ textAlign: 'right', fontWeight: 600, borderLeft: '1px solid #f1f5f9' }}>{rRepair.repair_count.toLocaleString('en-IN')}</TableCell>
                       <TableCell style={{ textAlign: 'right', fontWeight: 700, color: '#d97706' }}>
-                        ₹{rRepair.avg.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        ₹{rRepair.repair_avg.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </TableCell>
                       <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#b45309', borderRight: '1px solid #f1f5f9' }}>
                         ₹{repairTotal.toLocaleString('en-IN')}
                       </TableCell>
-                      <TableCell style={{ textAlign: 'right', fontWeight: 600 }}>{rRepl.count.toLocaleString('en-IN')}</TableCell>
+                      <TableCell style={{ textAlign: 'right', fontWeight: 600 }}>{rRepair.repl_count.toLocaleString('en-IN')}</TableCell>
                       <TableCell style={{ textAlign: 'right', fontWeight: 700, color: '#2563eb' }}>
-                        ₹{rRepl.avg.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        ₹{rRepair.repl_avg.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </TableCell>
                       <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#1d4ed8', borderRight: '1px solid #f1f5f9' }}>
                         ₹{replTotal.toLocaleString('en-IN')}
@@ -1034,7 +1038,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
               <div>
                 <div style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {cpcBusmRepair} &gt; {cpcAsmRepair}</div>
                 <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                  ASP Centre Combined Repair &amp; Replacement Cost Breakdown — {cpcAsmRepair}
+                  ASP Centre Combined Repair &amp; Replacement Cost Breakdown — {cpcAsmRepair} ({selectedMonth})
                 </h3>
               </div>
               <button
@@ -1062,17 +1066,16 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {REPAIR_CPC_DATA.asp.filter(a => a.asm === cpcAsmRepair).length === 0 ? (
+                {currentCpcDataset.asp.filter((a: any) => a.asm === cpcAsmRepair).length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={10} style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>
-                      No ASP center records found for {cpcAsmRepair}.
+                      No ASP center records found for {cpcAsmRepair} in {selectedMonth}.
                     </TableCell>
                   </TableRow>
                 ) : (
-                  REPAIR_CPC_DATA.asp.filter(a => a.asm === cpcAsmRepair).map((aspRepair, i) => {
-                    const aspRepl = REPLACEMENT_CPC_DATA.asp.find(a => a.code === aspRepair.code || a.asp === aspRepair.asp) || { count: 0, avg: 0 };
-                    const repairTotal = Math.round(aspRepair.count * aspRepair.avg);
-                    const replTotal = Math.round(aspRepl.count * aspRepl.avg);
+                  currentCpcDataset.asp.filter((a: any) => a.asm === cpcAsmRepair).map((aspRepair: any, i: number) => {
+                    const repairTotal = Math.round(aspRepair.repair_count * aspRepair.repair_avg);
+                    const replTotal = Math.round(aspRepair.repl_count * aspRepair.repl_avg);
                     const combinedTotal = repairTotal + replTotal;
 
                     return (
@@ -1080,16 +1083,16 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                         <TableCell style={{ textAlign: 'left', fontFamily: 'monospace', color: '#7c3aed', fontWeight: 700 }}>{aspRepair.code}</TableCell>
                         <TableCell style={{ textAlign: 'left', fontWeight: 700 }}>{aspRepair.asp}</TableCell>
                         <TableCell style={{ textAlign: 'left', color: '#64748b' }}>{aspRepair.asm}</TableCell>
-                        <TableCell style={{ textAlign: 'right', fontWeight: 600, borderLeft: '1px solid #f1f5f9' }}>{aspRepair.count.toLocaleString('en-IN')}</TableCell>
+                        <TableCell style={{ textAlign: 'right', fontWeight: 600, borderLeft: '1px solid #f1f5f9' }}>{aspRepair.repair_count.toLocaleString('en-IN')}</TableCell>
                         <TableCell style={{ textAlign: 'right', fontWeight: 700, color: '#d97706' }}>
-                          ₹{aspRepair.avg.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          ₹{aspRepair.repair_avg.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </TableCell>
                         <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#b45309', borderRight: '1px solid #f1f5f9' }}>
                           ₹{repairTotal.toLocaleString('en-IN')}
                         </TableCell>
-                        <TableCell style={{ textAlign: 'right', fontWeight: 600 }}>{aspRepl.count.toLocaleString('en-IN')}</TableCell>
+                        <TableCell style={{ textAlign: 'right', fontWeight: 600 }}>{aspRepair.repl_count.toLocaleString('en-IN')}</TableCell>
                         <TableCell style={{ textAlign: 'right', fontWeight: 700, color: '#2563eb' }}>
-                          ₹{aspRepl.avg.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          ₹{aspRepair.repl_avg.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </TableCell>
                         <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#1d4ed8', borderRight: '1px solid #f1f5f9' }}>
                           ₹{replTotal.toLocaleString('en-IN')}
