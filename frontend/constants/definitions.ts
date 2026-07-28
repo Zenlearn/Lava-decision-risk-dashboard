@@ -14,11 +14,31 @@ export const DASHBOARD_DEFINITIONS = {
     },
     {
       title: 'Net Promoter Score (NPS)',
-      definition: 'Calculated on Lava\'s 1–5 post-service survey scale as: % Promoters (Rating 5) − % Detractors (Ratings 1 & 2). Ratings 3 & 4 are classified as Passives and excluded from the net score calculation. Expressed as a net score from -100% to +100%.'
+      definition: 'Calculated on Lava\'s 1–5 post-service survey scale as: % Promoters (Rating 5) − % Detractors (Ratings 1 & 2). Ratings 3 & 4 are classified as Passives and excluded from the net score calculation. NPS Score = % Promoters − % Detractors. Expressed as a net score from −100% to +100%. Default view shows Smart Phone surveys only — toggle "All Devices" to include Feature Phones.'
     },
     {
       title: 'Response Rate (RR %)',
       definition: 'Share of total dispatched customer surveys that returned a completed rating: (Total Responded Surveys [Ratings 1 to 5] ÷ Total Surveys Sent [Grand Total]) × 100. "No Response" and Language/System error calls (LS) are excluded from the numerator.'
+    },
+    {
+      title: 'DSAT — Detractor Satisfaction Rate',
+      definition: 'Share of responding customers who gave a Detractor rating (1 or 2 stars out of 5). DSAT = Detractor Count ÷ Total Responses × 100. DSAT root causes are captured via a follow-up IVR question and classified into six categories: Delay in Service, Repair Quality, ASP Behaviour, Replacement / Product Quality Issue, High Repair Cost, and Deny in Service.'
+    },
+    {
+      title: 'CPC — Cost Per Complaint (₹)',
+      definition: 'Total estimated doorstep-repair cost exposure for a BUSM or ASM region in the month, divided by the number of flagged work orders. CPC = Total Leakage Exposure (₹) ÷ Total Flagged Work Orders. A higher CPC indicates higher average financial risk per complaint event. Calculated using part-cost settings in the Part Exposure tab.'
+    },
+    {
+      title: 'TAT % — Turnaround Time Adherence',
+      definition: 'Percentage of work orders closed within the target resolution window. TAT % = (Work orders closed within target days ÷ Total work orders) × 100. Closure speed bands tracked: 1-day (same-day), 2-day, 3-day, and 5+ day (breach). A lower 5+-day closure % and higher 1-day closure % indicate better speed performance. "Still Open" = work orders with no closure date at time of data extract.'
+    },
+    {
+      title: 'S@H Adherence % — Service at Home Compliance',
+      definition: 'Share of doorstep (Service at Home) work orders that comply with Lava\'s S@H policy: (S@H WOs without board-level PCBA/LCD repairs ÷ Total S@H WOs) × 100. Board-level parts (PCBA = Printed Circuit Board Assembly, LCD = display module) must be repaired at the ASP workshop per policy; repairs logged as completed at the customer\'s home contradict this policy and reduce adherence. Higher is better.'
+    },
+    {
+      title: 'CAG Scorecard — Composite Aggregate Grade',
+      definition: 'A weighted composite score combining TAT adherence, CPC risk, S@H compliance, NPS, and Diagnostic Accuracy for each BUSM or ASM region. Ranked 1 (best) to 5 (worst) within the national peer group. Designed for executive triage: rank 1–3 = immediate coaching, rank 4–10 = watch-list monitoring, rank 11+ = within acceptable range.'
     },
     {
       title: 'Mean time to repair (MTTR)',
@@ -29,8 +49,13 @@ export const DASHBOARD_DEFINITIONS = {
       definition: '1 − (mismatch-that-bounced work orders ÷ total work orders) × 100. A "mismatch-that-bounced" is a hardware symptom closed with a software-only action that then returned for service — a confirmed mis-diagnosis. A leading indicator of FTFR.'
     }
   ],
-  kpiNote: 'All counts are for the latest month unless stated. Leakage calculations filter strictly for Service at Home (S@H) work orders, excluding Customer Walk-in and Trade Walk-in calls. NPS logic: Promoters (Rating 5), Passives (Ratings 3 & 4), Detractors (Ratings 1 & 2). Targets: C-SAT 95% is Lava\'s published standard; FTFR, MTTR and diagnostic-accuracy targets shown on the cards are indicative and should be confirmed with Lava.',
-  executiveFootnote: 'These KPIs are expressed in Lava’s own service language. Each is driven by an underlying decision-risk signal measured in the Score Card and Evidence tabs: bounces → first-time fix, detractors → satisfaction & NPS, turnaround → MTTR, mis-fixes that bounce → diagnostic accuracy. Rupee figures reflect Service at Home (S@H) doorstep exposure using component costs set in the Part Exposure tab (excluding walk-in calls). CSAT target (95%) is Lava’s published standard; other targets are indicative and should be confirmed with Lava.',
+
+  kpiNote: 'All counts are for the latest month unless stated. Leakage calculations filter strictly for Service at Home (S@H) work orders, excluding Customer Walk-in and Trade Walk-in calls. NPS scale: Promoters = Rating 5 ★, Passives = Ratings 3–4 ★, Detractors = Ratings 1–2 ★. NPS Score = % Promoters − % Detractors. Default NPS view shows Smart Phone surveys only (Feature Phones excluded) — toggle "All Devices" to include both. C-SAT = % respondents rating 4 or 5. Response Rate = responded surveys ÷ total surveys sent. Targets: C-SAT 95% is Lava\'s published standard; FTFR, MTTR and diagnostic-accuracy targets are indicative and should be confirmed with Lava.',
+
+  executiveFootnote: 'These KPIs are expressed in Lava\'s own service language. Each is driven by an underlying decision-risk signal measured in the Score Card and Evidence tabs: bounces → first-time fix, detractors → satisfaction & NPS, turnaround → MTTR & TAT, mis-fixes that bounce → diagnostic accuracy, doorstep board-repairs → S@H adherence, cost per complaint → CPC. Rupee figures reflect Service at Home (S@H) doorstep exposure using component costs set in the Part Exposure tab (excluding walk-in calls). CSAT target (95%) is Lava\'s published standard; other targets are indicative and should be confirmed with Lava.',
+
+  orgKpiFootnote: 'Abbreviations & definitions for this page — BUSM: Business Unit Sales Manager (regional head). ASM: Area Sales Manager (territory supervisor). ASP: Authorised Service Partner (repair centre). S@H: Service at Home (doorstep repair). CPC (₹): Cost Per Complaint = estimated leakage exposure ÷ flagged work orders. CAG: Composite Aggregate Grade — a weighted performance score across TAT, CPC, S@H adherence, NPS and Diagnostic Accuracy. TAT: Turnaround Time (work-order closure speed). DSAT: Detractor Satisfaction — customers who rated 1 or 2 ★ on the post-service survey. NPS rating categories: Promoters = Rating 5 ★ | Passives = Ratings 3–4 ★ | Detractors = Ratings 1–2 ★. NPS Score = % Promoters − % Detractors. Default NPS scope = Smart Phone surveys only; Feature Phones are excluded to isolate smartphone service quality. PCBA = Printed Circuit Board Assembly (main board); LCD = display module. All rupee values are provisional pending confirmation of the Lava part-cost master.',
+
   globalFooter: 'ZenLearn Decision Risk Measurement - built for verification, not accusation - all rupee values provisional pending Lava part-cost master',
   
   cohortThresholds: {

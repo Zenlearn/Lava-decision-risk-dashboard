@@ -1544,8 +1544,17 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
         )}
       </div>
 
+
+      {/* Org KPI Abbreviations & Definitions Footnote */}
+      <div style={{ marginTop: '16px', padding: '16px 20px', background: '#f8fafc', borderRadius: '10px', border: '1px solid #e2e8f0', fontSize: '11.5px', color: '#475569', lineHeight: '1.7', boxShadow: 'var(--shadow-sm)' }}>
+        <div style={{ fontWeight: 800, color: '#1e293b', marginBottom: '6px', fontSize: '12px', letterSpacing: '0.02em', textTransform: 'uppercase' }}>
+          📖 Abbreviations &amp; Definitions — Org KPI Page
+        </div>
+        {DASHBOARD_DEFINITIONS.orgKpiFootnote}
+      </div>
+
       {/* Executive Footnote */}
-      <div style={{ marginTop: '16px', padding: '14px 18px', background: '#ffffff', borderRadius: '10px', border: '1px solid #e2e8f0', fontSize: '11.5px', color: '#64748b', lineHeight: '1.6', boxShadow: 'var(--shadow-sm)' }}>
+      <div style={{ marginTop: '10px', padding: '14px 18px', background: '#ffffff', borderRadius: '10px', border: '1px solid #e2e8f0', fontSize: '11.5px', color: '#64748b', lineHeight: '1.6', boxShadow: 'var(--shadow-sm)' }}>
         {DASHBOARD_DEFINITIONS.executiveFootnote}
       </div>
 
