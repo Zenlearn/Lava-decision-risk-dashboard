@@ -79,23 +79,24 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
 
   const getRankBadgeStyle = (rank: any, maxRank = 35) => {
     const parsedRank = typeof rank === 'string' ? parseInt(rank.replace(/[^0-9]/g, ''), 10) : Number(rank);
+    const parsedTotal = Math.max(1, Number(maxRank) || 35);
     if (isNaN(parsedRank)) return { background: '#fef2f2', color: '#dc2626', border: '1px solid #fca5a5' };
-    
-    // Small cohort (e.g. 5 BUSMs)
-    if (maxRank <= 5) {
-      if (parsedRank === 1) return { background: '#f0fdf4', color: '#15803d', border: '1px solid #bbf7d0' };
-      if (parsedRank === 2) return { background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe' };
-      if (parsedRank === 3) return { background: '#fffbeb', color: '#b45309', border: '1px solid #fde68a' };
-      // Ranks 4 and 5 (lower-ranked / bottom 40%) -> Red tint alert styling
+
+    const ratio = parsedRank / parsedTotal;
+
+    if (ratio <= 0.20) {
+      // Top 20% -> Green
+      return { background: '#f0fdf4', color: '#15803d', border: '1px solid #bbf7d0' };
+    } else if (ratio <= 0.50) {
+      // 20% - 50% -> Blue
+      return { background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe' };
+    } else if (ratio <= 0.70) {
+      // 50% - 70% -> Yellow
+      return { background: '#fffbeb', color: '#b45309', border: '1px solid #fde68a' };
+    } else {
+      // Below 70% (Bottom 30%) -> Red
       return { background: '#fef2f2', color: '#dc2626', border: '1px solid #fca5a5' };
     }
-    
-    // General cohort (ASMs / ASPs)
-    if (parsedRank <= 3) return { background: '#f0fdf4', color: '#15803d', border: '1px solid #bbf7d0' };
-    if (parsedRank <= 10) return { background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe' };
-    if (parsedRank <= 20) return { background: '#fffbeb', color: '#b45309', border: '1px solid #fde68a' };
-    // Lower-ranked (> 20) -> Red tint alert styling
-    return { background: '#fef2f2', color: '#dc2626', border: '1px solid #fca5a5' };
   };
 
 
@@ -2338,6 +2339,15 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
           📖 Abbreviations &amp; Definitions — Org KPI Page
         </div>
         {DASHBOARD_DEFINITIONS.orgKpiFootnote}
+        
+        {/* Visual Rank Badge Color Scale Legend */}
+        <div style={{ marginTop: '12px', paddingTop: '10px', borderTop: '1px solid #cbd5e1', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+          <span style={{ fontWeight: 800, color: '#0f172a', fontSize: '11.5px', textTransform: 'uppercase' }}>🏷️ Rank Badge Percentile Scale:</span>
+          <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#f0fdf4', color: '#15803d', border: '1px solid #bbf7d0', padding: '2px 8px', borderRadius: '4px' }}>🟢 Top 20% (Best Performers)</span>
+          <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', padding: '2px 8px', borderRadius: '4px' }}>🔵 20% – 50% (Above Average)</span>
+          <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#fffbeb', color: '#b45309', border: '1px solid #fde68a', padding: '2px 8px', borderRadius: '4px' }}>🟡 50% – 70% (Watch-list / Mid-tier)</span>
+          <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#fef2f2', color: '#dc2626', border: '1px solid #fca5a5', padding: '2px 8px', borderRadius: '4px' }}>🔴 Below 70% (Bottom 30% / Attention Required)</span>
+        </div>
       </div>
 
       {/* Executive Footnote */}
