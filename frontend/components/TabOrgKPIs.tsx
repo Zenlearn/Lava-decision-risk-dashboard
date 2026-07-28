@@ -4,6 +4,7 @@ import { DASHBOARD_DEFINITIONS } from '../constants/definitions';
 import { REPAIR_CPC_DATA, REPLACEMENT_CPC_DATA } from '../constants/cpcData';
 import { ALL_ASP_PERF_DATA } from '../constants/aspData';
 import { DYNAMIC_CPC_DATA_BY_MONTH } from '../constants/cpcDataDynamic';
+import { DYNAMIC_SAH_DATA_BY_MONTH } from '../constants/sahDataDynamic';
 
 interface TabOrgKPIsProps {
   data: any;
@@ -131,6 +132,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
 
   const activeOrgKpi = data?.orgKpis?.by_month?.[selectedMonth] || data?.orgKpis?.all || { busms: [], asms: [], national: {} };
   const currentCpcDataset = DYNAMIC_CPC_DATA_BY_MONTH[selectedMonth] || DYNAMIC_CPC_DATA_BY_MONTH['Jun'];
+  const currentSahDataset = DYNAMIC_SAH_DATA_BY_MONTH[selectedMonth] || DYNAMIC_SAH_DATA_BY_MONTH['All'];
 
   // NPS data — Jun 2026 NPS survey snapshot (sourced from Jun26 NPS Data.xlsx)
   const busmNpsData = [
@@ -1131,7 +1133,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             onClick={() => toggleTable('busmAppt')}
             style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: collapsedTables.busmAppt ? 0 : '14px', cursor: 'pointer', userSelect: 'none' }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
               {renderHeaderArrow('busmAppt')}
               <div>
                 <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
@@ -1141,6 +1143,9 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   Service at Home appointment metrics by Business Unit Manager (BUSM)
                 </span>
               </div>
+              <span style={{ fontSize: '11.5px', fontWeight: 800, background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', padding: '2px 8px', borderRadius: '12px' }}>
+                Active Month: {selectedMonth === 'All' ? 'All Months (Apr-Jun)' : selectedMonth === 'Jun' ? 'June 2026' : selectedMonth === 'May' ? 'May 2026' : 'April 2026'}
+              </span>
             </div>
           </div>
 
@@ -1149,7 +1154,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px', lineHeight: '1.3' }}>
               <thead>
                 <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                  <th style={{ padding: '10px 12px', textAlign: 'left', borderRight: '1px solid #e2e8f0', width: '18%' }}>BUSM Name</th>
+                  <th style={{ padding: '10px 12px', textAlign: 'left', borderRight: '1px solid #e2e8f0' }}>BUSM Name</th>
                   <th style={{ padding: '10px 10px', textAlign: 'right', borderRight: '1px solid #e2e8f0' }}>Total Appointments</th>
                   <th style={{ padding: '10px 10px', textAlign: 'right' }}>Cancellation %</th>
                   <th style={{ padding: '10px 10px', textAlign: 'right' }}>Reschedule %</th>
@@ -1159,13 +1164,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                 </tr>
               </thead>
               <tbody>
-                {[
-                  { name: 'Sukhbir Singh', appt: 4882, cancelPct: 19.6, reschedPct: 15.6, attendPct: 80.0, attendCancelPct: 12.3, pendPct: 0.4 },
-                  { name: 'Jitesh S Rath', appt: 2781, cancelPct: 17.7, reschedPct: 14.5, attendPct: 81.4, attendCancelPct: 13.1, pendPct: 0.8 },
-                  { name: 'Rajesh Limbachia', appt: 2269, cancelPct: 10.7, reschedPct: 2.6, attendPct: 89.3, attendCancelPct: 8.5, pendPct: 0.0 },
-                  { name: 'Shivaprasad P U', appt: 1973, cancelPct: 16.0, reschedPct: 10.4, attendPct: 83.6, attendCancelPct: 11.2, pendPct: 0.5 },
-                  { name: 'Tamilselvan Subramanian', appt: 1502, cancelPct: 19.8, reschedPct: 11.7, attendPct: 77.6, attendCancelPct: 14.0, pendPct: 2.5 },
-                ].map((r: any, i: number) => {
+                {currentSahDataset.busm.map((r: any, i: number) => {
                   const isSelected = selectedBusmRow === r.name;
                   return (
                     <tr
@@ -1181,13 +1180,13 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                         {r.name} {isSelected && '✓'}
                       </td>
                       <td style={{ padding: '10px 10px', textAlign: 'right', fontWeight: 700, borderRight: '1px solid #f1f5f9' }}>
-                        {r.appt.toLocaleString('en-IN')}
+                        {r.total.toLocaleString('en-IN')}
                       </td>
-                      <td style={{ padding: '10px 10px', textAlign: 'right', fontWeight: 700, color: '#d97706' }}>{r.cancelPct}%</td>
-                      <td style={{ padding: '10px 10px', textAlign: 'right', fontWeight: 600 }}>{r.reschedPct}%</td>
-                      <td style={{ padding: '10px 10px', textAlign: 'right', fontWeight: 700, color: '#16a34a' }}>{r.attendPct}%</td>
-                      <td style={{ padding: '10px 10px', textAlign: 'right', fontWeight: 700, color: '#dc2626' }}>{r.attendCancelPct}%</td>
-                      <td style={{ padding: '10px 10px', textAlign: 'right', fontWeight: 700, color: '#2563eb' }}>{r.pendPct}%</td>
+                      <td style={{ padding: '10px 10px', textAlign: 'right', fontWeight: 700, color: '#d97706' }}>{r.cancel}</td>
+                      <td style={{ padding: '10px 10px', textAlign: 'right', fontWeight: 600 }}>{r.resched}</td>
+                      <td style={{ padding: '10px 10px', textAlign: 'right', fontWeight: 700, color: '#16a34a' }}>{r.same_day}</td>
+                      <td style={{ padding: '10px 10px', textAlign: 'right', fontWeight: 700, color: '#dc2626' }}>{r.same_day_cancel}</td>
+                      <td style={{ padding: '10px 10px', textAlign: 'right', fontWeight: 700, color: '#2563eb' }}>{r.pending}</td>
                     </tr>
                   );
                 })}
@@ -1198,13 +1197,13 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                     Total / Average (5 BUSMs)
                   </td>
                   <td style={{ padding: '12px 10px', textAlign: 'right', color: '#0f172a', borderRight: '1px solid #e2e8f0', fontWeight: 800 }}>
-                    13,407
+                    {currentSahDataset.summary.total.toLocaleString('en-IN')}
                   </td>
-                  <td style={{ padding: '12px 10px', textAlign: 'right', color: '#d97706', fontWeight: 800 }}>17.2%</td>
-                  <td style={{ padding: '12px 10px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>12.0%</td>
-                  <td style={{ padding: '12px 10px', textAlign: 'right', color: '#16a34a', fontWeight: 800 }}>82.1%</td>
-                  <td style={{ padding: '12px 10px', textAlign: 'right', color: '#dc2626', fontWeight: 800 }}>11.8%</td>
-                  <td style={{ padding: '12px 10px', textAlign: 'right', color: '#2563eb', fontWeight: 800 }}>0.7%</td>
+                  <td style={{ padding: '12px 10px', textAlign: 'right', color: '#d97706', fontWeight: 800 }}>{currentSahDataset.summary.cancel}</td>
+                  <td style={{ padding: '12px 10px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>{currentSahDataset.summary.resched}</td>
+                  <td style={{ padding: '12px 10px', textAlign: 'right', color: '#16a34a', fontWeight: 800 }}>{currentSahDataset.summary.same_day}</td>
+                  <td style={{ padding: '12px 10px', textAlign: 'right', color: '#dc2626', fontWeight: 800 }}>{currentSahDataset.summary.same_day_cancel}</td>
+                  <td style={{ padding: '12px 10px', textAlign: 'right', color: '#2563eb', fontWeight: 800 }}>{currentSahDataset.summary.pending}</td>
                 </tr>
               </tbody>
             </table>
@@ -1250,42 +1249,27 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                 </tr>
               </thead>
               <tbody>
-                {filteredAsmList.length === 0 ? (
+                {currentSahDataset.asm.filter((a: any) => !selectedBusmRow || a.busm === selectedBusmRow).length === 0 ? (
                   <tr>
                     <td colSpan={8} style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>
-                      No ASMs found for selected filter.
+                      No ASMs found for selected filter in {selectedMonth}.
                     </td>
                   </tr>
                 ) : (
-                  filteredAsmList.map((r: any, i: number) => {
-                    // Rank cancel (lower = better rank #1), sameDayAttend (higher = better), pending (lower = better)
-                    const cancelRank = [...filteredAsmList].sort((a: any, b: any) => (a.cancelPct ?? 30.7) - (b.cancelPct ?? 30.7)).findIndex((x: any) => x.name === r.name) + 1;
-                    const sdaRank   = [...filteredAsmList].sort((a: any, b: any) => (b.sameDayAttendPct ?? 31.4) - (a.sameDayAttendPct ?? 31.4)).findIndex((x: any) => x.name === r.name) + 1;
-                    const pendRank  = [...filteredAsmList].sort((a: any, b: any) => (a.pendingToAttendPct ?? 5.5) - (b.pendingToAttendPct ?? 5.5)).findIndex((x: any) => x.name === r.name) + 1;
-                    return (
+                  currentSahDataset.asm.filter((a: any) => !selectedBusmRow || a.busm === selectedBusmRow).map((r: any, i: number) => (
                     <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
                       <td style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 700, color: '#1e293b' }}>{r.name}</td>
                       <td style={{ padding: '8px 10px', textAlign: 'left', color: '#64748b', borderRight: '1px solid #f1f5f9' }}>{r.busm}</td>
                       <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, borderRight: '1px solid #f1f5f9' }}>
-                        {(r.wo || 0).toLocaleString('en-IN')}
+                        {r.total.toLocaleString('en-IN')}
                       </td>
-                      <td style={{ padding: '8px 10px', textAlign: 'right' }}>
-                        <span style={{ fontWeight: 700, color: '#d97706' }}>{r.cancelPct ?? 30.7}%</span>
-                        <span style={{ fontSize: '10.5px', fontWeight: 800, padding: '1px 5px', borderRadius: '4px', marginLeft: '5px', ...getRankBadgeStyle(cancelRank, filteredAsmList.length) }}>#{cancelRank}</span>
-                      </td>
-                      <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 600 }}>{r.reschedulePct ?? 10.0}%</td>
-                      <td style={{ padding: '8px 10px', textAlign: 'right' }}>
-                        <span style={{ fontWeight: 700, color: '#16a34a' }}>{r.sameDayAttendPct ?? 31.4}%</span>
-                        <span style={{ fontSize: '10.5px', fontWeight: 800, padding: '1px 5px', borderRadius: '4px', marginLeft: '5px', ...getRankBadgeStyle(sdaRank, filteredAsmList.length) }}>#{sdaRank}</span>
-                      </td>
-                      <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#dc2626' }}>{r.sameDayAttendCancelPct ?? 12.3}%</td>
-                      <td style={{ padding: '8px 10px', textAlign: 'right' }}>
-                        <span style={{ fontWeight: 700, color: '#2563eb' }}>{r.pendingToAttendPct ?? 5.5}%</span>
-                        <span style={{ fontSize: '10.5px', fontWeight: 800, padding: '1px 5px', borderRadius: '4px', marginLeft: '5px', ...getRankBadgeStyle(pendRank, filteredAsmList.length) }}>#{pendRank}</span>
-                      </td>
+                      <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#d97706' }}>{r.cancel}</td>
+                      <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 600 }}>{r.resched}</td>
+                      <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#16a34a' }}>{r.same_day}</td>
+                      <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#dc2626' }}>{r.same_day_cancel}</td>
+                      <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#2563eb' }}>{r.pending}</td>
                     </tr>
-                    );
-                  })
+                  ))
                 )}
 
                 {/* Total Summary Row for ASMs */}
@@ -1293,13 +1277,13 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   <td style={{ padding: '10px 12px', color: '#0f172a', background: '#f1f5f9', fontWeight: 800 }}>Total / Average</td>
                   <td style={{ padding: '10px 10px', color: '#64748b', borderRight: '1px solid #e2e8f0' }}>{selectedBusmRow || 'All Regions'}</td>
                   <td style={{ padding: '10px 10px', textAlign: 'right', color: '#0f172a', borderRight: '1px solid #e2e8f0', fontWeight: 800 }}>
-                    {asmTotalWo.toLocaleString('en-IN')}
+                    {currentSahDataset.asm.filter((a: any) => !selectedBusmRow || a.busm === selectedBusmRow).reduce((sum: number, a: any) => sum + (a.total || 0), 0).toLocaleString('en-IN')}
                   </td>
-                  <td style={{ padding: '10px 10px', textAlign: 'right', color: '#d97706', fontWeight: 800 }}>30.7%</td>
-                  <td style={{ padding: '10px 10px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>10.0%</td>
-                  <td style={{ padding: '10px 10px', textAlign: 'right', color: '#16a34a', fontWeight: 800 }}>31.4%</td>
-                  <td style={{ padding: '10px 10px', textAlign: 'right', color: '#dc2626', fontWeight: 800 }}>12.3%</td>
-                  <td style={{ padding: '10px 10px', textAlign: 'right', color: '#2563eb', fontWeight: 800 }}>5.5%</td>
+                  <td style={{ padding: '10px 10px', textAlign: 'right', color: '#d97706', fontWeight: 800 }}>17.2%</td>
+                  <td style={{ padding: '10px 10px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>12.0%</td>
+                  <td style={{ padding: '10px 10px', textAlign: 'right', color: '#16a34a', fontWeight: 800 }}>82.1%</td>
+                  <td style={{ padding: '10px 10px', textAlign: 'right', color: '#dc2626', fontWeight: 800 }}>11.8%</td>
+                  <td style={{ padding: '10px 10px', textAlign: 'right', color: '#2563eb', fontWeight: 800 }}>0.7%</td>
                 </tr>
               </tbody>
             </table>
