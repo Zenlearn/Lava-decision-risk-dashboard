@@ -822,37 +822,37 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
         )}
       </div>
 
-      {/* SECTION 1.5: CPC — REPAIR AND REPLACEMENT COST ANALYSIS */}
+      {/* SECT      {/* SECTION 2: CPC BREAKDOWN — COMBINED REPAIR & REPLACEMENT COST ANALYSIS */}
       <div id="sec-cpc" style={{ marginBottom: '36px' }}>
         <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <div className="bar" style={{ background: '#d97706' }}></div>
               <span style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>
-                CPC Breakdown — Repair &amp; Replacement Cost Analysis
+                CPC Breakdown — Combined Repair &amp; Replacement Cost Analysis
               </span>
               <span style={{ fontSize: '11.5px', fontWeight: 800, background: '#fef3c7', color: '#b45309', border: '1px solid #fde68a', padding: '2px 8px', borderRadius: '12px' }}>
                 Calculated from Master Data (Apr-Jun '26)
               </span>
             </div>
             <div style={{ fontSize: '12.5px', color: '#64748b', marginTop: '2px', marginLeft: '12px' }}>
-              Granular average cost breakdown for Repair WOs (Total Part Value &gt; 0) and Replacement WOs (Call Type Z9) across BUSM, ASM, and ASP tiers
+              Unified cost analysis comparing Repair WOs (Total Part Value &gt; 0) vs. Replacement WOs (Call Type Z9) across BUSM, ASM, and ASP tiers
             </div>
           </div>
         </div>
 
-        {/* ─── TABLE 1: REPAIR COST TABLE (BUSM LEVEL) ─── */}
+        {/* ─── UNIFIED COMBINED REPAIR & REPLACEMENT TABLE (BUSM LEVEL) ─── */}
         <div className="card-mock" style={{ padding: '20px', marginBottom: '24px', borderTop: '3px solid #d97706' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <span style={{ fontSize: '16px' }}>🛠️</span>
+                <span style={{ fontSize: '16px' }}>🛠️📱</span>
                 <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                  1. Repair Cost Breakdown — Average Total Part Value (BUSM Level)
+                  Combined Repair &amp; Replacement Cost Breakdown (BUSM Level)
                 </h3>
               </div>
               <span style={{ fontSize: '12px', color: '#64748b' }}>
-                Excludes work orders with Total Part Value = 0 (89,955 WOs excluded). Click a BUSM to view ASM &amp; ASP breakdown.
+                Repair WOs (Part Value &gt; 0) and Replacement WOs (Call Type Z9). Click a BUSM row to drill down into ASM &amp; ASP tiers.
               </span>
             </div>
             {cpcBusmRepair && (
@@ -860,27 +860,38 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                 onClick={() => { setCpcBusmRepair(null); setCpcAsmRepair(null); }}
                 style={{ background: '#fffbeb', border: '1px solid #fcd34d', padding: '4px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 700, color: '#b45309', cursor: 'pointer' }}
               >
-                Clear BUSM Filter ({cpcBusmRepair})
+                Clear Filter ({cpcBusmRepair})
               </button>
             )}
           </div>
 
-          <Table density="comfortable">
+          <div style={{ overflowX: 'auto' }}>
+          <Table density="compact">
             <TableHeader>
-              <TableRow>
-                <TableHead style={{ textAlign: 'left', width: '35%' }}>BUSM Name</TableHead>
-                <TableHead style={{ textAlign: 'right' }}>Repair Work Orders (Part Value &gt; 0)</TableHead>
-                <TableHead style={{ textAlign: 'right' }}>Average Total Part Value (₹)</TableHead>
+              <TableRow style={{ background: '#f8fafc' }}>
+                <TableHead style={{ textAlign: 'left', width: '16%' }}>BUSM Name</TableHead>
+                <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>Repair WO Count</TableHead>
+                <TableHead style={{ textAlign: 'right' }}>Avg Repair Cost (₹)</TableHead>
+                <TableHead style={{ textAlign: 'right', borderRight: '1px solid #e2e8f0' }}>Total Repair Cost (₹)</TableHead>
+                <TableHead style={{ textAlign: 'right' }}>Replacement WO Count</TableHead>
+                <TableHead style={{ textAlign: 'right' }}>Avg Replacement Cost (₹)</TableHead>
+                <TableHead style={{ textAlign: 'right', borderRight: '1px solid #e2e8f0' }}>Total Replacement Cost (₹)</TableHead>
+                <TableHead style={{ textAlign: 'right', background: '#fffbeb' }}>Combined Total Cost (₹)</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {REPAIR_CPC_DATA.busm.map((r, i) => {
-                const isSelected = cpcBusmRepair === r.busm;
+              {REPAIR_CPC_DATA.busm.map((rRepair, i) => {
+                const rRepl = REPLACEMENT_CPC_DATA.busm.find(b => b.busm === rRepair.busm) || { count: 0, avg: 0 };
+                const isSelected = cpcBusmRepair === rRepair.busm;
+                const repairTotal = Math.round(rRepair.count * rRepair.avg);
+                const replTotal = Math.round(rRepl.count * rRepl.avg);
+                const combinedTotal = repairTotal + replTotal;
+
                 return (
                   <TableRow
                     key={i}
                     onClick={() => {
-                      setCpcBusmRepair(isSelected ? null : r.busm);
+                      setCpcBusmRepair(isSelected ? null : rRepair.busm);
                       setCpcAsmRepair(null);
                     }}
                     style={{
@@ -889,36 +900,69 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                     }}
                   >
                     <TableCell style={{ textAlign: 'left', fontWeight: isSelected ? 800 : 600, color: isSelected ? '#b45309' : undefined }}>
-                      {r.busm} {isSelected && '✓'}
+                      {rRepair.busm} {isSelected && '✓'}
+                    </TableCell>
+                    <TableCell style={{ textAlign: 'right', fontWeight: 600, borderLeft: '1px solid #f1f5f9' }}>
+                      {rRepair.count.toLocaleString('en-IN')}
+                    </TableCell>
+                    <TableCell style={{ textAlign: 'right', fontWeight: 700, color: '#d97706' }}>
+                      ₹{rRepair.avg.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </TableCell>
+                    <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#b45309', borderRight: '1px solid #f1f5f9' }}>
+                      ₹{repairTotal.toLocaleString('en-IN')}
                     </TableCell>
                     <TableCell style={{ textAlign: 'right', fontWeight: 600 }}>
-                      {r.count.toLocaleString('en-IN')}
+                      {rRepl.count.toLocaleString('en-IN')}
                     </TableCell>
-                    <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#b45309' }}>
-                      ₹{r.avg.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    <TableCell style={{ textAlign: 'right', fontWeight: 700, color: '#2563eb' }}>
+                      ₹{rRepl.avg.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </TableCell>
+                    <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#1d4ed8', borderRight: '1px solid #f1f5f9' }}>
+                      ₹{replTotal.toLocaleString('en-IN')}
+                    </TableCell>
+                    <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#0f172a', background: isSelected ? '#fef3c7' : '#f8fafc' }}>
+                      ₹{combinedTotal.toLocaleString('en-IN')}
                     </TableCell>
                   </TableRow>
                 );
               })}
             </TableBody>
             <TableSummaryRow>
-              <TableCell style={{ textAlign: 'left', fontWeight: 800 }}>National Average / Total</TableCell>
-              <TableCell style={{ textAlign: 'right', fontWeight: 800 }}>{REPAIR_CPC_DATA.national_count.toLocaleString('en-IN')}</TableCell>
-              <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#b45309' }}>
+              <TableCell style={{ textAlign: 'left', fontWeight: 800 }}>National Total / Average</TableCell>
+              <TableCell style={{ textAlign: 'right', fontWeight: 800, borderLeft: '1px solid #cbd5e1' }}>
+                {REPAIR_CPC_DATA.national_count.toLocaleString('en-IN')}
+              </TableCell>
+              <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#d97706' }}>
                 ₹{REPAIR_CPC_DATA.national_avg.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </TableCell>
+              <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#b45309', borderRight: '1px solid #cbd5e1' }}>
+                ₹{Math.round(REPAIR_CPC_DATA.national_count * REPAIR_CPC_DATA.national_avg).toLocaleString('en-IN')}
+              </TableCell>
+              <TableCell style={{ textAlign: 'right', fontWeight: 800 }}>
+                {REPLACEMENT_CPC_DATA.national_count.toLocaleString('en-IN')}
+              </TableCell>
+              <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#2563eb' }}>
+                ₹{REPLACEMENT_CPC_DATA.national_avg.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </TableCell>
+              <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#1d4ed8', borderRight: '1px solid #cbd5e1' }}>
+                ₹{Math.round(REPLACEMENT_CPC_DATA.national_count * REPLACEMENT_CPC_DATA.national_avg).toLocaleString('en-IN')}
+              </TableCell>
+              <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#0f172a', background: '#f1f5f9' }}>
+                ₹{Math.round((REPAIR_CPC_DATA.national_count * REPAIR_CPC_DATA.national_avg) + (REPLACEMENT_CPC_DATA.national_count * REPLACEMENT_CPC_DATA.national_avg)).toLocaleString('en-IN')}
               </TableCell>
             </TableSummaryRow>
           </Table>
+          </div>
         </div>
 
-        {/* ─── TABLE 1.1: REPAIR COST ASM DRILLDOWN ─── */}
+        {/* ─── COMBINED ASM DRILLDOWN TABLE ─── */}
         {cpcBusmRepair && (
           <div className="card-mock" style={{ padding: '20px', marginBottom: '16px', borderLeft: '4px solid #d97706' }}>
             <div style={{ marginBottom: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <div style={{ fontSize: '11px', color: '#b45309', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {cpcBusmRepair}</div>
                 <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                  Supervisor (ASM) Repair Part Cost Breakdown — {cpcBusmRepair}
+                  Supervisor (ASM) Combined Repair &amp; Replacement Cost Breakdown — {cpcBusmRepair}
                 </h3>
                 <span style={{ fontSize: '12px', color: '#64748b' }}>
                   Click an ASM row to view ASP centres under that supervisor
@@ -926,48 +970,73 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
               </div>
             </div>
 
+            <div style={{ overflowX: 'auto' }}>
             <Table density="compact">
               <TableHeader>
-                <TableRow>
-                  <TableHead style={{ textAlign: 'left', width: '30%' }}>ASM Name</TableHead>
-                  <TableHead style={{ textAlign: 'left', width: '25%' }}>BUSM</TableHead>
-                  <TableHead style={{ textAlign: 'right' }}>Repair Work Orders</TableHead>
-                  <TableHead style={{ textAlign: 'right' }}>Average Total Part Value (₹)</TableHead>
+                <TableRow style={{ background: '#f8fafc' }}>
+                  <TableHead style={{ textAlign: 'left', width: '16%' }}>ASM Name</TableHead>
+                  <TableHead style={{ textAlign: 'left', width: '14%' }}>BUSM</TableHead>
+                  <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>Repair WO Count</TableHead>
+                  <TableHead style={{ textAlign: 'right' }}>Avg Repair Cost (₹)</TableHead>
+                  <TableHead style={{ textAlign: 'right', borderRight: '1px solid #e2e8f0' }}>Total Repair Cost (₹)</TableHead>
+                  <TableHead style={{ textAlign: 'right' }}>Replacement WO Count</TableHead>
+                  <TableHead style={{ textAlign: 'right' }}>Avg Replacement Cost (₹)</TableHead>
+                  <TableHead style={{ textAlign: 'right', borderRight: '1px solid #e2e8f0' }}>Total Replacement Cost (₹)</TableHead>
+                  <TableHead style={{ textAlign: 'right', background: '#fffbeb' }}>Combined Total Cost (₹)</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {REPAIR_CPC_DATA.asm.filter(a => a.busm === cpcBusmRepair).map((r, i) => {
-                  const isAsmSelected = cpcAsmRepair === r.asm;
+                {REPAIR_CPC_DATA.asm.filter(a => a.busm === cpcBusmRepair).map((rRepair, i) => {
+                  const rRepl = REPLACEMENT_CPC_DATA.asm.find(a => a.asm === rRepair.asm) || { count: 0, avg: 0 };
+                  const isAsmSelected = cpcAsmRepair === rRepair.asm;
+                  const repairTotal = Math.round(rRepair.count * rRepair.avg);
+                  const replTotal = Math.round(rRepl.count * rRepl.avg);
+                  const combinedTotal = repairTotal + replTotal;
+
                   return (
                     <TableRow
                       key={i}
-                      onClick={() => setCpcAsmRepair(isAsmSelected ? null : r.asm)}
+                      onClick={() => setCpcAsmRepair(isAsmSelected ? null : rRepair.asm)}
                       style={{ background: isAsmSelected ? '#fef3c7' : undefined, cursor: 'pointer' }}
                     >
                       <TableCell style={{ textAlign: 'left', fontWeight: isAsmSelected ? 800 : 600, color: isAsmSelected ? '#92400e' : undefined }}>
-                        {r.asm} {isAsmSelected && '✓'}
+                        {rRepair.asm} {isAsmSelected && '✓'}
                       </TableCell>
-                      <TableCell style={{ textAlign: 'left', color: '#64748b' }}>{r.busm}</TableCell>
-                      <TableCell style={{ textAlign: 'right', fontWeight: 600 }}>{r.count.toLocaleString('en-IN')}</TableCell>
-                      <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#b45309' }}>
-                        ₹{r.avg.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      <TableCell style={{ textAlign: 'left', color: '#64748b' }}>{rRepair.busm}</TableCell>
+                      <TableCell style={{ textAlign: 'right', fontWeight: 600, borderLeft: '1px solid #f1f5f9' }}>{rRepair.count.toLocaleString('en-IN')}</TableCell>
+                      <TableCell style={{ textAlign: 'right', fontWeight: 700, color: '#d97706' }}>
+                        ₹{rRepair.avg.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </TableCell>
+                      <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#b45309', borderRight: '1px solid #f1f5f9' }}>
+                        ₹{repairTotal.toLocaleString('en-IN')}
+                      </TableCell>
+                      <TableCell style={{ textAlign: 'right', fontWeight: 600 }}>{rRepl.count.toLocaleString('en-IN')}</TableCell>
+                      <TableCell style={{ textAlign: 'right', fontWeight: 700, color: '#2563eb' }}>
+                        ₹{rRepl.avg.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </TableCell>
+                      <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#1d4ed8', borderRight: '1px solid #f1f5f9' }}>
+                        ₹{replTotal.toLocaleString('en-IN')}
+                      </TableCell>
+                      <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#0f172a', background: isAsmSelected ? '#fde68a' : '#f8fafc' }}>
+                        ₹{combinedTotal.toLocaleString('en-IN')}
                       </TableCell>
                     </TableRow>
                   );
                 })}
               </TableBody>
             </Table>
+            </div>
           </div>
         )}
 
-        {/* ─── TABLE 1.2: REPAIR COST ASP DRILLDOWN ─── */}
+        {/* ─── COMBINED ASP DRILLDOWN TABLE ─── */}
         {cpcAsmRepair && (
           <div className="card-mock" style={{ padding: '20px', marginBottom: '24px', borderLeft: '4px solid #7c3aed' }}>
             <div style={{ marginBottom: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <div style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {cpcBusmRepair} &gt; {cpcAsmRepair}</div>
                 <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                  ASP Centre Repair Part Cost Breakdown — {cpcAsmRepair}
+                  ASP Centre Combined Repair &amp; Replacement Cost Breakdown — {cpcAsmRepair}
                 </h3>
               </div>
               <button
@@ -978,244 +1047,67 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
               </button>
             </div>
 
+            <div style={{ overflowX: 'auto' }}>
             <Table density="compact">
               <TableHeader>
-                <TableRow>
-                  <TableHead style={{ textAlign: 'left', width: '15%', fontFamily: 'monospace' }}>ASP Code</TableHead>
-                  <TableHead style={{ textAlign: 'left', width: '35%' }}>ASP Name</TableHead>
-                  <TableHead style={{ textAlign: 'left', width: '25%' }}>ASM Supervisor</TableHead>
-                  <TableHead style={{ textAlign: 'right' }}>Repair WOs</TableHead>
-                  <TableHead style={{ textAlign: 'right' }}>Avg Total Part Value (₹)</TableHead>
+                <TableRow style={{ background: '#f8fafc' }}>
+                  <TableHead style={{ textAlign: 'left', width: '12%', fontFamily: 'monospace' }}>ASP Code</TableHead>
+                  <TableHead style={{ textAlign: 'left', width: '22%' }}>ASP Name</TableHead>
+                  <TableHead style={{ textAlign: 'left', width: '16%' }}>ASM Supervisor</TableHead>
+                  <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>Repair WO Count</TableHead>
+                  <TableHead style={{ textAlign: 'right' }}>Avg Repair Cost (₹)</TableHead>
+                  <TableHead style={{ textAlign: 'right', borderRight: '1px solid #e2e8f0' }}>Total Repair Cost (₹)</TableHead>
+                  <TableHead style={{ textAlign: 'right' }}>Replacement WO Count</TableHead>
+                  <TableHead style={{ textAlign: 'right' }}>Avg Replacement Cost (₹)</TableHead>
+                  <TableHead style={{ textAlign: 'right', borderRight: '1px solid #e2e8f0' }}>Total Replacement Cost (₹)</TableHead>
+                  <TableHead style={{ textAlign: 'right', background: '#f5f3ff' }}>Combined Total Cost (₹)</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {REPAIR_CPC_DATA.asp.filter(a => a.asm === cpcAsmRepair).length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={5} style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>
+                    <TableCell colSpan={10} style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>
                       No ASP center records found for {cpcAsmRepair}.
                     </TableCell>
                   </TableRow>
                 ) : (
-                  REPAIR_CPC_DATA.asp.filter(a => a.asm === cpcAsmRepair).map((asp, i) => (
-                    <TableRow key={i}>
-                      <TableCell style={{ textAlign: 'left', fontFamily: 'monospace', color: '#7c3aed', fontWeight: 700 }}>{asp.code}</TableCell>
-                      <TableCell style={{ textAlign: 'left', fontWeight: 700 }}>{asp.asp}</TableCell>
-                      <TableCell style={{ textAlign: 'left', color: '#64748b' }}>{asp.asm}</TableCell>
-                      <TableCell style={{ textAlign: 'right', fontWeight: 600 }}>{asp.count.toLocaleString('en-IN')}</TableCell>
-                      <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#7c3aed' }}>
-                        ₹{asp.avg.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                      </TableCell>
-                    </TableRow>
-                  ))
+                  REPAIR_CPC_DATA.asp.filter(a => a.asm === cpcAsmRepair).map((aspRepair, i) => {
+                    const aspRepl = REPLACEMENT_CPC_DATA.asp.find(a => a.code === aspRepair.code || a.asp === aspRepair.asp) || { count: 0, avg: 0 };
+                    const repairTotal = Math.round(aspRepair.count * aspRepair.avg);
+                    const replTotal = Math.round(aspRepl.count * aspRepl.avg);
+                    const combinedTotal = repairTotal + replTotal;
+
+                    return (
+                      <TableRow key={i}>
+                        <TableCell style={{ textAlign: 'left', fontFamily: 'monospace', color: '#7c3aed', fontWeight: 700 }}>{aspRepair.code}</TableCell>
+                        <TableCell style={{ textAlign: 'left', fontWeight: 700 }}>{aspRepair.asp}</TableCell>
+                        <TableCell style={{ textAlign: 'left', color: '#64748b' }}>{aspRepair.asm}</TableCell>
+                        <TableCell style={{ textAlign: 'right', fontWeight: 600, borderLeft: '1px solid #f1f5f9' }}>{aspRepair.count.toLocaleString('en-IN')}</TableCell>
+                        <TableCell style={{ textAlign: 'right', fontWeight: 700, color: '#d97706' }}>
+                          ₹{aspRepair.avg.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </TableCell>
+                        <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#b45309', borderRight: '1px solid #f1f5f9' }}>
+                          ₹{repairTotal.toLocaleString('en-IN')}
+                        </TableCell>
+                        <TableCell style={{ textAlign: 'right', fontWeight: 600 }}>{aspRepl.count.toLocaleString('en-IN')}</TableCell>
+                        <TableCell style={{ textAlign: 'right', fontWeight: 700, color: '#2563eb' }}>
+                          ₹{aspRepl.avg.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </TableCell>
+                        <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#1d4ed8', borderRight: '1px solid #f1f5f9' }}>
+                          ₹{replTotal.toLocaleString('en-IN')}
+                        </TableCell>
+                        <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#7c3aed', background: '#f5f3ff' }}>
+                          ₹{combinedTotal.toLocaleString('en-IN')}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
                 )}
               </TableBody>
             </Table>
+            </div>
           </div>
         )}
-
-        {/* ─── TABLE 2: REPLACEMENT COST TABLE (BUSM LEVEL - CALL TYPE Z9) ─── */}
-        <div className="card-mock" style={{ padding: '20px', marginBottom: '24px', borderTop: '3px solid #2563eb' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <span style={{ fontSize: '16px' }}>📱</span>
-                <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                  2. Replacement Cost Breakdown — Average Handset Value (Call Type: Z9)
-                </h3>
-              </div>
-              <span style={{ fontSize: '12px', color: '#64748b' }}>
-                Filtered strictly for Call Type = Z9 (4,868 replacement work orders). Click a BUSM to view ASM &amp; ASP breakdown.
-              </span>
-            </div>
-            {cpcBusmRepl && (
-              <button
-                onClick={() => { setCpcBusmRepl(null); setCpcAsmRepl(null); }}
-                style={{ background: '#eff6ff', border: '1px solid #93c5fd', padding: '4px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 700, color: '#1d4ed8', cursor: 'pointer' }}
-              >
-                Clear BUSM Filter ({cpcBusmRepl})
-              </button>
-            )}
-          </div>
-
-          <Table density="comfortable">
-            <TableHeader>
-              <TableRow>
-                <TableHead style={{ textAlign: 'left', width: '35%' }}>BUSM Name</TableHead>
-                <TableHead style={{ textAlign: 'right' }}>Replacement Work Orders (Call Type: Z9)</TableHead>
-                <TableHead style={{ textAlign: 'right' }}>Average Handset Value (₹)</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {REPLACEMENT_CPC_DATA.busm.map((r, i) => {
-                const isSelected = cpcBusmRepl === r.busm;
-                return (
-                  <TableRow
-                    key={i}
-                    onClick={() => {
-                      setCpcBusmRepl(isSelected ? null : r.busm);
-                      setCpcAsmRepl(null);
-                    }}
-                    style={{
-                      background: isSelected ? '#eff6ff' : undefined,
-                      cursor: 'pointer'
-                    }}
-                  >
-                    <TableCell style={{ textAlign: 'left', fontWeight: isSelected ? 800 : 600, color: isSelected ? '#1d4ed8' : undefined }}>
-                      {r.busm} {isSelected && '✓'}
-                    </TableCell>
-                    <TableCell style={{ textAlign: 'right', fontWeight: 600 }}>
-                      {r.count.toLocaleString('en-IN')}
-                    </TableCell>
-                    <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#1d4ed8' }}>
-                      ₹{r.avg.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-            <TableSummaryRow>
-              <TableCell style={{ textAlign: 'left', fontWeight: 800 }}>National Average / Total</TableCell>
-              <TableCell style={{ textAlign: 'right', fontWeight: 800 }}>{REPLACEMENT_CPC_DATA.national_count.toLocaleString('en-IN')}</TableCell>
-              <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#1d4ed8' }}>
-                ₹{REPLACEMENT_CPC_DATA.national_avg.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-              </TableCell>
-            </TableSummaryRow>
-          </Table>
-        </div>
-
-        {/* ─── TABLE 2.1: REPLACEMENT COST ASM DRILLDOWN ─── */}
-        {cpcBusmRepl && (
-          <div className="card-mock" style={{ padding: '20px', marginBottom: '16px', borderLeft: '4px solid #2563eb' }}>
-            <div style={{ marginBottom: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <div style={{ fontSize: '11px', color: '#1d4ed8', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {cpcBusmRepl}</div>
-                <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                  Supervisor (ASM) Replacement Handset Cost Breakdown — {cpcBusmRepl}
-                </h3>
-                <span style={{ fontSize: '12px', color: '#64748b' }}>
-                  Click an ASM row to view ASP centres under that supervisor
-                </span>
-              </div>
-            </div>
-
-            <Table density="compact">
-              <TableHeader>
-                <TableRow>
-                  <TableHead style={{ textAlign: 'left', width: '30%' }}>ASM Name</TableHead>
-                  <TableHead style={{ textAlign: 'left', width: '25%' }}>BUSM</TableHead>
-                  <TableHead style={{ textAlign: 'right' }}>Replacement Work Orders (Z9)</TableHead>
-                  <TableHead style={{ textAlign: 'right' }}>Average Handset Value (₹)</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {REPLACEMENT_CPC_DATA.asm.filter(a => a.busm === cpcBusmRepl).map((r, i) => {
-                  const isAsmSelected = cpcAsmRepl === r.asm;
-                  return (
-                    <TableRow
-                      key={i}
-                      onClick={() => setCpcAsmRepl(isAsmSelected ? null : r.asm)}
-                      style={{ background: isAsmSelected ? '#dbeafe' : undefined, cursor: 'pointer' }}
-                    >
-                      <TableCell style={{ textAlign: 'left', fontWeight: isAsmSelected ? 800 : 600, color: isAsmSelected ? '#1e40af' : undefined }}>
-                        {r.asm} {isAsmSelected && '✓'}
-                      </TableCell>
-                      <TableCell style={{ textAlign: 'left', color: '#64748b' }}>{r.busm}</TableCell>
-                      <TableCell style={{ textAlign: 'right', fontWeight: 600 }}>{r.count.toLocaleString('en-IN')}</TableCell>
-                      <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#1d4ed8' }}>
-                        ₹{r.avg.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </div>
-        )}
-
-        {/* ─── TABLE 2.2: REPLACEMENT COST ASP DRILLDOWN ─── */}
-        {cpcAsmRepl && (
-          <div className="card-mock" style={{ padding: '20px', marginBottom: '24px', borderLeft: '4px solid #7c3aed' }}>
-            <div style={{ marginBottom: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <div style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {cpcBusmRepl} &gt; {cpcAsmRepl}</div>
-                <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                  ASP Centre Replacement Handset Cost Breakdown — {cpcAsmRepl}
-                </h3>
-              </div>
-              <button
-                onClick={() => setCpcAsmRepl(null)}
-                style={{ background: '#f5f3ff', border: '1px solid #ddd6fe', padding: '4px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 700, color: '#7c3aed', cursor: 'pointer' }}
-              >
-                Clear ASM Filter
-              </button>
-            </div>
-
-            <Table density="compact">
-              <TableHeader>
-                <TableRow>
-                  <TableHead style={{ textAlign: 'left', width: '15%', fontFamily: 'monospace' }}>ASP Code</TableHead>
-                  <TableHead style={{ textAlign: 'left', width: '35%' }}>ASP Name</TableHead>
-                  <TableHead style={{ textAlign: 'left', width: '25%' }}>ASM Supervisor</TableHead>
-                  <TableHead style={{ textAlign: 'right' }}>Replacement WOs (Z9)</TableHead>
-                  <TableHead style={{ textAlign: 'right' }}>Avg Handset Value (₹)</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {REPLACEMENT_CPC_DATA.asp.filter(a => a.asm === cpcAsmRepl).length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={5} style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>
-                      No ASP center records found for {cpcAsmRepl}.
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  REPLACEMENT_CPC_DATA.asp.filter(a => a.asm === cpcAsmRepl).map((asp, i) => (
-                    <TableRow key={i}>
-                      <TableCell style={{ textAlign: 'left', fontFamily: 'monospace', color: '#7c3aed', fontWeight: 700 }}>{asp.code}</TableCell>
-                      <TableCell style={{ textAlign: 'left', fontWeight: 700 }}>{asp.asp}</TableCell>
-                      <TableCell style={{ textAlign: 'left', color: '#64748b' }}>{asp.asm}</TableCell>
-                      <TableCell style={{ textAlign: 'right', fontWeight: 600 }}>{asp.count.toLocaleString('en-IN')}</TableCell>
-                      <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#7c3aed' }}>
-                        ₹{asp.avg.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        )}
-
-        {/* ─── CPC FORMULA DECLARATION BOX ─── */}
-        <div style={{ padding: '16px 20px', background: '#0f172a', borderRadius: '12px', color: '#f8fafc', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
-          <div style={{ fontSize: '13px', fontWeight: 800, letterSpacing: '0.04em', textTransform: 'uppercase', color: '#fbbf24', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            📐 Official Calculation Formulas — CPC Repair &amp; Replacement Cost
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '16px' }}>
-            <div style={{ background: '#1e293b', padding: '12px 16px', borderRadius: '8px', borderLeft: '4px solid #d97706' }}>
-              <div style={{ fontWeight: 700, color: '#fef3c7', fontSize: '12.5px', marginBottom: '4px' }}>
-                🛠️ Repair Cost CPC Formula (Total Part Value &gt; 0)
-              </div>
-              <div style={{ fontFamily: 'monospace', fontSize: '11.5px', color: '#fef08a', marginBottom: '6px', background: '#0f172a', padding: '6px 10px', borderRadius: '6px' }}>
-                Average Repair Cost (₹) = ∑ Total Part Value ÷ Total Repair WOs (Total Part Value &gt; 0)
-              </div>
-              <div style={{ fontSize: '11px', color: '#cbd5e1', lineHeight: '1.4' }}>
-                Removes all 89,955 work orders with zero part consumption. Evaluates average spare part spending across 17,452 non-zero repair orders.
-              </div>
-            </div>
-
-            <div style={{ background: '#1e293b', padding: '12px 16px', borderRadius: '8px', borderLeft: '4px solid #2563eb' }}>
-              <div style={{ fontWeight: 700, color: '#dbeafe', fontSize: '12.5px', marginBottom: '4px' }}>
-                📱 Replacement Cost CPC Formula (Call Type = Z9)
-              </div>
-              <div style={{ fontFamily: 'monospace', fontSize: '11.5px', color: '#93c5fd', marginBottom: '6px', background: '#0f172a', padding: '6px 10px', borderRadius: '6px' }}>
-                Average Replacement Cost (₹) = ∑ Handset Value ÷ Total Replacement WOs (Call Type = Z9)
-              </div>
-              <div style={{ fontSize: '11px', color: '#cbd5e1', lineHeight: '1.4' }}>
-                Filters strictly for Call Type = Z9. Evaluates average handset unit cost across 4,868 replacement exchange work orders.
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* SECTION 2: SERVICE AT HOME */}
@@ -2227,6 +2119,24 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
           <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', padding: '2px 8px', borderRadius: '4px' }}>🔵 20% – 50% (Above Average)</span>
           <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#fffbeb', color: '#b45309', border: '1px solid #fde68a', padding: '2px 8px', borderRadius: '4px' }}>🟡 50% – 70% (Watch-list / Mid-tier)</span>
           <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#fef2f2', color: '#dc2626', border: '1px solid #fca5a5', padding: '2px 8px', borderRadius: '4px' }}>🔴 Below 70% (Bottom 30% / Attention Required)</span>
+        </div>
+
+        {/* CPC Repair & Replacement Calculation Formula Footnote */}
+        <div style={{ marginTop: '12px', paddingTop: '10px', borderTop: '1px solid #cbd5e1', fontSize: '11px', color: '#334155', lineHeight: '1.6' }}>
+          <div style={{ fontWeight: 800, color: '#0f172a', marginBottom: '4px', textTransform: 'uppercase' }}>
+            🧮 CPC Repair &amp; Replacement Cost Calculation Formulas:
+          </div>
+          <div>
+            • <strong>Repair Cost:</strong> Filtered for WOs where <em>Total Part Value &gt; 0</em> (excludes zero-value WOs). <br />
+            &nbsp;&nbsp;<code>Avg Repair Cost (₹)</code> = ∑ (Total Part Value) ÷ Repair WO Count | <code>Total Repair Cost (₹)</code> = Repair WO Count × Avg Repair Cost
+          </div>
+          <div style={{ marginTop: '4px' }}>
+            • <strong>Replacement Cost:</strong> Filtered strictly for <em>Call Type = Z9</em> replacement work orders.<br />
+            &nbsp;&nbsp;<code>Avg Replacement Cost (₹)</code> = ∑ (Handset Value where Call Type = Z9) ÷ Replacement WO Count | <code>Total Replacement Cost (₹)</code> = Replacement WO Count × Avg Replacement Cost
+          </div>
+          <div style={{ marginTop: '4px' }}>
+            • <strong>Combined Total Exposure (₹):</strong> <code>Total Repair Cost (₹) + Total Replacement Cost (₹)</code>
+          </div>
         </div>
       </div>
 
