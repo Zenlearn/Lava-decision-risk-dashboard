@@ -2135,7 +2135,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             CPC Repair &amp; Replacement Cost Calculation Formulas &amp; Master Data Filters:
           </div>
           <div>
-            • <strong>Master Data Scope &amp; Filters Applied:</strong> Filtered strictly for <code>Warranty == "Yes"</code> (in-warranty work orders only; 14,333 non-warranty rows excluded) and <code>ELS Status ≠ "No"</code> (retains "Yes" and "Pass" records). Evaluated dynamically by month (June 2026, May 2026, April 2026, or All Months).
+            • <strong>Master Data Scope &amp; Filters Applied:</strong> Sourced from master file <code>Replacement cost Repair cost.xlsx</code> (24,939 total work orders). Filtered strictly for <code>Warranty == "Yes"</code> (in-warranty work orders only; 9,819 non-warranty rows excluded) and <code>ELS Status ≠ "No"</code> (retains "Yes" and "Pass" records). Evaluated dynamically by month (June 2026, May 2026, April 2026, or All Months).
           </div>
           <div style={{ marginTop: '4px' }}>
             • <strong>Repair Cost Breakdown:</strong> Filtered for WOs where <em>Total Part Value &gt; 0</em> (excludes zero part cost orders). <br />
