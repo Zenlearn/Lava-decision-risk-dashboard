@@ -1159,7 +1159,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   <th style={{ padding: '10px 10px', textAlign: 'right' }}>Cancellation %</th>
                   <th style={{ padding: '10px 10px', textAlign: 'right' }}>Reschedule %</th>
                   <th style={{ padding: '10px 10px', textAlign: 'right' }}>Same Day Attend %</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right' }}>Same Day Attend with Cancellation %</th>
+                  <th style={{ padding: '10px 10px', textAlign: 'right' }}>Same Day Attend without Cancellation %</th>
                   <th style={{ padding: '10px 10px', textAlign: 'right' }}>Pending to Attend %</th>
                 </tr>
               </thead>
@@ -1244,7 +1244,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   <th style={{ padding: '10px 10px', textAlign: 'right' }}>Cancellation %</th>
                   <th style={{ padding: '10px 10px', textAlign: 'right' }}>Reschedule %</th>
                   <th style={{ padding: '10px 10px', textAlign: 'right' }}>Same Day Attend %</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right' }}>Same Day Attend with Cancellation %</th>
+                  <th style={{ padding: '10px 10px', textAlign: 'right' }}>Same Day Attend without Cancellation %</th>
                   <th style={{ padding: '10px 10px', textAlign: 'right' }}>Pending to Attend %</th>
                 </tr>
               </thead>
@@ -2145,6 +2145,10 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
           <div style={{ marginTop: '4px' }}>
             • <strong>S@H Same Day Attend % Formula:</strong> Calculated strictly by filtering column <code>Final Remarks == "Within TAT"</code>. <br />
             &nbsp;&nbsp;<code>Same Day Attend %</code> = [ Count of Appointments where <em>Final Remarks == "Within TAT"</em> ] ÷ [ Total Appointments for BUSM / ASM / Month ] × 100
+          </div>
+          <div style={{ marginTop: '4px' }}>
+            • <strong>S@H Same Day Attend without Cancellation % Formula:</strong> Calculated by filtering <code>Final Remarks == "Within TAT"</code> over net non-canceled cases. <br />
+            &nbsp;&nbsp;<code>Same Day Attend without Cancellation %</code> = [ Count of <em>Final Remarks == "Within TAT"</em> ] ÷ [ Total Appointments − Count of <em>Final Remarks == "Canceled"</em> ] × 100
           </div>
         </div>
       </div>
