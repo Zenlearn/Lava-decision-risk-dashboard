@@ -2123,20 +2123,25 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
         </div>
 
         {/* CPC Repair & Replacement Calculation Formula Footnote */}
-        <div style={{ marginTop: '12px', paddingTop: '10px', borderTop: '1px solid #cbd5e1', fontSize: '11px', color: '#334155', lineHeight: '1.6' }}>
-          <div style={{ fontWeight: 800, color: '#0f172a', marginBottom: '4px', textTransform: 'uppercase' }}>
-            CPC Repair &amp; Replacement Cost Calculation Formulas:
+        <div style={{ marginTop: '14px', paddingTop: '12px', borderTop: '1px solid #cbd5e1', fontSize: '11px', color: '#334155', lineHeight: '1.7' }}>
+          <div style={{ fontWeight: 800, color: '#0f172a', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.03em', fontSize: '11.5px' }}>
+            CPC Repair &amp; Replacement Cost Calculation Formulas &amp; Master Data Filters:
           </div>
           <div>
-            • <strong>Repair Cost:</strong> Filtered for WOs where <em>Total Part Value &gt; 0</em> (excludes zero-value WOs). <br />
-            &nbsp;&nbsp;<code>Avg Repair Cost (₹)</code> = ∑ (Total Part Value) ÷ Repair WO Count | <code>Total Repair Cost (₹)</code> = Repair WO Count × Avg Repair Cost
+            • <strong>Master Data Scope &amp; Filters Applied:</strong> Filtered strictly for <code>Warranty == "Yes"</code> (in-warranty work orders only; 14,333 non-warranty rows excluded) and <code>ELS Status ≠ "No"</code> (retains "Yes" and "Pass" records). Evaluated dynamically by month (June 2026, May 2026, April 2026, or All Months).
           </div>
           <div style={{ marginTop: '4px' }}>
-            • <strong>Replacement Cost:</strong> Filtered strictly for <em>Call Type = Z9</em> replacement work orders.<br />
-            &nbsp;&nbsp;<code>Avg Replacement Cost (₹)</code> = ∑ (Handset Value where Call Type = Z9) ÷ Replacement WO Count | <code>Total Replacement Cost (₹)</code> = Replacement WO Count × Avg Replacement Cost
+            • <strong>Repair Cost Breakdown:</strong> Filtered for WOs where <em>Total Part Value &gt; 0</em> (excludes zero part cost orders). <br />
+            &nbsp;&nbsp;<code>Avg Repair Cost (₹)</code> = ∑ (Total Part Value where Total Part Value &gt; 0) ÷ Repair WO Count <br />
+            &nbsp;&nbsp;<code>Total Repair Cost (₹)</code> = Repair WO Count × Avg Repair Cost (₹)
           </div>
           <div style={{ marginTop: '4px' }}>
-            • <strong>Combined Total Exposure (₹):</strong> <code>Total Repair Cost (₹) + Total Replacement Cost (₹)</code>
+            • <strong>Replacement Cost Breakdown:</strong> Filtered strictly for <em>Call Type = "Z9"</em> (handset replacement / exchange work orders).<br />
+            &nbsp;&nbsp;<code>Avg Replacement Cost (₹)</code> = ∑ (Handset Value where Call Type = "Z9") ÷ Replacement WO Count <br />
+            &nbsp;&nbsp;<code>Total Replacement Cost (₹)</code> = Replacement WO Count × Avg Replacement Cost (₹)
+          </div>
+          <div style={{ marginTop: '4px' }}>
+            • <strong>Combined Total Exposure (₹):</strong> <code>Total Repair Cost (₹) + Total Replacement Cost (₹)</code> across BUSM, ASM, and ASP tiers.
           </div>
         </div>
       </div>
