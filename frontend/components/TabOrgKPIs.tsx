@@ -2150,6 +2150,10 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             • <strong>S@H Same Day Attend without Cancellation % Formula:</strong> Calculated by filtering <code>Final Remarks == "Within TAT"</code> over net non-canceled cases. <br />
             &nbsp;&nbsp;<code>Same Day Attend without Cancellation %</code> = [ Count of <em>Final Remarks == "Within TAT"</em> ] ÷ [ Total Appointments − Count of <em>Final Remarks == "Canceled"</em> ] × 100
           </div>
+          <div style={{ marginTop: '4px' }}>
+            • <strong>S@H Pending to Attend % Formula:</strong> Calculated strictly by filtering column <code>Final Remarks == "Appointment Created No Action"</code>. <br />
+            &nbsp;&nbsp;<code>Pending to Attend %</code> = [ Count of <em>Final Remarks == "Appointment Created No Action"</em> ] ÷ [ Total Appointments for BUSM / ASM / Month ] × 100
+          </div>
         </div>
       </div>
 
