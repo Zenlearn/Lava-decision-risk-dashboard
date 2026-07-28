@@ -2128,6 +2128,17 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             • <strong>Combined Total Exposure (₹):</strong> <code>Total Repair Cost (₹) + Total Replacement Cost (₹)</code> across BUSM, ASM, and ASP tiers.
           </div>
         </div>
+
+        {/* S@H Cancellation % Calculation Formula Footnote */}
+        <div style={{ marginTop: '12px', paddingTop: '10px', borderTop: '1px solid #cbd5e1', fontSize: '11px', color: '#334155', lineHeight: '1.7' }}>
+          <div style={{ fontWeight: 800, color: '#0f172a', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.03em', fontSize: '11.5px' }}>
+            Service at Home (S@H) Cancellation % Calculation Formula:
+          </div>
+          <div>
+            • <strong>S@H Cancellation % Formula:</strong> Calculated strictly by filtering column <code>Final Remarks == "Canceled"</code> in <code>S@H Raw Detail 28 Jul 2026.xlsx</code>. <br />
+            &nbsp;&nbsp;<code>Cancellation %</code> = [ Count of Appointments where <em>Final Remarks == "Canceled"</em> ] ÷ [ Total Appointments for BUSM / ASM / Month ] × 100
+          </div>
+        </div>
       </div>
 
       {/* Executive Footnote */}
