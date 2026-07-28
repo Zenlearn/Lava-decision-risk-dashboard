@@ -397,7 +397,6 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
               <button
                 key={seg}
                 onClick={() => setSegmentFilter(seg)}
-                title={seg === 'All' ? 'All call categories' : seg}
                 style={{
                   padding: '5px 13px',
                   borderRadius: '20px',
@@ -530,7 +529,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             <Table density="comfortable">
               <TableHeader>
                 <TableRow>
-                  <TableHead style={{ textAlign: 'left', width: '22%' }}>BUSM Name</TableHead>
+                  <TableHead style={{ textAlign: 'left' }}>BUSM Name</TableHead>
                   <TableHead style={{ textAlign: 'right' }}>TAT % (Rank)</TableHead>
                   <TableHead style={{ textAlign: 'right' }}>CPC ₹ (Rank)</TableHead>
                   <TableHead style={{ textAlign: 'right' }}>S@H Adherence % (Rank)</TableHead>
@@ -649,8 +648,8 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             <Table density="compact">
               <TableHeader>
                 <TableRow>
-                  <TableHead style={{ textAlign: 'left', width: '16%' }}>ASM Name</TableHead>
-                  <TableHead style={{ textAlign: 'left', width: '14%' }}>BUSM</TableHead>
+                  <TableHead style={{ textAlign: 'left' }}>ASM Name</TableHead>
+                  <TableHead style={{ textAlign: 'left' }}>BUSM</TableHead>
                   <TableHead style={{ textAlign: 'right' }}>TAT % (Rank)</TableHead>
                   <TableHead style={{ textAlign: 'right' }}>CPC ₹ (Rank)</TableHead>
                   <TableHead style={{ textAlign: 'right' }}>S@H Adherence % (Rank)</TableHead>
@@ -846,7 +845,6 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <span style={{ fontSize: '16px' }}>🛠️📱</span>
                 <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
                   Combined Repair &amp; Replacement Cost Breakdown (BUSM Level)
                 </h3>
@@ -869,7 +867,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
           <Table density="compact">
             <TableHeader>
               <TableRow style={{ background: '#f8fafc' }}>
-                <TableHead style={{ textAlign: 'left', width: '16%' }}>BUSM Name</TableHead>
+                <TableHead style={{ textAlign: 'left' }}>BUSM Name</TableHead>
                 <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>Repair WO Count</TableHead>
                 <TableHead style={{ textAlign: 'right' }}>Avg Repair Cost (₹)</TableHead>
                 <TableHead style={{ textAlign: 'right', borderRight: '1px solid #e2e8f0' }}>Total Repair Cost (₹)</TableHead>
@@ -974,8 +972,8 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             <Table density="compact">
               <TableHeader>
                 <TableRow style={{ background: '#f8fafc' }}>
-                  <TableHead style={{ textAlign: 'left', width: '16%' }}>ASM Name</TableHead>
-                  <TableHead style={{ textAlign: 'left', width: '14%' }}>BUSM</TableHead>
+                  <TableHead style={{ textAlign: 'left' }}>ASM Name</TableHead>
+                  <TableHead style={{ textAlign: 'left' }}>BUSM</TableHead>
                   <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>Repair WO Count</TableHead>
                   <TableHead style={{ textAlign: 'right' }}>Avg Repair Cost (₹)</TableHead>
                   <TableHead style={{ textAlign: 'right', borderRight: '1px solid #e2e8f0' }}>Total Repair Cost (₹)</TableHead>
@@ -1051,9 +1049,9 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             <Table density="compact">
               <TableHeader>
                 <TableRow style={{ background: '#f8fafc' }}>
-                  <TableHead style={{ textAlign: 'left', width: '12%', fontFamily: 'monospace' }}>ASP Code</TableHead>
-                  <TableHead style={{ textAlign: 'left', width: '22%' }}>ASP Name</TableHead>
-                  <TableHead style={{ textAlign: 'left', width: '16%' }}>ASM Supervisor</TableHead>
+                  <TableHead style={{ textAlign: 'left', fontFamily: 'monospace' }}>ASP Code</TableHead>
+                  <TableHead style={{ textAlign: 'left' }}>ASP Name</TableHead>
+                  <TableHead style={{ textAlign: 'left' }}>ASM Supervisor</TableHead>
                   <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>Repair WO Count</TableHead>
                   <TableHead style={{ textAlign: 'right' }}>Avg Repair Cost (₹)</TableHead>
                   <TableHead style={{ textAlign: 'right', borderRight: '1px solid #e2e8f0' }}>Total Repair Cost (₹)</TableHead>
@@ -2108,23 +2106,23 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
       {/* Org KPI Abbreviations & Definitions Footnote */}
       <div style={{ marginTop: '16px', padding: '16px 20px', background: '#f8fafc', borderRadius: '10px', border: '1px solid #e2e8f0', fontSize: '11.5px', color: '#475569', lineHeight: '1.7', boxShadow: 'var(--shadow-sm)' }}>
         <div style={{ fontWeight: 800, color: '#1e293b', marginBottom: '6px', fontSize: '12px', letterSpacing: '0.02em', textTransform: 'uppercase' }}>
-          📖 Abbreviations &amp; Definitions — Org KPI Page
+          Abbreviations &amp; Definitions — Org KPI Page
         </div>
         {DASHBOARD_DEFINITIONS.orgKpiFootnote}
         
         {/* Visual Rank Badge Color Scale Legend */}
         <div style={{ marginTop: '12px', paddingTop: '10px', borderTop: '1px solid #cbd5e1', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-          <span style={{ fontWeight: 800, color: '#0f172a', fontSize: '11.5px', textTransform: 'uppercase' }}>🏷️ Rank Badge Percentile Scale:</span>
-          <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#f0fdf4', color: '#15803d', border: '1px solid #bbf7d0', padding: '2px 8px', borderRadius: '4px' }}>🟢 Top 20% (Best Performers)</span>
-          <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', padding: '2px 8px', borderRadius: '4px' }}>🔵 20% – 50% (Above Average)</span>
-          <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#fffbeb', color: '#b45309', border: '1px solid #fde68a', padding: '2px 8px', borderRadius: '4px' }}>🟡 50% – 70% (Watch-list / Mid-tier)</span>
-          <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#fef2f2', color: '#dc2626', border: '1px solid #fca5a5', padding: '2px 8px', borderRadius: '4px' }}>🔴 Below 70% (Bottom 30% / Attention Required)</span>
+          <span style={{ fontWeight: 800, color: '#0f172a', fontSize: '11.5px', textTransform: 'uppercase' }}>Rank Badge Percentile Scale:</span>
+          <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#f0fdf4', color: '#15803d', border: '1px solid #bbf7d0', padding: '2px 8px', borderRadius: '4px' }}>Top 20% (Best Performers)</span>
+          <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', padding: '2px 8px', borderRadius: '4px' }}>20% – 50% (Above Average)</span>
+          <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#fffbeb', color: '#b45309', border: '1px solid #fde68a', padding: '2px 8px', borderRadius: '4px' }}>50% – 70% (Watch-list / Mid-tier)</span>
+          <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#fef2f2', color: '#dc2626', border: '1px solid #fca5a5', padding: '2px 8px', borderRadius: '4px' }}>Below 70% (Bottom 30% / Attention Required)</span>
         </div>
 
         {/* CPC Repair & Replacement Calculation Formula Footnote */}
         <div style={{ marginTop: '12px', paddingTop: '10px', borderTop: '1px solid #cbd5e1', fontSize: '11px', color: '#334155', lineHeight: '1.6' }}>
           <div style={{ fontWeight: 800, color: '#0f172a', marginBottom: '4px', textTransform: 'uppercase' }}>
-            🧮 CPC Repair &amp; Replacement Cost Calculation Formulas:
+            CPC Repair &amp; Replacement Cost Calculation Formulas:
           </div>
           <div>
             • <strong>Repair Cost:</strong> Filtered for WOs where <em>Total Part Value &gt; 0</em> (excludes zero-value WOs). <br />
