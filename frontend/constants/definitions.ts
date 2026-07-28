@@ -29,6 +29,14 @@ export const DASHBOARD_DEFINITIONS = {
       definition: 'Total estimated doorstep-repair cost exposure for a BUSM or ASM region in the month, divided by the number of flagged work orders. CPC = Total Leakage Exposure (₹) ÷ Total Flagged Work Orders. A higher CPC indicates higher average financial risk per complaint event. Calculated using part-cost settings in the Part Exposure tab.'
     },
     {
+      title: 'CPC — Repair Cost (Average Total Part Value)',
+      definition: 'Calculated as the mean of "Total Part Value" across all work orders where Total Part Value > 0 (rows with 0 total part value are excluded). Formula: Average Repair Part Cost (₹) = ∑ Total Part Value ÷ Count of Repair WOs (Total Part Value > 0). Evaluated at BUSM, ASM, and ASP levels.'
+    },
+    {
+      title: 'CPC — Replacement Cost (Average Handset Value - Call Type Z9)',
+      definition: 'Calculated as the mean of "Handset Value" across all work orders filtered strictly for Call Type = "Z9" (handset replacements / DOA exchanges). Formula: Average Replacement Cost (₹) = ∑ Handset Value ÷ Count of Z9 WOs (Call Type = Z9). Evaluated at BUSM, ASM, and ASP levels.'
+    },
+    {
       title: 'TAT % — Turnaround Time Adherence',
       definition: 'Percentage of work orders closed within the target resolution window. TAT % = (Work orders closed within target days ÷ Total work orders) × 100. Closure speed bands tracked: 1-day (same-day), 2-day, 3-day, and 5+ day (breach). A lower 5+-day closure % and higher 1-day closure % indicate better speed performance. "Still Open" = work orders with no closure date at time of data extract.'
     },
@@ -54,7 +62,7 @@ export const DASHBOARD_DEFINITIONS = {
 
   executiveFootnote: 'These KPIs are expressed in Lava\'s own service language. Each is driven by an underlying decision-risk signal measured in the Score Card and Evidence tabs: bounces → first-time fix, detractors → satisfaction & NPS, turnaround → MTTR & TAT, mis-fixes that bounce → diagnostic accuracy, doorstep board-repairs → S@H adherence, cost per complaint → CPC. Rupee figures reflect Service at Home (S@H) doorstep exposure using component costs set in the Part Exposure tab (excluding walk-in calls). CSAT target (95%) is Lava\'s published standard; other targets are indicative and should be confirmed with Lava.',
 
-  orgKpiFootnote: 'Abbreviations & definitions for this page — BUSM: Business Unit Sales Manager (regional head). ASM: Area Sales Manager (territory supervisor). ASP: Authorised Service Partner (repair centre). S@H: Service at Home (doorstep repair). CPC (₹): Cost Per Complaint = estimated leakage exposure ÷ flagged work orders. CAG: Composite Aggregate Grade — a weighted performance score across TAT, CPC, S@H adherence, NPS and Diagnostic Accuracy. TAT: Turnaround Time (work-order closure speed). DSAT: Detractor Satisfaction — customers who rated 1 or 2 ★ on the post-service survey. NPS rating categories: Promoters = Rating 5 ★ | Passives = Ratings 3–4 ★ | Detractors = Ratings 1–2 ★. NPS Score = % Promoters − % Detractors. Default NPS scope = Smart Phone surveys only; Feature Phones are excluded to isolate smartphone service quality. PCBA = Printed Circuit Board Assembly (main board); LCD = display module. All rupee values are provisional pending confirmation of the Lava part-cost master.',
+  orgKpiFootnote: 'Abbreviations & definitions for this page — BUSM: Business Unit Sales Manager (regional head). ASM: Area Sales Manager (territory supervisor). ASP: Authorised Service Partner (repair centre). S@H: Service at Home (doorstep repair). CPC (₹): Cost Per Complaint = estimated leakage exposure ÷ flagged work orders. CPC Repair Cost Formula: Avg Repair Cost (₹) = ∑ (Total Part Value where Total Part Value > 0) ÷ Count of WOs (Total Part Value > 0). CPC Replacement Cost Formula: Avg Replacement Cost (₹) = ∑ (Handset Value where Call Type = Z9) ÷ Count of Z9 WOs. CAG: Composite Aggregate Grade — a weighted performance score across TAT, CPC, S@H adherence, NPS and Diagnostic Accuracy. TAT: Turnaround Time (work-order closure speed). DSAT: Detractor Satisfaction — customers who rated 1 or 2 ★ on the post-service survey. NPS rating categories: Promoters = Rating 5 ★ | Passives = Ratings 3–4 ★ | Detractors = Ratings 1–2 ★. Default NPS scope = Smart Phone surveys only. All rupee values are provisional pending confirmation of the Lava part-cost master.',
 
   globalFooter: 'ZenLearn Decision Risk Measurement - built for verification, not accusation - all rupee values provisional pending Lava part-cost master',
   

@@ -1,0 +1,1304 @@
+{
+  "repair": {
+    "national_avg": 930.48,
+    "national_count": 17452,
+    "busm": [
+      {
+        "busm": "Jitesh S Rath",
+        "count": 2701,
+        "avg": 1143.67
+      },
+      {
+        "busm": "Rajesh Limbachia",
+        "count": 3313,
+        "avg": 874.43
+      },
+      {
+        "busm": "Shivaprasad P U",
+        "count": 3085,
+        "avg": 874.05
+      },
+      {
+        "busm": "Sukhbir Singh",
+        "count": 5220,
+        "avg": 977.84
+      },
+      {
+        "busm": "Tamilselvan Subramanian",
+        "count": 3133,
+        "avg": 782.64
+      }
+    ],
+    "asm": [
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "count": 666,
+        "avg": 954.35
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "count": 441,
+        "avg": 1297.37
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Firoj Alam",
+        "count": 423,
+        "avg": 1064.1
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Gulam Moula Laskar",
+        "count": 367,
+        "avg": 1312.29
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Md Tanweer Alam",
+        "count": 500,
+        "avg": 988.83
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Rahul Kumar",
+        "count": 304,
+        "avg": 1497.31
+      },
+      {
+        "busm": "Rajesh Limbachia",
+        "asm": "Alpesh Rabari",
+        "count": 702,
+        "avg": 804.86
+      },
+      {
+        "busm": "Rajesh Limbachia",
+        "asm": "Aniketkumar Pandey",
+        "count": 308,
+        "avg": 1049.74
+      },
+      {
+        "busm": "Rajesh Limbachia",
+        "asm": "Koshi Jain",
+        "count": 659,
+        "avg": 1087.19
+      },
+      {
+        "busm": "Rajesh Limbachia",
+        "asm": "Pushpendra Singh",
+        "count": 601,
+        "avg": 764.47
+      },
+      {
+        "busm": "Rajesh Limbachia",
+        "asm": "Shyam Sunder Dixit",
+        "count": 524,
+        "avg": 884.32
+      },
+      {
+        "busm": "Rajesh Limbachia",
+        "asm": "Soukeen Khan",
+        "count": 519,
+        "avg": 711.68
+      },
+      {
+        "busm": "Shivaprasad P U",
+        "asm": "Abhishek Kumar",
+        "count": 449,
+        "avg": 874.5
+      },
+      {
+        "busm": "Shivaprasad P U",
+        "asm": "D C Manikantha",
+        "count": 638,
+        "avg": 759.28
+      },
+      {
+        "busm": "Shivaprasad P U",
+        "asm": "Dnyaneshwar R Shelar",
+        "count": 584,
+        "avg": 1078.03
+      },
+      {
+        "busm": "Shivaprasad P U",
+        "asm": "Sathya S",
+        "count": 385,
+        "avg": 1191.96
+      },
+      {
+        "busm": "Shivaprasad P U",
+        "asm": "Sushil R. Turkar",
+        "count": 578,
+        "avg": 614.92
+      },
+      {
+        "busm": "Shivaprasad P U",
+        "asm": "Vikram Singh Rajput",
+        "count": 451,
+        "avg": 832.51
+      },
+      {
+        "busm": "Sukhbir Singh",
+        "asm": "Arun Bhatia",
+        "count": 824,
+        "avg": 1174.55
+      },
+      {
+        "busm": "Sukhbir Singh",
+        "asm": "Arun Bhatia_TBA",
+        "count": 196,
+        "avg": 746.17
+      },
+      {
+        "busm": "Sukhbir Singh",
+        "asm": "Ashwani Kumar",
+        "count": 781,
+        "avg": 879.39
+      },
+      {
+        "busm": "Sukhbir Singh",
+        "asm": "Gajender Chandel",
+        "count": 756,
+        "avg": 997.8
+      },
+      {
+        "busm": "Sukhbir Singh",
+        "asm": "Hem Chandra Joshi",
+        "count": 468,
+        "avg": 836.15
+      },
+      {
+        "busm": "Sukhbir Singh",
+        "asm": "Kamal kant",
+        "count": 614,
+        "avg": 671.6
+      },
+      {
+        "busm": "Sukhbir Singh",
+        "asm": "Madhukesh Sharma",
+        "count": 795,
+        "avg": 1094.5
+      },
+      {
+        "busm": "Sukhbir Singh",
+        "asm": "Mohd. Shadan Aaqil",
+        "count": 295,
+        "avg": 1024.23
+      },
+      {
+        "busm": "Sukhbir Singh",
+        "asm": "Mohd. Shadan Aaqil_TBA",
+        "count": 81,
+        "avg": 1162.37
+      },
+      {
+        "busm": "Sukhbir Singh",
+        "asm": "Nafis Ahmed",
+        "count": 410,
+        "avg": 1168.25
+      },
+      {
+        "busm": "Tamilselvan Subramanian",
+        "asm": "Arjun Singh",
+        "count": 346,
+        "avg": 1180.87
+      },
+      {
+        "busm": "Tamilselvan Subramanian",
+        "asm": "Deepan S",
+        "count": 423,
+        "avg": 612.74
+      },
+      {
+        "busm": "Tamilselvan Subramanian",
+        "asm": "K.Venkateswarlu",
+        "count": 315,
+        "avg": 1113.09
+      },
+      {
+        "busm": "Tamilselvan Subramanian",
+        "asm": "Prasanta Barik",
+        "count": 587,
+        "avg": 613.5
+      },
+      {
+        "busm": "Tamilselvan Subramanian",
+        "asm": "Prashanth Kumar",
+        "count": 408,
+        "avg": 1053.2
+      },
+      {
+        "busm": "Tamilselvan Subramanian",
+        "asm": "Praveendas K",
+        "count": 360,
+        "avg": 692.85
+      },
+      {
+        "busm": "Tamilselvan Subramanian",
+        "asm": "Raja R",
+        "count": 201,
+        "avg": 853.19
+      },
+      {
+        "busm": "Tamilselvan Subramanian",
+        "asm": "Sathish Kumar B",
+        "count": 493,
+        "avg": 452.07
+      }
+    ],
+    "asp": [
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "Air Voice",
+        "code": "1102946",
+        "count": 31,
+        "avg": 797.65
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "B.B.ENTERPRISE",
+        "code": "1103596",
+        "count": 10,
+        "avg": 1641.5
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "Das Care",
+        "code": "1103443",
+        "count": 45,
+        "avg": 1205.09
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "Everest Mobicare",
+        "code": "1103086",
+        "count": 96,
+        "avg": 425.58
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "HALLO INDIA",
+        "code": "1103886",
+        "count": 22,
+        "avg": 1750.68
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "IT Point",
+        "code": "1100060",
+        "count": 28,
+        "avg": 713.29
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "Joy Enterprise",
+        "code": "1101447",
+        "count": 176,
+        "avg": 629.02
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "MOBILE CENTRE",
+        "code": "1102805",
+        "count": 24,
+        "avg": 1292.29
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "MOBILE ZONE",
+        "code": "1103399",
+        "count": 22,
+        "avg": 534.32
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "MOBITECH",
+        "code": "1103307",
+        "count": 16,
+        "avg": 1744.0
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "Mobile Corner",
+        "code": "1100841",
+        "count": 2,
+        "avg": 3010.0
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "Mobilogist",
+        "code": "1103803",
+        "count": 7,
+        "avg": 1154.14
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "Om Enterprises",
+        "code": "1101476",
+        "count": 4,
+        "avg": 2970.75
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "RAYAN SOLUTIONS",
+        "code": "1103400",
+        "count": 30,
+        "avg": 1096.7
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "Rana Service",
+        "code": "1103153",
+        "count": 7,
+        "avg": 200.0
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "S Care",
+        "code": "1102784",
+        "count": 21,
+        "avg": 1598.14
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "SHREE KRISHNA ENTERPRISE",
+        "code": "1103898",
+        "count": 3,
+        "avg": 355.33
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "SMART SOLUTION",
+        "code": "1103613",
+        "count": 80,
+        "avg": 1130.35
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "SUMAN ENTERPRISE",
+        "code": "1103746",
+        "count": 17,
+        "avg": 2786.24
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "Smart Help",
+        "code": "1103507",
+        "count": 25,
+        "avg": 1071.92
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "asp": "Google Mobile",
+        "code": "1102636",
+        "count": 11,
+        "avg": 458.82
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "asp": "M S Group",
+        "code": "1102850",
+        "count": 24,
+        "avg": 783.04
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "asp": "M.S ENTERPRISES",
+        "code": "1103452",
+        "count": 14,
+        "avg": 2410.71
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "asp": "M/S MAA LAXMI MOBILE SHOP",
+        "code": "1103752",
+        "count": 33,
+        "avg": 946.61
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "asp": "M/S NEW INDIAN TELECOM",
+        "code": "1103796",
+        "count": 30,
+        "avg": 2222.57
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "asp": "M/s Anshu Mobile",
+        "code": "1103302",
+        "count": 18,
+        "avg": 362.06
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "asp": "Manshi Telecom",
+        "code": "1102993",
+        "count": 69,
+        "avg": 1340.68
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "asp": "Nancy Communication",
+        "code": "1103506",
+        "count": 13,
+        "avg": 579.31
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "asp": "Prateek Mobile",
+        "code": "1103043",
+        "count": 9,
+        "avg": 1900.33
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "asp": "Pushpa Enterprises",
+        "code": "1101553",
+        "count": 30,
+        "avg": 1284.13
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "asp": "R S Communication",
+        "code": "1103599",
+        "count": 13,
+        "avg": 872.15
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "asp": "REWA ENTERPRISES",
+        "code": "1103844",
+        "count": 52,
+        "avg": 1375.67
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "asp": "Raj Mobile care",
+        "code": "1102381",
+        "count": 1,
+        "avg": 1266.0
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "asp": "SHAHID COMMUNICATION",
+        "code": "1102681",
+        "count": 44,
+        "avg": 1295.18
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "asp": "SOLUTION POINT",
+        "code": "1103834",
+        "count": 16,
+        "avg": 2167.0
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "asp": "Siddhant Communication",
+        "code": "1100945",
+        "count": 49,
+        "avg": 1399.14
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "asp": "VIVEK ENTERPRISES",
+        "code": "1103600",
+        "count": 15,
+        "avg": 673.0
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Firoj Alam",
+        "asp": "AMRIT CARE CENTRE",
+        "code": "1300438",
+        "count": 33,
+        "avg": 967.94
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Firoj Alam",
+        "asp": "Anannaya Infotel",
+        "code": "1300575",
+        "count": 48,
+        "avg": 887.27
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Firoj Alam",
+        "asp": "INTECH SOLUTIONS",
+        "code": "1103747",
+        "count": 31,
+        "avg": 1062.9
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Firoj Alam",
+        "asp": "J B Mobile",
+        "code": "1103655",
+        "count": 17,
+        "avg": 2073.18
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Firoj Alam",
+        "asp": "J L K COMMUNICATION",
+        "code": "1103434",
+        "count": 24,
+        "avg": 1346.33
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Firoj Alam",
+        "asp": "Kalpana Electronics",
+        "code": "1100176",
+        "count": 27,
+        "avg": 916.19
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Firoj Alam",
+        "asp": "M/s New Novelty",
+        "code": "1103679",
+        "count": 24,
+        "avg": 365.0
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Firoj Alam",
+        "asp": "MAA OSIYA COMMUNICATION",
+        "code": "1103052",
+        "count": 32,
+        "avg": 762.47
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Firoj Alam",
+        "asp": "Mobile Care",
+        "code": "1103630",
+        "count": 30,
+        "avg": 841.73
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Firoj Alam",
+        "asp": "Piu Telecom",
+        "code": "1103641",
+        "count": 16,
+        "avg": 2243.12
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Firoj Alam",
+        "asp": "ROY ENTERPRISE",
+        "code": "1102633",
+        "count": 14,
+        "avg": 1506.64
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Firoj Alam",
+        "asp": "SAHA ENTERPRISE",
+        "code": "1103792",
+        "count": 15,
+        "avg": 477.2
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Firoj Alam",
+        "asp": "SMART SOLUTION",
+        "code": "1103546",
+        "count": 22,
+        "avg": 1908.77
+      }
+    ]
+  },
+  "replacement": {
+    "national_avg": 3760.84,
+    "national_count": 4868,
+    "busm": [
+      {
+        "busm": "Jitesh S Rath",
+        "count": 1325,
+        "avg": 2752.03
+      },
+      {
+        "busm": "Rajesh Limbachia",
+        "count": 751,
+        "avg": 3208.88
+      },
+      {
+        "busm": "Shivaprasad P U",
+        "count": 1159,
+        "avg": 4240.26
+      },
+      {
+        "busm": "Sukhbir Singh",
+        "count": 782,
+        "avg": 5048.93
+      },
+      {
+        "busm": "Tamilselvan Subramanian",
+        "count": 851,
+        "avg": 3982.06
+      }
+    ],
+    "asm": [
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "count": 357,
+        "avg": 3979.06
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "count": 131,
+        "avg": 3177.44
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Firoj Alam",
+        "count": 395,
+        "avg": 1559.34
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Gulam Moula Laskar",
+        "count": 209,
+        "avg": 1612.33
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Md Tanweer Alam",
+        "count": 138,
+        "avg": 3584.37
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Rahul Kumar",
+        "count": 95,
+        "avg": 3811.69
+      },
+      {
+        "busm": "Rajesh Limbachia",
+        "asm": "Alpesh Rabari",
+        "count": 177,
+        "avg": 5567.8
+      },
+      {
+        "busm": "Rajesh Limbachia",
+        "asm": "Aniketkumar Pandey",
+        "count": 80,
+        "avg": 3133.55
+      },
+      {
+        "busm": "Rajesh Limbachia",
+        "asm": "Koshi Jain",
+        "count": 120,
+        "avg": 3568.15
+      },
+      {
+        "busm": "Rajesh Limbachia",
+        "asm": "Pushpendra Singh",
+        "count": 96,
+        "avg": 4738.8
+      },
+      {
+        "busm": "Rajesh Limbachia",
+        "asm": "Shyam Sunder Dixit",
+        "count": 186,
+        "avg": 846.85
+      },
+      {
+        "busm": "Rajesh Limbachia",
+        "asm": "Soukeen Khan",
+        "count": 92,
+        "avg": 1446.41
+      },
+      {
+        "busm": "Shivaprasad P U",
+        "asm": "Abhishek Kumar",
+        "count": 166,
+        "avg": 3871.57
+      },
+      {
+        "busm": "Shivaprasad P U",
+        "asm": "D C Manikantha",
+        "count": 278,
+        "avg": 2181.99
+      },
+      {
+        "busm": "Shivaprasad P U",
+        "asm": "Dnyaneshwar R Shelar",
+        "count": 244,
+        "avg": 9433.11
+      },
+      {
+        "busm": "Shivaprasad P U",
+        "asm": "Sathya S",
+        "count": 57,
+        "avg": 12463.18
+      },
+      {
+        "busm": "Shivaprasad P U",
+        "asm": "Sushil R. Turkar",
+        "count": 185,
+        "avg": 1827.41
+      },
+      {
+        "busm": "Shivaprasad P U",
+        "asm": "Vikram Singh Rajput",
+        "count": 229,
+        "avg": 1375.71
+      },
+      {
+        "busm": "Sukhbir Singh",
+        "asm": "Arun Bhatia",
+        "count": 143,
+        "avg": 9468.43
+      },
+      {
+        "busm": "Sukhbir Singh",
+        "asm": "Arun Bhatia_TBA",
+        "count": 13,
+        "avg": 3190.15
+      },
+      {
+        "busm": "Sukhbir Singh",
+        "asm": "Ashwani Kumar",
+        "count": 114,
+        "avg": 4040.15
+      },
+      {
+        "busm": "Sukhbir Singh",
+        "asm": "Gajender Chandel",
+        "count": 80,
+        "avg": 5846.06
+      },
+      {
+        "busm": "Sukhbir Singh",
+        "asm": "Hem Chandra Joshi",
+        "count": 91,
+        "avg": 2955.42
+      },
+      {
+        "busm": "Sukhbir Singh",
+        "asm": "Kamal kant",
+        "count": 60,
+        "avg": 7456.5
+      },
+      {
+        "busm": "Sukhbir Singh",
+        "asm": "Madhukesh Sharma",
+        "count": 87,
+        "avg": 3562.16
+      },
+      {
+        "busm": "Sukhbir Singh",
+        "asm": "Mohd. Shadan Aaqil",
+        "count": 31,
+        "avg": 3843.48
+      },
+      {
+        "busm": "Sukhbir Singh",
+        "asm": "Mohd. Shadan Aaqil_TBA",
+        "count": 8,
+        "avg": 16210.12
+      },
+      {
+        "busm": "Sukhbir Singh",
+        "asm": "Nafis Ahmed",
+        "count": 155,
+        "avg": 2254.65
+      },
+      {
+        "busm": "Tamilselvan Subramanian",
+        "asm": "Arjun Singh",
+        "count": 79,
+        "avg": 2906.24
+      },
+      {
+        "busm": "Tamilselvan Subramanian",
+        "asm": "Deepan S",
+        "count": 87,
+        "avg": 1530.32
+      },
+      {
+        "busm": "Tamilselvan Subramanian",
+        "asm": "K.Venkateswarlu",
+        "count": 42,
+        "avg": 12008.74
+      },
+      {
+        "busm": "Tamilselvan Subramanian",
+        "asm": "Prasanta Barik",
+        "count": 290,
+        "avg": 2389.46
+      },
+      {
+        "busm": "Tamilselvan Subramanian",
+        "asm": "Prashanth Kumar",
+        "count": 89,
+        "avg": 7969.64
+      },
+      {
+        "busm": "Tamilselvan Subramanian",
+        "asm": "Praveendas K",
+        "count": 116,
+        "avg": 3317.0
+      },
+      {
+        "busm": "Tamilselvan Subramanian",
+        "asm": "Raja R",
+        "count": 46,
+        "avg": 10915.65
+      },
+      {
+        "busm": "Tamilselvan Subramanian",
+        "asm": "Sathish Kumar B",
+        "count": 102,
+        "avg": 2279.42
+      }
+    ],
+    "asp": [
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "Air Voice",
+        "code": "1102946",
+        "count": 18,
+        "avg": 762.78
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "B.B.ENTERPRISE",
+        "code": "1103596",
+        "count": 10,
+        "avg": 5050.5
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "Das Care",
+        "code": "1103443",
+        "count": 26,
+        "avg": 5149.08
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "Everest Mobicare",
+        "code": "1103086",
+        "count": 59,
+        "avg": 1052.9
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "IT Point",
+        "code": "1100060",
+        "count": 7,
+        "avg": 2519.86
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "Joy Enterprise",
+        "code": "1101447",
+        "count": 131,
+        "avg": 1437.9
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "MOBILE CENTRE",
+        "code": "1102805",
+        "count": 16,
+        "avg": 2988.94
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "MOBILE ZONE",
+        "code": "1103399",
+        "count": 14,
+        "avg": 3301.5
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "MOBITECH",
+        "code": "1103307",
+        "count": 14,
+        "avg": 760.57
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "Mobile Corner",
+        "code": "1100841",
+        "count": 1,
+        "avg": 767.0
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "Mobilogist",
+        "code": "1103803",
+        "count": 2,
+        "avg": 19509.0
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "RAYAN SOLUTIONS",
+        "code": "1103400",
+        "count": 12,
+        "avg": 19570.67
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "Rana Service",
+        "code": "1103153",
+        "count": 5,
+        "avg": 8622.2
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "S Care",
+        "code": "1102784",
+        "count": 14,
+        "avg": 1914.93
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "SHREE KRISHNA ENTERPRISE",
+        "code": "1103898",
+        "count": 2,
+        "avg": 19509.0
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "SMART SOLUTION",
+        "code": "1103613",
+        "count": 24,
+        "avg": 18495.54
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Anisur Rehman Mullick",
+        "asp": "Smart Help",
+        "code": "1103507",
+        "count": 2,
+        "avg": 11067.0
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "asp": "Google Mobile",
+        "code": "1102636",
+        "count": 3,
+        "avg": 899.0
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "asp": "M S Group",
+        "code": "1102850",
+        "count": 11,
+        "avg": 290.18
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "asp": "M.S ENTERPRISES",
+        "code": "1103452",
+        "count": 15,
+        "avg": 341.0
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "asp": "M/S MAA LAXMI MOBILE SHOP",
+        "code": "1103752",
+        "count": 13,
+        "avg": 416.92
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "asp": "M/S NEW INDIAN TELECOM",
+        "code": "1103796",
+        "count": 3,
+        "avg": 8291.33
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "asp": "M/s Anshu Mobile",
+        "code": "1103302",
+        "count": 1,
+        "avg": 220.0
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "asp": "Manshi Telecom",
+        "code": "1102993",
+        "count": 7,
+        "avg": 6395.29
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "asp": "Nancy Communication",
+        "code": "1103506",
+        "count": 4,
+        "avg": 833.5
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "asp": "Prateek Mobile",
+        "code": "1103043",
+        "count": 2,
+        "avg": 833.0
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "asp": "Pushpa Enterprises",
+        "code": "1101553",
+        "count": 25,
+        "avg": 2082.32
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "asp": "R S Communication",
+        "code": "1103599",
+        "count": 2,
+        "avg": 22296.0
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "asp": "REWA ENTERPRISES",
+        "code": "1103844",
+        "count": 3,
+        "avg": 15111.0
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "asp": "Raj Mobile care",
+        "code": "1102381",
+        "count": 2,
+        "avg": 209.5
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "asp": "SHAHID COMMUNICATION",
+        "code": "1102681",
+        "count": 27,
+        "avg": 1652.41
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "asp": "SOLUTION POINT",
+        "code": "1103834",
+        "count": 2,
+        "avg": 942.0
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "asp": "Siddhant Communication",
+        "code": "1100945",
+        "count": 10,
+        "avg": 11469.2
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Awadhesh Kumar Singh",
+        "asp": "VIVEK ENTERPRISES",
+        "code": "1103600",
+        "count": 1,
+        "avg": 21367.0
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Firoj Alam",
+        "asp": "AMRIT CARE CENTRE",
+        "code": "1300438",
+        "count": 8,
+        "avg": 468.0
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Firoj Alam",
+        "asp": "Anannaya Infotel",
+        "code": "1300575",
+        "count": 19,
+        "avg": 1899.16
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Firoj Alam",
+        "asp": "INTECH SOLUTIONS",
+        "code": "1103747",
+        "count": 9,
+        "avg": 10346.56
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Firoj Alam",
+        "asp": "J B Mobile",
+        "code": "1103655",
+        "count": 13,
+        "avg": 5190.08
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Firoj Alam",
+        "asp": "J L K COMMUNICATION",
+        "code": "1103434",
+        "count": 15,
+        "avg": 1163.67
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Firoj Alam",
+        "asp": "Kalpana Electronics",
+        "code": "1100176",
+        "count": 9,
+        "avg": 2763.89
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Firoj Alam",
+        "asp": "M/s New Novelty",
+        "code": "1103679",
+        "count": 47,
+        "avg": 201.43
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Firoj Alam",
+        "asp": "MAA OSIYA COMMUNICATION",
+        "code": "1103052",
+        "count": 50,
+        "avg": 253.78
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Firoj Alam",
+        "asp": "Mobile Care",
+        "code": "1103630",
+        "count": 49,
+        "avg": 205.22
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Firoj Alam",
+        "asp": "Piu Telecom",
+        "code": "1103641",
+        "count": 31,
+        "avg": 129.42
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Firoj Alam",
+        "asp": "ROY ENTERPRISE",
+        "code": "1102633",
+        "count": 3,
+        "avg": 15306.0
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Firoj Alam",
+        "asp": "SMART SOLUTION",
+        "code": "1103546",
+        "count": 52,
+        "avg": 951.96
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Firoj Alam",
+        "asp": "Saha Communication",
+        "code": "1102676",
+        "count": 8,
+        "avg": 665.25
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Firoj Alam",
+        "asp": "Sarkar Communication",
+        "code": "1101747",
+        "count": 29,
+        "avg": 3457.24
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Firoj Alam",
+        "asp": "Sarkar Communication",
+        "code": "1103765",
+        "count": 51,
+        "avg": 2191.1
+      },
+      {
+        "busm": "Jitesh S Rath",
+        "asm": "Firoj Alam",
+        "asp": "Tarafdar Infosys",
+        "code": "1101326",
+        "count": 2,
+        "avg": 12109.5
+      }
+    ]
+  }
+}
