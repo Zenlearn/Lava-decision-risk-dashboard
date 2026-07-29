@@ -935,25 +935,25 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             <TableSummaryRow>
               <TableCell style={{ textAlign: 'left', fontWeight: 800 }}>National Total / Average</TableCell>
               <TableCell style={{ textAlign: 'right', fontWeight: 800, borderLeft: '1px solid #cbd5e1' }}>
-                {currentCpcDataset.national_repair_count.toLocaleString('en-IN')}
+                {(currentCpcDataset?.summary?.repair_count || 0).toLocaleString('en-IN')}
               </TableCell>
               <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#d97706' }}>
-                ₹{currentCpcDataset.national_repair_avg.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                ₹{(currentCpcDataset?.summary?.repair_avg || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </TableCell>
               <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#b45309', borderRight: '1px solid #cbd5e1' }}>
-                ₹{Math.round(currentCpcDataset.national_repair_count * currentCpcDataset.national_repair_avg).toLocaleString('en-IN')}
+                ₹{(currentCpcDataset?.summary?.repair_total || 0).toLocaleString('en-IN')}
               </TableCell>
               <TableCell style={{ textAlign: 'right', fontWeight: 800 }}>
-                {currentCpcDataset.national_repl_count.toLocaleString('en-IN')}
+                {(currentCpcDataset?.summary?.repl_count || 0).toLocaleString('en-IN')}
               </TableCell>
               <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#2563eb' }}>
-                ₹{currentCpcDataset.national_repl_avg.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                ₹{(currentCpcDataset?.summary?.repl_avg || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </TableCell>
               <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#1d4ed8', borderRight: '1px solid #cbd5e1' }}>
-                ₹{Math.round(currentCpcDataset.national_repl_count * currentCpcDataset.national_repl_avg).toLocaleString('en-IN')}
+                ₹{(currentCpcDataset?.summary?.repl_total || 0).toLocaleString('en-IN')}
               </TableCell>
               <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#0f172a', background: '#f1f5f9' }}>
-                ₹{Math.round((currentCpcDataset.national_repair_count * currentCpcDataset.national_repair_avg) + (currentCpcDataset.national_repl_count * currentCpcDataset.national_repl_avg)).toLocaleString('en-IN')}
+                ₹{(currentCpcDataset?.summary?.combined_total || 0).toLocaleString('en-IN')}
               </TableCell>
             </TableSummaryRow>
           </Table>
