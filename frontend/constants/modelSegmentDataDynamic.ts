@@ -6,34 +6,34 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Jitesh S Rath",
           "segments": {
             "<8K": {
-              "wo": 1462,
-              "cpc": 245.8,
+              "wo": 649,
+              "cpc": 553.8,
               "total_cost": 359401
             },
             "8K-10K": {
-              "wo": 214,
-              "cpc": 676.8,
+              "wo": 100,
+              "cpc": 1448.2,
               "total_cost": 144825
             },
             "10K-15K": {
-              "wo": 176,
-              "cpc": 717.2,
+              "wo": 85,
+              "cpc": 1485.0,
               "total_cost": 126229
             },
             "15K-20K": {
-              "wo": 82,
-              "cpc": 6040.4,
+              "wo": 45,
+              "cpc": 11006.9,
               "total_cost": 495309
             },
             ">20K": {
-              "wo": 83,
-              "cpc": 11102.2,
+              "wo": 60,
+              "cpc": 15358.1,
               "total_cost": 921484
             },
             "Total": {
-              "wo": 2017,
-              "cpc": 1015.0,
-              "total_cost": 2047248
+              "wo": 454,
+              "cpc": 4086.1,
+              "total_cost": 1855111
             }
           }
         },
@@ -41,34 +41,34 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Rajesh Limbachia",
           "segments": {
             "<8K": {
-              "wo": 1062,
-              "cpc": 308.6,
+              "wo": 492,
+              "cpc": 666.1,
               "total_cost": 327726
             },
             "8K-10K": {
-              "wo": 190,
-              "cpc": 684.1,
+              "wo": 127,
+              "cpc": 1023.4,
               "total_cost": 129973
             },
             "10K-15K": {
-              "wo": 269,
-              "cpc": 747.9,
+              "wo": 147,
+              "cpc": 1368.7,
               "total_cost": 201197
             },
             "15K-20K": {
-              "wo": 101,
-              "cpc": 2809.4,
+              "wo": 59,
+              "cpc": 4809.4,
               "total_cost": 283753
             },
             ">20K": {
-              "wo": 52,
-              "cpc": 10494.2,
+              "wo": 33,
+              "cpc": 16536.2,
               "total_cost": 545696
             },
             "Total": {
-              "wo": 1674,
-              "cpc": 889.1,
-              "total_cost": 1488345
+              "wo": 585,
+              "cpc": 2299.7,
+              "total_cost": 1345345
             }
           }
         },
@@ -76,34 +76,34 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Shivaprasad P U",
           "segments": {
             "<8K": {
-              "wo": 1718,
-              "cpc": 231.2,
+              "wo": 650,
+              "cpc": 611.0,
               "total_cost": 397151
             },
             "8K-10K": {
-              "wo": 115,
-              "cpc": 1043.8,
+              "wo": 72,
+              "cpc": 1667.1,
               "total_cost": 120033
             },
             "10K-15K": {
-              "wo": 162,
-              "cpc": 996.1,
+              "wo": 87,
+              "cpc": 1854.8,
               "total_cost": 161365
             },
             "15K-20K": {
-              "wo": 65,
-              "cpc": 3770.6,
+              "wo": 36,
+              "cpc": 6808.0,
               "total_cost": 245089
             },
             ">20K": {
-              "wo": 90,
-              "cpc": 13763.3,
+              "wo": 71,
+              "cpc": 17446.4,
               "total_cost": 1238694
             },
             "Total": {
-              "wo": 2150,
-              "cpc": 1005.7,
-              "total_cost": 2162332
+              "wo": 475,
+              "cpc": 4186.5,
+              "total_cost": 1988587
             }
           }
         },
@@ -111,34 +111,34 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Sukhbir Singh",
           "segments": {
             "<8K": {
-              "wo": 1538,
-              "cpc": 271.3,
+              "wo": 652,
+              "cpc": 639.9,
               "total_cost": 417222
             },
             "8K-10K": {
-              "wo": 382,
-              "cpc": 783.0,
+              "wo": 235,
+              "cpc": 1272.7,
               "total_cost": 299090
             },
             "10K-15K": {
-              "wo": 427,
-              "cpc": 676.1,
+              "wo": 213,
+              "cpc": 1355.4,
               "total_cost": 288690
             },
             "15K-20K": {
-              "wo": 173,
-              "cpc": 2660.3,
+              "wo": 93,
+              "cpc": 4948.6,
               "total_cost": 460224
             },
             ">20K": {
-              "wo": 91,
-              "cpc": 10323.1,
+              "wo": 55,
+              "cpc": 17080.0,
               "total_cost": 939398
             },
             "Total": {
-              "wo": 2611,
-              "cpc": 921.0,
-              "total_cost": 2404624
+              "wo": 943,
+              "cpc": 2419.2,
+              "total_cost": 2281280
             }
           }
         },
@@ -146,67 +146,67 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Tamilselvan Subramanian",
           "segments": {
             "<8K": {
-              "wo": 1242,
-              "cpc": 219.5,
+              "wo": 463,
+              "cpc": 588.7,
               "total_cost": 272589
             },
             "8K-10K": {
-              "wo": 65,
-              "cpc": 850.2,
+              "wo": 37,
+              "cpc": 1493.5,
               "total_cost": 55260
             },
             "10K-15K": {
-              "wo": 85,
-              "cpc": 1154.7,
+              "wo": 50,
+              "cpc": 1963.0,
               "total_cost": 98149
             },
             "15K-20K": {
-              "wo": 37,
-              "cpc": 5944.8,
+              "wo": 22,
+              "cpc": 9998.0,
               "total_cost": 219957
             },
             ">20K": {
-              "wo": 60,
-              "cpc": 9896.8,
+              "wo": 42,
+              "cpc": 14138.3,
               "total_cost": 593808
             },
             "Total": {
-              "wo": 1489,
-              "cpc": 832.6,
-              "total_cost": 1239763
+              "wo": 288,
+              "cpc": 3832.4,
+              "total_cost": 1103727
             }
           }
         }
       ],
       "national": {
         "<8K": {
-          "wo": 7022,
-          "cpc": 252.6,
+          "wo": 2906,
+          "cpc": 610.5,
           "total_cost": 1774089
         },
         "8K-10K": {
-          "wo": 966,
-          "cpc": 775.5,
+          "wo": 571,
+          "cpc": 1312.1,
           "total_cost": 749181
         },
         "10K-15K": {
-          "wo": 1119,
-          "cpc": 782.5,
+          "wo": 582,
+          "cpc": 1504.5,
           "total_cost": 875630
         },
         "15K-20K": {
-          "wo": 458,
-          "cpc": 3721.2,
+          "wo": 255,
+          "cpc": 6683.7,
           "total_cost": 1704332
         },
         ">20K": {
-          "wo": 376,
-          "cpc": 11274.1,
+          "wo": 261,
+          "cpc": 16241.7,
           "total_cost": 4239080
         },
         "Total": {
-          "wo": 9941,
-          "cpc": 939.8,
+          "wo": 4575,
+          "cpc": 2042.0,
           "total_cost": 9342312
         }
       }
@@ -428,22 +428,22 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Jitesh S Rath",
           "segments": {
             "<8K": {
-              "nps_pct": 63.5
+              "nps_pct": 68.5
             },
             "8K-10K": {
-              "nps_pct": 69.2
+              "nps_pct": 68.5
             },
             "10K-15K": {
-              "nps_pct": 74.8
+              "nps_pct": 68.5
             },
             "15K-20K": {
-              "nps_pct": 78.4
+              "nps_pct": 68.5
             },
             ">20K": {
-              "nps_pct": 82.1
+              "nps_pct": 68.5
             },
             "Total": {
-              "nps_pct": 70.4
+              "nps_pct": 68.5
             }
           }
         },
@@ -451,22 +451,22 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Rajesh Limbachia",
           "segments": {
             "<8K": {
-              "nps_pct": 63.5
+              "nps_pct": 68.5
             },
             "8K-10K": {
-              "nps_pct": 69.2
+              "nps_pct": 68.5
             },
             "10K-15K": {
-              "nps_pct": 74.8
+              "nps_pct": 68.5
             },
             "15K-20K": {
-              "nps_pct": 78.4
+              "nps_pct": 68.5
             },
             ">20K": {
-              "nps_pct": 82.1
+              "nps_pct": 68.5
             },
             "Total": {
-              "nps_pct": 70.4
+              "nps_pct": 68.5
             }
           }
         },
@@ -474,22 +474,22 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Shivaprasad P U",
           "segments": {
             "<8K": {
-              "nps_pct": 63.5
+              "nps_pct": 68.5
             },
             "8K-10K": {
-              "nps_pct": 69.2
+              "nps_pct": 68.5
             },
             "10K-15K": {
-              "nps_pct": 74.8
+              "nps_pct": 68.5
             },
             "15K-20K": {
-              "nps_pct": 78.4
+              "nps_pct": 68.5
             },
             ">20K": {
-              "nps_pct": 82.1
+              "nps_pct": 68.5
             },
             "Total": {
-              "nps_pct": 70.4
+              "nps_pct": 68.5
             }
           }
         },
@@ -497,22 +497,22 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Sukhbir Singh",
           "segments": {
             "<8K": {
-              "nps_pct": 63.5
+              "nps_pct": 68.5
             },
             "8K-10K": {
-              "nps_pct": 69.2
+              "nps_pct": 68.5
             },
             "10K-15K": {
-              "nps_pct": 74.8
+              "nps_pct": 68.5
             },
             "15K-20K": {
-              "nps_pct": 78.4
+              "nps_pct": 68.5
             },
             ">20K": {
-              "nps_pct": 82.1
+              "nps_pct": 68.5
             },
             "Total": {
-              "nps_pct": 70.4
+              "nps_pct": 68.5
             }
           }
         },
@@ -520,44 +520,44 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Tamilselvan Subramanian",
           "segments": {
             "<8K": {
-              "nps_pct": 63.5
+              "nps_pct": 68.5
             },
             "8K-10K": {
-              "nps_pct": 69.2
+              "nps_pct": 68.5
             },
             "10K-15K": {
-              "nps_pct": 74.8
+              "nps_pct": 68.5
             },
             "15K-20K": {
-              "nps_pct": 78.4
+              "nps_pct": 68.5
             },
             ">20K": {
-              "nps_pct": 82.1
+              "nps_pct": 68.5
             },
             "Total": {
-              "nps_pct": 70.4
+              "nps_pct": 68.5
             }
           }
         }
       ],
       "national": {
         "<8K": {
-          "nps_pct": 63.5
+          "nps_pct": 68.5
         },
         "8K-10K": {
-          "nps_pct": 69.2
+          "nps_pct": 68.5
         },
         "10K-15K": {
-          "nps_pct": 74.8
+          "nps_pct": 68.5
         },
         "15K-20K": {
-          "nps_pct": 78.4
+          "nps_pct": 68.5
         },
         ">20K": {
-          "nps_pct": 82.1
+          "nps_pct": 68.5
         },
         "Total": {
-          "nps_pct": 70.4
+          "nps_pct": 68.5
         }
       }
     }
@@ -569,34 +569,34 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Jitesh S Rath",
           "segments": {
             "<8K": {
-              "wo": 1428,
-              "cpc": 256.9,
+              "wo": 686,
+              "cpc": 534.9,
               "total_cost": 366912
             },
             "8K-10K": {
-              "wo": 215,
-              "cpc": 702.5,
+              "wo": 106,
+              "cpc": 1424.9,
               "total_cost": 151044
             },
             "10K-15K": {
-              "wo": 219,
-              "cpc": 1288.0,
+              "wo": 130,
+              "cpc": 2169.8,
               "total_cost": 282073
             },
             "15K-20K": {
-              "wo": 91,
-              "cpc": 6621.4,
+              "wo": 58,
+              "cpc": 10388.7,
               "total_cost": 602546
             },
             ">20K": {
-              "wo": 71,
-              "cpc": 8707.2,
+              "wo": 49,
+              "cpc": 12616.6,
               "total_cost": 618212
             },
             "Total": {
-              "wo": 2024,
-              "cpc": 998.4,
-              "total_cost": 2020787
+              "wo": 517,
+              "cpc": 3575.7,
+              "total_cost": 1848649
             }
           }
         },
@@ -604,34 +604,34 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Rajesh Limbachia",
           "segments": {
             "<8K": {
-              "wo": 864,
-              "cpc": 320.0,
+              "wo": 426,
+              "cpc": 648.9,
               "total_cost": 276452
             },
             "8K-10K": {
-              "wo": 155,
-              "cpc": 602.6,
+              "wo": 87,
+              "cpc": 1073.6,
               "total_cost": 93400
             },
             "10K-15K": {
-              "wo": 275,
-              "cpc": 1090.8,
+              "wo": 160,
+              "cpc": 1874.8,
               "total_cost": 299970
             },
             "15K-20K": {
-              "wo": 92,
-              "cpc": 1930.3,
+              "wo": 46,
+              "cpc": 3860.6,
               "total_cost": 177586
             },
             ">20K": {
-              "wo": 40,
-              "cpc": 13078.6,
+              "wo": 27,
+              "cpc": 19375.7,
               "total_cost": 523145
             },
             "Total": {
-              "wo": 1426,
-              "cpc": 961.1,
-              "total_cost": 1370553
+              "wo": 504,
+              "cpc": 2495.2,
+              "total_cost": 1257591
             }
           }
         },
@@ -639,34 +639,34 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Shivaprasad P U",
           "segments": {
             "<8K": {
-              "wo": 1509,
-              "cpc": 225.3,
+              "wo": 607,
+              "cpc": 560.0,
               "total_cost": 339935
             },
             "8K-10K": {
-              "wo": 116,
-              "cpc": 956.8,
+              "wo": 63,
+              "cpc": 1761.8,
               "total_cost": 110991
             },
             "10K-15K": {
-              "wo": 176,
-              "cpc": 1179.4,
+              "wo": 96,
+              "cpc": 2162.3,
               "total_cost": 207580
             },
             "15K-20K": {
-              "wo": 65,
-              "cpc": 3975.4,
+              "wo": 40,
+              "cpc": 6460.0,
               "total_cost": 258400
             },
             ">20K": {
-              "wo": 99,
-              "cpc": 13613.2,
+              "wo": 78,
+              "cpc": 17278.3,
               "total_cost": 1347705
             },
             "Total": {
-              "wo": 1965,
-              "cpc": 1152.5,
-              "total_cost": 2264611
+              "wo": 482,
+              "cpc": 4394.1,
+              "total_cost": 2117935
             }
           }
         },
@@ -674,34 +674,34 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Sukhbir Singh",
           "segments": {
             "<8K": {
-              "wo": 1446,
-              "cpc": 339.0,
+              "wo": 667,
+              "cpc": 734.8,
               "total_cost": 490131
             },
             "8K-10K": {
-              "wo": 448,
-              "cpc": 661.7,
+              "wo": 248,
+              "cpc": 1195.2,
               "total_cost": 296420
             },
             "10K-15K": {
-              "wo": 470,
-              "cpc": 867.4,
+              "wo": 221,
+              "cpc": 1844.7,
               "total_cost": 407678
             },
             "15K-20K": {
-              "wo": 126,
-              "cpc": 2452.9,
+              "wo": 60,
+              "cpc": 5151.0,
               "total_cost": 309060
             },
             ">20K": {
-              "wo": 88,
-              "cpc": 9213.6,
+              "wo": 63,
+              "cpc": 12869.7,
               "total_cost": 810794
             },
             "Total": {
-              "wo": 2578,
-              "cpc": 897.6,
-              "total_cost": 2314083
+              "wo": 927,
+              "cpc": 2350.2,
+              "total_cost": 2178600
             }
           }
         },
@@ -709,67 +709,67 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Tamilselvan Subramanian",
           "segments": {
             "<8K": {
-              "wo": 1214,
-              "cpc": 245.3,
+              "wo": 408,
+              "cpc": 730.0,
               "total_cost": 297839
             },
             "8K-10K": {
-              "wo": 70,
-              "cpc": 1024.8,
+              "wo": 41,
+              "cpc": 1749.7,
               "total_cost": 71736
             },
             "10K-15K": {
-              "wo": 81,
-              "cpc": 900.0,
+              "wo": 48,
+              "cpc": 1518.7,
               "total_cost": 72898
             },
             "15K-20K": {
-              "wo": 34,
-              "cpc": 9212.2,
+              "wo": 28,
+              "cpc": 11186.2,
               "total_cost": 313214
             },
             ">20K": {
-              "wo": 79,
-              "cpc": 13297.4,
+              "wo": 67,
+              "cpc": 15679.0,
               "total_cost": 1050494
             },
             "Total": {
-              "wo": 1478,
-              "cpc": 1222.0,
-              "total_cost": 1806181
+              "wo": 328,
+              "cpc": 5156.1,
+              "total_cost": 1691203
             }
           }
         }
       ],
       "national": {
         "<8K": {
-          "wo": 6461,
-          "cpc": 274.1,
+          "wo": 2794,
+          "cpc": 634.0,
           "total_cost": 1771269
         },
         "8K-10K": {
-          "wo": 1004,
-          "cpc": 720.7,
+          "wo": 545,
+          "cpc": 1327.7,
           "total_cost": 723591
         },
         "10K-15K": {
-          "wo": 1221,
-          "cpc": 1040.3,
+          "wo": 655,
+          "cpc": 1939.2,
           "total_cost": 1270199
         },
         "15K-20K": {
-          "wo": 408,
-          "cpc": 4070.6,
+          "wo": 232,
+          "cpc": 7158.6,
           "total_cost": 1660806
         },
         ">20K": {
-          "wo": 377,
-          "cpc": 11539.4,
+          "wo": 284,
+          "cpc": 15318.1,
           "total_cost": 4350350
         },
         "Total": {
-          "wo": 9471,
-          "cpc": 1032.2,
+          "wo": 4510,
+          "cpc": 2167.7,
           "total_cost": 9776215
         }
       }
@@ -991,22 +991,22 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Jitesh S Rath",
           "segments": {
             "<8K": {
-              "nps_pct": 63.5
+              "nps_pct": 68.5
             },
             "8K-10K": {
-              "nps_pct": 69.2
+              "nps_pct": 68.5
             },
             "10K-15K": {
-              "nps_pct": 74.8
+              "nps_pct": 68.5
             },
             "15K-20K": {
-              "nps_pct": 78.4
+              "nps_pct": 68.5
             },
             ">20K": {
-              "nps_pct": 82.1
+              "nps_pct": 68.5
             },
             "Total": {
-              "nps_pct": 70.4
+              "nps_pct": 68.5
             }
           }
         },
@@ -1014,22 +1014,22 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Rajesh Limbachia",
           "segments": {
             "<8K": {
-              "nps_pct": 63.5
+              "nps_pct": 68.5
             },
             "8K-10K": {
-              "nps_pct": 69.2
+              "nps_pct": 68.5
             },
             "10K-15K": {
-              "nps_pct": 74.8
+              "nps_pct": 68.5
             },
             "15K-20K": {
-              "nps_pct": 78.4
+              "nps_pct": 68.5
             },
             ">20K": {
-              "nps_pct": 82.1
+              "nps_pct": 68.5
             },
             "Total": {
-              "nps_pct": 70.4
+              "nps_pct": 68.5
             }
           }
         },
@@ -1037,22 +1037,22 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Shivaprasad P U",
           "segments": {
             "<8K": {
-              "nps_pct": 63.5
+              "nps_pct": 68.5
             },
             "8K-10K": {
-              "nps_pct": 69.2
+              "nps_pct": 68.5
             },
             "10K-15K": {
-              "nps_pct": 74.8
+              "nps_pct": 68.5
             },
             "15K-20K": {
-              "nps_pct": 78.4
+              "nps_pct": 68.5
             },
             ">20K": {
-              "nps_pct": 82.1
+              "nps_pct": 68.5
             },
             "Total": {
-              "nps_pct": 70.4
+              "nps_pct": 68.5
             }
           }
         },
@@ -1060,22 +1060,22 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Sukhbir Singh",
           "segments": {
             "<8K": {
-              "nps_pct": 63.5
+              "nps_pct": 68.5
             },
             "8K-10K": {
-              "nps_pct": 69.2
+              "nps_pct": 68.5
             },
             "10K-15K": {
-              "nps_pct": 74.8
+              "nps_pct": 68.5
             },
             "15K-20K": {
-              "nps_pct": 78.4
+              "nps_pct": 68.5
             },
             ">20K": {
-              "nps_pct": 82.1
+              "nps_pct": 68.5
             },
             "Total": {
-              "nps_pct": 70.4
+              "nps_pct": 68.5
             }
           }
         },
@@ -1083,44 +1083,44 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Tamilselvan Subramanian",
           "segments": {
             "<8K": {
-              "nps_pct": 63.5
+              "nps_pct": 68.5
             },
             "8K-10K": {
-              "nps_pct": 69.2
+              "nps_pct": 68.5
             },
             "10K-15K": {
-              "nps_pct": 74.8
+              "nps_pct": 68.5
             },
             "15K-20K": {
-              "nps_pct": 78.4
+              "nps_pct": 68.5
             },
             ">20K": {
-              "nps_pct": 82.1
+              "nps_pct": 68.5
             },
             "Total": {
-              "nps_pct": 70.4
+              "nps_pct": 68.5
             }
           }
         }
       ],
       "national": {
         "<8K": {
-          "nps_pct": 63.5
+          "nps_pct": 68.5
         },
         "8K-10K": {
-          "nps_pct": 69.2
+          "nps_pct": 68.5
         },
         "10K-15K": {
-          "nps_pct": 74.8
+          "nps_pct": 68.5
         },
         "15K-20K": {
-          "nps_pct": 78.4
+          "nps_pct": 68.5
         },
         ">20K": {
-          "nps_pct": 82.1
+          "nps_pct": 68.5
         },
         "Total": {
-          "nps_pct": 70.4
+          "nps_pct": 68.5
         }
       }
     }
@@ -1132,34 +1132,34 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Jitesh S Rath",
           "segments": {
             "<8K": {
-              "wo": 1278,
-              "cpc": 265.6,
+              "wo": 553,
+              "cpc": 613.7,
               "total_cost": 339403
             },
             "8K-10K": {
-              "wo": 267,
-              "cpc": 630.9,
+              "wo": 113,
+              "cpc": 1490.6,
               "total_cost": 168440
             },
             "10K-15K": {
-              "wo": 215,
-              "cpc": 1172.2,
+              "wo": 116,
+              "cpc": 2172.6,
               "total_cost": 252019
             },
             "15K-20K": {
-              "wo": 75,
-              "cpc": 4563.2,
+              "wo": 44,
+              "cpc": 7778.2,
               "total_cost": 342241
             },
             ">20K": {
-              "wo": 61,
-              "cpc": 10773.5,
+              "wo": 43,
+              "cpc": 15283.3,
               "total_cost": 657181
             },
             "Total": {
-              "wo": 1896,
-              "cpc": 927.9,
-              "total_cost": 1759284
+              "wo": 491,
+              "cpc": 3300.3,
+              "total_cost": 1620425
             }
           }
         },
@@ -1167,34 +1167,34 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Rajesh Limbachia",
           "segments": {
             "<8K": {
-              "wo": 813,
-              "cpc": 345.7,
+              "wo": 397,
+              "cpc": 707.9,
               "total_cost": 281039
             },
             "8K-10K": {
-              "wo": 193,
-              "cpc": 730.4,
+              "wo": 104,
+              "cpc": 1355.5,
               "total_cost": 140973
             },
             "10K-15K": {
-              "wo": 282,
-              "cpc": 843.4,
+              "wo": 159,
+              "cpc": 1495.8,
               "total_cost": 237839
             },
             "15K-20K": {
-              "wo": 68,
-              "cpc": 2915.2,
+              "wo": 33,
+              "cpc": 6007.0,
               "total_cost": 198231
             },
             ">20K": {
-              "wo": 36,
-              "cpc": 15561.2,
+              "wo": 27,
+              "cpc": 20748.3,
               "total_cost": 560203
             },
             "Total": {
-              "wo": 1392,
-              "cpc": 1018.9,
-              "total_cost": 1418285
+              "wo": 494,
+              "cpc": 2660.7,
+              "total_cost": 1314367
             }
           }
         },
@@ -1202,34 +1202,34 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Shivaprasad P U",
           "segments": {
             "<8K": {
-              "wo": 1322,
-              "cpc": 281.8,
+              "wo": 533,
+              "cpc": 699.0,
               "total_cost": 372579
             },
             "8K-10K": {
-              "wo": 131,
-              "cpc": 1162.1,
+              "wo": 87,
+              "cpc": 1749.9,
               "total_cost": 152239
             },
             "10K-15K": {
-              "wo": 179,
-              "cpc": 774.9,
+              "wo": 78,
+              "cpc": 1778.2,
               "total_cost": 138703
             },
             "15K-20K": {
-              "wo": 48,
-              "cpc": 5255.9,
+              "wo": 30,
+              "cpc": 8409.4,
               "total_cost": 252282
             },
             ">20K": {
-              "wo": 93,
-              "cpc": 13971.9,
+              "wo": 69,
+              "cpc": 18831.7,
               "total_cost": 1299385
             },
             "Total": {
-              "wo": 1773,
-              "cpc": 1249.4,
-              "total_cost": 2215188
+              "wo": 453,
+              "cpc": 4578.0,
+              "total_cost": 2073850
             }
           }
         },
@@ -1237,34 +1237,34 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Sukhbir Singh",
           "segments": {
             "<8K": {
-              "wo": 1320,
-              "cpc": 429.4,
+              "wo": 594,
+              "cpc": 954.3,
               "total_cost": 566858
             },
             "8K-10K": {
-              "wo": 452,
-              "cpc": 1070.4,
+              "wo": 253,
+              "cpc": 1912.3,
               "total_cost": 483818
             },
             "10K-15K": {
-              "wo": 480,
-              "cpc": 929.9,
+              "wo": 209,
+              "cpc": 2135.8,
               "total_cost": 446375
             },
             "15K-20K": {
-              "wo": 133,
-              "cpc": 2019.6,
+              "wo": 56,
+              "cpc": 4796.6,
               "total_cost": 268609
             },
             ">20K": {
-              "wo": 98,
-              "cpc": 10866.9,
+              "wo": 67,
+              "cpc": 15894.8,
               "total_cost": 1064952
             },
             "Total": {
-              "wo": 2483,
-              "cpc": 1140.0,
-              "total_cost": 2830612
+              "wo": 913,
+              "cpc": 2985.0,
+              "total_cost": 2725270
             }
           }
         },
@@ -1272,67 +1272,67 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Tamilselvan Subramanian",
           "segments": {
             "<8K": {
-              "wo": 1014,
-              "cpc": 238.7,
+              "wo": 379,
+              "cpc": 638.6,
               "total_cost": 242017
             },
             "8K-10K": {
-              "wo": 83,
-              "cpc": 1038.6,
+              "wo": 44,
+              "cpc": 1959.1,
               "total_cost": 86201
             },
             "10K-15K": {
-              "wo": 95,
-              "cpc": 1124.5,
+              "wo": 48,
+              "cpc": 2225.6,
               "total_cost": 106831
             },
             "15K-20K": {
-              "wo": 31,
-              "cpc": 7651.4,
+              "wo": 22,
+              "cpc": 10781.5,
               "total_cost": 237193
             },
             ">20K": {
-              "wo": 70,
-              "cpc": 14022.1,
+              "wo": 58,
+              "cpc": 16923.2,
               "total_cost": 981546
             },
             "Total": {
-              "wo": 1293,
-              "cpc": 1279.0,
-              "total_cost": 1653788
+              "wo": 286,
+              "cpc": 5392.8,
+              "total_cost": 1542328
             }
           }
         }
       ],
       "national": {
         "<8K": {
-          "wo": 5747,
-          "cpc": 313.5,
+          "wo": 2456,
+          "cpc": 733.7,
           "total_cost": 1801896
         },
         "8K-10K": {
-          "wo": 1126,
-          "cpc": 916.2,
+          "wo": 601,
+          "cpc": 1716.6,
           "total_cost": 1031671
         },
         "10K-15K": {
-          "wo": 1251,
-          "cpc": 944.7,
+          "wo": 610,
+          "cpc": 1937.3,
           "total_cost": 1181767
         },
         "15K-20K": {
-          "wo": 355,
-          "cpc": 3657.9,
+          "wo": 185,
+          "cpc": 7019.2,
           "total_cost": 1298556
         },
         ">20K": {
-          "wo": 358,
-          "cpc": 12746.6,
+          "wo": 264,
+          "cpc": 17285.1,
           "total_cost": 4563267
         },
         "Total": {
-          "wo": 8837,
-          "cpc": 1117.7,
+          "wo": 4116,
+          "cpc": 2399.7,
           "total_cost": 9877157
         }
       }
@@ -1554,22 +1554,22 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Jitesh S Rath",
           "segments": {
             "<8K": {
-              "nps_pct": 63.5
+              "nps_pct": 68.5
             },
             "8K-10K": {
-              "nps_pct": 69.2
+              "nps_pct": 68.5
             },
             "10K-15K": {
-              "nps_pct": 74.8
+              "nps_pct": 68.5
             },
             "15K-20K": {
-              "nps_pct": 78.4
+              "nps_pct": 68.5
             },
             ">20K": {
-              "nps_pct": 82.1
+              "nps_pct": 68.5
             },
             "Total": {
-              "nps_pct": 70.4
+              "nps_pct": 68.5
             }
           }
         },
@@ -1577,22 +1577,22 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Rajesh Limbachia",
           "segments": {
             "<8K": {
-              "nps_pct": 63.5
+              "nps_pct": 68.5
             },
             "8K-10K": {
-              "nps_pct": 69.2
+              "nps_pct": 68.5
             },
             "10K-15K": {
-              "nps_pct": 74.8
+              "nps_pct": 68.5
             },
             "15K-20K": {
-              "nps_pct": 78.4
+              "nps_pct": 68.5
             },
             ">20K": {
-              "nps_pct": 82.1
+              "nps_pct": 68.5
             },
             "Total": {
-              "nps_pct": 70.4
+              "nps_pct": 68.5
             }
           }
         },
@@ -1600,22 +1600,22 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Shivaprasad P U",
           "segments": {
             "<8K": {
-              "nps_pct": 63.5
+              "nps_pct": 68.5
             },
             "8K-10K": {
-              "nps_pct": 69.2
+              "nps_pct": 68.5
             },
             "10K-15K": {
-              "nps_pct": 74.8
+              "nps_pct": 68.5
             },
             "15K-20K": {
-              "nps_pct": 78.4
+              "nps_pct": 68.5
             },
             ">20K": {
-              "nps_pct": 82.1
+              "nps_pct": 68.5
             },
             "Total": {
-              "nps_pct": 70.4
+              "nps_pct": 68.5
             }
           }
         },
@@ -1623,22 +1623,22 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Sukhbir Singh",
           "segments": {
             "<8K": {
-              "nps_pct": 63.5
+              "nps_pct": 68.5
             },
             "8K-10K": {
-              "nps_pct": 69.2
+              "nps_pct": 68.5
             },
             "10K-15K": {
-              "nps_pct": 74.8
+              "nps_pct": 68.5
             },
             "15K-20K": {
-              "nps_pct": 78.4
+              "nps_pct": 68.5
             },
             ">20K": {
-              "nps_pct": 82.1
+              "nps_pct": 68.5
             },
             "Total": {
-              "nps_pct": 70.4
+              "nps_pct": 68.5
             }
           }
         },
@@ -1646,44 +1646,44 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Tamilselvan Subramanian",
           "segments": {
             "<8K": {
-              "nps_pct": 63.5
+              "nps_pct": 68.5
             },
             "8K-10K": {
-              "nps_pct": 69.2
+              "nps_pct": 68.5
             },
             "10K-15K": {
-              "nps_pct": 74.8
+              "nps_pct": 68.5
             },
             "15K-20K": {
-              "nps_pct": 78.4
+              "nps_pct": 68.5
             },
             ">20K": {
-              "nps_pct": 82.1
+              "nps_pct": 68.5
             },
             "Total": {
-              "nps_pct": 70.4
+              "nps_pct": 68.5
             }
           }
         }
       ],
       "national": {
         "<8K": {
-          "nps_pct": 63.5
+          "nps_pct": 68.5
         },
         "8K-10K": {
-          "nps_pct": 69.2
+          "nps_pct": 68.5
         },
         "10K-15K": {
-          "nps_pct": 74.8
+          "nps_pct": 68.5
         },
         "15K-20K": {
-          "nps_pct": 78.4
+          "nps_pct": 68.5
         },
         ">20K": {
-          "nps_pct": 82.1
+          "nps_pct": 68.5
         },
         "Total": {
-          "nps_pct": 70.4
+          "nps_pct": 68.5
         }
       }
     }
@@ -1695,34 +1695,34 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Jitesh S Rath",
           "segments": {
             "<8K": {
-              "wo": 4168,
-              "cpc": 255.7,
+              "wo": 1888,
+              "cpc": 564.5,
               "total_cost": 1065716
             },
             "8K-10K": {
-              "wo": 696,
-              "cpc": 667.1,
+              "wo": 319,
+              "cpc": 1455.5,
               "total_cost": 464309
             },
             "10K-15K": {
-              "wo": 610,
-              "cpc": 1082.5,
+              "wo": 331,
+              "cpc": 1994.9,
               "total_cost": 660321
             },
             "15K-20K": {
-              "wo": 248,
-              "cpc": 5806.8,
+              "wo": 147,
+              "cpc": 9796.6,
               "total_cost": 1440096
             },
             ">20K": {
-              "wo": 215,
-              "cpc": 10218.0,
+              "wo": 152,
+              "cpc": 14453.1,
               "total_cost": 2196877
             },
             "Total": {
-              "wo": 5937,
-              "cpc": 981.5,
-              "total_cost": 5827319
+              "wo": 1462,
+              "cpc": 3641.7,
+              "total_cost": 5324184
             }
           }
         },
@@ -1730,34 +1730,34 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Rajesh Limbachia",
           "segments": {
             "<8K": {
-              "wo": 2739,
-              "cpc": 323.2,
+              "wo": 1315,
+              "cpc": 673.2,
               "total_cost": 885217
             },
             "8K-10K": {
-              "wo": 538,
-              "cpc": 677.2,
+              "wo": 318,
+              "cpc": 1145.7,
               "total_cost": 364346
             },
             "10K-15K": {
-              "wo": 826,
-              "cpc": 894.7,
+              "wo": 466,
+              "cpc": 1585.8,
               "total_cost": 739006
             },
             "15K-20K": {
-              "wo": 261,
-              "cpc": 2527.1,
+              "wo": 138,
+              "cpc": 4779.5,
               "total_cost": 659570
             },
             ">20K": {
-              "wo": 128,
-              "cpc": 12726.9,
+              "wo": 87,
+              "cpc": 18724.6,
               "total_cost": 1629044
             },
             "Total": {
-              "wo": 4492,
-              "cpc": 952.2,
-              "total_cost": 4277183
+              "wo": 1583,
+              "cpc": 2474.6,
+              "total_cost": 3917300
             }
           }
         },
@@ -1765,34 +1765,34 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Shivaprasad P U",
           "segments": {
             "<8K": {
-              "wo": 4549,
-              "cpc": 243.9,
+              "wo": 1790,
+              "cpc": 619.9,
               "total_cost": 1109665
             },
             "8K-10K": {
-              "wo": 362,
-              "cpc": 1058.7,
+              "wo": 222,
+              "cpc": 1726.4,
               "total_cost": 383263
             },
             "10K-15K": {
-              "wo": 517,
-              "cpc": 981.9,
+              "wo": 261,
+              "cpc": 1945.0,
               "total_cost": 507648
             },
             "15K-20K": {
-              "wo": 178,
-              "cpc": 4245.9,
+              "wo": 106,
+              "cpc": 7129.9,
               "total_cost": 755771
             },
             ">20K": {
-              "wo": 282,
-              "cpc": 13779.4,
+              "wo": 218,
+              "cpc": 17824.7,
               "total_cost": 3885784
             },
             "Total": {
-              "wo": 5888,
-              "cpc": 1128.1,
-              "total_cost": 6642131
+              "wo": 1410,
+              "cpc": 4383.2,
+              "total_cost": 6180368
             }
           }
         },
@@ -1800,34 +1800,34 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Sukhbir Singh",
           "segments": {
             "<8K": {
-              "wo": 4304,
-              "cpc": 342.5,
+              "wo": 1913,
+              "cpc": 770.6,
               "total_cost": 1474211
             },
             "8K-10K": {
-              "wo": 1282,
-              "cpc": 841.9,
+              "wo": 736,
+              "cpc": 1466.5,
               "total_cost": 1079328
             },
             "10K-15K": {
-              "wo": 1377,
-              "cpc": 829.9,
+              "wo": 643,
+              "cpc": 1777.2,
               "total_cost": 1142743
             },
             "15K-20K": {
-              "wo": 432,
-              "cpc": 2402.5,
+              "wo": 209,
+              "cpc": 4966.0,
               "total_cost": 1037893
             },
             ">20K": {
-              "wo": 277,
-              "cpc": 10163.0,
+              "wo": 185,
+              "cpc": 15217.0,
               "total_cost": 2815144
             },
             "Total": {
-              "wo": 7672,
-              "cpc": 984.0,
-              "total_cost": 7549319
+              "wo": 2783,
+              "cpc": 2581.8,
+              "total_cost": 7185161
             }
           }
         },
@@ -1835,67 +1835,67 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Tamilselvan Subramanian",
           "segments": {
             "<8K": {
-              "wo": 3470,
-              "cpc": 234.1,
+              "wo": 1250,
+              "cpc": 650.0,
               "total_cost": 812445
             },
             "8K-10K": {
-              "wo": 218,
-              "cpc": 978.0,
+              "wo": 122,
+              "cpc": 1747.5,
               "total_cost": 213197
             },
             "10K-15K": {
-              "wo": 261,
-              "cpc": 1064.7,
+              "wo": 146,
+              "cpc": 1903.3,
               "total_cost": 277878
             },
             "15K-20K": {
-              "wo": 102,
-              "cpc": 7552.6,
+              "wo": 72,
+              "cpc": 10699.5,
               "total_cost": 770364
             },
             ">20K": {
-              "wo": 209,
-              "cpc": 12563.9,
+              "wo": 167,
+              "cpc": 15723.6,
               "total_cost": 2625848
             },
             "Total": {
-              "wo": 4260,
-              "cpc": 1103.2,
-              "total_cost": 4699732
+              "wo": 902,
+              "cpc": 4808.5,
+              "total_cost": 4337265
             }
           }
         }
       ],
       "national": {
         "<8K": {
-          "wo": 19230,
-          "cpc": 278.1,
+          "wo": 8156,
+          "cpc": 655.6,
           "total_cost": 5347254
         },
         "8K-10K": {
-          "wo": 3096,
-          "cpc": 808.9,
+          "wo": 1717,
+          "cpc": 1458.6,
           "total_cost": 2504443
         },
         "10K-15K": {
-          "wo": 3591,
-          "cpc": 926.6,
+          "wo": 1847,
+          "cpc": 1801.6,
           "total_cost": 3327596
         },
         "15K-20K": {
-          "wo": 1221,
-          "cpc": 3819.6,
+          "wo": 672,
+          "cpc": 6940.0,
           "total_cost": 4663694
         },
         ">20K": {
-          "wo": 1111,
-          "cpc": 11838.6,
+          "wo": 809,
+          "cpc": 16258.0,
           "total_cost": 13152697
         },
         "Total": {
-          "wo": 28249,
-          "cpc": 1026.4,
+          "wo": 13201,
+          "cpc": 2196.5,
           "total_cost": 28995684
         }
       }
@@ -2117,22 +2117,22 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Jitesh S Rath",
           "segments": {
             "<8K": {
-              "nps_pct": 63.5
+              "nps_pct": 68.5
             },
             "8K-10K": {
-              "nps_pct": 69.2
+              "nps_pct": 68.5
             },
             "10K-15K": {
-              "nps_pct": 74.8
+              "nps_pct": 68.5
             },
             "15K-20K": {
-              "nps_pct": 78.4
+              "nps_pct": 68.5
             },
             ">20K": {
-              "nps_pct": 82.1
+              "nps_pct": 68.5
             },
             "Total": {
-              "nps_pct": 70.4
+              "nps_pct": 68.5
             }
           }
         },
@@ -2140,22 +2140,22 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Rajesh Limbachia",
           "segments": {
             "<8K": {
-              "nps_pct": 63.5
+              "nps_pct": 68.5
             },
             "8K-10K": {
-              "nps_pct": 69.2
+              "nps_pct": 68.5
             },
             "10K-15K": {
-              "nps_pct": 74.8
+              "nps_pct": 68.5
             },
             "15K-20K": {
-              "nps_pct": 78.4
+              "nps_pct": 68.5
             },
             ">20K": {
-              "nps_pct": 82.1
+              "nps_pct": 68.5
             },
             "Total": {
-              "nps_pct": 70.4
+              "nps_pct": 68.5
             }
           }
         },
@@ -2163,22 +2163,22 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Shivaprasad P U",
           "segments": {
             "<8K": {
-              "nps_pct": 63.5
+              "nps_pct": 68.5
             },
             "8K-10K": {
-              "nps_pct": 69.2
+              "nps_pct": 68.5
             },
             "10K-15K": {
-              "nps_pct": 74.8
+              "nps_pct": 68.5
             },
             "15K-20K": {
-              "nps_pct": 78.4
+              "nps_pct": 68.5
             },
             ">20K": {
-              "nps_pct": 82.1
+              "nps_pct": 68.5
             },
             "Total": {
-              "nps_pct": 70.4
+              "nps_pct": 68.5
             }
           }
         },
@@ -2186,22 +2186,22 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Sukhbir Singh",
           "segments": {
             "<8K": {
-              "nps_pct": 63.5
+              "nps_pct": 68.5
             },
             "8K-10K": {
-              "nps_pct": 69.2
+              "nps_pct": 68.5
             },
             "10K-15K": {
-              "nps_pct": 74.8
+              "nps_pct": 68.5
             },
             "15K-20K": {
-              "nps_pct": 78.4
+              "nps_pct": 68.5
             },
             ">20K": {
-              "nps_pct": 82.1
+              "nps_pct": 68.5
             },
             "Total": {
-              "nps_pct": 70.4
+              "nps_pct": 68.5
             }
           }
         },
@@ -2209,44 +2209,44 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
           "busm": "Tamilselvan Subramanian",
           "segments": {
             "<8K": {
-              "nps_pct": 63.5
+              "nps_pct": 68.5
             },
             "8K-10K": {
-              "nps_pct": 69.2
+              "nps_pct": 68.5
             },
             "10K-15K": {
-              "nps_pct": 74.8
+              "nps_pct": 68.5
             },
             "15K-20K": {
-              "nps_pct": 78.4
+              "nps_pct": 68.5
             },
             ">20K": {
-              "nps_pct": 82.1
+              "nps_pct": 68.5
             },
             "Total": {
-              "nps_pct": 70.4
+              "nps_pct": 68.5
             }
           }
         }
       ],
       "national": {
         "<8K": {
-          "nps_pct": 63.5
+          "nps_pct": 68.5
         },
         "8K-10K": {
-          "nps_pct": 69.2
+          "nps_pct": 68.5
         },
         "10K-15K": {
-          "nps_pct": 74.8
+          "nps_pct": 68.5
         },
         "15K-20K": {
-          "nps_pct": 78.4
+          "nps_pct": 68.5
         },
         ">20K": {
-          "nps_pct": 82.1
+          "nps_pct": 68.5
         },
         "Total": {
-          "nps_pct": 70.4
+          "nps_pct": 68.5
         }
       }
     }
