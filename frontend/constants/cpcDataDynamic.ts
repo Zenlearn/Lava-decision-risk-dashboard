@@ -18,7 +18,8 @@ export const DYNAMIC_CPC_DATA_BY_MONTH: Record<string, any> = {
         "repl_count": 61,
         "repl_avg": 20907.77,
         "repl_total": 1275374,
-        "combined_total": 1855110
+        "combined_total": 1855110,
+        "busm": "Jitesh S Rath"
       },
       {
         "name": "Rajesh Limbachia",
@@ -28,7 +29,8 @@ export const DYNAMIC_CPC_DATA_BY_MONTH: Record<string, any> = {
         "repl_count": 36,
         "repl_avg": 20014.83,
         "repl_total": 720534,
-        "combined_total": 1345348
+        "combined_total": 1345348,
+        "busm": "Rajesh Limbachia"
       },
       {
         "name": "Shivaprasad P U",
@@ -38,7 +40,8 @@ export const DYNAMIC_CPC_DATA_BY_MONTH: Record<string, any> = {
         "repl_count": 65,
         "repl_avg": 21434.06,
         "repl_total": 1393214,
-        "combined_total": 1988587
+        "combined_total": 1988587,
+        "busm": "Shivaprasad P U"
       },
       {
         "name": "Sukhbir Singh",
@@ -48,7 +51,8 @@ export const DYNAMIC_CPC_DATA_BY_MONTH: Record<string, any> = {
         "repl_count": 57,
         "repl_avg": 20710.46,
         "repl_total": 1180496,
-        "combined_total": 2281278
+        "combined_total": 2281278,
+        "busm": "Sukhbir Singh"
       },
       {
         "name": "Tamilselvan Subramanian",
@@ -58,7 +62,8 @@ export const DYNAMIC_CPC_DATA_BY_MONTH: Record<string, any> = {
         "repl_count": 31,
         "repl_avg": 21894.42,
         "repl_total": 678727,
-        "combined_total": 1103729
+        "combined_total": 1103729,
+        "busm": "Tamilselvan Subramanian"
       }
     ],
     "asm": [
@@ -7215,7 +7220,8 @@ export const DYNAMIC_CPC_DATA_BY_MONTH: Record<string, any> = {
         "repl_count": 49,
         "repl_avg": 20425.1,
         "repl_total": 1000830,
-        "combined_total": 1848648
+        "combined_total": 1848648,
+        "busm": "Jitesh S Rath"
       },
       {
         "name": "Rajesh Limbachia",
@@ -7225,7 +7231,8 @@ export const DYNAMIC_CPC_DATA_BY_MONTH: Record<string, any> = {
         "repl_count": 29,
         "repl_avg": 21195.0,
         "repl_total": 614655,
-        "combined_total": 1257589
+        "combined_total": 1257589,
+        "busm": "Rajesh Limbachia"
       },
       {
         "name": "Shivaprasad P U",
@@ -7235,7 +7242,8 @@ export const DYNAMIC_CPC_DATA_BY_MONTH: Record<string, any> = {
         "repl_count": 73,
         "repl_avg": 21176.88,
         "repl_total": 1545912,
-        "combined_total": 2117935
+        "combined_total": 2117935,
+        "busm": "Shivaprasad P U"
       },
       {
         "name": "Sukhbir Singh",
@@ -7245,7 +7253,8 @@ export const DYNAMIC_CPC_DATA_BY_MONTH: Record<string, any> = {
         "repl_count": 46,
         "repl_avg": 20478.13,
         "repl_total": 941994,
-        "combined_total": 2178605
+        "combined_total": 2178605,
+        "busm": "Sukhbir Singh"
       },
       {
         "name": "Tamilselvan Subramanian",
@@ -7255,7 +7264,8 @@ export const DYNAMIC_CPC_DATA_BY_MONTH: Record<string, any> = {
         "repl_count": 58,
         "repl_avg": 21079.12,
         "repl_total": 1222589,
-        "combined_total": 1691205
+        "combined_total": 1691205,
+        "busm": "Tamilselvan Subramanian"
       }
     ],
     "asm": [
@@ -14399,7 +14409,8 @@ export const DYNAMIC_CPC_DATA_BY_MONTH: Record<string, any> = {
         "repl_count": 39,
         "repl_avg": 21505.15,
         "repl_total": 838701,
-        "combined_total": 1620426
+        "combined_total": 1620426,
+        "busm": "Jitesh S Rath"
       },
       {
         "name": "Rajesh Limbachia",
@@ -14409,7 +14420,8 @@ export const DYNAMIC_CPC_DATA_BY_MONTH: Record<string, any> = {
         "repl_count": 31,
         "repl_avg": 21634.74,
         "repl_total": 670677,
-        "combined_total": 1314367
+        "combined_total": 1314367,
+        "busm": "Rajesh Limbachia"
       },
       {
         "name": "Shivaprasad P U",
@@ -14419,7 +14431,8 @@ export const DYNAMIC_CPC_DATA_BY_MONTH: Record<string, any> = {
         "repl_count": 66,
         "repl_avg": 22257.06,
         "repl_total": 1468966,
-        "combined_total": 2073852
+        "combined_total": 2073852,
+        "busm": "Shivaprasad P U"
       },
       {
         "name": "Sukhbir Singh",
@@ -14429,7 +14442,8 @@ export const DYNAMIC_CPC_DATA_BY_MONTH: Record<string, any> = {
         "repl_count": 98,
         "repl_avg": 15310.61,
         "repl_total": 1500440,
-        "combined_total": 2725267
+        "combined_total": 2725267,
+        "busm": "Sukhbir Singh"
       },
       {
         "name": "Tamilselvan Subramanian",
@@ -14439,7 +14453,8 @@ export const DYNAMIC_CPC_DATA_BY_MONTH: Record<string, any> = {
         "repl_count": 51,
         "repl_avg": 21941.31,
         "repl_total": 1119007,
-        "combined_total": 1542330
+        "combined_total": 1542330,
+        "busm": "Tamilselvan Subramanian"
       }
     ],
     "asm": [
@@ -21609,7 +21624,8 @@ export const DYNAMIC_CPC_DATA_BY_MONTH: Record<string, any> = {
         "repl_count": 149,
         "repl_avg": 20905.4,
         "repl_total": 3114905,
-        "combined_total": 5324184
+        "combined_total": 5324184,
+        "busm": "Jitesh S Rath"
       },
       {
         "name": "Rajesh Limbachia",
@@ -21619,7 +21635,8 @@ export const DYNAMIC_CPC_DATA_BY_MONTH: Record<string, any> = {
         "repl_count": 96,
         "repl_avg": 20894.44,
         "repl_total": 2005866,
-        "combined_total": 3917304
+        "combined_total": 3917304,
+        "busm": "Rajesh Limbachia"
       },
       {
         "name": "Shivaprasad P U",
@@ -21629,7 +21646,8 @@ export const DYNAMIC_CPC_DATA_BY_MONTH: Record<string, any> = {
         "repl_count": 204,
         "repl_avg": 21608.29,
         "repl_total": 4408092,
-        "combined_total": 6180374
+        "combined_total": 6180374,
+        "busm": "Shivaprasad P U"
       },
       {
         "name": "Sukhbir Singh",
@@ -21639,7 +21657,8 @@ export const DYNAMIC_CPC_DATA_BY_MONTH: Record<string, any> = {
         "repl_count": 201,
         "repl_avg": 18024.53,
         "repl_total": 3622930,
-        "combined_total": 7185150
+        "combined_total": 7185150,
+        "busm": "Sukhbir Singh"
       },
       {
         "name": "Tamilselvan Subramanian",
@@ -21649,7 +21668,8 @@ export const DYNAMIC_CPC_DATA_BY_MONTH: Record<string, any> = {
         "repl_count": 140,
         "repl_avg": 21573.74,
         "repl_total": 3020323,
-        "combined_total": 4337264
+        "combined_total": 4337264,
+        "busm": "Tamilselvan Subramanian"
       }
     ],
     "asm": [
