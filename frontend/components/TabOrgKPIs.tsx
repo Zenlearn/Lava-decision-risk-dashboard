@@ -187,16 +187,40 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
   const busmNpsMap = new Map(busmNpsData.map(b => [normalizeKey(b.name), b]));
   const asmNpsMap = new Map(asmNpsData.map(a => [normalizeKey(a.name), a]));
 
+  // Calculate Combined CPC = (Combined Total Cost) / (Repair WO Count + Replacement WO Count)
+  const busmCpcMap = new Map<string, number>();
+  (currentCpcDataset?.busm || []).forEach((b: any) => {
+    const sumWo = (b.repair_count || 0) + (b.repl_count || 0);
+    const cost = b.combined_total || ((b.repair_total || 0) + (b.repl_total || 0));
+    const cpcVal = sumWo > 0 ? Math.round(cost / sumWo) : 0;
+    busmCpcMap.set(normalizeKey(b.name || b.busm), cpcVal);
+  });
+
+  const asmCpcMap = new Map<string, number>();
+  (currentCpcDataset?.asm || []).forEach((a: any) => {
+    const sumWo = (a.repair_count || 0) + (a.repl_count || 0);
+    const cost = a.combined_total || ((a.repair_total || 0) + (a.repl_total || 0));
+    const cpcVal = sumWo > 0 ? Math.round(cost / sumWo) : 0;
+    asmCpcMap.set(normalizeKey(a.name), cpcVal);
+  });
+
+  const summaryObj = currentCpcDataset?.summary || {};
+  const natSumWo = (summaryObj.repair_count || 0) + (summaryObj.repl_count || 0);
+  const natCost = summaryObj.combined_total || ((summaryObj.repair_total || 0) + (summaryObj.repl_total || 0));
+  const natCpcVal = natSumWo > 0 ? Math.round(natCost / natSumWo) : (activeOrgKpi.national?.cpc || 0);
+
   const rawBusmList: any[] = (activeOrgKpi.busms || []).filter((b: any) => b.name && !b.name.toLowerCase().includes('unknown'));
   const rawAllAsmList: any[] = (activeOrgKpi.asms || []).filter((a: any) => a.name && !a.name.toLowerCase().includes('unknown') && a.busm && !a.busm.toLowerCase().includes('unknown'));
   const rawNationalSummary: any = activeOrgKpi.national || {};
 
-  const busmList = rawBusmList.map((b: any) => {
+  const busmListWithCpc = rawBusmList.map((b: any) => {
     const npsInfo = busmNpsMap.get(normalizeKey(b.name));
     const npsVal = npsInfo ? parseFloat(npsInfo.nps) : (b.nps || 0);
     const npsRank = npsInfo ? npsInfo.rank : (b.ranks?.nps || 1);
+    const cpcVal = busmCpcMap.has(normalizeKey(b.name)) ? busmCpcMap.get(normalizeKey(b.name))! : (b.cpc || 0);
     return {
       ...b,
+      cpc: cpcVal,
       nps: b.nps && b.nps > 0 ? b.nps : npsVal,
       ranks: {
         ...(b.ranks || {}),
@@ -205,12 +229,26 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
     };
   });
 
-  const allAsmList = rawAllAsmList.map((a: any) => {
+  // Rank BUSMs by CPC (ascending order: lowest CPC = rank #1)
+  const sortedBusmsByCpc = [...busmListWithCpc].sort((x, y) => x.cpc - y.cpc);
+  const busmCpcRankMap = new Map(sortedBusmsByCpc.map((x, idx) => [normalizeKey(x.name), idx + 1]));
+
+  const busmList = busmListWithCpc.map((b: any) => ({
+    ...b,
+    ranks: {
+      ...b.ranks,
+      cpc: busmCpcRankMap.get(normalizeKey(b.name)) || b.ranks?.cpc || 1
+    }
+  }));
+
+  const allAsmListWithCpc = rawAllAsmList.map((a: any) => {
     const npsInfo = asmNpsMap.get(normalizeKey(a.name));
     const npsVal = npsInfo ? parseFloat(npsInfo.nps) : (a.nps || 0);
     const npsRank = npsInfo ? npsInfo.rank : (a.ranks?.nps || 1);
+    const cpcVal = asmCpcMap.has(normalizeKey(a.name)) ? asmCpcMap.get(normalizeKey(a.name))! : (a.cpc || 0);
     return {
       ...a,
+      cpc: cpcVal,
       nps: a.nps && a.nps > 0 ? a.nps : npsVal,
       ranks: {
         ...(a.ranks || {}),
@@ -219,8 +257,21 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
     };
   });
 
+  // Rank ASMs by CPC (ascending order: lowest CPC = rank #1)
+  const sortedAsmsByCpc = [...allAsmListWithCpc].sort((x, y) => x.cpc - y.cpc);
+  const asmCpcRankMap = new Map(sortedAsmsByCpc.map((x, idx) => [normalizeKey(x.name), idx + 1]));
+
+  const allAsmList = allAsmListWithCpc.map((a: any) => ({
+    ...a,
+    ranks: {
+      ...a.ranks,
+      cpc: asmCpcRankMap.get(normalizeKey(a.name)) || a.ranks?.cpc || 1
+    }
+  }));
+
   const nationalSummary = {
     ...rawNationalSummary,
+    cpc: natCpcVal,
     nps: rawNationalSummary.nps && rawNationalSummary.nps > 0 ? rawNationalSummary.nps : 65.4
   };
 
@@ -2239,6 +2290,10 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
           </div>
           <div style={{ marginTop: '4px' }}>
             • <strong>Combined Total Exposure (₹):</strong> <code>Total Repair Cost (₹) + Total Replacement Cost (₹)</code> across BUSM, ASM, and ASP tiers.
+          </div>
+          <div style={{ marginTop: '4px' }}>
+            • <strong>Scorecard Column CPC (₹) Formula:</strong> <code>Combined Total Cost (₹) ÷ (Repair WO Count + Replacement WO Count)</code> <br />
+            &nbsp;&nbsp;where <em>Combined Total Cost (₹)</em> = Total Repair Cost (₹) + Total Replacement Cost (₹), and denominator is sum of Repair WOs (Total Part Value &gt; 0) + Replacement WOs (Call Type = "Z9").
           </div>
         </div>
 
