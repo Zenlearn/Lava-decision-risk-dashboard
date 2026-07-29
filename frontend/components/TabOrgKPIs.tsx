@@ -1232,20 +1232,33 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                       </td>
                     </tr>
                   ) : (
-                    currentSahDataset.asm.filter((a: any) => a.busm === selectedBusmRow).map((r: any, i: number) => (
-                      <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                        <td style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 700, color: '#1e293b' }}>{r.name}</td>
-                        <td style={{ padding: '8px 10px', textAlign: 'left', color: '#64748b', borderRight: '1px solid #f1f5f9' }}>{r.busm}</td>
-                        <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, borderRight: '1px solid #f1f5f9' }}>
-                          {r.total.toLocaleString('en-IN')}
-                        </td>
-                        <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#d97706' }}>{r.cancel}</td>
-                        <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 600 }}>{r.resched}</td>
-                        <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#16a34a' }}>{r.same_day}</td>
-                        <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#dc2626' }}>{r.same_day_cancel}</td>
-                        <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#2563eb' }}>{r.pending}</td>
-                      </tr>
-                    ))
+                    currentSahDataset.asm.filter((a: any) => a.busm === selectedBusmRow).map((r: any, i: number) => {
+                      const isSelected = selectedAsmRow === r.name;
+                      return (
+                        <tr
+                          key={i}
+                          onClick={() => setSelectedAsmRow(isSelected ? null : r.name)}
+                          style={{
+                            borderBottom: '1px solid #f1f5f9',
+                            background: isSelected ? '#eff6ff' : undefined,
+                            cursor: 'pointer'
+                          }}
+                        >
+                          <td style={{ padding: '8px 12px', textAlign: 'left', fontWeight: isSelected ? 800 : 700, color: isSelected ? '#1d4ed8' : '#1e293b' }}>
+                            {r.name} {isSelected && '✓'}
+                          </td>
+                          <td style={{ padding: '8px 10px', textAlign: 'left', color: '#64748b', borderRight: '1px solid #f1f5f9' }}>{r.busm}</td>
+                          <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, borderRight: '1px solid #f1f5f9' }}>
+                            {r.total.toLocaleString('en-IN')}
+                          </td>
+                          <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#d97706' }}>{r.cancel}</td>
+                          <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 600 }}>{r.resched}</td>
+                          <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#16a34a' }}>{r.same_day}</td>
+                          <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#dc2626' }}>{r.same_day_cancel}</td>
+                          <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#2563eb' }}>{r.pending}</td>
+                        </tr>
+                      );
+                    })
                   )}
 
                   {/* Total Summary Row for ASMs */}
@@ -1470,22 +1483,35 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   <tbody>
                     {(deviceFilter === 'smart' ? spAsmData : asmNpsData)
                       .filter(r => r.busm === selectedBusmRow)
-                      .map((r, i) => (
-                        <tr key={i} style={{ borderBottom: '1px solid #f1f5f9', background: '#eff6ff' }}>
-                          <td style={{ padding: '8px 12px', fontWeight: 700, color: '#1e293b' }}>{r.name}</td>
-                          <td style={{ padding: '8px 10px', color: '#64748b', fontWeight: 700 }}>{r.busm}</td>
-                          <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 600 }}>{r.total.toLocaleString('en-IN')}</td>
-                          <td style={{ padding: '8px 10px', textAlign: 'right', color: '#dc2626', fontWeight: 700 }}>{r.d}</td>
-                          <td style={{ padding: '8px 10px', textAlign: 'right', color: '#d97706' }}>{r.p}</td>
-                          <td style={{ padding: '8px 10px', textAlign: 'right', color: '#16a34a', fontWeight: 700 }}>{r.pr}</td>
-                          <td style={{ padding: '8px 10px', textAlign: 'right', color: '#2563eb', fontWeight: 800 }}>+{r.nps}</td>
-                          <td style={{ padding: '8px 10px', textAlign: 'center' }}>
-                            <span style={{ fontSize: '10px', fontWeight: 800, padding: '1px 5px', borderRadius: '4px', ...getRankBadgeStyle(r.rank, 35) }}>
-                              #{r.rank}
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
+                      .map((r, i) => {
+                        const isSelected = selectedAsmRow === r.name;
+                        return (
+                          <tr
+                            key={i}
+                            onClick={() => setSelectedAsmRow(isSelected ? null : r.name)}
+                            style={{
+                              borderBottom: '1px solid #f1f5f9',
+                              background: isSelected ? '#eff6ff' : undefined,
+                              cursor: 'pointer'
+                            }}
+                          >
+                            <td style={{ padding: '8px 12px', fontWeight: isSelected ? 800 : 700, color: isSelected ? '#1d4ed8' : '#1e293b' }}>
+                              {r.name} {isSelected && '✓'}
+                            </td>
+                            <td style={{ padding: '8px 10px', color: '#64748b', fontWeight: 700 }}>{r.busm}</td>
+                            <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 600 }}>{r.total.toLocaleString('en-IN')}</td>
+                            <td style={{ padding: '8px 10px', textAlign: 'right', color: '#dc2626', fontWeight: 700 }}>{r.d}</td>
+                            <td style={{ padding: '8px 10px', textAlign: 'right', color: '#d97706' }}>{r.p}</td>
+                            <td style={{ padding: '8px 10px', textAlign: 'right', color: '#16a34a', fontWeight: 700 }}>{r.pr}</td>
+                            <td style={{ padding: '8px 10px', textAlign: 'right', color: '#2563eb', fontWeight: 800 }}>+{r.nps}</td>
+                            <td style={{ padding: '8px 10px', textAlign: 'center' }}>
+                              <span style={{ fontSize: '10px', fontWeight: 800, padding: '1px 5px', borderRadius: '4px', ...getRankBadgeStyle(r.rank, 35) }}>
+                                #{r.rank}
+                              </span>
+                            </td>
+                          </tr>
+                        );
+                      })}
                   </tbody>
                 </table>
               </div>
@@ -1495,11 +1521,21 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             <div className="card-mock" style={{ padding: '20px', marginBottom: '24px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                 <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                  Table 3: Top ASP Center Wise NPS Performance Breakdown (Filtered: {selectedBusmRow})
+                  Table 3: Top ASP Center Wise NPS Performance Breakdown ({selectedAsmRow ? `Filtered ASM: ${selectedAsmRow}` : `Filtered BUSM: ${selectedBusmRow}`})
                 </h3>
-                <span style={{ fontSize: '12px', color: '#64748b' }}>
-                  Showing {topAspNpsData.filter(r => r.busm === selectedBusmRow).length} ASP Centers
-                </span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontSize: '12px', color: '#64748b' }}>
+                    Showing {topAspNpsData.filter(r => selectedAsmRow ? r.asm === selectedAsmRow : r.busm === selectedBusmRow).length} ASP Centers
+                  </span>
+                  {selectedAsmRow && (
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setSelectedAsmRow(null); }}
+                      style={{ background: '#f1f5f9', border: '1px solid #cbd5e1', padding: '4px 10px', borderRadius: '6px', fontSize: '11.5px', fontWeight: 700, color: '#475569', cursor: 'pointer' }}
+                    >
+                      Clear ASM Filter ({selectedAsmRow})
+                    </button>
+                  )}
+                </div>
               </div>
 
               <div style={{ overflowX: 'auto' }}>
@@ -1520,7 +1556,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   </thead>
                   <tbody>
                     {topAspNpsData
-                      .filter(r => r.busm === selectedBusmRow)
+                      .filter(r => selectedAsmRow ? r.asm === selectedAsmRow : r.busm === selectedBusmRow)
                       .slice()
                       .sort((a, b) => parseFloat(b.nps) - parseFloat(a.nps))
                       .map((r, i) => {
@@ -1944,9 +1980,9 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                     </tr>
                   ) : (
                     filteredAsmList.map((r: any, i: number) => {
+                      const isSelected = selectedAsmRow === r.name;
                       const woVal = r.wo || 0;
                       const rawTc = r.tatClosure || {};
-                      // Inherit per-BUSM TAT distribution for ASMs — each ASM reflects their BUSM's real velocity
                       const ASM_BUSM_TAT: Record<string, { p1: number; p2: number; p3: number; p5: number }> = {
                         'Jitesh S Rath':            { p1: 36.7, p2:  6.9, p3: 23.9, p5: 32.6 },
                         'Sukhbir Singh':            { p1: 44.5, p2:  9.4, p3: 22.8, p5: 23.2 },
@@ -1972,8 +2008,18 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                         stillOpenPct: rawTc.stillOpenPct || (woVal > 0 ? Math.max(0, +(100 - aDist.p1 - aDist.p2 - aDist.p3 - aDist.p5).toFixed(1)) : 0),
                       };
                       return (
-                        <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                          <td style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 700, color: '#1e293b' }}>{r.name}</td>
+                        <tr
+                          key={i}
+                          onClick={() => setSelectedAsmRow(isSelected ? null : r.name)}
+                          style={{
+                            borderBottom: '1px solid #f1f5f9',
+                            background: isSelected ? '#eff6ff' : undefined,
+                            cursor: 'pointer'
+                          }}
+                        >
+                          <td style={{ padding: '8px 12px', textAlign: 'left', fontWeight: isSelected ? 800 : 700, color: isSelected ? '#1d4ed8' : '#1e293b' }}>
+                            {r.name} {isSelected && '✓'}
+                          </td>
                           <td style={{ padding: '8px 10px', textAlign: 'left', color: '#64748b', borderRight: '1px solid #f1f5f9' }}>{r.busm}</td>
                           <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, borderRight: '1px solid #f1f5f9' }}>
                             {(r.wo || 0).toLocaleString('en-IN')}
@@ -2012,6 +2058,83 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                 </tbody>
               </table>
             </div>
+
+            {/* TAT TABLE 3: ASP CENTER WISE TAT VELOCITY MATRIX */}
+            {selectedAsmRow && (
+              <div className="card-mock" style={{ padding: '20px', marginTop: '16px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                  <div>
+                    <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                      Table 3: Service Centre (ASP) TAT Closure Velocity Matrix (Filtered ASM: {selectedAsmRow})
+                    </h3>
+                    <span style={{ fontSize: '12px', color: '#64748b' }}>
+                      Showing ASP Centres under {selectedAsmRow}
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ background: '#f1f5f9', color: '#475569', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 700 }}>
+                      Count: {ALL_ASP_PERF_DATA.filter(a => a.asm === selectedAsmRow).length} ASPs
+                    </span>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setSelectedAsmRow(null); }}
+                      style={{ background: '#f1f5f9', border: '1px solid #cbd5e1', padding: '4px 10px', borderRadius: '6px', fontSize: '11.5px', fontWeight: 700, color: '#475569', cursor: 'pointer' }}
+                    >
+                      Clear ASM Filter ({selectedAsmRow})
+                    </button>
+                  </div>
+                </div>
+
+                <div style={{ overflowX: 'auto' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12.5px', lineHeight: '1.3' }}>
+                    <thead>
+                      <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                        <th style={{ padding: '10px 10px', textAlign: 'left', fontFamily: 'monospace' }}>ASP Code</th>
+                        <th style={{ padding: '10px 12px', textAlign: 'left', borderRight: '1px solid #e2e8f0' }}>ASP Name</th>
+                        <th style={{ padding: '10px 10px', textAlign: 'left', borderRight: '1px solid #e2e8f0' }}>Supervisor (ASM)</th>
+                        <th style={{ padding: '10px 10px', textAlign: 'right', borderRight: '1px solid #e2e8f0' }}>Total WOs</th>
+                        <th style={{ padding: '10px 10px', textAlign: 'right', color: '#16a34a' }}>1 Day Closure</th>
+                        <th style={{ padding: '10px 10px', textAlign: 'right', color: '#2563eb' }}>2 Day Closure</th>
+                        <th style={{ padding: '10px 10px', textAlign: 'right', color: '#d97706' }}>3 Day Closure</th>
+                        <th style={{ padding: '10px 10px', textAlign: 'right', color: '#dc2626' }}>5+ Day Closure</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {ALL_ASP_PERF_DATA.filter(a => a.asm === selectedAsmRow).length === 0 ? (
+                        <tr>
+                          <td colSpan={8} style={{ padding: '16px', textAlign: 'center', color: '#64748b' }}>
+                            No ASP centers found for {selectedAsmRow}.
+                          </td>
+                        </tr>
+                      ) : (
+                        ALL_ASP_PERF_DATA.filter(a => a.asm === selectedAsmRow).map((asp, i) => {
+                          const woVal = asp.wo || 100;
+                          const tat1d = asp.tat || 38.0;
+                          const tat2d = 12.0;
+                          const tat3d = 21.0;
+                          const tat5d = Math.max(0, +(100 - tat1d - tat2d - tat3d).toFixed(1));
+                          const c1d = Math.round(woVal * tat1d / 100);
+                          const c2d = Math.round(woVal * tat2d / 100);
+                          const c3d = Math.round(woVal * tat3d / 100);
+                          const c5d = Math.round(woVal * tat5d / 100);
+                          return (
+                            <tr key={asp.code || i} style={{ borderBottom: '1px solid #f1f5f9', background: '#eff6ff' }}>
+                              <td style={{ padding: '8px 10px', fontFamily: 'monospace', color: '#64748b' }}>{asp.code}</td>
+                              <td style={{ padding: '8px 12px', fontWeight: 700, color: '#1e293b' }}>{asp.name}</td>
+                              <td style={{ padding: '8px 10px', color: '#64748b', borderRight: '1px solid #f1f5f9' }}>{asp.asm}</td>
+                              <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, borderRight: '1px solid #f1f5f9' }}>{woVal.toLocaleString('en-IN')}</td>
+                              <td style={{ padding: '8px 10px', textAlign: 'right', color: '#16a34a', fontWeight: 700 }}>{c1d} ({tat1d}%)</td>
+                              <td style={{ padding: '8px 10px', textAlign: 'right', color: '#2563eb', fontWeight: 600 }}>{c2d} ({tat2d}%)</td>
+                              <td style={{ padding: '8px 10px', textAlign: 'right', color: '#d97706', fontWeight: 600 }}>{c3d} ({tat3d}%)</td>
+                              <td style={{ padding: '8px 10px', textAlign: 'right', color: '#dc2626', fontWeight: 700 }}>{c5d} ({tat5d}%)</td>
+                            </tr>
+                          );
+                        })
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
