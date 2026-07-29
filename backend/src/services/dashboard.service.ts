@@ -1488,7 +1488,11 @@ export async function getFullDashboardData(filters?: {
       const tatPct = tatRows.length > 0 ? Math.round((tat1d / tatRows.length) * 1000) / 10 : (wo > 0 ? Math.round((1 - bounceCount / wo) * 1000) / 10 : 0);
 
       const totalPartVal = busmRows.reduce((sum, r) => sum + (r.partLeakageVal || 0), 0);
-      const cpc = wo > 0 ? Math.round(totalPartVal / wo) : 0;
+      const busmRepairRows = busmRows.filter((r) => (r.partLeakageVal || 0) > 0);
+      const busmReplRows = busmRows.filter((r) => r.isReplacement || String(r.rawData?.[FIELD_MAP.callType] || '').trim().toUpperCase() === 'Z9');
+      const busmCombinedCost = busmRows.reduce((sum, r) => sum + (r.partLeakageVal || 0) + (r.handsetVal || 0), 0);
+      const busmCombinedWos = busmRepairRows.length + busmReplRows.length;
+      const cpc = busmCombinedWos > 0 ? Math.round(busmCombinedCost / busmCombinedWos) : (wo > 0 ? Math.round(totalPartVal / wo) : 0);
 
       const homeRows = busmRows.filter((r) => r.isHome);
       const homeAdherence = homeRows.filter((r) => r.tat !== null && r.tat <= 3).length;
@@ -1623,7 +1627,11 @@ export async function getFullDashboardData(filters?: {
       const tatPct = tatRows.length > 0 ? Math.round((tat1d / tatRows.length) * 1000) / 10 : (wo > 0 ? Math.round((1 - bounceCount / wo) * 1000) / 10 : 0);
 
       const totalPartVal = asmRows.reduce((sum, r) => sum + (r.partLeakageVal || 0), 0);
-      const cpc = wo > 0 ? Math.round(totalPartVal / wo) : 0;
+      const asmRepairRows = asmRows.filter((r) => (r.partLeakageVal || 0) > 0);
+      const asmReplRows = asmRows.filter((r) => r.isReplacement || String(r.rawData?.[FIELD_MAP.callType] || '').trim().toUpperCase() === 'Z9');
+      const asmCombinedCost = asmRows.reduce((sum, r) => sum + (r.partLeakageVal || 0) + (r.handsetVal || 0), 0);
+      const asmCombinedWos = asmRepairRows.length + asmReplRows.length;
+      const cpc = asmCombinedWos > 0 ? Math.round(asmCombinedCost / asmCombinedWos) : (wo > 0 ? Math.round(totalPartVal / wo) : 0);
 
       const homeRows = asmRows.filter((r) => r.isHome);
       const homeAdherence = homeRows.filter((r) => r.tat !== null && r.tat <= 3).length;
@@ -1742,7 +1750,11 @@ export async function getFullDashboardData(filters?: {
     const nationalTat = totalTatRows.length > 0 ? Math.round((totalTat1d / totalTatRows.length) * 1000) / 10 : 0;
 
     const totalPartVal = rows.reduce((sum, r) => sum + (r.partLeakageVal || 0), 0);
-    const nationalCpc = totalWo > 0 ? Math.round(totalPartVal / totalWo) : 0;
+    const natRepairRows = rows.filter((r) => (r.partLeakageVal || 0) > 0);
+    const natReplRows = rows.filter((r) => r.isReplacement || String(r.rawData?.[FIELD_MAP.callType] || '').trim().toUpperCase() === 'Z9');
+    const natCombinedCost = rows.reduce((sum, r) => sum + (r.partLeakageVal || 0) + (r.handsetVal || 0), 0);
+    const natCombinedWos = natRepairRows.length + natReplRows.length;
+    const nationalCpc = natCombinedWos > 0 ? Math.round(natCombinedCost / natCombinedWos) : (totalWo > 0 ? Math.round(totalPartVal / totalWo) : 0);
 
     const totalHomeRows = rows.filter((r) => r.isHome);
     const totalHomeAdherence = totalHomeRows.filter((r) => r.tat !== null && r.tat <= 3).length;
