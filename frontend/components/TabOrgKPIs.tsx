@@ -342,11 +342,11 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
       {/* QUICK JUMP PILLS NAVIGATION BAR */}
       <div style={{ display: 'flex', gap: '10px', marginBottom: '24px', flexWrap: 'wrap' }}>
         {[
-          { label: 'Overall', target: 'sec-overall' },
-          { label: 'CPC Details', target: 'sec-cpc' },
-          { label: 'Service at Home', target: 'sec-sah' },
-          { label: 'NPS', target: 'sec-nps' },
-          { label: 'TAT', target: 'sec-tat' },
+          { label: '1. Overall', target: 'sec-overall' },
+          { label: '2. CPC Details', target: 'sec-cpc' },
+          { label: '3. Service at Home', target: 'sec-sah' },
+          { label: '4. NPS', target: 'sec-nps' },
+          { label: '5. TAT', target: 'sec-tat' },
         ].map((pill) => (
           <button
             key={pill.target}
@@ -834,14 +834,14 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
         )}
       </div>
 
-      {/* SECT      {/* SECTION 2: CPC BREAKDOWN — COMBINED REPAIR & REPLACEMENT COST ANALYSIS */}
+      {/* SECTION 3: CPC BREAKDOWN — COMBINED REPAIR & REPLACEMENT COST ANALYSIS */}
       <div id="sec-cpc" style={{ marginBottom: '36px' }}>
         <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
               <div className="bar" style={{ background: '#d97706' }}></div>
               <span style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>
-                CPC Breakdown — Combined Repair &amp; Replacement Cost Analysis
+                2. CPC Breakdown — Combined Repair &amp; Replacement Cost Analysis
               </span>
               <span style={{ fontSize: '11.5px', fontWeight: 800, background: '#fef3c7', color: '#b45309', border: '1px solid #fde68a', padding: '2px 8px', borderRadius: '12px' }}>
                 Active Month: {selectedMonth === 'All' ? 'All Months (Apr-Jun)' : selectedMonth === 'Jun' ? 'June 2026' : selectedMonth === 'May' ? 'May 2026' : 'April 2026'}
@@ -1129,7 +1129,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <div className="bar" style={{ background: '#2563eb' }}></div>
             <span style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>
-              2. Service at Home (S@H) Operational Benchmarks
+              3. Service at Home (S@H) Operational Benchmarks
             </span>
           </div>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#2563eb', marginTop: '2px', marginLeft: '12px' }}>
@@ -1320,7 +1320,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                 <div className="bar" style={{ background: '#7c3aed' }}></div>
                 <span style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>
-                  3. NPS Performance &amp; Customer Satisfaction Dashboard
+                  4. NPS Performance &amp; Customer Satisfaction Dashboard
                 </span>
                 {(segmentFilter !== 'All' || modelTypeFilter !== 'All') && (
                   <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
@@ -1774,7 +1774,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
             <div className="bar" style={{ background: '#16a34a' }}></div>
             <span style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>
-              4. TAT &amp; Turnaround Speed Dashboard
+              5. TAT &amp; Turnaround Speed Dashboard
             </span>
             {(segmentFilter !== 'All' || modelTypeFilter !== 'All') && (
               <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
