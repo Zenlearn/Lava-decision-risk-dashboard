@@ -2373,15 +2373,29 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                         </tr>
                       ) : (
                         ALL_ASP_PERF_DATA.filter(a => a.asm === selectedAsmRow).map((asp, i) => {
-                          const woVal = asp.wo || 100;
-                          const tat1d = asp.tat || 38.0;
-                          const tat2d = 12.0;
-                          const tat3d = 21.0;
-                          const tat5d = Math.max(0, +(100 - tat1d - tat2d - tat3d).toFixed(1));
+                          const woVal = asp.wo || 0;
+                          const tat1d = asp.tat || 0;
+
+                          // Look up the BUSM's TAT distribution ratios to split the remaining percentage
+                          const ASM_BUSM_TAT: Record<string, { p1: number; p2: number; p3: number; p5: number }> = {
+                            'Jitesh S Rath':            { p1: 36.7, p2:  6.9, p3: 23.9, p5: 32.6 },
+                            'Sukhbir Singh':            { p1: 44.5, p2:  9.4, p3: 22.8, p5: 23.2 },
+                            'Tamilselvan Subramanian':  { p1: 31.8, p2: 11.2, p3: 27.7, p5: 29.3 },
+                            'Shivaprasad P U':          { p1: 38.0, p2: 10.7, p3: 29.0, p5: 22.3 },
+                            'Rajesh Limbachia':         { p1: 44.3, p2: 10.3, p3: 27.1, p5: 18.3 },
+                          };
+                          const aDist = ASM_BUSM_TAT[asp.busm] || { p1: 26.9, p2: 12.0, p3: 21.0, p5: 40.1 };
+                          const remaining = Math.max(0, 100 - tat1d);
+                          const sumWeights = (aDist.p2 + aDist.p3 + aDist.p5) || 1;
+
+                          const tat2d = +(remaining * aDist.p2 / sumWeights).toFixed(1);
+                          const tat3d = +(remaining * aDist.p3 / sumWeights).toFixed(1);
+                          const tat5d = Math.max(0, +(remaining - tat2d - tat3d).toFixed(1));
+
                           const c1d = Math.round(woVal * tat1d / 100);
                           const c2d = Math.round(woVal * tat2d / 100);
                           const c3d = Math.round(woVal * tat3d / 100);
-                          const c5d = Math.round(woVal * tat5d / 100);
+                          const c5d = Math.max(0, woVal - c1d - c2d - c3d);
                           return (
                             <tr key={asp.code || i} style={{ borderBottom: '1px solid #f1f5f9', background: '#eff6ff' }}>
                               <td style={{ padding: '8px 10px', fontFamily: 'monospace', color: '#64748b' }}>{asp.code}</td>
