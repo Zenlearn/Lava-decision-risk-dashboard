@@ -895,7 +895,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             </TableHeader>
             <TableBody>
               {currentCpcDataset.busm.map((rRepair: any, i: number) => {
-                const busmName = rRepair.name || rRepair.busm;
+                const busmName = rRepair.busm || rRepair.name || rRepair.busm_name || rRepair.busmName || rRepair.BUSM || rRepair.Name || 'BUSM';
                 const isSelected = cpcBusmRepair === busmName;
                 const repairTotal = Math.round(rRepair.repair_count * rRepair.repair_avg);
                 const replTotal = Math.round(rRepair.repl_count * rRepair.repl_avg);
