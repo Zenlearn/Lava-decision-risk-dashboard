@@ -1715,16 +1715,40 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   );
                 })}
               </TableBody>
-              <TableSummaryRow>
-                <TableCell style={{ textAlign: 'left' }}>National Overall</TableCell>
-                <TableCell style={{ textAlign: 'right' }}>{deviceFilter === 'smart' ? '6,801' : '12,151'}</TableCell>
-                <TableCell style={{ textAlign: 'right', color: '#1e40af' }}>{deviceFilter === 'smart' ? '46.5%' : '36.6%'}</TableCell>
-                <TableCell style={{ textAlign: 'right', color: '#be123c' }}>{deviceFilter === 'smart' ? '10.3%' : '10.5%'}</TableCell>
-                <TableCell style={{ textAlign: 'right' }}>{deviceFilter === 'smart' ? '15.2%' : '13.6%'}</TableCell>
-                <TableCell style={{ textAlign: 'right', color: '#065f46' }}>{deviceFilter === 'smart' ? '74.5%' : '75.9%'}</TableCell>
-                <TableCell style={{ textAlign: 'right', color: '#1d4ed8' }}>{deviceFilter === 'smart' ? '+64.2' : '+65.4'}</TableCell>
-                <TableCell style={{ textAlign: 'center' }}>-</TableCell>
-              </TableSummaryRow>
+              {/* National total row — computed dynamically from BUSM data */}
+              {(() => {
+                const src = deviceFilter === 'smart' ? spBusmData : busmNpsData;
+                const totSurveys = src.reduce((s: number, r: any) => s + (r.total || 0), 0);
+                const wavg = (key: string) => {
+                  if (totSurveys === 0) return '0.0%';
+                  const ws = src.reduce((s: number, r: any) =>
+                    s + (parseFloat((r[key] || '0').replace('%', '')) * (r.total || 0)), 0);
+                  return `${(ws / totSurveys).toFixed(1)}%`;
+                };
+                const wavgNps = () => {
+                  if (totSurveys === 0) return '+0';
+                  const ws = src.reduce((s: number, r: any) => s + ((r.nps || 0) * (r.total || 0)), 0);
+                  return `+${(ws / totSurveys).toFixed(1)}`;
+                };
+                const wavgRr = () => {
+                  if (totSurveys === 0) return '0.0%';
+                  const ws = src.reduce((s: number, r: any) =>
+                    s + (parseFloat((r.rr || '0').replace('%', '')) * (r.total || 0)), 0);
+                  return `${(ws / totSurveys).toFixed(1)}%`;
+                };
+                return (
+                  <TableSummaryRow>
+                    <TableCell style={{ textAlign: 'left' }}>National Overall</TableCell>
+                    <TableCell style={{ textAlign: 'right' }}>{totSurveys.toLocaleString('en-IN')}</TableCell>
+                    <TableCell style={{ textAlign: 'right', color: '#1e40af' }}>{wavgRr()}</TableCell>
+                    <TableCell style={{ textAlign: 'right', color: '#be123c' }}>{wavg('d')}</TableCell>
+                    <TableCell style={{ textAlign: 'right' }}>{wavg('p')}</TableCell>
+                    <TableCell style={{ textAlign: 'right', color: '#065f46' }}>{wavg('pr')}</TableCell>
+                    <TableCell style={{ textAlign: 'right', color: '#1d4ed8' }}>{wavgNps()}</TableCell>
+                    <TableCell style={{ textAlign: 'center' }}>-</TableCell>
+                  </TableSummaryRow>
+                );
+              })()}
             </Table>
           </div>
         </div>
@@ -1959,177 +1983,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
           </div>
         )}
 
-        {/* NPS TABLE 6: OVERALL DEVICE CATEGORY NPS COMPARISON */}
-        <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px' }}>
-          <button
-            onClick={scrollToTop}
-            title="Move to top of page"
-            style={{
-              position: 'absolute', top: '10px', right: '14px',
-              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
-              color: '#fff', border: 'none', borderRadius: '20px',
-              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
-              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
-              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
-              letterSpacing: '0.03em'
-            }}
-          >↑ Top</button>
-          <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', marginBottom: '12px' }}>
-            Table 6: Overall Device Category NPS Comparison (Feature Phone vs Smart Phone)
-          </h3>
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
-              <thead>
-                <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '11px', textTransform: 'uppercase' }}>
-                  <th style={{ padding: '10px 12px', textAlign: 'left' }}>Device Category</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right' }}>Total Surveys</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', color: '#dc2626' }}>Detractor %</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', color: '#d97706' }}>Passive %</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', color: '#16a34a' }}>Promoter %</th>
-                  <th style={{ padding: '10px 10px', textAlign: 'right', color: '#2563eb' }}>NPS %</th>
-                </tr>
-              </thead>
-              <tbody>
-                {deviceCategoryNps.map((r, i) => (
-                  <tr key={i} style={{ borderBottom: '1px solid #f1f5f9', fontWeight: i === 2 ? 800 : 500 }}>
-                    <td style={{ padding: '9px 12px', fontWeight: 700, color: '#1e293b' }}>{r.cat}</td>
-                    <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 600 }}>{r.surveys.toLocaleString('en-IN')}</td>
-                    <td style={{ padding: '9px 10px', textAlign: 'right', color: '#dc2626', fontWeight: 700 }}>{r.d}</td>
-                    <td style={{ padding: '9px 10px', textAlign: 'right', color: '#d97706' }}>{r.p}</td>
-                    <td style={{ padding: '9px 10px', textAlign: 'right', color: '#16a34a', fontWeight: 700 }}>{r.pr}</td>
-                    <td style={{ padding: '9px 10px', textAlign: 'right', color: '#2563eb', fontWeight: 800 }}>{r.nps}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* NPS TABLE 7 & 8: FEATURE PHONE vs SMART PHONE BREAKDOWN BY BUSM */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px' }}>
-          
-          {/* Table 7: Feature Phone NPS Performance Breakdown */}
-          <div className="card-mock" style={{ position: 'relative', padding: '20px', margin: 0 }}>
-          <button
-            onClick={scrollToTop}
-            title="Move to top of page"
-            style={{
-              position: 'absolute', top: '10px', right: '14px',
-              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
-              color: '#fff', border: 'none', borderRadius: '20px',
-              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
-              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
-              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
-              letterSpacing: '0.03em'
-            }}
-          >↑ Top</button>
-            <h3 style={{ fontSize: '14.5px', fontWeight: 800, color: '#0f172a', marginBottom: '12px' }}>
-              Table 7: Feature Phone NPS Performance Breakdown by BUSM
-            </h3>
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12.5px' }}>
-                <thead>
-                  <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '11px', textTransform: 'uppercase' }}>
-                    <th style={{ padding: '8px 10px', textAlign: 'left' }}>BUSM Name</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'right' }}>Surveys</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'right', color: '#dc2626' }}>Detractor %</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'right', color: '#16a34a' }}>Promoter %</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'right', color: '#2563eb' }}>NPS %</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {fpBusmData
-                    .slice()
-                    .sort((a, b) => parseFloat(b.nps) - parseFloat(a.nps))
-                    .map((r, i) => {
-                      const rank = i + 1;
-                      return (
-                    <tr key={r.name} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                      <td style={{ padding: '8px 10px', fontWeight: 700, color: '#1e293b' }}>{r.name}</td>
-                      <td style={{ padding: '8px 8px', textAlign: 'right' }}>{r.total.toLocaleString('en-IN')}</td>
-                      <td style={{ padding: '8px 8px', textAlign: 'right', color: '#dc2626', fontWeight: 700 }}>{r.d}</td>
-                      <td style={{ padding: '8px 8px', textAlign: 'right', color: '#16a34a', fontWeight: 700 }}>{r.pr}</td>
-                      <td style={{ padding: '8px 8px', textAlign: 'right' }}>
-                        <span style={{ color: '#2563eb', fontWeight: 800 }}>{r.nps}</span>
-                        <span style={{ fontSize: '10.5px', fontWeight: 800, padding: '1px 5px', borderRadius: '4px', marginLeft: '5px', ...getRankBadgeStyle(rank, 5) }}>#{rank}</span>
-                      </td>
-                    </tr>
-                    );
-                  })}
-                  <tr style={{ borderTop: '2px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
-                    <td style={{ padding: '8px 10px', color: '#0f172a' }}>Total Feature Phone</td>
-                    <td style={{ padding: '8px 8px', textAlign: 'right' }}>5,350</td>
-                    <td style={{ padding: '8px 8px', textAlign: 'right', color: '#dc2626' }}>10.7%</td>
-                    <td style={{ padding: '8px 8px', textAlign: 'right', color: '#16a34a' }}>78.2%</td>
-                    <td style={{ padding: '8px 8px', textAlign: 'right', color: '#2563eb' }}>67.5%</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* Table 8: Smart Phone NPS Performance Breakdown */}
-          <div className="card-mock" style={{ position: 'relative', padding: '20px', margin: 0 }}>
-          <button
-            onClick={scrollToTop}
-            title="Move to top of page"
-            style={{
-              position: 'absolute', top: '10px', right: '14px',
-              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
-              color: '#fff', border: 'none', borderRadius: '20px',
-              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
-              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
-              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
-              letterSpacing: '0.03em'
-            }}
-          >↑ Top</button>
-            <h3 style={{ fontSize: '14.5px', fontWeight: 800, color: '#0f172a', marginBottom: '12px' }}>
-              Table 8: Smart Phone NPS Performance Breakdown by BUSM
-            </h3>
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12.5px' }}>
-                <thead>
-                  <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '11px', textTransform: 'uppercase' }}>
-                    <th style={{ padding: '8px 10px', textAlign: 'left' }}>BUSM Name</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'right' }}>Surveys</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'right', color: '#dc2626' }}>Detractor %</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'right', color: '#16a34a' }}>Promoter %</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'right', color: '#2563eb' }}>NPS %</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {spBusmData
-                    .slice()
-                    .sort((a, b) => parseFloat(b.nps) - parseFloat(a.nps))
-                    .map((r, i) => {
-                      const rank = i + 1;
-                      return (
-                    <tr key={r.name} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                      <td style={{ padding: '8px 10px', fontWeight: 700, color: '#1e293b' }}>{r.name}</td>
-                      <td style={{ padding: '8px 8px', textAlign: 'right' }}>{r.total.toLocaleString('en-IN')}</td>
-                      <td style={{ padding: '8px 8px', textAlign: 'right', color: '#dc2626', fontWeight: 700 }}>{r.d}</td>
-                      <td style={{ padding: '8px 8px', textAlign: 'right', color: '#16a34a', fontWeight: 700 }}>{r.pr}</td>
-                      <td style={{ padding: '8px 8px', textAlign: 'right' }}>
-                        <span style={{ color: '#2563eb', fontWeight: 800 }}>{r.nps}</span>
-                        <span style={{ fontSize: '10.5px', fontWeight: 800, padding: '1px 5px', borderRadius: '4px', marginLeft: '5px', ...getRankBadgeStyle(rank, 5) }}>#{rank}</span>
-                      </td>
-                    </tr>
-                    );
-                  })}
-                  <tr style={{ borderTop: '2px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
-                    <td style={{ padding: '8px 10px', color: '#0f172a' }}>Total Smart Phone</td>
-                    <td style={{ padding: '8px 8px', textAlign: 'right' }}>6,801</td>
-                    <td style={{ padding: '8px 8px', textAlign: 'right', color: '#dc2626' }}>10.3%</td>
-                    <td style={{ padding: '8px 8px', textAlign: 'right', color: '#16a34a' }}>68.5%</td>
-                    <td style={{ padding: '8px 8px', textAlign: 'right', color: '#2563eb' }}>58.2%</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-        </div>
-      </div>
+      </div> {/* end sec-nps */}
 
       {/* SECTION 4: TAT DASHBOARD (1 DAY, 2 DAY, 3 DAY, 5+ DAY, STILL OPEN) */}
       <div id="sec-tat">
