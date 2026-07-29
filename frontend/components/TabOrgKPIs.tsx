@@ -188,12 +188,23 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
   const asmNpsMap = new Map(asmNpsData.map(a => [normalizeKey(a.name), a]));
 
   // Calculate Combined CPC = (Combined Total Cost) / (Repair WO Count + Replacement WO Count)
+  // BUSM TAT distribution from Lava Master Data (Apr-Jun 2026) — same numbers as TAT table
+  const BUSM_TAT_DIST_MAP: Record<string, number> = {
+    'Jitesh S Rath': 36.7,
+    'Sukhbir Singh': 44.5,
+    'Tamilselvan Subramanian': 31.8,
+    'Shivaprasad P U': 38.0,
+    'Rajesh Limbachia': 44.3,
+  };
+
   const busmCpcMap = new Map<string, number>();
   (currentCpcDataset?.busm || []).forEach((b: any) => {
     const sumWo = (b.repair_count || 0) + (b.repl_count || 0);
     const cost = b.combined_total || ((b.repair_total || 0) + (b.repl_total || 0));
     const cpcVal = sumWo > 0 ? Math.round(cost / sumWo) : 0;
+    // Index by both name and busm field to handle possible key variations
     busmCpcMap.set(normalizeKey(b.name || b.busm), cpcVal);
+    if (b.busm) busmCpcMap.set(normalizeKey(b.busm), cpcVal);
   });
 
   const asmCpcMap = new Map<string, number>();
@@ -217,10 +228,15 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
     const npsInfo = busmNpsMap.get(normalizeKey(b.name));
     const npsVal = npsInfo ? parseFloat(npsInfo.nps) : (b.nps || 0);
     const npsRank = npsInfo ? npsInfo.rank : (b.ranks?.nps || 1);
-    const cpcVal = busmCpcMap.has(normalizeKey(b.name)) ? busmCpcMap.get(normalizeKey(b.name))! : (b.cpc || 0);
+    // CPC: prefer cpcDataDynamic value (new formula), fall back to raw b.cpc
+    const cpcFromMap = busmCpcMap.get(normalizeKey(b.name)) ?? busmCpcMap.get(normalizeKey(b.busm || ''));
+    const cpcVal = cpcFromMap !== undefined ? cpcFromMap : (b.cpc || 0);
+    // TAT: use BUSM_TAT_DIST_MAP (same source as TAT table) to ensure consistency
+    const tatPct = BUSM_TAT_DIST_MAP[b.name] !== undefined ? BUSM_TAT_DIST_MAP[b.name] : (b.tat || 0);
     return {
       ...b,
       cpc: cpcVal,
+      tat: tatPct,
       nps: b.nps && b.nps > 0 ? b.nps : npsVal,
       ranks: {
         ...(b.ranks || {}),
@@ -233,11 +249,16 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
   const sortedBusmsByCpc = [...busmListWithCpc].sort((x, y) => x.cpc - y.cpc);
   const busmCpcRankMap = new Map(sortedBusmsByCpc.map((x, idx) => [normalizeKey(x.name), idx + 1]));
 
+  // Rank BUSMs by TAT % (descending: highest 1-day TAT % = rank #1)
+  const sortedBusmsByTat = [...busmListWithCpc].sort((x, y) => y.tat - x.tat);
+  const busmTatRankMap = new Map(sortedBusmsByTat.map((x, idx) => [normalizeKey(x.name), idx + 1]));
+
   const busmList = busmListWithCpc.map((b: any) => ({
     ...b,
     ranks: {
       ...b.ranks,
-      cpc: busmCpcRankMap.get(normalizeKey(b.name)) || b.ranks?.cpc || 1
+      cpc: busmCpcRankMap.get(normalizeKey(b.name)) || b.ranks?.cpc || 1,
+      tat: busmTatRankMap.get(normalizeKey(b.name)) || b.ranks?.tat || 1
     }
   }));
 
