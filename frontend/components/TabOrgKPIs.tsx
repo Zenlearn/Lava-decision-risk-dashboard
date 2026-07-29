@@ -1460,6 +1460,86 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             )}
           </div>
         )}
+
+        {/* TABLE 5: ASP LEVEL S@H METRICS (Revealed on ASM Click) */}
+        {selectedAsmRow && (
+          <div className="card-mock" style={{ position: 'relative', padding: '20px', marginTop: '16px' }}>
+          <button
+            onClick={scrollToTop}
+            title="Move to top of page"
+            style={{
+              position: 'absolute', top: '10px', right: '14px',
+              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
+              color: '#fff', border: 'none', borderRadius: '20px',
+              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
+              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
+              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
+              letterSpacing: '0.03em'
+            }}
+          >↑ Top</button>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+              <div>
+                <div style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {selectedBusmRow} &gt; {selectedAsmRow} — S@H</div>
+                <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                  ASP Centre Appointment Performance (Filtered ASM: {selectedAsmRow})
+                </h3>
+                <span style={{ fontSize: '12px', color: '#64748b' }}>
+                  Service at Home appointment metrics for all ASP centres reporting to {selectedAsmRow}
+                </span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ background: '#f5f3ff', color: '#7c3aed', border: '1px solid #ddd6fe', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 700 }}>
+                  Count: {(currentSahDataset.asp || []).filter((a: any) => a.asm === selectedAsmRow).length} ASPs
+                </span>
+                <button
+                  onClick={() => setSelectedAsmRow(null)}
+                  style={{ background: '#f5f3ff', border: '1px solid #ddd6fe', padding: '4px 10px', borderRadius: '6px', fontSize: '11.5px', fontWeight: 700, color: '#7c3aed', cursor: 'pointer' }}
+                >
+                  Clear ASM Filter ({selectedAsmRow})
+                </button>
+              </div>
+            </div>
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12.5px', lineHeight: '1.3' }}>
+                <thead>
+                  <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                    <th style={{ padding: '10px 10px', textAlign: 'left', fontFamily: 'monospace' }}>ASP Code</th>
+                    <th style={{ padding: '10px 12px', textAlign: 'left' }}>ASP Name</th>
+                    <th style={{ padding: '10px 10px', textAlign: 'left' }}>Supervisor (ASM)</th>
+                    <th style={{ padding: '10px 10px', textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>Total Appts</th>
+                    <th style={{ padding: '10px 10px', textAlign: 'right' }}>Cancellation %</th>
+                    <th style={{ padding: '10px 10px', textAlign: 'right' }}>Reschedule %</th>
+                    <th style={{ padding: '10px 10px', textAlign: 'right' }}>Same Day Attend %</th>
+                    <th style={{ padding: '10px 10px', textAlign: 'right' }}>Same Day w/o Cancel %</th>
+                    <th style={{ padding: '10px 10px', textAlign: 'right' }}>Pending %</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(currentSahDataset.asp || []).filter((a: any) => a.asm === selectedAsmRow).length === 0 ? (
+                    <tr><td colSpan={9} style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>No ASP centres found for {selectedAsmRow} in {selectedMonth}.</td></tr>
+                  ) : (
+                    (currentSahDataset.asp || [])
+                      .filter((a: any) => a.asm === selectedAsmRow)
+                      .sort((a: any, b: any) => b.total - a.total)
+                      .map((r: any, i: number) => (
+                        <tr key={i} style={{ borderBottom: '1px solid #f1f5f9', background: i % 2 === 0 ? '#ffffff' : '#f8fafc' }}>
+                          <td style={{ padding: '8px 10px', fontFamily: 'monospace', color: '#7c3aed', fontWeight: 700 }}>{r.code}</td>
+                          <td style={{ padding: '8px 12px', fontWeight: 700, color: '#1e293b' }}>{r.name}</td>
+                          <td style={{ padding: '8px 10px', color: '#64748b' }}>{r.asm}</td>
+                          <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, borderLeft: '1px solid #f1f5f9' }}>{(r.total || 0).toLocaleString('en-IN')}</td>
+                          <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#d97706' }}>{r.cancel}</td>
+                          <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 600 }}>{r.resched}</td>
+                          <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#16a34a' }}>{r.same_day}</td>
+                          <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#dc2626' }}>{r.same_day_cancel}</td>
+                          <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#2563eb' }}>{r.pending}</td>
+                        </tr>
+                      ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* SECTION 3: NPS DASHBOARD (8 TABLES FROM EXCEL) */}
@@ -1723,7 +1803,69 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
               </div>
             </div>
 
-            {/* NPS TABLE 3: ASP CENTER WISE NPS BREAKDOWN */}
+
+            {/* NPS TABLES 4 & 5: DETRACTOR (DSAT) REASONS BREAKDOWN */}
+            <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px' }}>
+          <button
+            onClick={scrollToTop}
+            title="Move to top of page"
+            style={{
+              position: 'absolute', top: '10px', right: '14px',
+              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
+              color: '#fff', border: 'none', borderRadius: '20px',
+              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
+              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
+              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
+              letterSpacing: '0.03em'
+            }}
+          >↑ Top</button>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                  Table 4 &amp; 5: Detractor (DSAT) Root Cause Reasons Matrix by BUSM (Filtered: {selectedBusmRow})
+                </h3>
+              </div>
+
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
+                  <thead>
+                    <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '11px', textTransform: 'uppercase' }}>
+                      <th style={{ padding: '10px 12px', textAlign: 'left' }}>BUSM Name</th>
+                      <th style={{ padding: '10px 10px', textAlign: 'right', color: '#d97706' }}>Delay in Service</th>
+                      <th style={{ padding: '10px 10px', textAlign: 'right', color: '#dc2626' }}>Repair Quality</th>
+                      <th style={{ padding: '10px 10px', textAlign: 'right' }}>ASP Behaviour</th>
+                      <th style={{ padding: '10px 10px', textAlign: 'right' }}>Replacement / Product Quality Issue</th>
+                      <th style={{ padding: '10px 10px', textAlign: 'right' }}>High Repair Cost</th>
+                      <th style={{ padding: '10px 10px', textAlign: 'right' }}>Deny in Service</th>
+                      <th style={{ padding: '10px 10px', textAlign: 'right', fontWeight: 800 }}>Total DSAT</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {dsatBusmData
+                      .filter(r => r.name === selectedBusmRow)
+                      .map((r, i) => (
+                        <tr key={i} style={{ borderBottom: '1px solid #f1f5f9', background: '#eff6ff' }}>
+                          <td style={{ padding: '9px 12px', fontWeight: 700, color: '#1e293b' }}>{r.name}</td>
+                          <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 700, color: '#d97706' }}>{r.delay}</td>
+                          <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 700, color: '#dc2626' }}>{r.repair}</td>
+                          <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 600 }}>{r.aspBehav}</td>
+                          <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 600 }}>{r.replace}</td>
+                          <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 600 }}>{r.cost}</td>
+                          <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 600 }}>{r.deny}</td>
+                          <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 800, color: '#0f172a' }}>{r.total}</td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </>
+        )}
+
+
+        {/* NPS TABLE 3: ASP CENTER NPS — Renders independently when ASM is clicked */}
+        {selectedAsmRow && (
+          <div style={{ marginBottom: '0' }}>
+{/* NPS TABLE 3: ASP CENTER WISE NPS BREAKDOWN */}
             <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px' }}>
           <button
             onClick={scrollToTop}
@@ -1802,62 +1944,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                 </table>
               </div>
             </div>
-
-            {/* NPS TABLES 4 & 5: DETRACTOR (DSAT) REASONS BREAKDOWN */}
-            <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px' }}>
-          <button
-            onClick={scrollToTop}
-            title="Move to top of page"
-            style={{
-              position: 'absolute', top: '10px', right: '14px',
-              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
-              color: '#fff', border: 'none', borderRadius: '20px',
-              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
-              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
-              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
-              letterSpacing: '0.03em'
-            }}
-          >↑ Top</button>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                  Table 4 &amp; 5: Detractor (DSAT) Root Cause Reasons Matrix by BUSM (Filtered: {selectedBusmRow})
-                </h3>
-              </div>
-
-              <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
-                  <thead>
-                    <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '11px', textTransform: 'uppercase' }}>
-                      <th style={{ padding: '10px 12px', textAlign: 'left' }}>BUSM Name</th>
-                      <th style={{ padding: '10px 10px', textAlign: 'right', color: '#d97706' }}>Delay in Service</th>
-                      <th style={{ padding: '10px 10px', textAlign: 'right', color: '#dc2626' }}>Repair Quality</th>
-                      <th style={{ padding: '10px 10px', textAlign: 'right' }}>ASP Behaviour</th>
-                      <th style={{ padding: '10px 10px', textAlign: 'right' }}>Replacement / Product Quality Issue</th>
-                      <th style={{ padding: '10px 10px', textAlign: 'right' }}>High Repair Cost</th>
-                      <th style={{ padding: '10px 10px', textAlign: 'right' }}>Deny in Service</th>
-                      <th style={{ padding: '10px 10px', textAlign: 'right', fontWeight: 800 }}>Total DSAT</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {dsatBusmData
-                      .filter(r => r.name === selectedBusmRow)
-                      .map((r, i) => (
-                        <tr key={i} style={{ borderBottom: '1px solid #f1f5f9', background: '#eff6ff' }}>
-                          <td style={{ padding: '9px 12px', fontWeight: 700, color: '#1e293b' }}>{r.name}</td>
-                          <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 700, color: '#d97706' }}>{r.delay}</td>
-                          <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 700, color: '#dc2626' }}>{r.repair}</td>
-                          <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 600 }}>{r.aspBehav}</td>
-                          <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 600 }}>{r.replace}</td>
-                          <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 600 }}>{r.cost}</td>
-                          <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 600 }}>{r.deny}</td>
-                          <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 800, color: '#0f172a' }}>{r.total}</td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </>
+          </div>
         )}
 
         {/* NPS TABLE 6: OVERALL DEVICE CATEGORY NPS COMPARISON */}
