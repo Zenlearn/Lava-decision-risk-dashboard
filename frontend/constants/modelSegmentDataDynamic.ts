@@ -5,25 +5,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Jitesh S Rath",
           "segments": {
-            "Smart": {
-              "wo": 809,
-              "cpc": 2283.8,
-              "total_cost": 1847574
+            "<8K": {
+              "wo": 1462,
+              "cpc": 245.8,
+              "total_cost": 359401
             },
-            "Element": {
-              "wo": 411,
-              "cpc": 370.0,
-              "total_cost": 152089
+            "8K-10K": {
+              "wo": 214,
+              "cpc": 676.8,
+              "total_cost": 144825
             },
-            "Feature": {
-              "wo": 739,
-              "cpc": 54.2,
-              "total_cost": 40049
+            "10K-15K": {
+              "wo": 176,
+              "cpc": 717.2,
+              "total_cost": 126229
             },
-            "Tablet": {
-              "wo": 58,
-              "cpc": 129.9,
-              "total_cost": 7536
+            "15K-20K": {
+              "wo": 82,
+              "cpc": 6040.4,
+              "total_cost": 495309
+            },
+            ">20K": {
+              "wo": 83,
+              "cpc": 11102.2,
+              "total_cost": 921484
             },
             "Total": {
               "wo": 2017,
@@ -35,25 +40,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Rajesh Limbachia",
           "segments": {
-            "Smart": {
-              "wo": 1006,
-              "cpc": 1337.3,
-              "total_cost": 1345348
+            "<8K": {
+              "wo": 1062,
+              "cpc": 308.6,
+              "total_cost": 327726
             },
-            "Element": {
-              "wo": 237,
-              "cpc": 485.2,
-              "total_cost": 114985
+            "8K-10K": {
+              "wo": 190,
+              "cpc": 684.1,
+              "total_cost": 129973
             },
-            "Feature": {
-              "wo": 431,
-              "cpc": 65.0,
-              "total_cost": 28012
+            "10K-15K": {
+              "wo": 269,
+              "cpc": 747.9,
+              "total_cost": 201197
             },
-            "Tablet": {
-              "wo": 0,
-              "cpc": 0,
-              "total_cost": 0
+            "15K-20K": {
+              "wo": 101,
+              "cpc": 2809.4,
+              "total_cost": 283753
+            },
+            ">20K": {
+              "wo": 52,
+              "cpc": 10494.2,
+              "total_cost": 545696
             },
             "Total": {
               "wo": 1674,
@@ -65,25 +75,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Shivaprasad P U",
           "segments": {
-            "Smart": {
-              "wo": 839,
-              "cpc": 2370.2,
-              "total_cost": 1988587
+            "<8K": {
+              "wo": 1718,
+              "cpc": 231.2,
+              "total_cost": 397151
             },
-            "Element": {
-              "wo": 337,
-              "cpc": 358.0,
-              "total_cost": 120658
+            "8K-10K": {
+              "wo": 115,
+              "cpc": 1043.8,
+              "total_cost": 120033
             },
-            "Feature": {
-              "wo": 974,
-              "cpc": 54.5,
-              "total_cost": 53087
+            "10K-15K": {
+              "wo": 162,
+              "cpc": 996.1,
+              "total_cost": 161365
             },
-            "Tablet": {
-              "wo": 0,
-              "cpc": 0,
-              "total_cost": 0
+            "15K-20K": {
+              "wo": 65,
+              "cpc": 3770.6,
+              "total_cost": 245089
+            },
+            ">20K": {
+              "wo": 90,
+              "cpc": 13763.3,
+              "total_cost": 1238694
             },
             "Total": {
               "wo": 2150,
@@ -95,25 +110,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Sukhbir Singh",
           "segments": {
-            "Smart": {
-              "wo": 1786,
-              "cpc": 1275.6,
-              "total_cost": 2278210
+            "<8K": {
+              "wo": 1538,
+              "cpc": 271.3,
+              "total_cost": 417222
             },
-            "Element": {
-              "wo": 162,
-              "cpc": 410.0,
-              "total_cost": 66418
+            "8K-10K": {
+              "wo": 382,
+              "cpc": 783.0,
+              "total_cost": 299090
             },
-            "Feature": {
-              "wo": 659,
-              "cpc": 86.4,
-              "total_cost": 56928
+            "10K-15K": {
+              "wo": 427,
+              "cpc": 676.1,
+              "total_cost": 288690
             },
-            "Tablet": {
-              "wo": 4,
-              "cpc": 767.0,
-              "total_cost": 3068
+            "15K-20K": {
+              "wo": 173,
+              "cpc": 2660.3,
+              "total_cost": 460224
+            },
+            ">20K": {
+              "wo": 91,
+              "cpc": 10323.1,
+              "total_cost": 939398
             },
             "Total": {
               "wo": 2611,
@@ -125,25 +145,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Tamilselvan Subramanian",
           "segments": {
-            "Smart": {
-              "wo": 535,
-              "cpc": 2063.0,
-              "total_cost": 1103729
+            "<8K": {
+              "wo": 1242,
+              "cpc": 219.5,
+              "total_cost": 272589
             },
-            "Element": {
-              "wo": 280,
-              "cpc": 359.2,
-              "total_cost": 100583
+            "8K-10K": {
+              "wo": 65,
+              "cpc": 850.2,
+              "total_cost": 55260
             },
-            "Feature": {
-              "wo": 674,
-              "cpc": 52.6,
-              "total_cost": 35451
+            "10K-15K": {
+              "wo": 85,
+              "cpc": 1154.7,
+              "total_cost": 98149
             },
-            "Tablet": {
-              "wo": 0,
-              "cpc": 0,
-              "total_cost": 0
+            "15K-20K": {
+              "wo": 37,
+              "cpc": 5944.8,
+              "total_cost": 219957
+            },
+            ">20K": {
+              "wo": 60,
+              "cpc": 9896.8,
+              "total_cost": 593808
             },
             "Total": {
               "wo": 1489,
@@ -154,25 +179,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         }
       ],
       "national": {
-        "Smart": {
-          "wo": 4975,
-          "cpc": 1721.3,
-          "total_cost": 8563448
+        "<8K": {
+          "wo": 7022,
+          "cpc": 252.6,
+          "total_cost": 1774089
         },
-        "Element": {
-          "wo": 1427,
-          "cpc": 388.7,
-          "total_cost": 554733
+        "8K-10K": {
+          "wo": 966,
+          "cpc": 775.5,
+          "total_cost": 749181
         },
-        "Feature": {
-          "wo": 3477,
-          "cpc": 61.4,
-          "total_cost": 213527
+        "10K-15K": {
+          "wo": 1119,
+          "cpc": 782.5,
+          "total_cost": 875630
         },
-        "Tablet": {
-          "wo": 62,
-          "cpc": 171.0,
-          "total_cost": 10604
+        "15K-20K": {
+          "wo": 458,
+          "cpc": 3721.2,
+          "total_cost": 1704332
+        },
+        ">20K": {
+          "wo": 376,
+          "cpc": 11274.1,
+          "total_cost": 4239080
         },
         "Total": {
           "wo": 9941,
@@ -186,25 +216,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Jitesh S Rath",
           "segments": {
-            "Smart": {
-              "wo": 1365,
-              "c1d": 646,
-              "tat_pct": 47.3
+            "<8K": {
+              "wo": 1848,
+              "c1d": 572,
+              "tat_pct": 31.0
             },
-            "Element": {
-              "wo": 433,
-              "c1d": 47,
-              "tat_pct": 10.9
+            "8K-10K": {
+              "wo": 306,
+              "c1d": 181,
+              "tat_pct": 59.2
             },
-            "Feature": {
-              "wo": 934,
-              "c1d": 277,
-              "tat_pct": 29.7
+            "10K-15K": {
+              "wo": 355,
+              "c1d": 148,
+              "tat_pct": 41.7
             },
-            "Tablet": {
-              "wo": 74,
-              "c1d": 42,
-              "tat_pct": 56.8
+            "15K-20K": {
+              "wo": 173,
+              "c1d": 76,
+              "tat_pct": 43.9
+            },
+            ">20K": {
+              "wo": 124,
+              "c1d": 35,
+              "tat_pct": 28.2
             },
             "Total": {
               "wo": 2806,
@@ -216,25 +251,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Rajesh Limbachia",
           "segments": {
-            "Smart": {
-              "wo": 1770,
-              "c1d": 955,
-              "tat_pct": 54.0
+            "<8K": {
+              "wo": 1517,
+              "c1d": 564,
+              "tat_pct": 37.2
             },
-            "Element": {
-              "wo": 259,
-              "c1d": 43,
-              "tat_pct": 16.6
+            "8K-10K": {
+              "wo": 320,
+              "c1d": 205,
+              "tat_pct": 64.1
             },
-            "Feature": {
-              "wo": 655,
-              "c1d": 178,
-              "tat_pct": 27.2
+            "10K-15K": {
+              "wo": 532,
+              "c1d": 265,
+              "tat_pct": 49.8
             },
-            "Tablet": {
-              "wo": 2,
-              "c1d": 0,
-              "tat_pct": 0.0
+            "15K-20K": {
+              "wo": 239,
+              "c1d": 112,
+              "tat_pct": 46.9
+            },
+            ">20K": {
+              "wo": 78,
+              "c1d": 30,
+              "tat_pct": 38.5
             },
             "Total": {
               "wo": 2686,
@@ -246,25 +286,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Shivaprasad P U",
           "segments": {
-            "Smart": {
-              "wo": 1476,
-              "c1d": 724,
-              "tat_pct": 49.1
+            "<8K": {
+              "wo": 2226,
+              "c1d": 770,
+              "tat_pct": 34.6
             },
-            "Element": {
-              "wo": 372,
-              "c1d": 65,
-              "tat_pct": 17.5
+            "8K-10K": {
+              "wo": 210,
+              "c1d": 113,
+              "tat_pct": 53.8
             },
-            "Feature": {
-              "wo": 1239,
-              "c1d": 376,
-              "tat_pct": 30.3
+            "10K-15K": {
+              "wo": 344,
+              "c1d": 166,
+              "tat_pct": 48.3
             },
-            "Tablet": {
-              "wo": 4,
-              "c1d": 1,
-              "tat_pct": 25.0
+            "15K-20K": {
+              "wo": 187,
+              "c1d": 73,
+              "tat_pct": 39.0
+            },
+            ">20K": {
+              "wo": 124,
+              "c1d": 44,
+              "tat_pct": 35.5
             },
             "Total": {
               "wo": 3091,
@@ -276,29 +321,34 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Sukhbir Singh",
           "segments": {
-            "Smart": {
-              "wo": 2813,
-              "c1d": 1423,
-              "tat_pct": 50.6
+            "<8K": {
+              "wo": 2121,
+              "c1d": 806,
+              "tat_pct": 38.0
             },
-            "Element": {
-              "wo": 170,
-              "c1d": 18,
-              "tat_pct": 10.6
+            "8K-10K": {
+              "wo": 567,
+              "c1d": 319,
+              "tat_pct": 56.3
             },
-            "Feature": {
-              "wo": 978,
-              "c1d": 267,
-              "tat_pct": 27.3
+            "10K-15K": {
+              "wo": 806,
+              "c1d": 376,
+              "tat_pct": 46.7
             },
-            "Tablet": {
-              "wo": 28,
-              "c1d": 6,
-              "tat_pct": 21.4
+            "15K-20K": {
+              "wo": 370,
+              "c1d": 154,
+              "tat_pct": 41.6
+            },
+            ">20K": {
+              "wo": 126,
+              "c1d": 60,
+              "tat_pct": 47.6
             },
             "Total": {
-              "wo": 3989,
-              "c1d": 1714,
+              "wo": 3990,
+              "c1d": 1715,
               "tat_pct": 43.0
             }
           }
@@ -306,25 +356,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Tamilselvan Subramanian",
           "segments": {
-            "Smart": {
-              "wo": 1092,
-              "c1d": 471,
-              "tat_pct": 43.1
+            "<8K": {
+              "wo": 1947,
+              "c1d": 589,
+              "tat_pct": 30.3
             },
-            "Element": {
-              "wo": 308,
-              "c1d": 36,
-              "tat_pct": 11.7
+            "8K-10K": {
+              "wo": 140,
+              "c1d": 65,
+              "tat_pct": 46.4
             },
-            "Feature": {
-              "wo": 1150,
-              "c1d": 298,
-              "tat_pct": 25.9
+            "10K-15K": {
+              "wo": 233,
+              "c1d": 76,
+              "tat_pct": 32.6
             },
-            "Tablet": {
-              "wo": 0,
-              "c1d": 0,
-              "tat_pct": 0
+            "15K-20K": {
+              "wo": 133,
+              "c1d": 41,
+              "tat_pct": 30.8
+            },
+            ">20K": {
+              "wo": 97,
+              "c1d": 34,
+              "tat_pct": 35.1
             },
             "Total": {
               "wo": 2550,
@@ -335,61 +390,59 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         }
       ],
       "national": {
-        "Smart": {
-          "wo": 8516,
-          "c1d": 4219,
-          "tat_pct": 49.5
+        "<8K": {
+          "wo": 9659,
+          "c1d": 3301,
+          "tat_pct": 34.2
         },
-        "Element": {
-          "wo": 1542,
-          "c1d": 209,
-          "tat_pct": 13.6
+        "8K-10K": {
+          "wo": 1543,
+          "c1d": 883,
+          "tat_pct": 57.2
         },
-        "Feature": {
-          "wo": 4956,
-          "c1d": 1396,
-          "tat_pct": 28.2
-        },
-        "Tablet": {
-          "wo": 108,
-          "c1d": 49,
+        "10K-15K": {
+          "wo": 2270,
+          "c1d": 1031,
           "tat_pct": 45.4
         },
+        "15K-20K": {
+          "wo": 1102,
+          "c1d": 456,
+          "tat_pct": 41.4
+        },
+        ">20K": {
+          "wo": 549,
+          "c1d": 203,
+          "tat_pct": 37.0
+        },
         "Total": {
-          "wo": 15122,
-          "c1d": 5873,
+          "wo": 15123,
+          "c1d": 5874,
           "tat_pct": 38.8
         }
       }
     },
-    "overall": {
+    "nps": {
       "busm": [
         {
           "busm": "Jitesh S Rath",
           "segments": {
-            "Smart": {
-              "tat_pct": 47.3,
-              "cpc": 2283.8,
-              "nps_pct": 68.5
+            "<8K": {
+              "nps_pct": 63.5
             },
-            "Element": {
-              "tat_pct": 10.9,
-              "cpc": 370.0,
-              "nps_pct": 72.0
+            "8K-10K": {
+              "nps_pct": 69.2
             },
-            "Feature": {
-              "tat_pct": 29.7,
-              "cpc": 54.2,
-              "nps_pct": 75.2
+            "10K-15K": {
+              "nps_pct": 74.8
             },
-            "Tablet": {
-              "tat_pct": 56.8,
-              "cpc": 129.9,
-              "nps_pct": 65.0
+            "15K-20K": {
+              "nps_pct": 78.4
+            },
+            ">20K": {
+              "nps_pct": 82.1
             },
             "Total": {
-              "tat_pct": 36.1,
-              "cpc": 1015.0,
               "nps_pct": 70.4
             }
           }
@@ -397,29 +450,22 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Rajesh Limbachia",
           "segments": {
-            "Smart": {
-              "tat_pct": 54.0,
-              "cpc": 1337.3,
-              "nps_pct": 68.5
+            "<8K": {
+              "nps_pct": 63.5
             },
-            "Element": {
-              "tat_pct": 16.6,
-              "cpc": 485.2,
-              "nps_pct": 72.0
+            "8K-10K": {
+              "nps_pct": 69.2
             },
-            "Feature": {
-              "tat_pct": 27.2,
-              "cpc": 65.0,
-              "nps_pct": 75.2
+            "10K-15K": {
+              "nps_pct": 74.8
             },
-            "Tablet": {
-              "tat_pct": 0.0,
-              "cpc": 0,
-              "nps_pct": 65.0
+            "15K-20K": {
+              "nps_pct": 78.4
+            },
+            ">20K": {
+              "nps_pct": 82.1
             },
             "Total": {
-              "tat_pct": 43.8,
-              "cpc": 889.1,
               "nps_pct": 70.4
             }
           }
@@ -427,29 +473,22 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Shivaprasad P U",
           "segments": {
-            "Smart": {
-              "tat_pct": 49.1,
-              "cpc": 2370.2,
-              "nps_pct": 68.5
+            "<8K": {
+              "nps_pct": 63.5
             },
-            "Element": {
-              "tat_pct": 17.5,
-              "cpc": 358.0,
-              "nps_pct": 72.0
+            "8K-10K": {
+              "nps_pct": 69.2
             },
-            "Feature": {
-              "tat_pct": 30.3,
-              "cpc": 54.5,
-              "nps_pct": 75.2
+            "10K-15K": {
+              "nps_pct": 74.8
             },
-            "Tablet": {
-              "tat_pct": 25.0,
-              "cpc": 0,
-              "nps_pct": 65.0
+            "15K-20K": {
+              "nps_pct": 78.4
+            },
+            ">20K": {
+              "nps_pct": 82.1
             },
             "Total": {
-              "tat_pct": 37.7,
-              "cpc": 1005.7,
               "nps_pct": 70.4
             }
           }
@@ -457,29 +496,22 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Sukhbir Singh",
           "segments": {
-            "Smart": {
-              "tat_pct": 50.6,
-              "cpc": 1275.6,
-              "nps_pct": 68.5
+            "<8K": {
+              "nps_pct": 63.5
             },
-            "Element": {
-              "tat_pct": 10.6,
-              "cpc": 410.0,
-              "nps_pct": 72.0
+            "8K-10K": {
+              "nps_pct": 69.2
             },
-            "Feature": {
-              "tat_pct": 27.3,
-              "cpc": 86.4,
-              "nps_pct": 75.2
+            "10K-15K": {
+              "nps_pct": 74.8
             },
-            "Tablet": {
-              "tat_pct": 21.4,
-              "cpc": 767.0,
-              "nps_pct": 65.0
+            "15K-20K": {
+              "nps_pct": 78.4
+            },
+            ">20K": {
+              "nps_pct": 82.1
             },
             "Total": {
-              "tat_pct": 43.0,
-              "cpc": 921.0,
               "nps_pct": 70.4
             }
           }
@@ -487,58 +519,44 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Tamilselvan Subramanian",
           "segments": {
-            "Smart": {
-              "tat_pct": 43.1,
-              "cpc": 2063.0,
-              "nps_pct": 68.5
+            "<8K": {
+              "nps_pct": 63.5
             },
-            "Element": {
-              "tat_pct": 11.7,
-              "cpc": 359.2,
-              "nps_pct": 72.0
+            "8K-10K": {
+              "nps_pct": 69.2
             },
-            "Feature": {
-              "tat_pct": 25.9,
-              "cpc": 52.6,
-              "nps_pct": 75.2
+            "10K-15K": {
+              "nps_pct": 74.8
             },
-            "Tablet": {
-              "tat_pct": 0,
-              "cpc": 0,
-              "nps_pct": 65.0
+            "15K-20K": {
+              "nps_pct": 78.4
+            },
+            ">20K": {
+              "nps_pct": 82.1
             },
             "Total": {
-              "tat_pct": 31.6,
-              "cpc": 832.6,
               "nps_pct": 70.4
             }
           }
         }
       ],
       "national": {
-        "Smart": {
-          "tat_pct": 49.5,
-          "cpc": 1721.3,
-          "nps_pct": 68.5
+        "<8K": {
+          "nps_pct": 63.5
         },
-        "Element": {
-          "tat_pct": 13.6,
-          "cpc": 388.7,
-          "nps_pct": 72.0
+        "8K-10K": {
+          "nps_pct": 69.2
         },
-        "Feature": {
-          "tat_pct": 28.2,
-          "cpc": 61.4,
-          "nps_pct": 75.2
+        "10K-15K": {
+          "nps_pct": 74.8
         },
-        "Tablet": {
-          "tat_pct": 45.4,
-          "cpc": 171.0,
-          "nps_pct": 65.0
+        "15K-20K": {
+          "nps_pct": 78.4
+        },
+        ">20K": {
+          "nps_pct": 82.1
         },
         "Total": {
-          "tat_pct": 38.8,
-          "cpc": 939.8,
           "nps_pct": 70.4
         }
       }
@@ -550,25 +568,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Jitesh S Rath",
           "segments": {
-            "Smart": {
-              "wo": 868,
-              "cpc": 2100.1,
-              "total_cost": 1822904
+            "<8K": {
+              "wo": 1428,
+              "cpc": 256.9,
+              "total_cost": 366912
             },
-            "Element": {
-              "wo": 434,
-              "cpc": 320.0,
-              "total_cost": 138878
+            "8K-10K": {
+              "wo": 215,
+              "cpc": 702.5,
+              "total_cost": 151044
             },
-            "Feature": {
-              "wo": 657,
-              "cpc": 50.6,
-              "total_cost": 33261
+            "10K-15K": {
+              "wo": 219,
+              "cpc": 1288.0,
+              "total_cost": 282073
             },
-            "Tablet": {
-              "wo": 65,
-              "cpc": 396.1,
-              "total_cost": 25744
+            "15K-20K": {
+              "wo": 91,
+              "cpc": 6621.4,
+              "total_cost": 602546
+            },
+            ">20K": {
+              "wo": 71,
+              "cpc": 8707.2,
+              "total_cost": 618212
             },
             "Total": {
               "wo": 2024,
@@ -580,25 +603,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Rajesh Limbachia",
           "segments": {
-            "Smart": {
-              "wo": 886,
-              "cpc": 1419.4,
-              "total_cost": 1257589
+            "<8K": {
+              "wo": 864,
+              "cpc": 320.0,
+              "total_cost": 276452
             },
-            "Element": {
-              "wo": 186,
-              "cpc": 419.1,
-              "total_cost": 77948
+            "8K-10K": {
+              "wo": 155,
+              "cpc": 602.6,
+              "total_cost": 93400
             },
-            "Feature": {
-              "wo": 354,
-              "cpc": 98.9,
-              "total_cost": 35016
+            "10K-15K": {
+              "wo": 275,
+              "cpc": 1090.8,
+              "total_cost": 299970
             },
-            "Tablet": {
-              "wo": 0,
-              "cpc": 0,
-              "total_cost": 0
+            "15K-20K": {
+              "wo": 92,
+              "cpc": 1930.3,
+              "total_cost": 177586
+            },
+            ">20K": {
+              "wo": 40,
+              "cpc": 13078.6,
+              "total_cost": 523145
             },
             "Total": {
               "wo": 1426,
@@ -610,25 +638,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Shivaprasad P U",
           "segments": {
-            "Smart": {
-              "wo": 827,
-              "cpc": 2561.0,
-              "total_cost": 2117935
+            "<8K": {
+              "wo": 1509,
+              "cpc": 225.3,
+              "total_cost": 339935
             },
-            "Element": {
-              "wo": 296,
-              "cpc": 342.2,
-              "total_cost": 101300
+            "8K-10K": {
+              "wo": 116,
+              "cpc": 956.8,
+              "total_cost": 110991
             },
-            "Feature": {
-              "wo": 842,
-              "cpc": 53.9,
-              "total_cost": 45376
+            "10K-15K": {
+              "wo": 176,
+              "cpc": 1179.4,
+              "total_cost": 207580
             },
-            "Tablet": {
-              "wo": 0,
-              "cpc": 0,
-              "total_cost": 0
+            "15K-20K": {
+              "wo": 65,
+              "cpc": 3975.4,
+              "total_cost": 258400
+            },
+            ">20K": {
+              "wo": 99,
+              "cpc": 13613.2,
+              "total_cost": 1347705
             },
             "Total": {
               "wo": 1965,
@@ -640,25 +673,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Sukhbir Singh",
           "segments": {
-            "Smart": {
-              "wo": 1809,
-              "cpc": 1193.2,
-              "total_cost": 2158474
+            "<8K": {
+              "wo": 1446,
+              "cpc": 339.0,
+              "total_cost": 490131
             },
-            "Element": {
-              "wo": 215,
-              "cpc": 401.7,
-              "total_cost": 86359
+            "8K-10K": {
+              "wo": 448,
+              "cpc": 661.7,
+              "total_cost": 296420
             },
-            "Feature": {
-              "wo": 540,
-              "cpc": 91.0,
-              "total_cost": 49119
+            "10K-15K": {
+              "wo": 470,
+              "cpc": 867.4,
+              "total_cost": 407678
             },
-            "Tablet": {
-              "wo": 14,
-              "cpc": 1437.9,
-              "total_cost": 20131
+            "15K-20K": {
+              "wo": 126,
+              "cpc": 2452.9,
+              "total_cost": 309060
+            },
+            ">20K": {
+              "wo": 88,
+              "cpc": 9213.6,
+              "total_cost": 810794
             },
             "Total": {
               "wo": 2578,
@@ -670,25 +708,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Tamilselvan Subramanian",
           "segments": {
-            "Smart": {
-              "wo": 587,
-              "cpc": 2881.1,
-              "total_cost": 1691205
+            "<8K": {
+              "wo": 1214,
+              "cpc": 245.3,
+              "total_cost": 297839
             },
-            "Element": {
-              "wo": 225,
-              "cpc": 296.9,
-              "total_cost": 66807
+            "8K-10K": {
+              "wo": 70,
+              "cpc": 1024.8,
+              "total_cost": 71736
             },
-            "Feature": {
-              "wo": 666,
-              "cpc": 72.3,
-              "total_cost": 48169
+            "10K-15K": {
+              "wo": 81,
+              "cpc": 900.0,
+              "total_cost": 72898
             },
-            "Tablet": {
-              "wo": 0,
-              "cpc": 0,
-              "total_cost": 0
+            "15K-20K": {
+              "wo": 34,
+              "cpc": 9212.2,
+              "total_cost": 313214
+            },
+            ">20K": {
+              "wo": 79,
+              "cpc": 13297.4,
+              "total_cost": 1050494
             },
             "Total": {
               "wo": 1478,
@@ -699,25 +742,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         }
       ],
       "national": {
-        "Smart": {
-          "wo": 4977,
-          "cpc": 1818.0,
-          "total_cost": 9048107
+        "<8K": {
+          "wo": 6461,
+          "cpc": 274.1,
+          "total_cost": 1771269
         },
-        "Element": {
-          "wo": 1356,
-          "cpc": 347.6,
-          "total_cost": 471292
+        "8K-10K": {
+          "wo": 1004,
+          "cpc": 720.7,
+          "total_cost": 723591
         },
-        "Feature": {
-          "wo": 3059,
-          "cpc": 69.0,
-          "total_cost": 210941
+        "10K-15K": {
+          "wo": 1221,
+          "cpc": 1040.3,
+          "total_cost": 1270199
         },
-        "Tablet": {
-          "wo": 79,
-          "cpc": 580.7,
-          "total_cost": 45875
+        "15K-20K": {
+          "wo": 408,
+          "cpc": 4070.6,
+          "total_cost": 1660806
+        },
+        ">20K": {
+          "wo": 377,
+          "cpc": 11539.4,
+          "total_cost": 4350350
         },
         "Total": {
           "wo": 9471,
@@ -731,25 +779,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Jitesh S Rath",
           "segments": {
-            "Smart": {
-              "wo": 1398,
-              "c1d": 638,
-              "tat_pct": 45.6
+            "<8K": {
+              "wo": 1793,
+              "c1d": 531,
+              "tat_pct": 29.6
             },
-            "Element": {
-              "wo": 457,
-              "c1d": 35,
-              "tat_pct": 7.7
+            "8K-10K": {
+              "wo": 325,
+              "c1d": 191,
+              "tat_pct": 58.8
             },
-            "Feature": {
-              "wo": 845,
-              "c1d": 262,
-              "tat_pct": 31.0
+            "10K-15K": {
+              "wo": 369,
+              "c1d": 146,
+              "tat_pct": 39.6
             },
-            "Tablet": {
-              "wo": 76,
-              "c1d": 42,
-              "tat_pct": 55.3
+            "15K-20K": {
+              "wo": 186,
+              "c1d": 61,
+              "tat_pct": 32.8
+            },
+            ">20K": {
+              "wo": 103,
+              "c1d": 48,
+              "tat_pct": 46.6
             },
             "Total": {
               "wo": 2776,
@@ -761,25 +814,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Rajesh Limbachia",
           "segments": {
-            "Smart": {
-              "wo": 1603,
-              "c1d": 846,
-              "tat_pct": 52.8
+            "<8K": {
+              "wo": 1281,
+              "c1d": 483,
+              "tat_pct": 37.7
             },
-            "Element": {
-              "wo": 191,
-              "c1d": 16,
-              "tat_pct": 8.4
+            "8K-10K": {
+              "wo": 271,
+              "c1d": 164,
+              "tat_pct": 60.5
             },
-            "Feature": {
-              "wo": 564,
-              "c1d": 192,
-              "tat_pct": 34.0
+            "10K-15K": {
+              "wo": 526,
+              "c1d": 267,
+              "tat_pct": 50.8
             },
-            "Tablet": {
-              "wo": 2,
-              "c1d": 0,
-              "tat_pct": 0.0
+            "15K-20K": {
+              "wo": 218,
+              "c1d": 109,
+              "tat_pct": 50.0
+            },
+            ">20K": {
+              "wo": 64,
+              "c1d": 31,
+              "tat_pct": 48.4
             },
             "Total": {
               "wo": 2360,
@@ -791,25 +849,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Shivaprasad P U",
           "segments": {
-            "Smart": {
-              "wo": 1390,
-              "c1d": 647,
-              "tat_pct": 46.5
+            "<8K": {
+              "wo": 1981,
+              "c1d": 678,
+              "tat_pct": 34.2
             },
-            "Element": {
-              "wo": 316,
-              "c1d": 31,
-              "tat_pct": 9.8
+            "8K-10K": {
+              "wo": 193,
+              "c1d": 97,
+              "tat_pct": 50.3
             },
-            "Feature": {
-              "wo": 1095,
-              "c1d": 357,
-              "tat_pct": 32.6
+            "10K-15K": {
+              "wo": 334,
+              "c1d": 149,
+              "tat_pct": 44.6
             },
-            "Tablet": {
-              "wo": 2,
-              "c1d": 1,
-              "tat_pct": 50.0
+            "15K-20K": {
+              "wo": 171,
+              "c1d": 63,
+              "tat_pct": 36.8
+            },
+            ">20K": {
+              "wo": 124,
+              "c1d": 49,
+              "tat_pct": 39.5
             },
             "Total": {
               "wo": 2803,
@@ -821,25 +884,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Sukhbir Singh",
           "segments": {
-            "Smart": {
-              "wo": 2672,
-              "c1d": 1384,
-              "tat_pct": 51.8
+            "<8K": {
+              "wo": 2023,
+              "c1d": 772,
+              "tat_pct": 38.2
             },
-            "Element": {
-              "wo": 231,
-              "c1d": 24,
-              "tat_pct": 10.4
+            "8K-10K": {
+              "wo": 620,
+              "c1d": 353,
+              "tat_pct": 56.9
             },
-            "Feature": {
-              "wo": 849,
-              "c1d": 276,
-              "tat_pct": 32.5
+            "10K-15K": {
+              "wo": 774,
+              "c1d": 398,
+              "tat_pct": 51.4
             },
-            "Tablet": {
-              "wo": 48,
-              "c1d": 9,
-              "tat_pct": 18.8
+            "15K-20K": {
+              "wo": 272,
+              "c1d": 118,
+              "tat_pct": 43.4
+            },
+            ">20K": {
+              "wo": 111,
+              "c1d": 52,
+              "tat_pct": 46.8
             },
             "Total": {
               "wo": 3800,
@@ -851,25 +919,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Tamilselvan Subramanian",
           "segments": {
-            "Smart": {
-              "wo": 1189,
-              "c1d": 461,
-              "tat_pct": 38.8
+            "<8K": {
+              "wo": 1941,
+              "c1d": 572,
+              "tat_pct": 29.5
             },
-            "Element": {
-              "wo": 233,
-              "c1d": 20,
-              "tat_pct": 8.6
+            "8K-10K": {
+              "wo": 148,
+              "c1d": 71,
+              "tat_pct": 48.0
             },
-            "Feature": {
-              "wo": 1155,
-              "c1d": 322,
-              "tat_pct": 27.9
+            "10K-15K": {
+              "wo": 250,
+              "c1d": 89,
+              "tat_pct": 35.6
             },
-            "Tablet": {
-              "wo": 0,
-              "c1d": 0,
-              "tat_pct": 0
+            "15K-20K": {
+              "wo": 129,
+              "c1d": 40,
+              "tat_pct": 31.0
+            },
+            ">20K": {
+              "wo": 109,
+              "c1d": 31,
+              "tat_pct": 28.4
             },
             "Total": {
               "wo": 2577,
@@ -880,25 +953,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         }
       ],
       "national": {
-        "Smart": {
-          "wo": 8252,
-          "c1d": 3976,
-          "tat_pct": 48.2
+        "<8K": {
+          "wo": 9019,
+          "c1d": 3036,
+          "tat_pct": 33.7
         },
-        "Element": {
-          "wo": 1428,
-          "c1d": 126,
-          "tat_pct": 8.8
+        "8K-10K": {
+          "wo": 1557,
+          "c1d": 876,
+          "tat_pct": 56.3
         },
-        "Feature": {
-          "wo": 4508,
-          "c1d": 1409,
-          "tat_pct": 31.3
+        "10K-15K": {
+          "wo": 2253,
+          "c1d": 1049,
+          "tat_pct": 46.6
         },
-        "Tablet": {
-          "wo": 128,
-          "c1d": 52,
-          "tat_pct": 40.6
+        "15K-20K": {
+          "wo": 976,
+          "c1d": 391,
+          "tat_pct": 40.1
+        },
+        ">20K": {
+          "wo": 511,
+          "c1d": 211,
+          "tat_pct": 41.3
         },
         "Total": {
           "wo": 14316,
@@ -907,34 +985,27 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         }
       }
     },
-    "overall": {
+    "nps": {
       "busm": [
         {
           "busm": "Jitesh S Rath",
           "segments": {
-            "Smart": {
-              "tat_pct": 45.6,
-              "cpc": 2100.1,
-              "nps_pct": 68.5
+            "<8K": {
+              "nps_pct": 63.5
             },
-            "Element": {
-              "tat_pct": 7.7,
-              "cpc": 320.0,
-              "nps_pct": 72.0
+            "8K-10K": {
+              "nps_pct": 69.2
             },
-            "Feature": {
-              "tat_pct": 31.0,
-              "cpc": 50.6,
-              "nps_pct": 75.2
+            "10K-15K": {
+              "nps_pct": 74.8
             },
-            "Tablet": {
-              "tat_pct": 55.3,
-              "cpc": 396.1,
-              "nps_pct": 65.0
+            "15K-20K": {
+              "nps_pct": 78.4
+            },
+            ">20K": {
+              "nps_pct": 82.1
             },
             "Total": {
-              "tat_pct": 35.2,
-              "cpc": 998.4,
               "nps_pct": 70.4
             }
           }
@@ -942,29 +1013,22 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Rajesh Limbachia",
           "segments": {
-            "Smart": {
-              "tat_pct": 52.8,
-              "cpc": 1419.4,
-              "nps_pct": 68.5
+            "<8K": {
+              "nps_pct": 63.5
             },
-            "Element": {
-              "tat_pct": 8.4,
-              "cpc": 419.1,
-              "nps_pct": 72.0
+            "8K-10K": {
+              "nps_pct": 69.2
             },
-            "Feature": {
-              "tat_pct": 34.0,
-              "cpc": 98.9,
-              "nps_pct": 75.2
+            "10K-15K": {
+              "nps_pct": 74.8
             },
-            "Tablet": {
-              "tat_pct": 0.0,
-              "cpc": 0,
-              "nps_pct": 65.0
+            "15K-20K": {
+              "nps_pct": 78.4
+            },
+            ">20K": {
+              "nps_pct": 82.1
             },
             "Total": {
-              "tat_pct": 44.7,
-              "cpc": 961.1,
               "nps_pct": 70.4
             }
           }
@@ -972,29 +1036,22 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Shivaprasad P U",
           "segments": {
-            "Smart": {
-              "tat_pct": 46.5,
-              "cpc": 2561.0,
-              "nps_pct": 68.5
+            "<8K": {
+              "nps_pct": 63.5
             },
-            "Element": {
-              "tat_pct": 9.8,
-              "cpc": 342.2,
-              "nps_pct": 72.0
+            "8K-10K": {
+              "nps_pct": 69.2
             },
-            "Feature": {
-              "tat_pct": 32.6,
-              "cpc": 53.9,
-              "nps_pct": 75.2
+            "10K-15K": {
+              "nps_pct": 74.8
             },
-            "Tablet": {
-              "tat_pct": 50.0,
-              "cpc": 0,
-              "nps_pct": 65.0
+            "15K-20K": {
+              "nps_pct": 78.4
+            },
+            ">20K": {
+              "nps_pct": 82.1
             },
             "Total": {
-              "tat_pct": 37.0,
-              "cpc": 1152.5,
               "nps_pct": 70.4
             }
           }
@@ -1002,29 +1059,22 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Sukhbir Singh",
           "segments": {
-            "Smart": {
-              "tat_pct": 51.8,
-              "cpc": 1193.2,
-              "nps_pct": 68.5
+            "<8K": {
+              "nps_pct": 63.5
             },
-            "Element": {
-              "tat_pct": 10.4,
-              "cpc": 401.7,
-              "nps_pct": 72.0
+            "8K-10K": {
+              "nps_pct": 69.2
             },
-            "Feature": {
-              "tat_pct": 32.5,
-              "cpc": 91.0,
-              "nps_pct": 75.2
+            "10K-15K": {
+              "nps_pct": 74.8
             },
-            "Tablet": {
-              "tat_pct": 18.8,
-              "cpc": 1437.9,
-              "nps_pct": 65.0
+            "15K-20K": {
+              "nps_pct": 78.4
+            },
+            ">20K": {
+              "nps_pct": 82.1
             },
             "Total": {
-              "tat_pct": 44.6,
-              "cpc": 897.6,
               "nps_pct": 70.4
             }
           }
@@ -1032,58 +1082,44 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Tamilselvan Subramanian",
           "segments": {
-            "Smart": {
-              "tat_pct": 38.8,
-              "cpc": 2881.1,
-              "nps_pct": 68.5
+            "<8K": {
+              "nps_pct": 63.5
             },
-            "Element": {
-              "tat_pct": 8.6,
-              "cpc": 296.9,
-              "nps_pct": 72.0
+            "8K-10K": {
+              "nps_pct": 69.2
             },
-            "Feature": {
-              "tat_pct": 27.9,
-              "cpc": 72.3,
-              "nps_pct": 75.2
+            "10K-15K": {
+              "nps_pct": 74.8
             },
-            "Tablet": {
-              "tat_pct": 0,
-              "cpc": 0,
-              "nps_pct": 65.0
+            "15K-20K": {
+              "nps_pct": 78.4
+            },
+            ">20K": {
+              "nps_pct": 82.1
             },
             "Total": {
-              "tat_pct": 31.2,
-              "cpc": 1222.0,
               "nps_pct": 70.4
             }
           }
         }
       ],
       "national": {
-        "Smart": {
-          "tat_pct": 48.2,
-          "cpc": 1818.0,
-          "nps_pct": 68.5
+        "<8K": {
+          "nps_pct": 63.5
         },
-        "Element": {
-          "tat_pct": 8.8,
-          "cpc": 347.6,
-          "nps_pct": 72.0
+        "8K-10K": {
+          "nps_pct": 69.2
         },
-        "Feature": {
-          "tat_pct": 31.3,
-          "cpc": 69.0,
-          "nps_pct": 75.2
+        "10K-15K": {
+          "nps_pct": 74.8
         },
-        "Tablet": {
-          "tat_pct": 40.6,
-          "cpc": 580.7,
-          "nps_pct": 65.0
+        "15K-20K": {
+          "nps_pct": 78.4
+        },
+        ">20K": {
+          "nps_pct": 82.1
         },
         "Total": {
-          "tat_pct": 38.9,
-          "cpc": 1032.2,
           "nps_pct": 70.4
         }
       }
@@ -1095,25 +1131,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Jitesh S Rath",
           "segments": {
-            "Smart": {
-              "wo": 836,
-              "cpc": 1881.3,
-              "total_cost": 1572796
+            "<8K": {
+              "wo": 1278,
+              "cpc": 265.6,
+              "total_cost": 339403
             },
-            "Element": {
-              "wo": 293,
-              "cpc": 343.4,
-              "total_cost": 100606
+            "8K-10K": {
+              "wo": 267,
+              "cpc": 630.9,
+              "total_cost": 168440
             },
-            "Feature": {
-              "wo": 608,
-              "cpc": 62.9,
-              "total_cost": 38252
+            "10K-15K": {
+              "wo": 215,
+              "cpc": 1172.2,
+              "total_cost": 252019
             },
-            "Tablet": {
-              "wo": 159,
-              "cpc": 299.6,
-              "total_cost": 47630
+            "15K-20K": {
+              "wo": 75,
+              "cpc": 4563.2,
+              "total_cost": 342241
+            },
+            ">20K": {
+              "wo": 61,
+              "cpc": 10773.5,
+              "total_cost": 657181
             },
             "Total": {
               "wo": 1896,
@@ -1125,25 +1166,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Rajesh Limbachia",
           "segments": {
-            "Smart": {
-              "wo": 892,
-              "cpc": 1473.5,
-              "total_cost": 1314367
+            "<8K": {
+              "wo": 813,
+              "cpc": 345.7,
+              "total_cost": 281039
             },
-            "Element": {
-              "wo": 179,
-              "cpc": 467.5,
-              "total_cost": 83686
+            "8K-10K": {
+              "wo": 193,
+              "cpc": 730.4,
+              "total_cost": 140973
             },
-            "Feature": {
-              "wo": 321,
-              "cpc": 63.0,
-              "total_cost": 20232
+            "10K-15K": {
+              "wo": 282,
+              "cpc": 843.4,
+              "total_cost": 237839
             },
-            "Tablet": {
-              "wo": 0,
-              "cpc": 0,
-              "total_cost": 0
+            "15K-20K": {
+              "wo": 68,
+              "cpc": 2915.2,
+              "total_cost": 198231
+            },
+            ">20K": {
+              "wo": 36,
+              "cpc": 15561.2,
+              "total_cost": 560203
             },
             "Total": {
               "wo": 1392,
@@ -1155,25 +1201,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Shivaprasad P U",
           "segments": {
-            "Smart": {
-              "wo": 817,
-              "cpc": 2533.9,
-              "total_cost": 2070162
+            "<8K": {
+              "wo": 1322,
+              "cpc": 281.8,
+              "total_cost": 372579
             },
-            "Element": {
-              "wo": 244,
-              "cpc": 410.0,
-              "total_cost": 100031
+            "8K-10K": {
+              "wo": 131,
+              "cpc": 1162.1,
+              "total_cost": 152239
             },
-            "Feature": {
-              "wo": 711,
-              "cpc": 58.1,
-              "total_cost": 41305
+            "10K-15K": {
+              "wo": 179,
+              "cpc": 774.9,
+              "total_cost": 138703
             },
-            "Tablet": {
-              "wo": 1,
-              "cpc": 3690.0,
-              "total_cost": 3690
+            "15K-20K": {
+              "wo": 48,
+              "cpc": 5255.9,
+              "total_cost": 252282
+            },
+            ">20K": {
+              "wo": 93,
+              "cpc": 13971.9,
+              "total_cost": 1299385
             },
             "Total": {
               "wo": 1773,
@@ -1185,25 +1236,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Sukhbir Singh",
           "segments": {
-            "Smart": {
-              "wo": 1798,
-              "cpc": 1507.3,
-              "total_cost": 2710044
+            "<8K": {
+              "wo": 1320,
+              "cpc": 429.4,
+              "total_cost": 566858
             },
-            "Element": {
-              "wo": 158,
-              "cpc": 413.5,
-              "total_cost": 65326
+            "8K-10K": {
+              "wo": 452,
+              "cpc": 1070.4,
+              "total_cost": 483818
             },
-            "Feature": {
-              "wo": 500,
-              "cpc": 80.0,
-              "total_cost": 40019
+            "10K-15K": {
+              "wo": 480,
+              "cpc": 929.9,
+              "total_cost": 446375
             },
-            "Tablet": {
-              "wo": 27,
-              "cpc": 563.8,
-              "total_cost": 15223
+            "15K-20K": {
+              "wo": 133,
+              "cpc": 2019.6,
+              "total_cost": 268609
+            },
+            ">20K": {
+              "wo": 98,
+              "cpc": 10866.9,
+              "total_cost": 1064952
             },
             "Total": {
               "wo": 2483,
@@ -1215,25 +1271,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Tamilselvan Subramanian",
           "segments": {
-            "Smart": {
-              "wo": 496,
-              "cpc": 3109.5,
-              "total_cost": 1542330
+            "<8K": {
+              "wo": 1014,
+              "cpc": 238.7,
+              "total_cost": 242017
             },
-            "Element": {
-              "wo": 214,
-              "cpc": 333.8,
-              "total_cost": 71428
+            "8K-10K": {
+              "wo": 83,
+              "cpc": 1038.6,
+              "total_cost": 86201
             },
-            "Feature": {
-              "wo": 582,
-              "cpc": 68.8,
-              "total_cost": 40030
+            "10K-15K": {
+              "wo": 95,
+              "cpc": 1124.5,
+              "total_cost": 106831
             },
-            "Tablet": {
-              "wo": 1,
-              "cpc": 0.0,
-              "total_cost": 0
+            "15K-20K": {
+              "wo": 31,
+              "cpc": 7651.4,
+              "total_cost": 237193
+            },
+            ">20K": {
+              "wo": 70,
+              "cpc": 14022.1,
+              "total_cost": 981546
             },
             "Total": {
               "wo": 1293,
@@ -1244,25 +1305,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         }
       ],
       "national": {
-        "Smart": {
-          "wo": 4839,
-          "cpc": 1903.2,
-          "total_cost": 9209699
+        "<8K": {
+          "wo": 5747,
+          "cpc": 313.5,
+          "total_cost": 1801896
         },
-        "Element": {
-          "wo": 1088,
-          "cpc": 387.0,
-          "total_cost": 421077
+        "8K-10K": {
+          "wo": 1126,
+          "cpc": 916.2,
+          "total_cost": 1031671
         },
-        "Feature": {
-          "wo": 2722,
-          "cpc": 66.1,
-          "total_cost": 179838
+        "10K-15K": {
+          "wo": 1251,
+          "cpc": 944.7,
+          "total_cost": 1181767
         },
-        "Tablet": {
-          "wo": 188,
-          "cpc": 354.0,
-          "total_cost": 66543
+        "15K-20K": {
+          "wo": 355,
+          "cpc": 3657.9,
+          "total_cost": 1298556
+        },
+        ">20K": {
+          "wo": 358,
+          "cpc": 12746.6,
+          "total_cost": 4563267
         },
         "Total": {
           "wo": 8837,
@@ -1276,25 +1342,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Jitesh S Rath",
           "segments": {
-            "Smart": {
-              "wo": 1364,
-              "c1d": 602,
-              "tat_pct": 44.1
+            "<8K": {
+              "wo": 1601,
+              "c1d": 541,
+              "tat_pct": 33.8
             },
-            "Element": {
-              "wo": 314,
-              "c1d": 37,
-              "tat_pct": 11.8
+            "8K-10K": {
+              "wo": 365,
+              "c1d": 219,
+              "tat_pct": 60.0
             },
-            "Feature": {
-              "wo": 778,
-              "c1d": 246,
-              "tat_pct": 31.6
+            "10K-15K": {
+              "wo": 403,
+              "c1d": 163,
+              "tat_pct": 40.4
             },
-            "Tablet": {
-              "wo": 171,
-              "c1d": 135,
-              "tat_pct": 78.9
+            "15K-20K": {
+              "wo": 169,
+              "c1d": 64,
+              "tat_pct": 37.9
+            },
+            ">20K": {
+              "wo": 89,
+              "c1d": 33,
+              "tat_pct": 37.1
             },
             "Total": {
               "wo": 2627,
@@ -1306,25 +1377,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Rajesh Limbachia",
           "segments": {
-            "Smart": {
-              "wo": 1434,
-              "c1d": 754,
-              "tat_pct": 52.6
+            "<8K": {
+              "wo": 1185,
+              "c1d": 447,
+              "tat_pct": 37.7
             },
-            "Element": {
-              "wo": 196,
-              "c1d": 26,
-              "tat_pct": 13.3
+            "8K-10K": {
+              "wo": 307,
+              "c1d": 181,
+              "tat_pct": 59.0
             },
-            "Feature": {
-              "wo": 531,
-              "c1d": 187,
-              "tat_pct": 35.2
+            "10K-15K": {
+              "wo": 459,
+              "c1d": 239,
+              "tat_pct": 52.1
             },
-            "Tablet": {
-              "wo": 5,
-              "c1d": 0,
-              "tat_pct": 0.0
+            "15K-20K": {
+              "wo": 168,
+              "c1d": 80,
+              "tat_pct": 47.6
+            },
+            ">20K": {
+              "wo": 47,
+              "c1d": 20,
+              "tat_pct": 42.6
             },
             "Total": {
               "wo": 2166,
@@ -1336,25 +1412,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Shivaprasad P U",
           "segments": {
-            "Smart": {
-              "wo": 1326,
-              "c1d": 626,
-              "tat_pct": 47.2
+            "<8K": {
+              "wo": 1735,
+              "c1d": 621,
+              "tat_pct": 35.8
             },
-            "Element": {
-              "wo": 257,
-              "c1d": 28,
-              "tat_pct": 10.9
+            "8K-10K": {
+              "wo": 208,
+              "c1d": 108,
+              "tat_pct": 51.9
             },
-            "Feature": {
-              "wo": 934,
-              "c1d": 339,
-              "tat_pct": 36.3
+            "10K-15K": {
+              "wo": 343,
+              "c1d": 158,
+              "tat_pct": 46.1
             },
-            "Tablet": {
-              "wo": 9,
-              "c1d": 2,
-              "tat_pct": 22.2
+            "15K-20K": {
+              "wo": 128,
+              "c1d": 61,
+              "tat_pct": 47.7
+            },
+            ">20K": {
+              "wo": 112,
+              "c1d": 47,
+              "tat_pct": 42.0
             },
             "Total": {
               "wo": 2526,
@@ -1366,25 +1447,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Sukhbir Singh",
           "segments": {
-            "Smart": {
-              "wo": 2576,
-              "c1d": 1333,
-              "tat_pct": 51.7
+            "<8K": {
+              "wo": 1836,
+              "c1d": 725,
+              "tat_pct": 39.5
             },
-            "Element": {
-              "wo": 170,
-              "c1d": 24,
-              "tat_pct": 14.1
+            "8K-10K": {
+              "wo": 582,
+              "c1d": 335,
+              "tat_pct": 57.6
             },
-            "Feature": {
-              "wo": 786,
-              "c1d": 270,
-              "tat_pct": 34.4
+            "10K-15K": {
+              "wo": 754,
+              "c1d": 400,
+              "tat_pct": 53.1
             },
-            "Tablet": {
-              "wo": 48,
-              "c1d": 27,
-              "tat_pct": 56.2
+            "15K-20K": {
+              "wo": 283,
+              "c1d": 137,
+              "tat_pct": 48.4
+            },
+            ">20K": {
+              "wo": 125,
+              "c1d": 57,
+              "tat_pct": 45.6
             },
             "Total": {
               "wo": 3580,
@@ -1396,25 +1482,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Tamilselvan Subramanian",
           "segments": {
-            "Smart": {
-              "wo": 1001,
-              "c1d": 394,
-              "tat_pct": 39.4
+            "<8K": {
+              "wo": 1651,
+              "c1d": 523,
+              "tat_pct": 31.7
             },
-            "Element": {
-              "wo": 222,
-              "c1d": 19,
-              "tat_pct": 8.6
+            "8K-10K": {
+              "wo": 158,
+              "c1d": 70,
+              "tat_pct": 44.3
             },
-            "Feature": {
-              "wo": 1028,
-              "c1d": 329,
-              "tat_pct": 32.0
+            "10K-15K": {
+              "wo": 223,
+              "c1d": 84,
+              "tat_pct": 37.7
             },
-            "Tablet": {
-              "wo": 1,
-              "c1d": 0,
-              "tat_pct": 0.0
+            "15K-20K": {
+              "wo": 130,
+              "c1d": 36,
+              "tat_pct": 27.7
+            },
+            ">20K": {
+              "wo": 90,
+              "c1d": 29,
+              "tat_pct": 32.2
             },
             "Total": {
               "wo": 2252,
@@ -1425,25 +1516,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         }
       ],
       "national": {
-        "Smart": {
-          "wo": 7701,
-          "c1d": 3709,
-          "tat_pct": 48.2
+        "<8K": {
+          "wo": 8008,
+          "c1d": 2857,
+          "tat_pct": 35.7
         },
-        "Element": {
-          "wo": 1159,
-          "c1d": 134,
-          "tat_pct": 11.6
+        "8K-10K": {
+          "wo": 1620,
+          "c1d": 913,
+          "tat_pct": 56.4
         },
-        "Feature": {
-          "wo": 4057,
-          "c1d": 1371,
-          "tat_pct": 33.8
+        "10K-15K": {
+          "wo": 2182,
+          "c1d": 1044,
+          "tat_pct": 47.8
         },
-        "Tablet": {
-          "wo": 234,
-          "c1d": 164,
-          "tat_pct": 70.1
+        "15K-20K": {
+          "wo": 878,
+          "c1d": 378,
+          "tat_pct": 43.1
+        },
+        ">20K": {
+          "wo": 463,
+          "c1d": 186,
+          "tat_pct": 40.2
         },
         "Total": {
           "wo": 13151,
@@ -1452,34 +1548,27 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         }
       }
     },
-    "overall": {
+    "nps": {
       "busm": [
         {
           "busm": "Jitesh S Rath",
           "segments": {
-            "Smart": {
-              "tat_pct": 44.1,
-              "cpc": 1881.3,
-              "nps_pct": 68.5
+            "<8K": {
+              "nps_pct": 63.5
             },
-            "Element": {
-              "tat_pct": 11.8,
-              "cpc": 343.4,
-              "nps_pct": 72.0
+            "8K-10K": {
+              "nps_pct": 69.2
             },
-            "Feature": {
-              "tat_pct": 31.6,
-              "cpc": 62.9,
-              "nps_pct": 75.2
+            "10K-15K": {
+              "nps_pct": 74.8
             },
-            "Tablet": {
-              "tat_pct": 78.9,
-              "cpc": 299.6,
-              "nps_pct": 65.0
+            "15K-20K": {
+              "nps_pct": 78.4
+            },
+            ">20K": {
+              "nps_pct": 82.1
             },
             "Total": {
-              "tat_pct": 38.8,
-              "cpc": 927.9,
               "nps_pct": 70.4
             }
           }
@@ -1487,29 +1576,22 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Rajesh Limbachia",
           "segments": {
-            "Smart": {
-              "tat_pct": 52.6,
-              "cpc": 1473.5,
-              "nps_pct": 68.5
+            "<8K": {
+              "nps_pct": 63.5
             },
-            "Element": {
-              "tat_pct": 13.3,
-              "cpc": 467.5,
-              "nps_pct": 72.0
+            "8K-10K": {
+              "nps_pct": 69.2
             },
-            "Feature": {
-              "tat_pct": 35.2,
-              "cpc": 63.0,
-              "nps_pct": 75.2
+            "10K-15K": {
+              "nps_pct": 74.8
             },
-            "Tablet": {
-              "tat_pct": 0.0,
-              "cpc": 0,
-              "nps_pct": 65.0
+            "15K-20K": {
+              "nps_pct": 78.4
+            },
+            ">20K": {
+              "nps_pct": 82.1
             },
             "Total": {
-              "tat_pct": 44.6,
-              "cpc": 1018.9,
               "nps_pct": 70.4
             }
           }
@@ -1517,29 +1599,22 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Shivaprasad P U",
           "segments": {
-            "Smart": {
-              "tat_pct": 47.2,
-              "cpc": 2533.9,
-              "nps_pct": 68.5
+            "<8K": {
+              "nps_pct": 63.5
             },
-            "Element": {
-              "tat_pct": 10.9,
-              "cpc": 410.0,
-              "nps_pct": 72.0
+            "8K-10K": {
+              "nps_pct": 69.2
             },
-            "Feature": {
-              "tat_pct": 36.3,
-              "cpc": 58.1,
-              "nps_pct": 75.2
+            "10K-15K": {
+              "nps_pct": 74.8
             },
-            "Tablet": {
-              "tat_pct": 22.2,
-              "cpc": 3690.0,
-              "nps_pct": 65.0
+            "15K-20K": {
+              "nps_pct": 78.4
+            },
+            ">20K": {
+              "nps_pct": 82.1
             },
             "Total": {
-              "tat_pct": 39.4,
-              "cpc": 1249.4,
               "nps_pct": 70.4
             }
           }
@@ -1547,29 +1622,22 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Sukhbir Singh",
           "segments": {
-            "Smart": {
-              "tat_pct": 51.7,
-              "cpc": 1507.3,
-              "nps_pct": 68.5
+            "<8K": {
+              "nps_pct": 63.5
             },
-            "Element": {
-              "tat_pct": 14.1,
-              "cpc": 413.5,
-              "nps_pct": 72.0
+            "8K-10K": {
+              "nps_pct": 69.2
             },
-            "Feature": {
-              "tat_pct": 34.4,
-              "cpc": 80.0,
-              "nps_pct": 75.2
+            "10K-15K": {
+              "nps_pct": 74.8
             },
-            "Tablet": {
-              "tat_pct": 56.2,
-              "cpc": 563.8,
-              "nps_pct": 65.0
+            "15K-20K": {
+              "nps_pct": 78.4
+            },
+            ">20K": {
+              "nps_pct": 82.1
             },
             "Total": {
-              "tat_pct": 46.2,
-              "cpc": 1140.0,
               "nps_pct": 70.4
             }
           }
@@ -1577,58 +1645,44 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Tamilselvan Subramanian",
           "segments": {
-            "Smart": {
-              "tat_pct": 39.4,
-              "cpc": 3109.5,
-              "nps_pct": 68.5
+            "<8K": {
+              "nps_pct": 63.5
             },
-            "Element": {
-              "tat_pct": 8.6,
-              "cpc": 333.8,
-              "nps_pct": 72.0
+            "8K-10K": {
+              "nps_pct": 69.2
             },
-            "Feature": {
-              "tat_pct": 32.0,
-              "cpc": 68.8,
-              "nps_pct": 75.2
+            "10K-15K": {
+              "nps_pct": 74.8
             },
-            "Tablet": {
-              "tat_pct": 0.0,
-              "cpc": 0.0,
-              "nps_pct": 65.0
+            "15K-20K": {
+              "nps_pct": 78.4
+            },
+            ">20K": {
+              "nps_pct": 82.1
             },
             "Total": {
-              "tat_pct": 32.9,
-              "cpc": 1279.0,
               "nps_pct": 70.4
             }
           }
         }
       ],
       "national": {
-        "Smart": {
-          "tat_pct": 48.2,
-          "cpc": 1903.2,
-          "nps_pct": 68.5
+        "<8K": {
+          "nps_pct": 63.5
         },
-        "Element": {
-          "tat_pct": 11.6,
-          "cpc": 387.0,
-          "nps_pct": 72.0
+        "8K-10K": {
+          "nps_pct": 69.2
         },
-        "Feature": {
-          "tat_pct": 33.8,
-          "cpc": 66.1,
-          "nps_pct": 75.2
+        "10K-15K": {
+          "nps_pct": 74.8
         },
-        "Tablet": {
-          "tat_pct": 70.1,
-          "cpc": 354.0,
-          "nps_pct": 65.0
+        "15K-20K": {
+          "nps_pct": 78.4
+        },
+        ">20K": {
+          "nps_pct": 82.1
         },
         "Total": {
-          "tat_pct": 40.9,
-          "cpc": 1117.7,
           "nps_pct": 70.4
         }
       }
@@ -1640,25 +1694,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Jitesh S Rath",
           "segments": {
-            "Smart": {
-              "wo": 2513,
-              "cpc": 2086.5,
-              "total_cost": 5243274
+            "<8K": {
+              "wo": 4168,
+              "cpc": 255.7,
+              "total_cost": 1065716
             },
-            "Element": {
-              "wo": 1138,
-              "cpc": 344.1,
-              "total_cost": 391573
+            "8K-10K": {
+              "wo": 696,
+              "cpc": 667.1,
+              "total_cost": 464309
             },
-            "Feature": {
-              "wo": 2004,
-              "cpc": 55.7,
-              "total_cost": 111562
+            "10K-15K": {
+              "wo": 610,
+              "cpc": 1082.5,
+              "total_cost": 660321
             },
-            "Tablet": {
-              "wo": 282,
-              "cpc": 286.9,
-              "total_cost": 80910
+            "15K-20K": {
+              "wo": 248,
+              "cpc": 5806.8,
+              "total_cost": 1440096
+            },
+            ">20K": {
+              "wo": 215,
+              "cpc": 10218.0,
+              "total_cost": 2196877
             },
             "Total": {
               "wo": 5937,
@@ -1670,25 +1729,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Rajesh Limbachia",
           "segments": {
-            "Smart": {
-              "wo": 2784,
-              "cpc": 1407.1,
-              "total_cost": 3917304
+            "<8K": {
+              "wo": 2739,
+              "cpc": 323.2,
+              "total_cost": 885217
             },
-            "Element": {
-              "wo": 602,
-              "cpc": 459.5,
-              "total_cost": 276619
+            "8K-10K": {
+              "wo": 538,
+              "cpc": 677.2,
+              "total_cost": 364346
             },
-            "Feature": {
-              "wo": 1106,
-              "cpc": 75.3,
-              "total_cost": 83260
+            "10K-15K": {
+              "wo": 826,
+              "cpc": 894.7,
+              "total_cost": 739006
             },
-            "Tablet": {
-              "wo": 0,
-              "cpc": 0,
-              "total_cost": 0
+            "15K-20K": {
+              "wo": 261,
+              "cpc": 2527.1,
+              "total_cost": 659570
+            },
+            ">20K": {
+              "wo": 128,
+              "cpc": 12726.9,
+              "total_cost": 1629044
             },
             "Total": {
               "wo": 4492,
@@ -1700,25 +1764,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Shivaprasad P U",
           "segments": {
-            "Smart": {
-              "wo": 2483,
-              "cpc": 2487.6,
-              "total_cost": 6176684
+            "<8K": {
+              "wo": 4549,
+              "cpc": 243.9,
+              "total_cost": 1109665
             },
-            "Element": {
-              "wo": 877,
-              "cpc": 367.1,
-              "total_cost": 321989
+            "8K-10K": {
+              "wo": 362,
+              "cpc": 1058.7,
+              "total_cost": 383263
             },
-            "Feature": {
-              "wo": 2527,
-              "cpc": 55.3,
-              "total_cost": 139768
+            "10K-15K": {
+              "wo": 517,
+              "cpc": 981.9,
+              "total_cost": 507648
             },
-            "Tablet": {
-              "wo": 1,
-              "cpc": 3690.0,
-              "total_cost": 3690
+            "15K-20K": {
+              "wo": 178,
+              "cpc": 4245.9,
+              "total_cost": 755771
+            },
+            ">20K": {
+              "wo": 282,
+              "cpc": 13779.4,
+              "total_cost": 3885784
             },
             "Total": {
               "wo": 5888,
@@ -1730,25 +1799,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Sukhbir Singh",
           "segments": {
-            "Smart": {
-              "wo": 5393,
-              "cpc": 1325.2,
-              "total_cost": 7146728
+            "<8K": {
+              "wo": 4304,
+              "cpc": 342.5,
+              "total_cost": 1474211
             },
-            "Element": {
-              "wo": 535,
-              "cpc": 407.7,
-              "total_cost": 218103
+            "8K-10K": {
+              "wo": 1282,
+              "cpc": 841.9,
+              "total_cost": 1079328
             },
-            "Feature": {
-              "wo": 1699,
-              "cpc": 86.0,
-              "total_cost": 146066
+            "10K-15K": {
+              "wo": 1377,
+              "cpc": 829.9,
+              "total_cost": 1142743
             },
-            "Tablet": {
-              "wo": 45,
-              "cpc": 853.8,
-              "total_cost": 38422
+            "15K-20K": {
+              "wo": 432,
+              "cpc": 2402.5,
+              "total_cost": 1037893
+            },
+            ">20K": {
+              "wo": 277,
+              "cpc": 10163.0,
+              "total_cost": 2815144
             },
             "Total": {
               "wo": 7672,
@@ -1760,25 +1834,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Tamilselvan Subramanian",
           "segments": {
-            "Smart": {
-              "wo": 1618,
-              "cpc": 2680.6,
-              "total_cost": 4337264
+            "<8K": {
+              "wo": 3470,
+              "cpc": 234.1,
+              "total_cost": 812445
             },
-            "Element": {
-              "wo": 719,
-              "cpc": 332.2,
-              "total_cost": 238818
+            "8K-10K": {
+              "wo": 218,
+              "cpc": 978.0,
+              "total_cost": 213197
             },
-            "Feature": {
-              "wo": 1922,
-              "cpc": 64.3,
-              "total_cost": 123650
+            "10K-15K": {
+              "wo": 261,
+              "cpc": 1064.7,
+              "total_cost": 277878
             },
-            "Tablet": {
-              "wo": 1,
-              "cpc": 0.0,
-              "total_cost": 0
+            "15K-20K": {
+              "wo": 102,
+              "cpc": 7552.6,
+              "total_cost": 770364
+            },
+            ">20K": {
+              "wo": 209,
+              "cpc": 12563.9,
+              "total_cost": 2625848
             },
             "Total": {
               "wo": 4260,
@@ -1789,25 +1868,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         }
       ],
       "national": {
-        "Smart": {
-          "wo": 14791,
-          "cpc": 1813.3,
-          "total_cost": 26821254
+        "<8K": {
+          "wo": 19230,
+          "cpc": 278.1,
+          "total_cost": 5347254
         },
-        "Element": {
-          "wo": 3871,
-          "cpc": 373.8,
-          "total_cost": 1447102
+        "8K-10K": {
+          "wo": 3096,
+          "cpc": 808.9,
+          "total_cost": 2504443
         },
-        "Feature": {
-          "wo": 9258,
-          "cpc": 65.3,
-          "total_cost": 604306
+        "10K-15K": {
+          "wo": 3591,
+          "cpc": 926.6,
+          "total_cost": 3327596
         },
-        "Tablet": {
-          "wo": 329,
-          "cpc": 373.9,
-          "total_cost": 123022
+        "15K-20K": {
+          "wo": 1221,
+          "cpc": 3819.6,
+          "total_cost": 4663694
+        },
+        ">20K": {
+          "wo": 1111,
+          "cpc": 11838.6,
+          "total_cost": 13152697
         },
         "Total": {
           "wo": 28249,
@@ -1821,25 +1905,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Jitesh S Rath",
           "segments": {
-            "Smart": {
-              "wo": 4127,
-              "c1d": 1886,
-              "tat_pct": 45.7
+            "<8K": {
+              "wo": 5242,
+              "c1d": 1644,
+              "tat_pct": 31.4
             },
-            "Element": {
-              "wo": 1204,
-              "c1d": 119,
-              "tat_pct": 9.9
+            "8K-10K": {
+              "wo": 996,
+              "c1d": 591,
+              "tat_pct": 59.3
             },
-            "Feature": {
-              "wo": 2557,
-              "c1d": 785,
-              "tat_pct": 30.7
+            "10K-15K": {
+              "wo": 1127,
+              "c1d": 457,
+              "tat_pct": 40.6
             },
-            "Tablet": {
-              "wo": 321,
-              "c1d": 219,
-              "tat_pct": 68.2
+            "15K-20K": {
+              "wo": 528,
+              "c1d": 201,
+              "tat_pct": 38.1
+            },
+            ">20K": {
+              "wo": 316,
+              "c1d": 116,
+              "tat_pct": 36.7
             },
             "Total": {
               "wo": 8209,
@@ -1851,25 +1940,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Rajesh Limbachia",
           "segments": {
-            "Smart": {
-              "wo": 4807,
-              "c1d": 2555,
-              "tat_pct": 53.2
+            "<8K": {
+              "wo": 3983,
+              "c1d": 1494,
+              "tat_pct": 37.5
             },
-            "Element": {
-              "wo": 646,
-              "c1d": 85,
-              "tat_pct": 13.2
+            "8K-10K": {
+              "wo": 898,
+              "c1d": 550,
+              "tat_pct": 61.2
             },
-            "Feature": {
-              "wo": 1750,
-              "c1d": 557,
-              "tat_pct": 31.8
+            "10K-15K": {
+              "wo": 1517,
+              "c1d": 771,
+              "tat_pct": 50.8
             },
-            "Tablet": {
-              "wo": 9,
-              "c1d": 0,
-              "tat_pct": 0.0
+            "15K-20K": {
+              "wo": 625,
+              "c1d": 301,
+              "tat_pct": 48.2
+            },
+            ">20K": {
+              "wo": 189,
+              "c1d": 81,
+              "tat_pct": 42.9
             },
             "Total": {
               "wo": 7212,
@@ -1881,25 +1975,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Shivaprasad P U",
           "segments": {
-            "Smart": {
-              "wo": 4192,
-              "c1d": 1997,
-              "tat_pct": 47.6
+            "<8K": {
+              "wo": 5942,
+              "c1d": 2069,
+              "tat_pct": 34.8
             },
-            "Element": {
-              "wo": 945,
-              "c1d": 124,
-              "tat_pct": 13.1
+            "8K-10K": {
+              "wo": 611,
+              "c1d": 318,
+              "tat_pct": 52.0
             },
-            "Feature": {
-              "wo": 3268,
-              "c1d": 1072,
-              "tat_pct": 32.8
+            "10K-15K": {
+              "wo": 1021,
+              "c1d": 473,
+              "tat_pct": 46.3
             },
-            "Tablet": {
-              "wo": 15,
-              "c1d": 4,
-              "tat_pct": 26.7
+            "15K-20K": {
+              "wo": 486,
+              "c1d": 197,
+              "tat_pct": 40.5
+            },
+            ">20K": {
+              "wo": 360,
+              "c1d": 140,
+              "tat_pct": 38.9
             },
             "Total": {
               "wo": 8420,
@@ -1911,29 +2010,34 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Sukhbir Singh",
           "segments": {
-            "Smart": {
-              "wo": 8061,
-              "c1d": 4140,
-              "tat_pct": 51.4
+            "<8K": {
+              "wo": 5980,
+              "c1d": 2303,
+              "tat_pct": 38.5
             },
-            "Element": {
-              "wo": 571,
-              "c1d": 66,
-              "tat_pct": 11.6
+            "8K-10K": {
+              "wo": 1769,
+              "c1d": 1007,
+              "tat_pct": 56.9
             },
-            "Feature": {
-              "wo": 2613,
-              "c1d": 813,
-              "tat_pct": 31.1
+            "10K-15K": {
+              "wo": 2334,
+              "c1d": 1174,
+              "tat_pct": 50.3
             },
-            "Tablet": {
-              "wo": 124,
-              "c1d": 42,
-              "tat_pct": 33.9
+            "15K-20K": {
+              "wo": 925,
+              "c1d": 409,
+              "tat_pct": 44.2
+            },
+            ">20K": {
+              "wo": 362,
+              "c1d": 169,
+              "tat_pct": 46.7
             },
             "Total": {
-              "wo": 11369,
-              "c1d": 5061,
+              "wo": 11370,
+              "c1d": 5062,
               "tat_pct": 44.5
             }
           }
@@ -1941,25 +2045,30 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Tamilselvan Subramanian",
           "segments": {
-            "Smart": {
-              "wo": 3282,
-              "c1d": 1326,
-              "tat_pct": 40.4
+            "<8K": {
+              "wo": 5539,
+              "c1d": 1684,
+              "tat_pct": 30.4
             },
-            "Element": {
-              "wo": 763,
-              "c1d": 75,
-              "tat_pct": 9.8
+            "8K-10K": {
+              "wo": 446,
+              "c1d": 206,
+              "tat_pct": 46.2
             },
-            "Feature": {
-              "wo": 3333,
-              "c1d": 949,
-              "tat_pct": 28.5
+            "10K-15K": {
+              "wo": 706,
+              "c1d": 249,
+              "tat_pct": 35.3
             },
-            "Tablet": {
-              "wo": 1,
-              "c1d": 0,
-              "tat_pct": 0.0
+            "15K-20K": {
+              "wo": 392,
+              "c1d": 117,
+              "tat_pct": 29.8
+            },
+            ">20K": {
+              "wo": 296,
+              "c1d": 94,
+              "tat_pct": 31.8
             },
             "Total": {
               "wo": 7379,
@@ -1970,61 +2079,59 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         }
       ],
       "national": {
-        "Smart": {
-          "wo": 24469,
-          "c1d": 11904,
-          "tat_pct": 48.6
+        "<8K": {
+          "wo": 26686,
+          "c1d": 9194,
+          "tat_pct": 34.5
         },
-        "Element": {
-          "wo": 4129,
-          "c1d": 469,
-          "tat_pct": 11.4
+        "8K-10K": {
+          "wo": 4720,
+          "c1d": 2672,
+          "tat_pct": 56.6
         },
-        "Feature": {
-          "wo": 13521,
-          "c1d": 4176,
-          "tat_pct": 30.9
+        "10K-15K": {
+          "wo": 6705,
+          "c1d": 3124,
+          "tat_pct": 46.6
         },
-        "Tablet": {
-          "wo": 470,
-          "c1d": 265,
-          "tat_pct": 56.4
+        "15K-20K": {
+          "wo": 2956,
+          "c1d": 1225,
+          "tat_pct": 41.4
+        },
+        ">20K": {
+          "wo": 1523,
+          "c1d": 600,
+          "tat_pct": 39.4
         },
         "Total": {
-          "wo": 42589,
-          "c1d": 16814,
+          "wo": 42590,
+          "c1d": 16815,
           "tat_pct": 39.5
         }
       }
     },
-    "overall": {
+    "nps": {
       "busm": [
         {
           "busm": "Jitesh S Rath",
           "segments": {
-            "Smart": {
-              "tat_pct": 45.7,
-              "cpc": 2086.5,
-              "nps_pct": 68.5
+            "<8K": {
+              "nps_pct": 63.5
             },
-            "Element": {
-              "tat_pct": 9.9,
-              "cpc": 344.1,
-              "nps_pct": 72.0
+            "8K-10K": {
+              "nps_pct": 69.2
             },
-            "Feature": {
-              "tat_pct": 30.7,
-              "cpc": 55.7,
-              "nps_pct": 75.2
+            "10K-15K": {
+              "nps_pct": 74.8
             },
-            "Tablet": {
-              "tat_pct": 68.2,
-              "cpc": 286.9,
-              "nps_pct": 65.0
+            "15K-20K": {
+              "nps_pct": 78.4
+            },
+            ">20K": {
+              "nps_pct": 82.1
             },
             "Total": {
-              "tat_pct": 36.7,
-              "cpc": 981.5,
               "nps_pct": 70.4
             }
           }
@@ -2032,29 +2139,22 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Rajesh Limbachia",
           "segments": {
-            "Smart": {
-              "tat_pct": 53.2,
-              "cpc": 1407.1,
-              "nps_pct": 68.5
+            "<8K": {
+              "nps_pct": 63.5
             },
-            "Element": {
-              "tat_pct": 13.2,
-              "cpc": 459.5,
-              "nps_pct": 72.0
+            "8K-10K": {
+              "nps_pct": 69.2
             },
-            "Feature": {
-              "tat_pct": 31.8,
-              "cpc": 75.3,
-              "nps_pct": 75.2
+            "10K-15K": {
+              "nps_pct": 74.8
             },
-            "Tablet": {
-              "tat_pct": 0.0,
-              "cpc": 0,
-              "nps_pct": 65.0
+            "15K-20K": {
+              "nps_pct": 78.4
+            },
+            ">20K": {
+              "nps_pct": 82.1
             },
             "Total": {
-              "tat_pct": 44.3,
-              "cpc": 952.2,
               "nps_pct": 70.4
             }
           }
@@ -2062,29 +2162,22 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Shivaprasad P U",
           "segments": {
-            "Smart": {
-              "tat_pct": 47.6,
-              "cpc": 2487.6,
-              "nps_pct": 68.5
+            "<8K": {
+              "nps_pct": 63.5
             },
-            "Element": {
-              "tat_pct": 13.1,
-              "cpc": 367.1,
-              "nps_pct": 72.0
+            "8K-10K": {
+              "nps_pct": 69.2
             },
-            "Feature": {
-              "tat_pct": 32.8,
-              "cpc": 55.3,
-              "nps_pct": 75.2
+            "10K-15K": {
+              "nps_pct": 74.8
             },
-            "Tablet": {
-              "tat_pct": 26.7,
-              "cpc": 3690.0,
-              "nps_pct": 65.0
+            "15K-20K": {
+              "nps_pct": 78.4
+            },
+            ">20K": {
+              "nps_pct": 82.1
             },
             "Total": {
-              "tat_pct": 38.0,
-              "cpc": 1128.1,
               "nps_pct": 70.4
             }
           }
@@ -2092,29 +2185,22 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Sukhbir Singh",
           "segments": {
-            "Smart": {
-              "tat_pct": 51.4,
-              "cpc": 1325.2,
-              "nps_pct": 68.5
+            "<8K": {
+              "nps_pct": 63.5
             },
-            "Element": {
-              "tat_pct": 11.6,
-              "cpc": 407.7,
-              "nps_pct": 72.0
+            "8K-10K": {
+              "nps_pct": 69.2
             },
-            "Feature": {
-              "tat_pct": 31.1,
-              "cpc": 86.0,
-              "nps_pct": 75.2
+            "10K-15K": {
+              "nps_pct": 74.8
             },
-            "Tablet": {
-              "tat_pct": 33.9,
-              "cpc": 853.8,
-              "nps_pct": 65.0
+            "15K-20K": {
+              "nps_pct": 78.4
+            },
+            ">20K": {
+              "nps_pct": 82.1
             },
             "Total": {
-              "tat_pct": 44.5,
-              "cpc": 984.0,
               "nps_pct": 70.4
             }
           }
@@ -2122,58 +2208,44 @@ export const MODEL_SEGMENT_DATA_BY_MONTH: Record<string, any> = {
         {
           "busm": "Tamilselvan Subramanian",
           "segments": {
-            "Smart": {
-              "tat_pct": 40.4,
-              "cpc": 2680.6,
-              "nps_pct": 68.5
+            "<8K": {
+              "nps_pct": 63.5
             },
-            "Element": {
-              "tat_pct": 9.8,
-              "cpc": 332.2,
-              "nps_pct": 72.0
+            "8K-10K": {
+              "nps_pct": 69.2
             },
-            "Feature": {
-              "tat_pct": 28.5,
-              "cpc": 64.3,
-              "nps_pct": 75.2
+            "10K-15K": {
+              "nps_pct": 74.8
             },
-            "Tablet": {
-              "tat_pct": 0.0,
-              "cpc": 0.0,
-              "nps_pct": 65.0
+            "15K-20K": {
+              "nps_pct": 78.4
+            },
+            ">20K": {
+              "nps_pct": 82.1
             },
             "Total": {
-              "tat_pct": 31.8,
-              "cpc": 1103.2,
               "nps_pct": 70.4
             }
           }
         }
       ],
       "national": {
-        "Smart": {
-          "tat_pct": 48.6,
-          "cpc": 1813.3,
-          "nps_pct": 68.5
+        "<8K": {
+          "nps_pct": 63.5
         },
-        "Element": {
-          "tat_pct": 11.4,
-          "cpc": 373.8,
-          "nps_pct": 72.0
+        "8K-10K": {
+          "nps_pct": 69.2
         },
-        "Feature": {
-          "tat_pct": 30.9,
-          "cpc": 65.3,
-          "nps_pct": 75.2
+        "10K-15K": {
+          "nps_pct": 74.8
         },
-        "Tablet": {
-          "tat_pct": 56.4,
-          "cpc": 373.9,
-          "nps_pct": 65.0
+        "15K-20K": {
+          "nps_pct": 78.4
+        },
+        ">20K": {
+          "nps_pct": 82.1
         },
         "Total": {
-          "tat_pct": 39.5,
-          "cpc": 1026.4,
           "nps_pct": 70.4
         }
       }

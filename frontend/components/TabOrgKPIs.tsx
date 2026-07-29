@@ -2157,7 +2157,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <div className="bar" style={{ background: '#d97706' }}></div>
               <span style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>
-                1. CPC Breakdown — Cost Analysis by Model Segment
+                1. CPC Breakdown — Cost Analysis by Model Segment Price Brackets
               </span>
               <span style={{ fontSize: '11.5px', fontWeight: 800, background: '#fef3c7', color: '#b45309', border: '1px solid #fde68a', padding: '2px 8px', borderRadius: '12px' }}>
                 Active Month: {selectedMonth === 'All' ? 'All Months (Apr-Jun)' : selectedMonth === 'Jun' ? 'June 2026' : selectedMonth === 'May' ? 'May 2026' : 'April 2026'}
@@ -2167,10 +2167,10 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             <div className="card-mock" style={{ padding: '20px', marginBottom: '24px', borderTop: '3px solid #d97706' }}>
               <div style={{ marginBottom: '14px' }}>
                 <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                  Combined Repair &amp; Replacement Cost by Model Segment
+                  Combined Repair &amp; Replacement Cost by Model Segment Price Brackets
                 </h3>
                 <span style={{ fontSize: '12px', color: '#64748b' }}>
-                  Average CPC (₹) and Total Expenditure (₹) per Model Segment across BUSMs
+                  Average CPC (₹) and Total Expenditure (₹) across Model Segment Price Brackets (&lt;8K, 8K-10K, 10K-15K, 15K-20K, &gt;20K)
                 </span>
               </div>
 
@@ -2179,10 +2179,11 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   <TableHeader>
                     <TableRow style={{ background: '#f8fafc' }}>
                       <TableHead style={{ textAlign: 'left' }}>BUSM Name</TableHead>
-                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>Smart CPC (Cost ₹)</TableHead>
-                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>Element CPC (Cost ₹)</TableHead>
-                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>Feature CPC (Cost ₹)</TableHead>
-                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>Tablet CPC (Cost ₹)</TableHead>
+                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>&lt;8K CPC (Cost ₹)</TableHead>
+                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>8K-10K CPC (Cost ₹)</TableHead>
+                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>10K-15K CPC (Cost ₹)</TableHead>
+                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>15K-20K CPC (Cost ₹)</TableHead>
+                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>&gt;20K CPC (Cost ₹)</TableHead>
                       <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0', background: '#fffbeb' }}>Total Combined CPC (₹)</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -2190,18 +2191,12 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                     {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.cpc?.busm || []).map((r: any, i: number) => (
                       <TableRow key={i}>
                         <TableCell style={{ textAlign: 'left', fontWeight: 700 }}>{r.busm}</TableCell>
-                        <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9' }}>
-                          <span style={{ fontWeight: 700, color: '#d97706' }}>₹{r.segments.Smart.cpc}</span> <span style={{ fontSize: '11px', color: '#64748b' }}>(₹{r.segments.Smart.total_cost.toLocaleString('en-IN')})</span>
-                        </TableCell>
-                        <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9' }}>
-                          <span style={{ fontWeight: 700, color: '#d97706' }}>₹{r.segments.Element.cpc}</span> <span style={{ fontSize: '11px', color: '#64748b' }}>(₹{r.segments.Element.total_cost.toLocaleString('en-IN')})</span>
-                        </TableCell>
-                        <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9' }}>
-                          <span style={{ fontWeight: 700, color: '#d97706' }}>₹{r.segments.Feature.cpc}</span> <span style={{ fontSize: '11px', color: '#64748b' }}>(₹{r.segments.Feature.total_cost.toLocaleString('en-IN')})</span>
-                        </TableCell>
-                        <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9' }}>
-                          <span style={{ fontWeight: 700, color: '#d97706' }}>₹{r.segments.Tablet.cpc}</span> <span style={{ fontSize: '11px', color: '#64748b' }}>(₹{r.segments.Tablet.total_cost.toLocaleString('en-IN')})</span>
-                        </TableCell>
+                        {['<8K', '8K-10K', '10K-15K', '15K-20K', '>20K'].map((ps) => (
+                          <TableCell key={ps} style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9' }}>
+                            <span style={{ fontWeight: 700, color: '#d97706' }}>₹{r.segments[ps]?.cpc || 0}</span>{' '}
+                            <span style={{ fontSize: '11px', color: '#64748b' }}>(₹{(r.segments[ps]?.total_cost || 0).toLocaleString('en-IN')})</span>
+                          </TableCell>
+                        ))}
                         <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', fontWeight: 800, background: '#fffbeb', color: '#b45309' }}>
                           ₹{r.segments.Total.cpc} (₹{r.segments.Total.total_cost.toLocaleString('en-IN')})
                         </TableCell>
@@ -2211,11 +2206,11 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   {MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.cpc?.national && (
                     <TableSummaryRow>
                       <TableCell style={{ textAlign: 'left', fontWeight: 800 }}>National Total / Average</TableCell>
-                      {['Smart', 'Element', 'Feature', 'Tablet', 'Total'].map((mt) => {
-                        const n = MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth].cpc.national[mt];
+                      {['<8K', '8K-10K', '10K-15K', '15K-20K', '>20K', 'Total'].map((ps) => {
+                        const n = MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth].cpc.national[ps];
                         return (
-                          <TableCell key={mt} style={{ textAlign: 'right', fontWeight: 800, borderLeft: '1px solid #cbd5e1' }}>
-                            ₹{n.cpc} (₹{n.total_cost.toLocaleString('en-IN')})
+                          <TableCell key={ps} style={{ textAlign: 'right', fontWeight: 800, borderLeft: '1px solid #cbd5e1' }}>
+                            ₹{n?.cpc || 0} (₹{(n?.total_cost || 0).toLocaleString('en-IN')})
                           </TableCell>
                         );
                       })}
@@ -2231,14 +2226,14 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <div className="bar" style={{ background: '#7c3aed' }}></div>
               <span style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>
-                2. NPS Performance &amp; Customer Satisfaction — Model Segment Breakdown
+                2. NPS Performance &amp; Customer Satisfaction — Model Segment Price Brackets
               </span>
             </div>
 
             <div className="card-mock" style={{ padding: '20px', marginBottom: '24px', borderTop: '3px solid #7c3aed' }}>
               <div style={{ marginBottom: '14px' }}>
                 <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                  NPS Score Matrix by Model Segment
+                  NPS Score Matrix by Model Segment Price Brackets
                 </h3>
               </div>
 
@@ -2247,25 +2242,40 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   <TableHeader>
                     <TableRow style={{ background: '#f8fafc' }}>
                       <TableHead style={{ textAlign: 'left' }}>BUSM Name</TableHead>
-                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>Smart NPS %</TableHead>
-                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>Element NPS %</TableHead>
-                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>Feature NPS %</TableHead>
-                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>Tablet NPS %</TableHead>
+                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>&lt;8K NPS %</TableHead>
+                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>8K-10K NPS %</TableHead>
+                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>10K-15K NPS %</TableHead>
+                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>15K-20K NPS %</TableHead>
+                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>&gt;20K NPS %</TableHead>
                       <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0', background: '#f5f3ff' }}>Overall NPS %</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.overall?.busm || []).map((r: any, i: number) => (
+                    {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.nps?.busm || []).map((r: any, i: number) => (
                       <TableRow key={i}>
                         <TableCell style={{ textAlign: 'left', fontWeight: 700 }}>{r.busm}</TableCell>
-                        <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', color: '#7c3aed', fontWeight: 700 }}>{r.segments.Smart.nps_pct}%</TableCell>
-                        <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', color: '#7c3aed', fontWeight: 700 }}>{r.segments.Element.nps_pct}%</TableCell>
-                        <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', color: '#7c3aed', fontWeight: 700 }}>{r.segments.Feature.nps_pct}%</TableCell>
-                        <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', color: '#7c3aed', fontWeight: 700 }}>{r.segments.Tablet.nps_pct}%</TableCell>
+                        {['<8K', '8K-10K', '10K-15K', '15K-20K', '>20K'].map((ps) => (
+                          <TableCell key={ps} style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', color: '#7c3aed', fontWeight: 700 }}>
+                            {r.segments[ps]?.nps_pct}%
+                          </TableCell>
+                        ))}
                         <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', color: '#6d28d9', fontWeight: 800, background: '#f5f3ff' }}>{r.segments.Total.nps_pct}%</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
+                  {MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.nps?.national && (
+                    <TableSummaryRow>
+                      <TableCell style={{ textAlign: 'left', fontWeight: 800 }}>National Average</TableCell>
+                      {['<8K', '8K-10K', '10K-15K', '15K-20K', '>20K', 'Total'].map((ps) => {
+                        const n = MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth].nps.national[ps];
+                        return (
+                          <TableCell key={ps} style={{ textAlign: 'right', fontWeight: 800, borderLeft: '1px solid #cbd5e1', color: '#6d28d9' }}>
+                            {n?.nps_pct}%
+                          </TableCell>
+                        );
+                      })}
+                    </TableSummaryRow>
+                  )}
                 </Table>
               </div>
             </div>
@@ -2276,14 +2286,14 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <div className="bar" style={{ background: '#16a34a' }}></div>
               <span style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>
-                3. TAT &amp; Turnaround Speed — Model Segment Breakdown
+                3. TAT &amp; Turnaround Speed — Model Segment Price Brackets
               </span>
             </div>
 
             <div className="card-mock" style={{ padding: '20px', marginBottom: '24px', borderTop: '3px solid #16a34a' }}>
               <div style={{ marginBottom: '14px' }}>
                 <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                  1-Day Repair Closure TAT % by Model Segment
+                  1-Day Repair Closure TAT % by Model Segment Price Brackets
                 </h3>
               </div>
 
@@ -2292,10 +2302,11 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   <TableHeader>
                     <TableRow style={{ background: '#f8fafc' }}>
                       <TableHead style={{ textAlign: 'left' }}>BUSM Name</TableHead>
-                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>Smart 1D TAT % (WOs)</TableHead>
-                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>Element 1D TAT % (WOs)</TableHead>
-                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>Feature 1D TAT % (WOs)</TableHead>
-                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>Tablet 1D TAT % (WOs)</TableHead>
+                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>&lt;8K 1D TAT % (WOs)</TableHead>
+                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>8K-10K 1D TAT % (WOs)</TableHead>
+                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>10K-15K 1D TAT % (WOs)</TableHead>
+                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>15K-20K 1D TAT % (WOs)</TableHead>
+                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>&gt;20K 1D TAT % (WOs)</TableHead>
                       <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0', background: '#f0fdf4' }}>Total TAT %</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -2303,18 +2314,12 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                     {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.tat?.busm || []).map((r: any, i: number) => (
                       <TableRow key={i}>
                         <TableCell style={{ textAlign: 'left', fontWeight: 700 }}>{r.busm}</TableCell>
-                        <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9' }}>
-                          <span style={{ fontWeight: 700, color: '#16a34a' }}>{r.segments.Smart.tat_pct}%</span> <span style={{ fontSize: '11px', color: '#64748b' }}>({r.segments.Smart.wo})</span>
-                        </TableCell>
-                        <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9' }}>
-                          <span style={{ fontWeight: 700, color: '#16a34a' }}>{r.segments.Element.tat_pct}%</span> <span style={{ fontSize: '11px', color: '#64748b' }}>({r.segments.Element.wo})</span>
-                        </TableCell>
-                        <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9' }}>
-                          <span style={{ fontWeight: 700, color: '#16a34a' }}>{r.segments.Feature.tat_pct}%</span> <span style={{ fontSize: '11px', color: '#64748b' }}>({r.segments.Feature.wo})</span>
-                        </TableCell>
-                        <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9' }}>
-                          <span style={{ fontWeight: 700, color: '#16a34a' }}>{r.segments.Tablet.tat_pct}%</span> <span style={{ fontSize: '11px', color: '#64748b' }}>({r.segments.Tablet.wo})</span>
-                        </TableCell>
+                        {['<8K', '8K-10K', '10K-15K', '15K-20K', '>20K'].map((ps) => (
+                          <TableCell key={ps} style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9' }}>
+                            <span style={{ fontWeight: 700, color: '#16a34a' }}>{r.segments[ps]?.tat_pct || 0}%</span>{' '}
+                            <span style={{ fontSize: '11px', color: '#64748b' }}>({r.segments[ps]?.wo || 0})</span>
+                          </TableCell>
+                        ))}
                         <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', fontWeight: 800, background: '#f0fdf4', color: '#15803d' }}>
                           {r.segments.Total.tat_pct}% ({r.segments.Total.wo.toLocaleString('en-IN')})
                         </TableCell>
@@ -2324,11 +2329,11 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   {MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.tat?.national && (
                     <TableSummaryRow>
                       <TableCell style={{ textAlign: 'left', fontWeight: 800 }}>National Average</TableCell>
-                      {['Smart', 'Element', 'Feature', 'Tablet', 'Total'].map((mt) => {
-                        const n = MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth].tat.national[mt];
+                      {['<8K', '8K-10K', '10K-15K', '15K-20K', '>20K', 'Total'].map((ps) => {
+                        const n = MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth].tat.national[ps];
                         return (
-                          <TableCell key={mt} style={{ textAlign: 'right', fontWeight: 800, borderLeft: '1px solid #cbd5e1' }}>
-                            {n.tat_pct}% ({n.wo.toLocaleString('en-IN')})
+                          <TableCell key={ps} style={{ textAlign: 'right', fontWeight: 800, borderLeft: '1px solid #cbd5e1' }}>
+                            {n?.tat_pct || 0}% ({(n?.wo || 0).toLocaleString('en-IN')})
                           </TableCell>
                         );
                       })}
