@@ -21,7 +21,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
   const [selectedAsmRow, setSelectedAsmRow] = useState<string | null>(null);
   const [collapsedTables, setCollapsedTables] = useState<Record<string, boolean>>({});
   const [segmentFilter, setSegmentFilter] = useState<string>('All');
-  const [modelTypeFilter, setModelTypeFilter] = useState<string>('Smart & Element');
+  const [modelTypeFilter, setModelTypeFilter] = useState<string>('Smart & Tablet');
 
   // CPC Drilldown State
   const [cpcBusmRepair, setCpcBusmRepair] = useState<string | null>(null);
