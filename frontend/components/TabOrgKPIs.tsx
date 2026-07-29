@@ -2316,6 +2316,10 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             • <strong>Scorecard Column CPC (₹) Formula:</strong> <code>Combined Total Cost (₹) ÷ (Repair WO Count + Replacement WO Count)</code> <br />
             &nbsp;&nbsp;where <em>Combined Total Cost (₹)</em> = Total Repair Cost (₹) + Total Replacement Cost (₹), and denominator is sum of Repair WOs (Total Part Value &gt; 0) + Replacement WOs (Call Type = "Z9").
           </div>
+          <div style={{ marginTop: '4px' }}>
+            • <strong>Model Segment View — CPC Breakdown &amp; CPC % Breakdown Filters:</strong> Records filtered for <code>Warranty = "Yes"</code>, <code>ELS Status = "Yes"</code>, and <code>Total Part Value &gt; 0</code>. WO counts and cost totals exclude any zero-part-value records from denominator and totals.
+            <br />&nbsp;&nbsp;<code>CPC % = Sum of Part Value ÷ Sum of Handset Value × 100</code> computed within each Price Bracket per BUSM / ASM / ASP.
+          </div>
         </div>
 
         {/* S@H Cancellation %, Reschedule %, and Same Day Attend % Calculation Formula Footnote */}
