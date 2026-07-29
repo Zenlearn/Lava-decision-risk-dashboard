@@ -184,6 +184,10 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
 
   // Helper map for normalizing name comparisons
   const normalizeKey = (s: string) => (s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  // Scroll to top of page helper
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+
+
   const busmNpsMap = new Map(busmNpsData.map(b => [normalizeKey(b.name), b]));
   const asmNpsMap = new Map(asmNpsData.map(a => [normalizeKey(a.name), a]));
 
@@ -524,7 +528,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
         </div>
 
         {/* TABLE 1: BUSM PERFORMANCE & RANKING MATRIX */}
-        <div className="card-mock" style={{ padding: '20px', marginBottom: '24px' }}>
+        <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px' }}>
+          <button
+            onClick={scrollToTop}
+            title="Move to top of page"
+            style={{
+              position: 'absolute', top: '10px', right: '14px',
+              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
+              color: '#fff', border: 'none', borderRadius: '20px',
+              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
+              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
+              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
+              letterSpacing: '0.03em'
+            }}
+          >↑ Top</button>
           <div 
             onClick={() => toggleTable('busmPerf')}
             style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: collapsedTables.busmPerf ? 0 : '14px', cursor: 'pointer', userSelect: 'none' }}
@@ -654,7 +671,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
 
         {/* TABLE 2: ASM BREAKDOWN MATRIX (Only visible when a BUSM is clicked) */}
         {selectedBusmRow && (
-          <div className="card-mock" style={{ padding: '20px', marginBottom: '16px', borderLeft: '4px solid #2563eb' }}>
+          <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '16px', borderLeft: '4px solid #2563eb' }}>
+          <button
+            onClick={scrollToTop}
+            title="Move to top of page"
+            style={{
+              position: 'absolute', top: '10px', right: '14px',
+              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
+              color: '#fff', border: 'none', borderRadius: '20px',
+              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
+              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
+              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
+              letterSpacing: '0.03em'
+            }}
+          >↑ Top</button>
             <div 
               onClick={() => toggleTable('asmPerf')}
               style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: collapsedTables.asmPerf ? 0 : '14px', cursor: 'pointer', userSelect: 'none' }}
@@ -796,7 +826,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
 
         {/* ─── ASP TABLE: revealed when ASM is selected ─── */}
         {selectedAsmRow && (
-        <div className="card-mock" style={{ padding: '20px', marginBottom: '16px', borderLeft: '4px solid #7c3aed', marginTop: '4px' }}>
+        <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '16px', borderLeft: '4px solid #7c3aed', marginTop: '4px' }}>
+          <button
+            onClick={scrollToTop}
+            title="Move to top of page"
+            style={{
+              position: 'absolute', top: '10px', right: '14px',
+              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
+              color: '#fff', border: 'none', borderRadius: '20px',
+              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
+              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
+              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
+              letterSpacing: '0.03em'
+            }}
+          >↑ Top</button>
           <div style={{ marginBottom: '14px' }}>
             <div style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 700, marginBottom: '4px' }}>▶ National &gt; {selectedBusmRow} &gt; {selectedAsmRow}</div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -886,7 +929,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
         </div>
 
         {/* ─── UNIFIED COMBINED REPAIR & REPLACEMENT TABLE (BUSM LEVEL) ─── */}
-        <div className="card-mock" style={{ padding: '20px', marginBottom: '24px', borderTop: '3px solid #d97706' }}>
+        <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px', borderTop: '3px solid #d97706' }}>
+          <button
+            onClick={scrollToTop}
+            title="Move to top of page"
+            style={{
+              position: 'absolute', top: '10px', right: '14px',
+              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
+              color: '#fff', border: 'none', borderRadius: '20px',
+              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
+              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
+              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
+              letterSpacing: '0.03em'
+            }}
+          >↑ Top</button>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -1000,7 +1056,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
 
         {/* ─── COMBINED ASM DRILLDOWN TABLE ─── */}
         {cpcBusmRepair && (
-          <div className="card-mock" style={{ padding: '20px', marginBottom: '16px', borderLeft: '4px solid #d97706' }}>
+          <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '16px', borderLeft: '4px solid #d97706' }}>
+          <button
+            onClick={scrollToTop}
+            title="Move to top of page"
+            style={{
+              position: 'absolute', top: '10px', right: '14px',
+              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
+              color: '#fff', border: 'none', borderRadius: '20px',
+              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
+              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
+              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
+              letterSpacing: '0.03em'
+            }}
+          >↑ Top</button>
             <div style={{ marginBottom: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <div style={{ fontSize: '11px', color: '#b45309', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {cpcBusmRepair}</div>
@@ -1074,7 +1143,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
 
         {/* ─── COMBINED ASP DRILLDOWN TABLE ─── */}
         {cpcAsmRepair && (
-          <div className="card-mock" style={{ padding: '20px', marginBottom: '24px', borderLeft: '4px solid #7c3aed' }}>
+          <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px', borderLeft: '4px solid #7c3aed' }}>
+          <button
+            onClick={scrollToTop}
+            title="Move to top of page"
+            style={{
+              position: 'absolute', top: '10px', right: '14px',
+              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
+              color: '#fff', border: 'none', borderRadius: '20px',
+              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
+              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
+              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
+              letterSpacing: '0.03em'
+            }}
+          >↑ Top</button>
             <div style={{ marginBottom: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <div style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {cpcBusmRepair} &gt; {cpcAsmRepair}</div>
@@ -1167,7 +1249,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
         </div>
 
         {/* TABLE 3: BUSM APPOINTMENT METRICS TABLE */}
-        <div className="card-mock" style={{ padding: '20px', marginBottom: '24px' }}>
+        <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px' }}>
+          <button
+            onClick={scrollToTop}
+            title="Move to top of page"
+            style={{
+              position: 'absolute', top: '10px', right: '14px',
+              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
+              color: '#fff', border: 'none', borderRadius: '20px',
+              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
+              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
+              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
+              letterSpacing: '0.03em'
+            }}
+          >↑ Top</button>
           <div 
             onClick={() => toggleTable('busmAppt')}
             style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: collapsedTables.busmAppt ? 0 : '14px', cursor: 'pointer', userSelect: 'none' }}
@@ -1252,7 +1347,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
 
         {/* TABLE 4: ASM APPOINTMENT METRICS TABLE (Only visible when a BUSM is clicked) */}
         {selectedBusmRow && (
-          <div className="card-mock" style={{ padding: '20px', marginTop: '16px' }}>
+          <div className="card-mock" style={{ position: 'relative', padding: '20px', marginTop: '16px' }}>
+          <button
+            onClick={scrollToTop}
+            title="Move to top of page"
+            style={{
+              position: 'absolute', top: '10px', right: '14px',
+              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
+              color: '#fff', border: 'none', borderRadius: '20px',
+              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
+              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
+              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
+              letterSpacing: '0.03em'
+            }}
+          >↑ Top</button>
             <div 
               onClick={() => toggleTable('asmAppt')}
               style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: collapsedTables.asmAppt ? 0 : '14px', cursor: 'pointer', userSelect: 'none' }}
@@ -1428,7 +1536,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
         </div>
 
         {/* NPS TABLE 1: BUSM LEVEL NPS BREAKDOWN */}
-        <div className="card-mock" style={{ padding: '20px', marginBottom: '24px' }}>
+        <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px' }}>
+          <button
+            onClick={scrollToTop}
+            title="Move to top of page"
+            style={{
+              position: 'absolute', top: '10px', right: '14px',
+              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
+              color: '#fff', border: 'none', borderRadius: '20px',
+              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
+              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
+              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
+              letterSpacing: '0.03em'
+            }}
+          >↑ Top</button>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
             <div>
               <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
@@ -1520,7 +1641,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
         {selectedBusmRow && (
           <>
             {/* NPS TABLE 2: ASM LEVEL NPS BREAKDOWN */}
-            <div className="card-mock" style={{ padding: '20px', marginBottom: '24px' }}>
+            <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px' }}>
+          <button
+            onClick={scrollToTop}
+            title="Move to top of page"
+            style={{
+              position: 'absolute', top: '10px', right: '14px',
+              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
+              color: '#fff', border: 'none', borderRadius: '20px',
+              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
+              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
+              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
+              letterSpacing: '0.03em'
+            }}
+          >↑ Top</button>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                 <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
                   Table 2: Supervisor (ASM) Wise NPS Performance Breakdown (Filtered: {selectedBusmRow})
@@ -1590,7 +1724,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             </div>
 
             {/* NPS TABLE 3: ASP CENTER WISE NPS BREAKDOWN */}
-            <div className="card-mock" style={{ padding: '20px', marginBottom: '24px' }}>
+            <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px' }}>
+          <button
+            onClick={scrollToTop}
+            title="Move to top of page"
+            style={{
+              position: 'absolute', top: '10px', right: '14px',
+              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
+              color: '#fff', border: 'none', borderRadius: '20px',
+              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
+              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
+              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
+              letterSpacing: '0.03em'
+            }}
+          >↑ Top</button>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                 <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
                   Table 3: Top ASP Center Wise NPS Performance Breakdown ({selectedAsmRow ? `Filtered ASM: ${selectedAsmRow}` : `Filtered BUSM: ${selectedBusmRow}`})
@@ -1657,7 +1804,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             </div>
 
             {/* NPS TABLES 4 & 5: DETRACTOR (DSAT) REASONS BREAKDOWN */}
-            <div className="card-mock" style={{ padding: '20px', marginBottom: '24px' }}>
+            <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px' }}>
+          <button
+            onClick={scrollToTop}
+            title="Move to top of page"
+            style={{
+              position: 'absolute', top: '10px', right: '14px',
+              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
+              color: '#fff', border: 'none', borderRadius: '20px',
+              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
+              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
+              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
+              letterSpacing: '0.03em'
+            }}
+          >↑ Top</button>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                 <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
                   Table 4 &amp; 5: Detractor (DSAT) Root Cause Reasons Matrix by BUSM (Filtered: {selectedBusmRow})
@@ -1701,7 +1861,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
         )}
 
         {/* NPS TABLE 6: OVERALL DEVICE CATEGORY NPS COMPARISON */}
-        <div className="card-mock" style={{ padding: '20px', marginBottom: '24px' }}>
+        <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px' }}>
+          <button
+            onClick={scrollToTop}
+            title="Move to top of page"
+            style={{
+              position: 'absolute', top: '10px', right: '14px',
+              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
+              color: '#fff', border: 'none', borderRadius: '20px',
+              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
+              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
+              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
+              letterSpacing: '0.03em'
+            }}
+          >↑ Top</button>
           <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', marginBottom: '12px' }}>
             Table 6: Overall Device Category NPS Comparison (Feature Phone vs Smart Phone)
           </h3>
@@ -1737,7 +1910,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px' }}>
           
           {/* Table 7: Feature Phone NPS Performance Breakdown */}
-          <div className="card-mock" style={{ padding: '20px', margin: 0 }}>
+          <div className="card-mock" style={{ position: 'relative', padding: '20px', margin: 0 }}>
+          <button
+            onClick={scrollToTop}
+            title="Move to top of page"
+            style={{
+              position: 'absolute', top: '10px', right: '14px',
+              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
+              color: '#fff', border: 'none', borderRadius: '20px',
+              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
+              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
+              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
+              letterSpacing: '0.03em'
+            }}
+          >↑ Top</button>
             <h3 style={{ fontSize: '14.5px', fontWeight: 800, color: '#0f172a', marginBottom: '12px' }}>
               Table 7: Feature Phone NPS Performance Breakdown by BUSM
             </h3>
@@ -1784,7 +1970,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
           </div>
 
           {/* Table 8: Smart Phone NPS Performance Breakdown */}
-          <div className="card-mock" style={{ padding: '20px', margin: 0 }}>
+          <div className="card-mock" style={{ position: 'relative', padding: '20px', margin: 0 }}>
+          <button
+            onClick={scrollToTop}
+            title="Move to top of page"
+            style={{
+              position: 'absolute', top: '10px', right: '14px',
+              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
+              color: '#fff', border: 'none', borderRadius: '20px',
+              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
+              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
+              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
+              letterSpacing: '0.03em'
+            }}
+          >↑ Top</button>
             <h3 style={{ fontSize: '14.5px', fontWeight: 800, color: '#0f172a', marginBottom: '12px' }}>
               Table 8: Smart Phone NPS Performance Breakdown by BUSM
             </h3>
@@ -1862,7 +2061,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
         </div>
 
         {/* TAT TABLE 1: BUSM LEVEL TAT CLOSURE MATRIX */}
-        <div className="card-mock" style={{ padding: '20px', marginBottom: '24px' }}>
+        <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px' }}>
+          <button
+            onClick={scrollToTop}
+            title="Move to top of page"
+            style={{
+              position: 'absolute', top: '10px', right: '14px',
+              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
+              color: '#fff', border: 'none', borderRadius: '20px',
+              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
+              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
+              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
+              letterSpacing: '0.03em'
+            }}
+          >↑ Top</button>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
             <div>
               <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
@@ -2006,7 +2218,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
 
         {/* TAT TABLE 2: ASM LEVEL TAT CLOSURE MATRIX (Only visible when a BUSM is clicked) */}
         {selectedBusmRow && (
-          <div className="card-mock" style={{ padding: '20px', marginTop: '16px' }}>
+          <div className="card-mock" style={{ position: 'relative', padding: '20px', marginTop: '16px' }}>
+          <button
+            onClick={scrollToTop}
+            title="Move to top of page"
+            style={{
+              position: 'absolute', top: '10px', right: '14px',
+              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
+              color: '#fff', border: 'none', borderRadius: '20px',
+              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
+              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
+              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
+              letterSpacing: '0.03em'
+            }}
+          >↑ Top</button>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
               <div>
                 <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
@@ -2133,7 +2358,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
 
             {/* TAT TABLE 3: ASP CENTER WISE TAT VELOCITY MATRIX */}
             {selectedAsmRow && (
-              <div className="card-mock" style={{ padding: '20px', marginTop: '16px' }}>
+              <div className="card-mock" style={{ position: 'relative', padding: '20px', marginTop: '16px' }}>
+          <button
+            onClick={scrollToTop}
+            title="Move to top of page"
+            style={{
+              position: 'absolute', top: '10px', right: '14px',
+              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
+              color: '#fff', border: 'none', borderRadius: '20px',
+              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
+              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
+              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
+              letterSpacing: '0.03em'
+            }}
+          >↑ Top</button>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
                   <div>
                     <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
@@ -2370,7 +2608,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             </div>
 
             {/* TABLE 1: BUSM LEVEL CPC BY PRICE BRACKETS */}
-            <div className="card-mock" style={{ padding: '20px', marginBottom: '24px', borderTop: '3px solid #d97706' }}>
+            <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px', borderTop: '3px solid #d97706' }}>
+          <button
+            onClick={scrollToTop}
+            title="Move to top of page"
+            style={{
+              position: 'absolute', top: '10px', right: '14px',
+              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
+              color: '#fff', border: 'none', borderRadius: '20px',
+              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
+              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
+              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
+              letterSpacing: '0.03em'
+            }}
+          >↑ Top</button>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
                 <div>
                   <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
@@ -2452,7 +2703,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             </div>
 
             {/* TABLE 1B: BUSM LEVEL CPC % BREAKDOWN BY PRICE BRACKETS */}
-            <div className="card-mock" style={{ padding: '20px', marginBottom: '24px', borderTop: '3px solid #b45309' }}>
+            <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px', borderTop: '3px solid #b45309' }}>
+          <button
+            onClick={scrollToTop}
+            title="Move to top of page"
+            style={{
+              position: 'absolute', top: '10px', right: '14px',
+              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
+              color: '#fff', border: 'none', borderRadius: '20px',
+              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
+              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
+              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
+              letterSpacing: '0.03em'
+            }}
+          >↑ Top</button>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
                 <div>
                   <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
@@ -2526,7 +2790,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
 
             {/* TABLE 2: ASM LEVEL CPC BY PRICE BRACKETS (Revealed on BUSM Click) */}
             {selectedBusmRow && (
-              <div className="card-mock" style={{ padding: '20px', marginBottom: '24px', borderLeft: '4px solid #d97706' }}>
+              <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px', borderLeft: '4px solid #d97706' }}>
+          <button
+            onClick={scrollToTop}
+            title="Move to top of page"
+            style={{
+              position: 'absolute', top: '10px', right: '14px',
+              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
+              color: '#fff', border: 'none', borderRadius: '20px',
+              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
+              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
+              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
+              letterSpacing: '0.03em'
+            }}
+          >↑ Top</button>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
                   <div>
                     <div style={{ fontSize: '11px', color: '#d97706', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {selectedBusmRow}</div>
@@ -2602,7 +2879,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
 
             {/* TABLE 3: ASP LEVEL CPC BY PRICE BRACKETS (Revealed on ASM Click) */}
             {selectedAsmRow && (
-              <div className="card-mock" style={{ padding: '20px', marginBottom: '24px', borderLeft: '4px solid #7c3aed' }}>
+              <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px', borderLeft: '4px solid #7c3aed' }}>
+          <button
+            onClick={scrollToTop}
+            title="Move to top of page"
+            style={{
+              position: 'absolute', top: '10px', right: '14px',
+              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
+              color: '#fff', border: 'none', borderRadius: '20px',
+              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
+              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
+              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
+              letterSpacing: '0.03em'
+            }}
+          >↑ Top</button>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
                   <div>
                     <div style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {selectedBusmRow} &gt; {selectedAsmRow}</div>
@@ -2678,7 +2968,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
 
             {/* TABLE 2B: ASM LEVEL CPC % BREAKDOWN (Revealed on BUSM Click) */}
             {selectedBusmRow && (
-              <div className="card-mock" style={{ padding: '20px', marginBottom: '24px', borderLeft: '4px solid #b45309' }}>
+              <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px', borderLeft: '4px solid #b45309' }}>
+          <button
+            onClick={scrollToTop}
+            title="Move to top of page"
+            style={{
+              position: 'absolute', top: '10px', right: '14px',
+              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
+              color: '#fff', border: 'none', borderRadius: '20px',
+              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
+              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
+              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
+              letterSpacing: '0.03em'
+            }}
+          >↑ Top</button>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
                   <div>
                     <div style={{ fontSize: '11px', color: '#b45309', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {selectedBusmRow} — CPC %</div>
@@ -2749,7 +3052,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
 
             {/* TABLE 3B: ASP LEVEL CPC % BREAKDOWN (Revealed on ASM Click) */}
             {selectedAsmRow && (
-              <div className="card-mock" style={{ padding: '20px', marginBottom: '24px', border: '2px dashed #b45309', borderRadius: '10px' }}>
+              <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px', border: '2px dashed #b45309', borderRadius: '10px' }}>
+          <button
+            onClick={scrollToTop}
+            title="Move to top of page"
+            style={{
+              position: 'absolute', top: '10px', right: '14px',
+              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
+              color: '#fff', border: 'none', borderRadius: '20px',
+              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
+              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
+              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
+              letterSpacing: '0.03em'
+            }}
+          >↑ Top</button>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
                   <div>
                     <div style={{ fontSize: '11px', color: '#b45309', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {selectedBusmRow} &gt; {selectedAsmRow} — CPC %</div>
@@ -2829,7 +3145,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             </div>
 
             {/* TABLE 1: BUSM LEVEL NPS */}
-            <div className="card-mock" style={{ padding: '20px', marginBottom: '24px', borderTop: '3px solid #7c3aed' }}>
+            <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px', borderTop: '3px solid #7c3aed' }}>
+          <button
+            onClick={scrollToTop}
+            title="Move to top of page"
+            style={{
+              position: 'absolute', top: '10px', right: '14px',
+              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
+              color: '#fff', border: 'none', borderRadius: '20px',
+              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
+              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
+              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
+              letterSpacing: '0.03em'
+            }}
+          >↑ Top</button>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
                 <div>
                   <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
@@ -2909,7 +3238,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
 
             {/* TABLE 2: ASM LEVEL NPS BY PRICE BRACKETS (Revealed on BUSM Click) */}
             {selectedBusmRow && (
-              <div className="card-mock" style={{ padding: '20px', marginBottom: '24px', borderLeft: '4px solid #7c3aed' }}>
+              <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px', borderLeft: '4px solid #7c3aed' }}>
+          <button
+            onClick={scrollToTop}
+            title="Move to top of page"
+            style={{
+              position: 'absolute', top: '10px', right: '14px',
+              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
+              color: '#fff', border: 'none', borderRadius: '20px',
+              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
+              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
+              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
+              letterSpacing: '0.03em'
+            }}
+          >↑ Top</button>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
                   <div>
                     <div style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {selectedBusmRow}</div>
@@ -2982,7 +3324,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
 
             {/* TABLE 3: ASP LEVEL NPS BY PRICE BRACKETS (Revealed on ASM Click) */}
             {selectedAsmRow && (
-              <div className="card-mock" style={{ padding: '20px', marginBottom: '24px', borderLeft: '4px solid #7c3aed' }}>
+              <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px', borderLeft: '4px solid #7c3aed' }}>
+          <button
+            onClick={scrollToTop}
+            title="Move to top of page"
+            style={{
+              position: 'absolute', top: '10px', right: '14px',
+              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
+              color: '#fff', border: 'none', borderRadius: '20px',
+              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
+              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
+              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
+              letterSpacing: '0.03em'
+            }}
+          >↑ Top</button>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
                   <div>
                     <div style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {selectedBusmRow} &gt; {selectedAsmRow}</div>
@@ -3062,7 +3417,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             </div>
 
             {/* TABLE 1: BUSM LEVEL TAT */}
-            <div className="card-mock" style={{ padding: '20px', marginBottom: '24px', borderTop: '3px solid #16a34a' }}>
+            <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px', borderTop: '3px solid #16a34a' }}>
+          <button
+            onClick={scrollToTop}
+            title="Move to top of page"
+            style={{
+              position: 'absolute', top: '10px', right: '14px',
+              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
+              color: '#fff', border: 'none', borderRadius: '20px',
+              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
+              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
+              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
+              letterSpacing: '0.03em'
+            }}
+          >↑ Top</button>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
                 <div>
                   <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
@@ -3145,7 +3513,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
 
             {/* TABLE 2: ASM LEVEL TAT BY PRICE BRACKETS (Revealed on BUSM Click) */}
             {selectedBusmRow && (
-              <div className="card-mock" style={{ padding: '20px', marginBottom: '24px', borderLeft: '4px solid #16a34a' }}>
+              <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px', borderLeft: '4px solid #16a34a' }}>
+          <button
+            onClick={scrollToTop}
+            title="Move to top of page"
+            style={{
+              position: 'absolute', top: '10px', right: '14px',
+              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
+              color: '#fff', border: 'none', borderRadius: '20px',
+              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
+              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
+              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
+              letterSpacing: '0.03em'
+            }}
+          >↑ Top</button>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
                   <div>
                     <div style={{ fontSize: '11px', color: '#16a34a', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {selectedBusmRow}</div>
@@ -3221,7 +3602,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
 
             {/* TABLE 3: ASP LEVEL TAT BY PRICE BRACKETS (Revealed on ASM Click) */}
             {selectedAsmRow && (
-              <div className="card-mock" style={{ padding: '20px', marginBottom: '24px', borderLeft: '4px solid #16a34a' }}>
+              <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px', borderLeft: '4px solid #16a34a' }}>
+          <button
+            onClick={scrollToTop}
+            title="Move to top of page"
+            style={{
+              position: 'absolute', top: '10px', right: '14px',
+              background: 'linear-gradient(135deg,#4E67EB,#6366f1)',
+              color: '#fff', border: 'none', borderRadius: '20px',
+              padding: '3px 11px', fontSize: '11px', fontWeight: 800,
+              cursor: 'pointer', boxShadow: '0 2px 6px rgba(78,103,235,0.35)',
+              display: 'flex', alignItems: 'center', gap: '4px', zIndex: 2,
+              letterSpacing: '0.03em'
+            }}
+          >↑ Top</button>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
                   <div>
                     <div style={{ fontSize: '11px', color: '#16a34a', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {selectedBusmRow} &gt; {selectedAsmRow}</div>
