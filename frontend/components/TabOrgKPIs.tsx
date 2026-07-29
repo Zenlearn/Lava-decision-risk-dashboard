@@ -2277,24 +2277,37 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
         <div>
           {/* SECTION 1: CPC BREAKDOWN (MODEL SEGMENT VIEW) */}
           <div id="sec-mod-cpc" style={{ marginBottom: '36px' }}>
-            <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div className="bar" style={{ background: '#d97706' }}></div>
-              <span style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>
-                1. CPC Breakdown — Cost Analysis by Model Segment Price Brackets
-              </span>
-              <span style={{ fontSize: '11.5px', fontWeight: 800, background: '#fef3c7', color: '#b45309', border: '1px solid #fde68a', padding: '2px 8px', borderRadius: '12px' }}>
-                Active Month: {selectedMonth === 'All' ? 'All Months (Apr-Jun)' : selectedMonth === 'Jun' ? 'June 2026' : selectedMonth === 'May' ? 'May 2026' : 'April 2026'}
-              </span>
+            <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div className="bar" style={{ background: '#d97706' }}></div>
+                <span style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>
+                  1. CPC Breakdown — Cost Analysis by Model Segment Price Brackets
+                </span>
+                <span style={{ fontSize: '11.5px', fontWeight: 800, background: '#fef3c7', color: '#b45309', border: '1px solid #fde68a', padding: '2px 8px', borderRadius: '12px' }}>
+                  Active Month: {selectedMonth === 'All' ? 'All Months (Apr-Jun)' : selectedMonth === 'Jun' ? 'June 2026' : selectedMonth === 'May' ? 'May 2026' : 'April 2026'}
+                </span>
+              </div>
             </div>
 
+            {/* TABLE 1: BUSM LEVEL CPC BY PRICE BRACKETS */}
             <div className="card-mock" style={{ padding: '20px', marginBottom: '24px', borderTop: '3px solid #d97706' }}>
-              <div style={{ marginBottom: '14px' }}>
-                <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                  Combined Repair &amp; Replacement Cost by Model Segment Price Brackets
-                </h3>
-                <span style={{ fontSize: '12px', color: '#64748b' }}>
-                  Average CPC (₹) and Total Expenditure (₹) across Model Segment Price Brackets (&lt;8K, 8K-10K, 10K-15K, 15K-20K, &gt;20K)
-                </span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                <div>
+                  <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                    Combined Repair &amp; Replacement Cost by Model Segment Price Brackets (BUSM Level)
+                  </h3>
+                  <span style={{ fontSize: '12px', color: '#64748b' }}>
+                    Average CPC (₹) and Total Expenditure (₹) across Price Brackets (&lt;8K, 8K-10K, 10K-15K, 15K-20K, &gt;20K). Click a BUSM row to view ASMs.
+                  </span>
+                </div>
+                {selectedBusmRow && (
+                  <button
+                    onClick={() => { setSelectedBusmRow(null); setSelectedAsmRow(null); }}
+                    style={{ background: '#fffbeb', border: '1px solid #fcd34d', padding: '4px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 700, color: '#b45309', cursor: 'pointer' }}
+                  >
+                    Clear BUSM Filter ({selectedBusmRow})
+                  </button>
+                )}
               </div>
 
               <div style={{ overflowX: 'auto' }}>
@@ -2311,20 +2324,35 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.cpc?.busm || []).map((r: any, i: number) => (
-                      <TableRow key={i}>
-                        <TableCell style={{ textAlign: 'left', fontWeight: 700 }}>{r.busm}</TableCell>
-                        {['<8K', '8K-10K', '10K-15K', '15K-20K', '>20K'].map((ps) => (
-                          <TableCell key={ps} style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9' }}>
-                            <span style={{ fontWeight: 700, color: '#d97706' }}>₹{r.segments[ps]?.cpc || 0}</span>{' '}
-                            <span style={{ fontSize: '11px', color: '#64748b' }}>(₹{(r.segments[ps]?.total_cost || 0).toLocaleString('en-IN')})</span>
+                    {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.cpc?.busm || []).map((r: any, i: number) => {
+                      const isSelected = selectedBusmRow === r.busm;
+                      return (
+                        <TableRow
+                          key={i}
+                          onClick={() => {
+                            setSelectedBusmRow(isSelected ? null : r.busm);
+                            setSelectedAsmRow(null);
+                          }}
+                          style={{
+                            background: isSelected ? '#fffbeb' : undefined,
+                            cursor: 'pointer'
+                          }}
+                        >
+                          <TableCell style={{ textAlign: 'left', fontWeight: isSelected ? 800 : 700, color: isSelected ? '#b45309' : undefined }}>
+                            {r.busm} {isSelected && '✓'}
                           </TableCell>
-                        ))}
-                        <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', fontWeight: 800, background: '#fffbeb', color: '#b45309' }}>
-                          ₹{r.segments.Total.cpc} (₹{r.segments.Total.total_cost.toLocaleString('en-IN')})
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                          {['<8K', '8K-10K', '10K-15K', '15K-20K', '>20K'].map((ps) => (
+                            <TableCell key={ps} style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9' }}>
+                              <span style={{ fontWeight: 700, color: '#d97706' }}>₹{r.segments[ps]?.cpc || 0}</span>{' '}
+                              <span style={{ fontSize: '11px', color: '#64748b' }}>(₹{(r.segments[ps]?.total_cost || 0).toLocaleString('en-IN')})</span>
+                            </TableCell>
+                          ))}
+                          <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', fontWeight: 800, background: '#fffbeb', color: '#b45309' }}>
+                            ₹{r.segments.Total.cpc} (₹{r.segments.Total.total_cost.toLocaleString('en-IN')})
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
                   {MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.cpc?.national && (
                     <TableSummaryRow>
@@ -2342,6 +2370,156 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                 </Table>
               </div>
             </div>
+
+            {/* TABLE 2: ASM LEVEL CPC BY PRICE BRACKETS (Revealed on BUSM Click) */}
+            {selectedBusmRow && (
+              <div className="card-mock" style={{ padding: '20px', marginBottom: '24px', borderLeft: '4px solid #d97706' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                  <div>
+                    <div style={{ fontSize: '11px', color: '#d97706', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {selectedBusmRow}</div>
+                    <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                      Supervisor (ASM) Combined CPC Breakdown (Filtered BUSM: {selectedBusmRow})
+                    </h3>
+                    <span style={{ fontSize: '12px', color: '#64748b' }}>
+                      Showing Area Managers (ASMs) under {selectedBusmRow} — click an ASM row to view ASP centres
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ background: '#fffbeb', color: '#b45309', border: '1px solid #fde68a', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 700 }}>
+                      Count: {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.cpc?.asm || []).filter((a: any) => a.busm === selectedBusmRow).length} ASMs
+                    </span>
+                    <button
+                      onClick={() => { setSelectedBusmRow(null); setSelectedAsmRow(null); }}
+                      style={{ background: '#f1f5f9', border: '1px solid #cbd5e1', padding: '4px 10px', borderRadius: '6px', fontSize: '11.5px', fontWeight: 700, color: '#475569', cursor: 'pointer' }}
+                    >
+                      Clear BUSM Filter
+                    </button>
+                  </div>
+                </div>
+
+                <div style={{ overflowX: 'auto' }}>
+                  <Table density="compact">
+                    <TableHeader>
+                      <TableRow style={{ background: '#f8fafc' }}>
+                        <TableHead style={{ textAlign: 'left' }}>ASM Name</TableHead>
+                        <TableHead style={{ textAlign: 'left' }}>BUSM</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>&lt;8K CPC (Cost ₹)</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>8K-10K CPC (Cost ₹)</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>10K-15K CPC (Cost ₹)</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>15K-20K CPC (Cost ₹)</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>&gt;20K CPC (Cost ₹)</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0', background: '#fffbeb' }}>Total Combined CPC (₹)</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.cpc?.asm || [])
+                        .filter((a: any) => a.busm === selectedBusmRow)
+                        .map((r: any, i: number) => {
+                          const isAsmSelected = selectedAsmRow === r.asm;
+                          return (
+                            <TableRow
+                              key={i}
+                              onClick={() => setSelectedAsmRow(isAsmSelected ? null : r.asm)}
+                              style={{
+                                background: isAsmSelected ? '#f0fdf4' : undefined,
+                                cursor: 'pointer'
+                              }}
+                            >
+                              <TableCell style={{ textAlign: 'left', fontWeight: isAsmSelected ? 800 : 700, color: isAsmSelected ? '#15803d' : '#1e293b' }}>
+                                {r.asm} {isAsmSelected && '✓'}
+                              </TableCell>
+                              <TableCell style={{ textAlign: 'left', color: '#64748b' }}>{r.busm}</TableCell>
+                              {['<8K', '8K-10K', '10K-15K', '15K-20K', '>20K'].map((ps) => (
+                                <TableCell key={ps} style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9' }}>
+                                  <span style={{ fontWeight: 700, color: '#d97706' }}>₹{r.segments[ps]?.cpc || 0}</span>{' '}
+                                  <span style={{ fontSize: '11px', color: '#64748b' }}>(₹{(r.segments[ps]?.total_cost || 0).toLocaleString('en-IN')})</span>
+                                </TableCell>
+                              ))}
+                              <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', fontWeight: 800, background: '#fffbeb', color: '#b45309' }}>
+                                ₹{r.segments.Total.cpc} (₹{r.segments.Total.total_cost.toLocaleString('en-IN')})
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+            )}
+
+            {/* TABLE 3: ASP LEVEL CPC BY PRICE BRACKETS (Revealed on ASM Click) */}
+            {selectedAsmRow && (
+              <div className="card-mock" style={{ padding: '20px', marginBottom: '24px', borderLeft: '4px solid #7c3aed' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                  <div>
+                    <div style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {selectedBusmRow} &gt; {selectedAsmRow}</div>
+                    <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                      ASP Centre Combined CPC Breakdown (Filtered ASM: {selectedAsmRow})
+                    </h3>
+                    <span style={{ fontSize: '12px', color: '#64748b' }}>
+                      Showing ASP Centres reporting to {selectedAsmRow}
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ background: '#f5f3ff', color: '#7c3aed', border: '1px solid #ddd6fe', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 700 }}>
+                      Count: {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.cpc?.asp || []).filter((a: any) => a.asm === selectedAsmRow).length} ASPs
+                    </span>
+                    <button
+                      onClick={() => setSelectedAsmRow(null)}
+                      style={{ background: '#f5f3ff', border: '1px solid #ddd6fe', padding: '4px 10px', borderRadius: '6px', fontSize: '11.5px', fontWeight: 700, color: '#7c3aed', cursor: 'pointer' }}
+                    >
+                      Clear ASM Filter ({selectedAsmRow})
+                    </button>
+                  </div>
+                </div>
+
+                <div style={{ overflowX: 'auto' }}>
+                  <Table density="compact">
+                    <TableHeader>
+                      <TableRow style={{ background: '#f8fafc' }}>
+                        <TableHead style={{ textAlign: 'left', fontFamily: 'monospace' }}>ASP Code</TableHead>
+                        <TableHead style={{ textAlign: 'left' }}>ASP Name</TableHead>
+                        <TableHead style={{ textAlign: 'left' }}>Supervisor (ASM)</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>&lt;8K CPC (Cost ₹)</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>8K-10K CPC (Cost ₹)</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>10K-15K CPC (Cost ₹)</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>15K-20K CPC (Cost ₹)</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>&gt;20K CPC (Cost ₹)</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0', background: '#fffbeb' }}>Total Combined CPC (₹)</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.cpc?.asp || []).filter((a: any) => a.asm === selectedAsmRow).length === 0 ? (
+                        <TableRow>
+                          <TableCell colSpan={9} style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>
+                            No ASP centers found for {selectedAsmRow}.
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        (MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.cpc?.asp || [])
+                          .filter((a: any) => a.asm === selectedAsmRow)
+                          .map((r: any, i: number) => (
+                            <TableRow key={r.code || i}>
+                              <TableCell style={{ textAlign: 'left', fontFamily: 'monospace', color: '#7c3aed', fontWeight: 700 }}>{r.code}</TableCell>
+                              <TableCell style={{ textAlign: 'left', fontWeight: 700, color: '#1e293b' }}>{r.name}</TableCell>
+                              <TableCell style={{ textAlign: 'left', color: '#64748b' }}>{r.asm}</TableCell>
+                              {['<8K', '8K-10K', '10K-15K', '15K-20K', '>20K'].map((ps) => (
+                                <TableCell key={ps} style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9' }}>
+                                  <span style={{ fontWeight: 700, color: '#d97706' }}>₹{r.segments[ps]?.cpc || 0}</span>{' '}
+                                  <span style={{ fontSize: '11px', color: '#64748b' }}>(₹{(r.segments[ps]?.total_cost || 0).toLocaleString('en-IN')})</span>
+                                </TableCell>
+                              ))}
+                              <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', fontWeight: 800, background: '#fffbeb', color: '#b45309' }}>
+                                ₹{r.segments.Total.cpc} (₹{r.segments.Total.total_cost.toLocaleString('en-IN')})
+                              </TableCell>
+                            </TableRow>
+                          ))
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* SECTION 2: NPS BREAKDOWN (MODEL SEGMENT VIEW) */}
@@ -2353,11 +2531,25 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
               </span>
             </div>
 
+            {/* TABLE 1: BUSM LEVEL NPS */}
             <div className="card-mock" style={{ padding: '20px', marginBottom: '24px', borderTop: '3px solid #7c3aed' }}>
-              <div style={{ marginBottom: '14px' }}>
-                <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                  NPS Score Matrix by Model Segment Price Brackets
-                </h3>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                <div>
+                  <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                    NPS Score Matrix by Model Segment Price Brackets (BUSM Level)
+                  </h3>
+                  <span style={{ fontSize: '12px', color: '#64748b' }}>
+                    Net Promoter Score (%) across Price Brackets. Click a BUSM row to view ASMs.
+                  </span>
+                </div>
+                {selectedBusmRow && (
+                  <button
+                    onClick={() => { setSelectedBusmRow(null); setSelectedAsmRow(null); }}
+                    style={{ background: '#f5f3ff', border: '1px solid #ddd6fe', padding: '4px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 700, color: '#7c3aed', cursor: 'pointer' }}
+                  >
+                    Clear BUSM Filter ({selectedBusmRow})
+                  </button>
+                )}
               </div>
 
               <div style={{ overflowX: 'auto' }}>
@@ -2374,17 +2566,32 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.nps?.busm || []).map((r: any, i: number) => (
-                      <TableRow key={i}>
-                        <TableCell style={{ textAlign: 'left', fontWeight: 700 }}>{r.busm}</TableCell>
-                        {['<8K', '8K-10K', '10K-15K', '15K-20K', '>20K'].map((ps) => (
-                          <TableCell key={ps} style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', color: '#7c3aed', fontWeight: 700 }}>
-                            {r.segments[ps]?.nps_pct}%
+                    {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.nps?.busm || []).map((r: any, i: number) => {
+                      const isSelected = selectedBusmRow === r.busm;
+                      return (
+                        <TableRow
+                          key={i}
+                          onClick={() => {
+                            setSelectedBusmRow(isSelected ? null : r.busm);
+                            setSelectedAsmRow(null);
+                          }}
+                          style={{
+                            background: isSelected ? '#f5f3ff' : undefined,
+                            cursor: 'pointer'
+                          }}
+                        >
+                          <TableCell style={{ textAlign: 'left', fontWeight: isSelected ? 800 : 700, color: isSelected ? '#7c3aed' : undefined }}>
+                            {r.busm} {isSelected && '✓'}
                           </TableCell>
-                        ))}
-                        <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', color: '#6d28d9', fontWeight: 800, background: '#f5f3ff' }}>{r.segments.Total.nps_pct}%</TableCell>
-                      </TableRow>
-                    ))}
+                          {['<8K', '8K-10K', '10K-15K', '15K-20K', '>20K'].map((ps) => (
+                            <TableCell key={ps} style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', color: '#7c3aed', fontWeight: 700 }}>
+                              {r.segments[ps]?.nps_pct}%
+                            </TableCell>
+                          ))}
+                          <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', color: '#6d28d9', fontWeight: 800, background: '#f5f3ff' }}>{r.segments.Total.nps_pct}%</TableCell>
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
                   {MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.nps?.national && (
                     <TableSummaryRow>
@@ -2402,6 +2609,150 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                 </Table>
               </div>
             </div>
+
+            {/* TABLE 2: ASM LEVEL NPS BY PRICE BRACKETS (Revealed on BUSM Click) */}
+            {selectedBusmRow && (
+              <div className="card-mock" style={{ padding: '20px', marginBottom: '24px', borderLeft: '4px solid #7c3aed' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                  <div>
+                    <div style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {selectedBusmRow}</div>
+                    <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                      Supervisor (ASM) NPS Score Matrix (Filtered BUSM: {selectedBusmRow})
+                    </h3>
+                    <span style={{ fontSize: '12px', color: '#64748b' }}>
+                      Showing Area Managers (ASMs) under {selectedBusmRow} — click an ASM row to view ASP centres
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ background: '#f5f3ff', color: '#7c3aed', border: '1px solid #ddd6fe', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 700 }}>
+                      Count: {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.nps?.asm || []).filter((a: any) => a.busm === selectedBusmRow).length} ASMs
+                    </span>
+                    <button
+                      onClick={() => { setSelectedBusmRow(null); setSelectedAsmRow(null); }}
+                      style={{ background: '#f1f5f9', border: '1px solid #cbd5e1', padding: '4px 10px', borderRadius: '6px', fontSize: '11.5px', fontWeight: 700, color: '#475569', cursor: 'pointer' }}
+                    >
+                      Clear BUSM Filter
+                    </button>
+                  </div>
+                </div>
+
+                <div style={{ overflowX: 'auto' }}>
+                  <Table density="compact">
+                    <TableHeader>
+                      <TableRow style={{ background: '#f8fafc' }}>
+                        <TableHead style={{ textAlign: 'left' }}>ASM Name</TableHead>
+                        <TableHead style={{ textAlign: 'left' }}>BUSM</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>&lt;8K NPS %</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>8K-10K NPS %</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>10K-15K NPS %</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>15K-20K NPS %</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>&gt;20K NPS %</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0', background: '#f5f3ff' }}>Overall NPS %</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.nps?.asm || [])
+                        .filter((a: any) => a.busm === selectedBusmRow)
+                        .map((r: any, i: number) => {
+                          const isAsmSelected = selectedAsmRow === r.asm;
+                          return (
+                            <TableRow
+                              key={i}
+                              onClick={() => setSelectedAsmRow(isAsmSelected ? null : r.asm)}
+                              style={{
+                                background: isAsmSelected ? '#f5f3ff' : undefined,
+                                cursor: 'pointer'
+                              }}
+                            >
+                              <TableCell style={{ textAlign: 'left', fontWeight: isAsmSelected ? 800 : 700, color: isAsmSelected ? '#7c3aed' : '#1e293b' }}>
+                                {r.asm} {isAsmSelected && '✓'}
+                              </TableCell>
+                              <TableCell style={{ textAlign: 'left', color: '#64748b' }}>{r.busm}</TableCell>
+                              {['<8K', '8K-10K', '10K-15K', '15K-20K', '>20K'].map((ps) => (
+                                <TableCell key={ps} style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', color: '#7c3aed', fontWeight: 700 }}>
+                                  {r.segments[ps]?.nps_pct}%
+                                </TableCell>
+                              ))}
+                              <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', color: '#6d28d9', fontWeight: 800, background: '#f5f3ff' }}>{r.segments.Total.nps_pct}%</TableCell>
+                            </TableRow>
+                          );
+                        })}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+            )}
+
+            {/* TABLE 3: ASP LEVEL NPS BY PRICE BRACKETS (Revealed on ASM Click) */}
+            {selectedAsmRow && (
+              <div className="card-mock" style={{ padding: '20px', marginBottom: '24px', borderLeft: '4px solid #7c3aed' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                  <div>
+                    <div style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {selectedBusmRow} &gt; {selectedAsmRow}</div>
+                    <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                      ASP Centre NPS Score Matrix (Filtered ASM: {selectedAsmRow})
+                    </h3>
+                    <span style={{ fontSize: '12px', color: '#64748b' }}>
+                      Showing ASP Centres reporting to {selectedAsmRow}
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ background: '#f5f3ff', color: '#7c3aed', border: '1px solid #ddd6fe', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 700 }}>
+                      Count: {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.nps?.asp || []).filter((a: any) => a.asm === selectedAsmRow).length} ASPs
+                    </span>
+                    <button
+                      onClick={() => setSelectedAsmRow(null)}
+                      style={{ background: '#f5f3ff', border: '1px solid #ddd6fe', padding: '4px 10px', borderRadius: '6px', fontSize: '11.5px', fontWeight: 700, color: '#7c3aed', cursor: 'pointer' }}
+                    >
+                      Clear ASM Filter ({selectedAsmRow})
+                    </button>
+                  </div>
+                </div>
+
+                <div style={{ overflowX: 'auto' }}>
+                  <Table density="compact">
+                    <TableHeader>
+                      <TableRow style={{ background: '#f8fafc' }}>
+                        <TableHead style={{ textAlign: 'left', fontFamily: 'monospace' }}>ASP Code</TableHead>
+                        <TableHead style={{ textAlign: 'left' }}>ASP Name</TableHead>
+                        <TableHead style={{ textAlign: 'left' }}>Supervisor (ASM)</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>&lt;8K NPS %</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>8K-10K NPS %</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>10K-15K NPS %</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>15K-20K NPS %</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>&gt;20K NPS %</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0', background: '#f5f3ff' }}>Overall NPS %</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.nps?.asp || []).filter((a: any) => a.asm === selectedAsmRow).length === 0 ? (
+                        <TableRow>
+                          <TableCell colSpan={9} style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>
+                            No ASP centers found for {selectedAsmRow}.
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        (MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.nps?.asp || [])
+                          .filter((a: any) => a.asm === selectedAsmRow)
+                          .map((r: any, i: number) => (
+                            <TableRow key={r.code || i}>
+                              <TableCell style={{ textAlign: 'left', fontFamily: 'monospace', color: '#7c3aed', fontWeight: 700 }}>{r.code}</TableCell>
+                              <TableCell style={{ textAlign: 'left', fontWeight: 700, color: '#1e293b' }}>{r.name}</TableCell>
+                              <TableCell style={{ textAlign: 'left', color: '#64748b' }}>{r.asm}</TableCell>
+                              {['<8K', '8K-10K', '10K-15K', '15K-20K', '>20K'].map((ps) => (
+                                <TableCell key={ps} style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', color: '#7c3aed', fontWeight: 700 }}>
+                                  {r.segments[ps]?.nps_pct}%
+                                </TableCell>
+                              ))}
+                              <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', color: '#6d28d9', fontWeight: 800, background: '#f5f3ff' }}>{r.segments.Total.nps_pct}%</TableCell>
+                            </TableRow>
+                          ))
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* SECTION 3: TAT BREAKDOWN (MODEL SEGMENT VIEW) */}
@@ -2413,11 +2764,25 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
               </span>
             </div>
 
+            {/* TABLE 1: BUSM LEVEL TAT */}
             <div className="card-mock" style={{ padding: '20px', marginBottom: '24px', borderTop: '3px solid #16a34a' }}>
-              <div style={{ marginBottom: '14px' }}>
-                <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                  1-Day Repair Closure TAT % by Model Segment Price Brackets
-                </h3>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                <div>
+                  <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                    1-Day Repair Closure TAT % by Model Segment Price Brackets (BUSM Level)
+                  </h3>
+                  <span style={{ fontSize: '12px', color: '#64748b' }}>
+                    1-Day TAT Closure (%) and Total Work Orders across Price Brackets. Click a BUSM row to view ASMs.
+                  </span>
+                </div>
+                {selectedBusmRow && (
+                  <button
+                    onClick={() => { setSelectedBusmRow(null); setSelectedAsmRow(null); }}
+                    style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', padding: '4px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 700, color: '#15803d', cursor: 'pointer' }}
+                  >
+                    Clear BUSM Filter ({selectedBusmRow})
+                  </button>
+                )}
               </div>
 
               <div style={{ overflowX: 'auto' }}>
@@ -2434,20 +2799,35 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.tat?.busm || []).map((r: any, i: number) => (
-                      <TableRow key={i}>
-                        <TableCell style={{ textAlign: 'left', fontWeight: 700 }}>{r.busm}</TableCell>
-                        {['<8K', '8K-10K', '10K-15K', '15K-20K', '>20K'].map((ps) => (
-                          <TableCell key={ps} style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9' }}>
-                            <span style={{ fontWeight: 700, color: '#16a34a' }}>{r.segments[ps]?.tat_pct || 0}%</span>{' '}
-                            <span style={{ fontSize: '11px', color: '#64748b' }}>({r.segments[ps]?.wo || 0})</span>
+                    {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.tat?.busm || []).map((r: any, i: number) => {
+                      const isSelected = selectedBusmRow === r.busm;
+                      return (
+                        <TableRow
+                          key={i}
+                          onClick={() => {
+                            setSelectedBusmRow(isSelected ? null : r.busm);
+                            setSelectedAsmRow(null);
+                          }}
+                          style={{
+                            background: isSelected ? '#f0fdf4' : undefined,
+                            cursor: 'pointer'
+                          }}
+                        >
+                          <TableCell style={{ textAlign: 'left', fontWeight: isSelected ? 800 : 700, color: isSelected ? '#15803d' : undefined }}>
+                            {r.busm} {isSelected && '✓'}
                           </TableCell>
-                        ))}
-                        <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', fontWeight: 800, background: '#f0fdf4', color: '#15803d' }}>
-                          {r.segments.Total.tat_pct}% ({r.segments.Total.wo.toLocaleString('en-IN')})
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                          {['<8K', '8K-10K', '10K-15K', '15K-20K', '>20K'].map((ps) => (
+                            <TableCell key={ps} style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9' }}>
+                              <span style={{ fontWeight: 700, color: '#16a34a' }}>{r.segments[ps]?.tat_pct || 0}%</span>{' '}
+                              <span style={{ fontSize: '11px', color: '#64748b' }}>({r.segments[ps]?.wo || 0})</span>
+                            </TableCell>
+                          ))}
+                          <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', fontWeight: 800, background: '#f0fdf4', color: '#15803d' }}>
+                            {r.segments.Total.tat_pct}% ({r.segments.Total.wo.toLocaleString('en-IN')})
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
                   {MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.tat?.national && (
                     <TableSummaryRow>
@@ -2465,6 +2845,156 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                 </Table>
               </div>
             </div>
+
+            {/* TABLE 2: ASM LEVEL TAT BY PRICE BRACKETS (Revealed on BUSM Click) */}
+            {selectedBusmRow && (
+              <div className="card-mock" style={{ padding: '20px', marginBottom: '24px', borderLeft: '4px solid #16a34a' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                  <div>
+                    <div style={{ fontSize: '11px', color: '#16a34a', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {selectedBusmRow}</div>
+                    <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                      Supervisor (ASM) 1-Day Repair Closure TAT % (Filtered BUSM: {selectedBusmRow})
+                    </h3>
+                    <span style={{ fontSize: '12px', color: '#64748b' }}>
+                      Showing Area Managers (ASMs) under {selectedBusmRow} — click an ASM row to view ASP centres
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ background: '#f0fdf4', color: '#15803d', border: '1px solid #bbf7d0', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 700 }}>
+                      Count: {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.tat?.asm || []).filter((a: any) => a.busm === selectedBusmRow).length} ASMs
+                    </span>
+                    <button
+                      onClick={() => { setSelectedBusmRow(null); setSelectedAsmRow(null); }}
+                      style={{ background: '#f1f5f9', border: '1px solid #cbd5e1', padding: '4px 10px', borderRadius: '6px', fontSize: '11.5px', fontWeight: 700, color: '#475569', cursor: 'pointer' }}
+                    >
+                      Clear BUSM Filter
+                    </button>
+                  </div>
+                </div>
+
+                <div style={{ overflowX: 'auto' }}>
+                  <Table density="compact">
+                    <TableHeader>
+                      <TableRow style={{ background: '#f8fafc' }}>
+                        <TableHead style={{ textAlign: 'left' }}>ASM Name</TableHead>
+                        <TableHead style={{ textAlign: 'left' }}>BUSM</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>&lt;8K 1D TAT % (WOs)</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>8K-10K 1D TAT % (WOs)</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>10K-15K 1D TAT % (WOs)</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>15K-20K 1D TAT % (WOs)</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>&gt;20K 1D TAT % (WOs)</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0', background: '#f0fdf4' }}>Total TAT %</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.tat?.asm || [])
+                        .filter((a: any) => a.busm === selectedBusmRow)
+                        .map((r: any, i: number) => {
+                          const isAsmSelected = selectedAsmRow === r.asm;
+                          return (
+                            <TableRow
+                              key={i}
+                              onClick={() => setSelectedAsmRow(isAsmSelected ? null : r.asm)}
+                              style={{
+                                background: isAsmSelected ? '#f0fdf4' : undefined,
+                                cursor: 'pointer'
+                              }}
+                            >
+                              <TableCell style={{ textAlign: 'left', fontWeight: isAsmSelected ? 800 : 700, color: isAsmSelected ? '#15803d' : '#1e293b' }}>
+                                {r.asm} {isAsmSelected && '✓'}
+                              </TableCell>
+                              <TableCell style={{ textAlign: 'left', color: '#64748b' }}>{r.busm}</TableCell>
+                              {['<8K', '8K-10K', '10K-15K', '15K-20K', '>20K'].map((ps) => (
+                                <TableCell key={ps} style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9' }}>
+                                  <span style={{ fontWeight: 700, color: '#16a34a' }}>{r.segments[ps]?.tat_pct || 0}%</span>{' '}
+                                  <span style={{ fontSize: '11px', color: '#64748b' }}>({r.segments[ps]?.wo || 0})</span>
+                                </TableCell>
+                              ))}
+                              <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', fontWeight: 800, background: '#f0fdf4', color: '#15803d' }}>
+                                {r.segments.Total.tat_pct}% ({r.segments.Total.wo.toLocaleString('en-IN')})
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+            )}
+
+            {/* TABLE 3: ASP LEVEL TAT BY PRICE BRACKETS (Revealed on ASM Click) */}
+            {selectedAsmRow && (
+              <div className="card-mock" style={{ padding: '20px', marginBottom: '24px', borderLeft: '4px solid #16a34a' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                  <div>
+                    <div style={{ fontSize: '11px', color: '#16a34a', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {selectedBusmRow} &gt; {selectedAsmRow}</div>
+                    <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                      ASP Centre 1-Day Repair Closure TAT % (Filtered ASM: {selectedAsmRow})
+                    </h3>
+                    <span style={{ fontSize: '12px', color: '#64748b' }}>
+                      Showing ASP Centres reporting to {selectedAsmRow}
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ background: '#f0fdf4', color: '#15803d', border: '1px solid #bbf7d0', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 700 }}>
+                      Count: {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.tat?.asp || []).filter((a: any) => a.asm === selectedAsmRow).length} ASPs
+                    </span>
+                    <button
+                      onClick={() => setSelectedAsmRow(null)}
+                      style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', padding: '4px 10px', borderRadius: '6px', fontSize: '11.5px', fontWeight: 700, color: '#15803d', cursor: 'pointer' }}
+                    >
+                      Clear ASM Filter ({selectedAsmRow})
+                    </button>
+                  </div>
+                </div>
+
+                <div style={{ overflowX: 'auto' }}>
+                  <Table density="compact">
+                    <TableHeader>
+                      <TableRow style={{ background: '#f8fafc' }}>
+                        <TableHead style={{ textAlign: 'left', fontFamily: 'monospace' }}>ASP Code</TableHead>
+                        <TableHead style={{ textAlign: 'left' }}>ASP Name</TableHead>
+                        <TableHead style={{ textAlign: 'left' }}>Supervisor (ASM)</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>&lt;8K 1D TAT % (WOs)</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>8K-10K 1D TAT % (WOs)</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>10K-15K 1D TAT % (WOs)</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>15K-20K 1D TAT % (WOs)</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>&gt;20K 1D TAT % (WOs)</TableHead>
+                        <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0', background: '#f0fdf4' }}>Total TAT %</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.tat?.asp || []).filter((a: any) => a.asm === selectedAsmRow).length === 0 ? (
+                        <TableRow>
+                          <TableCell colSpan={9} style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>
+                            No ASP centers found for {selectedAsmRow}.
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        (MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.tat?.asp || [])
+                          .filter((a: any) => a.asm === selectedAsmRow)
+                          .map((r: any, i: number) => (
+                            <TableRow key={r.code || i}>
+                              <TableCell style={{ textAlign: 'left', fontFamily: 'monospace', color: '#16a34a', fontWeight: 700 }}>{r.code}</TableCell>
+                              <TableCell style={{ textAlign: 'left', fontWeight: 700, color: '#1e293b' }}>{r.name}</TableCell>
+                              <TableCell style={{ textAlign: 'left', color: '#64748b' }}>{r.asm}</TableCell>
+                              {['<8K', '8K-10K', '10K-15K', '15K-20K', '>20K'].map((ps) => (
+                                <TableCell key={ps} style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9' }}>
+                                  <span style={{ fontWeight: 700, color: '#16a34a' }}>{r.segments[ps]?.tat_pct || 0}%</span>{' '}
+                                  <span style={{ fontSize: '11px', color: '#64748b' }}>({r.segments[ps]?.wo || 0})</span>
+                                </TableCell>
+                              ))}
+                              <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', fontWeight: 800, background: '#f0fdf4', color: '#15803d' }}>
+                                {r.segments.Total.tat_pct}% ({r.segments.Total.wo.toLocaleString('en-IN')})
+                              </TableCell>
+                            </TableRow>
+                          ))
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
