@@ -887,7 +887,8 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             </TableHeader>
             <TableBody>
               {currentCpcDataset.busm.map((rRepair: any, i: number) => {
-                const isSelected = cpcBusmRepair === rRepair.busm;
+                const busmName = rRepair.name || rRepair.busm;
+                const isSelected = cpcBusmRepair === busmName;
                 const repairTotal = Math.round(rRepair.repair_count * rRepair.repair_avg);
                 const replTotal = Math.round(rRepair.repl_count * rRepair.repl_avg);
                 const combinedTotal = repairTotal + replTotal;
@@ -896,7 +897,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   <TableRow
                     key={i}
                     onClick={() => {
-                      setCpcBusmRepair(isSelected ? null : rRepair.busm);
+                      setCpcBusmRepair(isSelected ? null : busmName);
                       setCpcAsmRepair(null);
                     }}
                     style={{
@@ -905,7 +906,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                     }}
                   >
                     <TableCell style={{ textAlign: 'left', fontWeight: isSelected ? 800 : 600, color: isSelected ? '#b45309' : undefined }}>
-                      {rRepair.busm} {isSelected && '✓'}
+                      {busmName} {isSelected && '✓'}
                     </TableCell>
                     <TableCell style={{ textAlign: 'right', fontWeight: 600, borderLeft: '1px solid #f1f5f9' }}>
                       {rRepair.repair_count.toLocaleString('en-IN')}
@@ -992,7 +993,8 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
               </TableHeader>
               <TableBody>
                 {currentCpcDataset.asm.filter((a: any) => a.busm === cpcBusmRepair).map((rRepair: any, i: number) => {
-                  const isAsmSelected = cpcAsmRepair === rRepair.asm;
+                  const asmName = rRepair.name || rRepair.asm;
+                  const isAsmSelected = cpcAsmRepair === asmName;
                   const repairTotal = Math.round(rRepair.repair_count * rRepair.repair_avg);
                   const replTotal = Math.round(rRepair.repl_count * rRepair.repl_avg);
                   const combinedTotal = repairTotal + replTotal;
@@ -1000,11 +1002,11 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   return (
                     <TableRow
                       key={i}
-                      onClick={() => setCpcAsmRepair(isAsmSelected ? null : rRepair.asm)}
+                      onClick={() => setCpcAsmRepair(isAsmSelected ? null : asmName)}
                       style={{ background: isAsmSelected ? '#fef3c7' : undefined, cursor: 'pointer' }}
                     >
                       <TableCell style={{ textAlign: 'left', fontWeight: isAsmSelected ? 800 : 600, color: isAsmSelected ? '#92400e' : undefined }}>
-                        {rRepair.asm} {isAsmSelected && '✓'}
+                        {asmName} {isAsmSelected && '✓'}
                       </TableCell>
                       <TableCell style={{ textAlign: 'left', color: '#64748b' }}>{rRepair.busm}</TableCell>
                       <TableCell style={{ textAlign: 'right', fontWeight: 600, borderLeft: '1px solid #f1f5f9' }}>{rRepair.repair_count.toLocaleString('en-IN')}</TableCell>
