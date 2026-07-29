@@ -1441,19 +1441,31 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                     })
                   )}
 
-                  {/* Total Summary Row for ASMs */}
-                  <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
-                    <td style={{ padding: '10px 12px', color: '#0f172a', background: '#f1f5f9', fontWeight: 800 }}>Total / Average</td>
-                    <td style={{ padding: '10px 10px', color: '#64748b', borderRight: '1px solid #e2e8f0' }}>{selectedBusmRow}</td>
-                    <td style={{ padding: '10px 10px', textAlign: 'right', color: '#0f172a', borderRight: '1px solid #e2e8f0', fontWeight: 800 }}>
-                      {currentSahDataset.asm.filter((a: any) => a.busm === selectedBusmRow).reduce((sum: number, a: any) => sum + (a.total || 0), 0).toLocaleString('en-IN')}
-                    </td>
-                    <td style={{ padding: '10px 10px', textAlign: 'right', color: '#d97706', fontWeight: 800 }}>17.2%</td>
-                    <td style={{ padding: '10px 10px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>12.0%</td>
-                    <td style={{ padding: '10px 10px', textAlign: 'right', color: '#16a34a', fontWeight: 800 }}>82.1%</td>
-                    <td style={{ padding: '10px 10px', textAlign: 'right', color: '#dc2626', fontWeight: 800 }}>11.8%</td>
-                    <td style={{ padding: '10px 10px', textAlign: 'right', color: '#2563eb', fontWeight: 800 }}>0.7%</td>
-                  </tr>
+                  {/* Total Summary Row for ASMs — all percentages computed dynamically (weighted by appointments) */}
+                  {(() => {
+                    const filteredAsms = currentSahDataset.asm.filter((a: any) => a.busm === selectedBusmRow);
+                    const totalAppts = filteredAsms.reduce((s: number, a: any) => s + (a.total || 0), 0);
+                    const wavg = (key: string) => {
+                      if (totalAppts === 0) return '0.0%';
+                      const wsum = filteredAsms.reduce((s: number, a: any) =>
+                        s + (parseFloat((a[key] || '0').replace('%','')) * (a.total || 0)), 0);
+                      return `${(wsum / totalAppts).toFixed(1)}%`;
+                    };
+                    return (
+                      <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
+                        <td style={{ padding: '10px 12px', color: '#0f172a', background: '#f1f5f9', fontWeight: 800 }}>Total / Average</td>
+                        <td style={{ padding: '10px 10px', color: '#64748b', borderRight: '1px solid #e2e8f0' }}>{selectedBusmRow}</td>
+                        <td style={{ padding: '10px 10px', textAlign: 'right', color: '#0f172a', borderRight: '1px solid #e2e8f0', fontWeight: 800 }}>
+                          {totalAppts.toLocaleString('en-IN')}
+                        </td>
+                        <td style={{ padding: '10px 10px', textAlign: 'right', color: '#d97706', fontWeight: 800 }}>{wavg('cancel')}</td>
+                        <td style={{ padding: '10px 10px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>{wavg('resched')}</td>
+                        <td style={{ padding: '10px 10px', textAlign: 'right', color: '#16a34a', fontWeight: 800 }}>{wavg('same_day')}</td>
+                        <td style={{ padding: '10px 10px', textAlign: 'right', color: '#dc2626', fontWeight: 800 }}>{wavg('same_day_cancel')}</td>
+                        <td style={{ padding: '10px 10px', textAlign: 'right', color: '#2563eb', fontWeight: 800 }}>{wavg('pending')}</td>
+                      </tr>
+                    );
+                  })()}
                 </tbody>
               </table>
             </div>
