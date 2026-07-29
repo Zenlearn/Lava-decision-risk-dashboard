@@ -2343,12 +2343,12 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                           </TableCell>
                           {['<8K', '8K-10K', '10K-15K', '15K-20K', '>20K'].map((ps) => (
                             <TableCell key={ps} style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9' }}>
-                              <span style={{ fontWeight: 700, color: '#d97706' }}>₹{r.segments[ps]?.cpc || 0}</span>{' '}
-                              <span style={{ fontSize: '11px', color: '#64748b' }}>(₹{(r.segments[ps]?.total_cost || 0).toLocaleString('en-IN')})</span>
+                              <span style={{ fontWeight: 700, color: '#d97706' }}>₹{Math.round(r.segments[ps]?.cpc || 0)}</span>{' '}
+                              <span style={{ fontSize: '11px', color: '#64748b' }}>(₹{Math.round(r.segments[ps]?.total_cost || 0).toLocaleString('en-IN')})</span>
                             </TableCell>
                           ))}
                           <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', fontWeight: 800, background: '#fffbeb', color: '#b45309' }}>
-                            ₹{r.segments.Total.cpc} (₹{r.segments.Total.total_cost.toLocaleString('en-IN')})
+                            ₹{Math.round(r.segments.Total.cpc)} (₹{Math.round(r.segments.Total.total_cost).toLocaleString('en-IN')})
                           </TableCell>
                         </TableRow>
                       );
@@ -2361,7 +2361,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                         const n = MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth].cpc.national[ps];
                         return (
                           <TableCell key={ps} style={{ textAlign: 'right', fontWeight: 800, borderLeft: '1px solid #cbd5e1' }}>
-                            ₹{n?.cpc || 0} (₹{(n?.total_cost || 0).toLocaleString('en-IN')})
+                            ₹{Math.round(n?.cpc || 0)} (₹{Math.round(n?.total_cost || 0).toLocaleString('en-IN')})
                           </TableCell>
                         );
                       })}
@@ -2431,12 +2431,12 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                               <TableCell style={{ textAlign: 'left', color: '#64748b' }}>{r.busm}</TableCell>
                               {['<8K', '8K-10K', '10K-15K', '15K-20K', '>20K'].map((ps) => (
                                 <TableCell key={ps} style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9' }}>
-                                  <span style={{ fontWeight: 700, color: '#d97706' }}>₹{r.segments[ps]?.cpc || 0}</span>{' '}
-                                  <span style={{ fontSize: '11px', color: '#64748b' }}>(₹{(r.segments[ps]?.total_cost || 0).toLocaleString('en-IN')})</span>
+                                  <span style={{ fontWeight: 700, color: '#d97706' }}>₹{Math.round(r.segments[ps]?.cpc || 0)}</span>{' '}
+                                  <span style={{ fontSize: '11px', color: '#64748b' }}>(₹{Math.round(r.segments[ps]?.total_cost || 0).toLocaleString('en-IN')})</span>
                                 </TableCell>
                               ))}
                               <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', fontWeight: 800, background: '#fffbeb', color: '#b45309' }}>
-                                ₹{r.segments.Total.cpc} (₹{r.segments.Total.total_cost.toLocaleString('en-IN')})
+                                ₹{Math.round(r.segments.Total.cpc)} (₹{Math.round(r.segments.Total.total_cost).toLocaleString('en-IN')})
                               </TableCell>
                             </TableRow>
                           );
@@ -2505,12 +2505,12 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                               <TableCell style={{ textAlign: 'left', color: '#64748b' }}>{r.asm}</TableCell>
                               {['<8K', '8K-10K', '10K-15K', '15K-20K', '>20K'].map((ps) => (
                                 <TableCell key={ps} style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9' }}>
-                                  <span style={{ fontWeight: 700, color: '#d97706' }}>₹{r.segments[ps]?.cpc || 0}</span>{' '}
-                                  <span style={{ fontSize: '11px', color: '#64748b' }}>(₹{(r.segments[ps]?.total_cost || 0).toLocaleString('en-IN')})</span>
+                                  <span style={{ fontWeight: 700, color: '#d97706' }}>₹{Math.round(r.segments[ps]?.cpc || 0)}</span>{' '}
+                                  <span style={{ fontSize: '11px', color: '#64748b' }}>(₹{Math.round(r.segments[ps]?.total_cost || 0).toLocaleString('en-IN')})</span>
                                 </TableCell>
                               ))}
                               <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', fontWeight: 800, background: '#fffbeb', color: '#b45309' }}>
-                                ₹{r.segments.Total.cpc} (₹{r.segments.Total.total_cost.toLocaleString('en-IN')})
+                                ₹{Math.round(r.segments.Total.cpc)} (₹{Math.round(r.segments.Total.total_cost).toLocaleString('en-IN')})
                               </TableCell>
                             </TableRow>
                           ))
@@ -2585,10 +2585,10 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                           </TableCell>
                           {['<8K', '8K-10K', '10K-15K', '15K-20K', '>20K'].map((ps) => (
                             <TableCell key={ps} style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', color: '#7c3aed', fontWeight: 700 }}>
-                              {r.segments[ps]?.nps_pct}%
+                              {Math.round(r.segments[ps]?.nps_pct || 0)}%
                             </TableCell>
                           ))}
-                          <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', color: '#6d28d9', fontWeight: 800, background: '#f5f3ff' }}>{r.segments.Total.nps_pct}%</TableCell>
+                          <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', color: '#6d28d9', fontWeight: 800, background: '#f5f3ff' }}>{Math.round(r.segments.Total.nps_pct)}%</TableCell>
                         </TableRow>
                       );
                     })}
@@ -2600,7 +2600,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                         const n = MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth].nps.national[ps];
                         return (
                           <TableCell key={ps} style={{ textAlign: 'right', fontWeight: 800, borderLeft: '1px solid #cbd5e1', color: '#6d28d9' }}>
-                            {n?.nps_pct}%
+                            {Math.round(n?.nps_pct || 0)}%
                           </TableCell>
                         );
                       })}
@@ -2741,10 +2741,10 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                               <TableCell style={{ textAlign: 'left', color: '#64748b' }}>{r.asm}</TableCell>
                               {['<8K', '8K-10K', '10K-15K', '15K-20K', '>20K'].map((ps) => (
                                 <TableCell key={ps} style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', color: '#7c3aed', fontWeight: 700 }}>
-                                  {r.segments[ps]?.nps_pct}%
+                                  {Math.round(r.segments[ps]?.nps_pct || 0)}%
                                 </TableCell>
                               ))}
-                              <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', color: '#6d28d9', fontWeight: 800, background: '#f5f3ff' }}>{r.segments.Total.nps_pct}%</TableCell>
+                              <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', color: '#6d28d9', fontWeight: 800, background: '#f5f3ff' }}>{Math.round(r.segments.Total.nps_pct)}%</TableCell>
                             </TableRow>
                           ))
                       )}
@@ -2818,12 +2818,12 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                           </TableCell>
                           {['<8K', '8K-10K', '10K-15K', '15K-20K', '>20K'].map((ps) => (
                             <TableCell key={ps} style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9' }}>
-                              <span style={{ fontWeight: 700, color: '#16a34a' }}>{r.segments[ps]?.tat_pct || 0}%</span>{' '}
+                              <span style={{ fontWeight: 700, color: '#16a34a' }}>{Math.round(r.segments[ps]?.tat_pct || 0)}%</span>{' '}
                               <span style={{ fontSize: '11px', color: '#64748b' }}>({r.segments[ps]?.wo || 0})</span>
                             </TableCell>
                           ))}
                           <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', fontWeight: 800, background: '#f0fdf4', color: '#15803d' }}>
-                            {r.segments.Total.tat_pct}% ({r.segments.Total.wo.toLocaleString('en-IN')})
+                            {Math.round(r.segments.Total.tat_pct)}% ({r.segments.Total.wo.toLocaleString('en-IN')})
                           </TableCell>
                         </TableRow>
                       );
@@ -2836,7 +2836,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                         const n = MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth].tat.national[ps];
                         return (
                           <TableCell key={ps} style={{ textAlign: 'right', fontWeight: 800, borderLeft: '1px solid #cbd5e1' }}>
-                            {n?.tat_pct || 0}% ({(n?.wo || 0).toLocaleString('en-IN')})
+                            {Math.round(n?.tat_pct || 0)}% ({(n?.wo || 0).toLocaleString('en-IN')})
                           </TableCell>
                         );
                       })}
@@ -2906,12 +2906,12 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                               <TableCell style={{ textAlign: 'left', color: '#64748b' }}>{r.busm}</TableCell>
                               {['<8K', '8K-10K', '10K-15K', '15K-20K', '>20K'].map((ps) => (
                                 <TableCell key={ps} style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9' }}>
-                                  <span style={{ fontWeight: 700, color: '#16a34a' }}>{r.segments[ps]?.tat_pct || 0}%</span>{' '}
+                                  <span style={{ fontWeight: 700, color: '#16a34a' }}>{Math.round(r.segments[ps]?.tat_pct || 0)}%</span>{' '}
                                   <span style={{ fontSize: '11px', color: '#64748b' }}>({r.segments[ps]?.wo || 0})</span>
                                 </TableCell>
                               ))}
                               <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', fontWeight: 800, background: '#f0fdf4', color: '#15803d' }}>
-                                {r.segments.Total.tat_pct}% ({r.segments.Total.wo.toLocaleString('en-IN')})
+                                {Math.round(r.segments.Total.tat_pct)}% ({r.segments.Total.wo.toLocaleString('en-IN')})
                               </TableCell>
                             </TableRow>
                           );
@@ -2980,12 +2980,12 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                               <TableCell style={{ textAlign: 'left', color: '#64748b' }}>{r.asm}</TableCell>
                               {['<8K', '8K-10K', '10K-15K', '15K-20K', '>20K'].map((ps) => (
                                 <TableCell key={ps} style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9' }}>
-                                  <span style={{ fontWeight: 700, color: '#16a34a' }}>{r.segments[ps]?.tat_pct || 0}%</span>{' '}
+                                  <span style={{ fontWeight: 700, color: '#16a34a' }}>{Math.round(r.segments[ps]?.tat_pct || 0)}%</span>{' '}
                                   <span style={{ fontSize: '11px', color: '#64748b' }}>({r.segments[ps]?.wo || 0})</span>
                                 </TableCell>
                               ))}
                               <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', fontWeight: 800, background: '#f0fdf4', color: '#15803d' }}>
-                                {r.segments.Total.tat_pct}% ({r.segments.Total.wo.toLocaleString('en-IN')})
+                                {Math.round(r.segments.Total.tat_pct)}% ({r.segments.Total.wo.toLocaleString('en-IN')})
                               </TableCell>
                             </TableRow>
                           ))
