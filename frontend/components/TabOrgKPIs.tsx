@@ -1686,8 +1686,11 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {(deviceFilter === 'smart' ? spBusmData : busmNpsData).map((r, i) => {
-                  const isSelected = selectedBusmRow === r.name;
+                {(deviceFilter === 'smart' ? spBusmData : busmNpsData)
+                  .slice()
+                  .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((r, i) => {
+                    const isSelected = selectedBusmRow === r.name;
                   return (
                     <TableRow
                       key={i}
