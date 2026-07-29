@@ -5,6 +5,7 @@ import { REPAIR_CPC_DATA, REPLACEMENT_CPC_DATA } from '../constants/cpcData';
 import { ALL_ASP_PERF_DATA } from '../constants/aspData';
 import { DYNAMIC_CPC_DATA_BY_MONTH } from '../constants/cpcDataDynamic';
 import { DYNAMIC_SAH_DATA_BY_MONTH } from '../constants/sahDataDynamic';
+import { MODEL_SEGMENT_DATA_BY_MONTH } from '../constants/modelSegmentDataDynamic';
 
 interface TabOrgKPIsProps {
   data: any;
@@ -13,6 +14,7 @@ interface TabOrgKPIsProps {
 }
 
 export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
+  const [viewMode, setViewMode] = useState<'overall' | 'modelSegment'>('overall');
   const [deviceFilter, setDeviceFilter] = useState<'smart' | 'all'>('smart');
   const [selectedMonth, setSelectedMonth] = useState<string>('Jun');
   const [selectedBusmRow, setSelectedBusmRow] = useState<string | null>(null);
@@ -302,177 +304,133 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
   return (
     <div className="view-mock on" style={{ paddingBottom: '60px' }}>
       
-      {/* SECTION HEADER & MONTH SELECTOR */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '16px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <div className="bar" style={{ background: '#E50046' }}></div>
-          <span style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>
-            Organization KPIs &amp; Regional Performance Scorecards
-          </span>
-        </div>
+      {/* SECTION HEADER, VIEW SWITCHER & MONTH SELECTOR */}
+      <div style={{ background: '#f8fafc', border: '1.5px solid #e2e8f0', borderRadius: '14px', padding: '16px 20px', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '14px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div className="bar" style={{ background: '#E50046' }}></div>
+            <span style={{ fontSize: '19px', fontWeight: 800, color: '#0f172a' }}>
+              Organization KPIs &amp; Regional Performance Scorecards
+            </span>
+          </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <label style={{ fontSize: '12.5px', fontWeight: 700, color: '#475569', textTransform: 'uppercase' }}>
-            Select Month:
-          </label>
-          <select
-            value={selectedMonth}
-            onChange={(e) => setSelectedMonth(e.target.value)}
-            style={{
-              padding: '6px 14px',
-              borderRadius: '8px',
-              border: '1.5px solid #E50046',
-              background: '#ffffff',
-              color: '#0f172a',
-              fontSize: '13.5px',
-              fontWeight: 700,
-              cursor: 'pointer',
-              outline: 'none',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-            }}
-          >
-            <option value="Jun">June 2026</option>
-            <option value="May">May 2026</option>
-            <option value="Apr">April 2026</option>
-            <option value="All">All Months (Apr - Jun '26)</option>
-          </select>
-        </div>
-      </div>
-
-      {/* QUICK JUMP PILLS NAVIGATION BAR */}
-      <div style={{ display: 'flex', gap: '10px', marginBottom: '24px', flexWrap: 'wrap' }}>
-        {[
-          { label: '1. Overall', target: 'sec-overall' },
-          { label: '2. CPC Details', target: 'sec-cpc' },
-          { label: '3. Service at Home', target: 'sec-sah' },
-          { label: '4. NPS', target: 'sec-nps' },
-          { label: '5. TAT', target: 'sec-tat' },
-        ].map((pill) => (
-          <button
-            key={pill.target}
-            onClick={() => {
-              const el = document.getElementById(pill.target);
-              if (el) el.scrollIntoView({ behavior: 'smooth' });
-            }}
-            style={{
-              padding: '6px 18px',
-              borderRadius: '20px',
-              border: '1.5px solid #cbd5e1',
-              background: '#ffffff',
-              color: '#0f172a',
-              fontSize: '13px',
-              fontWeight: 700,
-              cursor: 'pointer',
-              boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
-              transition: 'all 0.15s ease',
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.borderColor = '#E50046';
-              e.currentTarget.style.color = '#E50046';
-              e.currentTarget.style.background = '#fff5f7';
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.borderColor = '#cbd5e1';
-              e.currentTarget.style.color = '#0f172a';
-              e.currentTarget.style.background = '#ffffff';
-            }}
-          >
-            {pill.label}
-          </button>
-        ))}
-      </div>
-
-      {/* SEGMENT & MODEL TYPE FILTER BAR — applies to CPC / NPS / TAT sections (not S@H) */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '24px',
-        padding: '14px 20px',
-        background: '#f8fafc',
-        border: '1.5px solid #e2e8f0',
-        borderRadius: '12px',
-        marginBottom: '20px',
-        flexWrap: 'wrap',
-      }}>
-        {/* Segment filter */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span style={{ fontSize: '12px', fontWeight: 800, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em', whiteSpace: 'nowrap' }}>Segment</span>
-          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-            {['All', 'Customer Walk-In', 'Service at Home', 'Trade Walk-In'].map((seg) => (
+          {/* VIEW SWITCHER CONTROL */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span style={{ fontSize: '12px', fontWeight: 800, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>View Mode:</span>
+            <div style={{ display: 'flex', background: '#e2e8f0', padding: '3px', borderRadius: '10px' }}>
               <button
-                key={seg}
-                onClick={() => setSegmentFilter(seg)}
+                onClick={() => setViewMode('overall')}
                 style={{
-                  padding: '5px 13px',
-                  borderRadius: '20px',
-                  border: segmentFilter === seg ? '1.5px solid #E50046' : '1.5px solid #cbd5e1',
-                  background: segmentFilter === seg ? '#E50046' : '#ffffff',
-                  color: segmentFilter === seg ? '#ffffff' : '#475569',
-                  fontSize: '12.5px',
-                  fontWeight: 700,
+                  padding: '6px 18px',
+                  borderRadius: '8px',
+                  fontSize: '13px',
+                  fontWeight: 800,
                   cursor: 'pointer',
-                  transition: 'all 0.15s ease',
-                  whiteSpace: 'nowrap',
+                  border: 'none',
+                  background: viewMode === 'overall' ? '#E50046' : 'transparent',
+                  color: viewMode === 'overall' ? '#ffffff' : '#475569',
+                  boxShadow: viewMode === 'overall' ? '0 2px 4px rgba(229,0,70,0.2)' : 'none',
+                  transition: 'all 0.15s ease'
                 }}
               >
-                {seg}
+                Overall View
               </button>
-            ))}
+              <button
+                onClick={() => setViewMode('modelSegment')}
+                style={{
+                  padding: '6px 18px',
+                  borderRadius: '8px',
+                  fontSize: '13px',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  border: 'none',
+                  background: viewMode === 'modelSegment' ? '#2563eb' : 'transparent',
+                  color: viewMode === 'modelSegment' ? '#ffffff' : '#475569',
+                  boxShadow: viewMode === 'modelSegment' ? '0 2px 4px rgba(37,99,235,0.2)' : 'none',
+                  transition: 'all 0.15s ease'
+                }}
+              >
+                Model Segment View
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Divider */}
-        <div style={{ width: '1px', height: '28px', background: '#e2e8f0', flexShrink: 0 }} />
-
-        {/* Model type filter */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span style={{ fontSize: '12px', fontWeight: 800, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em', whiteSpace: 'nowrap' }}>Model Type</span>
-          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-            {['All', 'Smart', 'Element', 'Feature', 'Tablet'].map((mt) => (
+        {/* MONTH SELECTOR & QUICK JUMP PILLS */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', paddingTop: '12px', borderTop: '1px solid #e2e8f0' }}>
+          {/* Quick jump navigation pills */}
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            {(viewMode === 'overall' ? [
+              { label: '1. Overall', target: 'sec-overall' },
+              { label: '2. CPC Details', target: 'sec-cpc' },
+              { label: '3. Service at Home', target: 'sec-sah' },
+              { label: '4. NPS', target: 'sec-nps' },
+              { label: '5. TAT', target: 'sec-tat' },
+            ] : [
+              { label: '1. Overall Scorecards', target: 'sec-mod-overall' },
+              { label: '2. CPC Breakdown', target: 'sec-mod-cpc' },
+              { label: '3. NPS Breakdown', target: 'sec-mod-nps' },
+              { label: '4. TAT Breakdown', target: 'sec-mod-tat' },
+            ]).map((pill) => (
               <button
-                key={mt}
-                onClick={() => setModelTypeFilter(mt)}
+                key={pill.target}
+                onClick={() => {
+                  const el = document.getElementById(pill.target);
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
                 style={{
-                  padding: '5px 13px',
-                  borderRadius: '20px',
-                  border: modelTypeFilter === mt ? '1.5px solid #2563eb' : '1.5px solid #cbd5e1',
-                  background: modelTypeFilter === mt ? '#2563eb' : '#ffffff',
-                  color: modelTypeFilter === mt ? '#ffffff' : '#475569',
+                  padding: '5px 14px',
+                  borderRadius: '16px',
+                  border: '1.5px solid #cbd5e1',
+                  background: '#ffffff',
+                  color: '#0f172a',
                   fontSize: '12.5px',
                   fontWeight: 700,
                   cursor: 'pointer',
+                  boxShadow: '0 1px 2px rgba(0,0,0,0.03)',
                   transition: 'all 0.15s ease',
                 }}
               >
-                {mt}
+                {pill.label}
               </button>
             ))}
           </div>
-        </div>
 
-        {/* Clear filters */}
-        {(segmentFilter !== 'All' || modelTypeFilter !== 'All') && (
-          <button
-            onClick={() => { setSegmentFilter('All'); setModelTypeFilter('All'); }}
-            style={{
-              marginLeft: 'auto',
-              padding: '5px 12px',
-              borderRadius: '8px',
-              border: '1.5px solid #f87171',
-              background: '#fff5f5',
-              color: '#dc2626',
-              fontSize: '12px',
-              fontWeight: 700,
-              cursor: 'pointer',
-            }}
-          >
-            ✕ Clear Filters
-          </button>
-        )}
+          {/* Month selector dropdown */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <label style={{ fontSize: '12px', fontWeight: 800, color: '#475569', textTransform: 'uppercase' }}>
+              Select Month:
+            </label>
+            <select
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value)}
+              style={{
+                padding: '6px 14px',
+                borderRadius: '8px',
+                border: '1.5px solid #E50046',
+                background: '#ffffff',
+                color: '#0f172a',
+                fontSize: '13.5px',
+                fontWeight: 700,
+                cursor: 'pointer',
+                outline: 'none',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+              }}
+            >
+              <option value="Jun">June 2026</option>
+              <option value="May">May 2026</option>
+              <option value="Apr">April 2026</option>
+              <option value="All">All Months (Apr - Jun '26)</option>
+            </select>
+          </div>
+        </div>
       </div>
 
-      {/* SECTION 1: OVERALL REGIONAL PERFORMANCE SCORECARDS */}
-      <div id="sec-overall" style={{ marginBottom: '36px' }}>
+      {/* ─── OVERALL VIEW ─── */}
+      {viewMode === 'overall' && (
+      <div>
+        {/* SECTION 1: OVERALL REGIONAL PERFORMANCE SCORECARDS */}
+        <div id="sec-overall" style={{ marginBottom: '36px' }}>
         <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
           <div className="bar" style={{ background: '#0f172a' }}></div>
           <span style={{ fontSize: '17px', fontWeight: 800, color: '#0f172a' }}>
@@ -2189,6 +2147,274 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
           </div>
         </div>
       </div>
+      </div>
+      )}
+
+      {/* ─── MODEL SEGMENT VIEW ─── */}
+      {viewMode === 'modelSegment' && (
+        <div>
+          {/* SECTION 1: OVERALL SCORECARDS (MODEL SEGMENT VIEW) */}
+          <div id="sec-mod-overall" style={{ marginBottom: '36px' }}>
+            <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="bar" style={{ background: '#2563eb' }}></div>
+              <span style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>
+                1. Overall Regional Performance Scorecards — Model Segment Breakdown
+              </span>
+              <span style={{ fontSize: '11.5px', fontWeight: 800, background: '#dbeafe', color: '#1d4ed8', border: '1px solid #93c5fd', padding: '2px 8px', borderRadius: '12px' }}>
+                Active Month: {selectedMonth === 'All' ? 'All Months (Apr-Jun)' : selectedMonth === 'Jun' ? 'June 2026' : selectedMonth === 'May' ? 'May 2026' : 'April 2026'}
+              </span>
+            </div>
+
+            <div className="card-mock" style={{ padding: '20px', marginBottom: '24px', borderTop: '3px solid #2563eb' }}>
+              <div style={{ marginBottom: '14px' }}>
+                <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                  BUSM Performance Matrix by Model Segment
+                </h3>
+                <span style={{ fontSize: '12px', color: '#64748b' }}>
+                  Cross-functional performance metrics (TAT 1D % | Avg CPC ₹ | NPS %) across Model Segments (Smart, Element, Feature, Tablet)
+                </span>
+              </div>
+
+              <div style={{ overflowX: 'auto' }}>
+                <Table density="compact">
+                  <TableHeader>
+                    <TableRow style={{ background: '#f8fafc' }}>
+                      <TableHead style={{ textAlign: 'left' }}>BUSM Name</TableHead>
+                      <TableHead style={{ textAlign: 'center', borderLeft: '1px solid #e2e8f0', background: '#eff6ff' }}>Smart (TAT% | CPC | NPS%)</TableHead>
+                      <TableHead style={{ textAlign: 'center', borderLeft: '1px solid #e2e8f0', background: '#f0fdf4' }}>Element (TAT% | CPC | NPS%)</TableHead>
+                      <TableHead style={{ textAlign: 'center', borderLeft: '1px solid #e2e8f0', background: '#fffbeb' }}>Feature (TAT% | CPC | NPS%)</TableHead>
+                      <TableHead style={{ textAlign: 'center', borderLeft: '1px solid #e2e8f0', background: '#fef2f2' }}>Tablet (TAT% | CPC | NPS%)</TableHead>
+                      <TableHead style={{ textAlign: 'center', borderLeft: '1px solid #e2e8f0', background: '#f8fafc' }}>Total / All Segments</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.overall?.busm || []).map((r: any, i: number) => (
+                      <TableRow key={i}>
+                        <TableCell style={{ textAlign: 'left', fontWeight: 700 }}>{r.busm}</TableCell>
+                        <TableCell style={{ textAlign: 'center', borderLeft: '1px solid #f1f5f9' }}>
+                          <span style={{ color: '#16a34a', fontWeight: 700 }}>{r.segments.Smart.tat_pct}%</span> | <span style={{ color: '#d97706', fontWeight: 700 }}>₹{r.segments.Smart.cpc}</span> | <span style={{ color: '#2563eb', fontWeight: 700 }}>{r.segments.Smart.nps_pct}%</span>
+                        </TableCell>
+                        <TableCell style={{ textAlign: 'center', borderLeft: '1px solid #f1f5f9' }}>
+                          <span style={{ color: '#16a34a', fontWeight: 700 }}>{r.segments.Element.tat_pct}%</span> | <span style={{ color: '#d97706', fontWeight: 700 }}>₹{r.segments.Element.cpc}</span> | <span style={{ color: '#2563eb', fontWeight: 700 }}>{r.segments.Element.nps_pct}%</span>
+                        </TableCell>
+                        <TableCell style={{ textAlign: 'center', borderLeft: '1px solid #f1f5f9' }}>
+                          <span style={{ color: '#16a34a', fontWeight: 700 }}>{r.segments.Feature.tat_pct}%</span> | <span style={{ color: '#d97706', fontWeight: 700 }}>₹{r.segments.Feature.cpc}</span> | <span style={{ color: '#2563eb', fontWeight: 700 }}>{r.segments.Feature.nps_pct}%</span>
+                        </TableCell>
+                        <TableCell style={{ textAlign: 'center', borderLeft: '1px solid #f1f5f9' }}>
+                          <span style={{ color: '#16a34a', fontWeight: 700 }}>{r.segments.Tablet.tat_pct}%</span> | <span style={{ color: '#d97706', fontWeight: 700 }}>₹{r.segments.Tablet.cpc}</span> | <span style={{ color: '#2563eb', fontWeight: 700 }}>{r.segments.Tablet.nps_pct}%</span>
+                        </TableCell>
+                        <TableCell style={{ textAlign: 'center', borderLeft: '1px solid #f1f5f9', fontWeight: 800, background: '#f8fafc' }}>
+                          <span style={{ color: '#16a34a' }}>{r.segments.Total.tat_pct}%</span> | <span style={{ color: '#b45309' }}>₹{r.segments.Total.cpc}</span> | <span style={{ color: '#1d4ed8' }}>{r.segments.Total.nps_pct}%</span>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                  {MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.overall?.national && (
+                    <TableSummaryRow>
+                      <TableCell style={{ textAlign: 'left', fontWeight: 800 }}>National Average</TableCell>
+                      {['Smart', 'Element', 'Feature', 'Tablet', 'Total'].map((mt) => {
+                        const n = MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth].overall.national[mt];
+                        return (
+                          <TableCell key={mt} style={{ textAlign: 'center', fontWeight: 800, borderLeft: '1px solid #cbd5e1' }}>
+                            <span style={{ color: '#15803d' }}>{n.tat_pct}%</span> | <span style={{ color: '#b45309' }}>₹{n.cpc}</span> | <span style={{ color: '#1d4ed8' }}>{n.nps_pct}%</span>
+                          </TableCell>
+                        );
+                      })}
+                    </TableSummaryRow>
+                  )}
+                </Table>
+              </div>
+            </div>
+          </div>
+
+          {/* SECTION 2: CPC BREAKDOWN (MODEL SEGMENT VIEW) */}
+          <div id="sec-mod-cpc" style={{ marginBottom: '36px' }}>
+            <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="bar" style={{ background: '#d97706' }}></div>
+              <span style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>
+                2. CPC Breakdown — Cost Analysis by Model Segment
+              </span>
+              <span style={{ fontSize: '11.5px', fontWeight: 800, background: '#fef3c7', color: '#b45309', border: '1px solid #fde68a', padding: '2px 8px', borderRadius: '12px' }}>
+                Active Month: {selectedMonth === 'All' ? 'All Months (Apr-Jun)' : selectedMonth === 'Jun' ? 'June 2026' : selectedMonth === 'May' ? 'May 2026' : 'April 2026'}
+              </span>
+            </div>
+
+            <div className="card-mock" style={{ padding: '20px', marginBottom: '24px', borderTop: '3px solid #d97706' }}>
+              <div style={{ marginBottom: '14px' }}>
+                <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                  Combined Repair &amp; Replacement Cost by Model Segment
+                </h3>
+                <span style={{ fontSize: '12px', color: '#64748b' }}>
+                  Average CPC (₹) and Total Expenditure (₹) per Model Segment across BUSMs
+                </span>
+              </div>
+
+              <div style={{ overflowX: 'auto' }}>
+                <Table density="compact">
+                  <TableHeader>
+                    <TableRow style={{ background: '#f8fafc' }}>
+                      <TableHead style={{ textAlign: 'left' }}>BUSM Name</TableHead>
+                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>Smart CPC (Cost ₹)</TableHead>
+                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>Element CPC (Cost ₹)</TableHead>
+                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>Feature CPC (Cost ₹)</TableHead>
+                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>Tablet CPC (Cost ₹)</TableHead>
+                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0', background: '#fffbeb' }}>Total Combined CPC (₹)</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.cpc?.busm || []).map((r: any, i: number) => (
+                      <TableRow key={i}>
+                        <TableCell style={{ textAlign: 'left', fontWeight: 700 }}>{r.busm}</TableCell>
+                        <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9' }}>
+                          <span style={{ fontWeight: 700, color: '#d97706' }}>₹{r.segments.Smart.cpc}</span> <span style={{ fontSize: '11px', color: '#64748b' }}>(₹{r.segments.Smart.total_cost.toLocaleString('en-IN')})</span>
+                        </TableCell>
+                        <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9' }}>
+                          <span style={{ fontWeight: 700, color: '#d97706' }}>₹{r.segments.Element.cpc}</span> <span style={{ fontSize: '11px', color: '#64748b' }}>(₹{r.segments.Element.total_cost.toLocaleString('en-IN')})</span>
+                        </TableCell>
+                        <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9' }}>
+                          <span style={{ fontWeight: 700, color: '#d97706' }}>₹{r.segments.Feature.cpc}</span> <span style={{ fontSize: '11px', color: '#64748b' }}>(₹{r.segments.Feature.total_cost.toLocaleString('en-IN')})</span>
+                        </TableCell>
+                        <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9' }}>
+                          <span style={{ fontWeight: 700, color: '#d97706' }}>₹{r.segments.Tablet.cpc}</span> <span style={{ fontSize: '11px', color: '#64748b' }}>(₹{r.segments.Tablet.total_cost.toLocaleString('en-IN')})</span>
+                        </TableCell>
+                        <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', fontWeight: 800, background: '#fffbeb', color: '#b45309' }}>
+                          ₹{r.segments.Total.cpc} (₹{r.segments.Total.total_cost.toLocaleString('en-IN')})
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                  {MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.cpc?.national && (
+                    <TableSummaryRow>
+                      <TableCell style={{ textAlign: 'left', fontWeight: 800 }}>National Total / Average</TableCell>
+                      {['Smart', 'Element', 'Feature', 'Tablet', 'Total'].map((mt) => {
+                        const n = MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth].cpc.national[mt];
+                        return (
+                          <TableCell key={mt} style={{ textAlign: 'right', fontWeight: 800, borderLeft: '1px solid #cbd5e1' }}>
+                            ₹{n.cpc} (₹{n.total_cost.toLocaleString('en-IN')})
+                          </TableCell>
+                        );
+                      })}
+                    </TableSummaryRow>
+                  )}
+                </Table>
+              </div>
+            </div>
+          </div>
+
+          {/* SECTION 3: NPS BREAKDOWN (MODEL SEGMENT VIEW) */}
+          <div id="sec-mod-nps" style={{ marginBottom: '36px' }}>
+            <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="bar" style={{ background: '#7c3aed' }}></div>
+              <span style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>
+                3. NPS Performance &amp; Customer Satisfaction — Model Segment Breakdown
+              </span>
+            </div>
+
+            <div className="card-mock" style={{ padding: '20px', marginBottom: '24px', borderTop: '3px solid #7c3aed' }}>
+              <div style={{ marginBottom: '14px' }}>
+                <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                  NPS Score Matrix by Model Segment
+                </h3>
+              </div>
+
+              <div style={{ overflowX: 'auto' }}>
+                <Table density="compact">
+                  <TableHeader>
+                    <TableRow style={{ background: '#f8fafc' }}>
+                      <TableHead style={{ textAlign: 'left' }}>BUSM Name</TableHead>
+                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>Smart NPS %</TableHead>
+                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>Element NPS %</TableHead>
+                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>Feature NPS %</TableHead>
+                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>Tablet NPS %</TableHead>
+                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0', background: '#f5f3ff' }}>Overall NPS %</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.overall?.busm || []).map((r: any, i: number) => (
+                      <TableRow key={i}>
+                        <TableCell style={{ textAlign: 'left', fontWeight: 700 }}>{r.busm}</TableCell>
+                        <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', color: '#7c3aed', fontWeight: 700 }}>{r.segments.Smart.nps_pct}%</TableCell>
+                        <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', color: '#7c3aed', fontWeight: 700 }}>{r.segments.Element.nps_pct}%</TableCell>
+                        <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', color: '#7c3aed', fontWeight: 700 }}>{r.segments.Feature.nps_pct}%</TableCell>
+                        <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', color: '#7c3aed', fontWeight: 700 }}>{r.segments.Tablet.nps_pct}%</TableCell>
+                        <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', color: '#6d28d9', fontWeight: 800, background: '#f5f3ff' }}>{r.segments.Total.nps_pct}%</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+          </div>
+
+          {/* SECTION 4: TAT BREAKDOWN (MODEL SEGMENT VIEW) */}
+          <div id="sec-mod-tat" style={{ marginBottom: '36px' }}>
+            <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="bar" style={{ background: '#16a34a' }}></div>
+              <span style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>
+                4. TAT &amp; Turnaround Speed — Model Segment Breakdown
+              </span>
+            </div>
+
+            <div className="card-mock" style={{ padding: '20px', marginBottom: '24px', borderTop: '3px solid #16a34a' }}>
+              <div style={{ marginBottom: '14px' }}>
+                <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                  1-Day Repair Closure TAT % by Model Segment
+                </h3>
+              </div>
+
+              <div style={{ overflowX: 'auto' }}>
+                <Table density="compact">
+                  <TableHeader>
+                    <TableRow style={{ background: '#f8fafc' }}>
+                      <TableHead style={{ textAlign: 'left' }}>BUSM Name</TableHead>
+                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>Smart 1D TAT % (WOs)</TableHead>
+                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>Element 1D TAT % (WOs)</TableHead>
+                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>Feature 1D TAT % (WOs)</TableHead>
+                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0' }}>Tablet 1D TAT % (WOs)</TableHead>
+                      <TableHead style={{ textAlign: 'right', borderLeft: '1px solid #e2e8f0', background: '#f0fdf4' }}>Total TAT %</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.tat?.busm || []).map((r: any, i: number) => (
+                      <TableRow key={i}>
+                        <TableCell style={{ textAlign: 'left', fontWeight: 700 }}>{r.busm}</TableCell>
+                        <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9' }}>
+                          <span style={{ fontWeight: 700, color: '#16a34a' }}>{r.segments.Smart.tat_pct}%</span> <span style={{ fontSize: '11px', color: '#64748b' }}>({r.segments.Smart.wo})</span>
+                        </TableCell>
+                        <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9' }}>
+                          <span style={{ fontWeight: 700, color: '#16a34a' }}>{r.segments.Element.tat_pct}%</span> <span style={{ fontSize: '11px', color: '#64748b' }}>({r.segments.Element.wo})</span>
+                        </TableCell>
+                        <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9' }}>
+                          <span style={{ fontWeight: 700, color: '#16a34a' }}>{r.segments.Feature.tat_pct}%</span> <span style={{ fontSize: '11px', color: '#64748b' }}>({r.segments.Feature.wo})</span>
+                        </TableCell>
+                        <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9' }}>
+                          <span style={{ fontWeight: 700, color: '#16a34a' }}>{r.segments.Tablet.tat_pct}%</span> <span style={{ fontSize: '11px', color: '#64748b' }}>({r.segments.Tablet.wo})</span>
+                        </TableCell>
+                        <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', fontWeight: 800, background: '#f0fdf4', color: '#15803d' }}>
+                          {r.segments.Total.tat_pct}% ({r.segments.Total.wo.toLocaleString('en-IN')})
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                  {MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.tat?.national && (
+                    <TableSummaryRow>
+                      <TableCell style={{ textAlign: 'left', fontWeight: 800 }}>National Average</TableCell>
+                      {['Smart', 'Element', 'Feature', 'Tablet', 'Total'].map((mt) => {
+                        const n = MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth].tat.national[mt];
+                        return (
+                          <TableCell key={mt} style={{ textAlign: 'right', fontWeight: 800, borderLeft: '1px solid #cbd5e1' }}>
+                            {n.tat_pct}% ({n.wo.toLocaleString('en-IN')})
+                          </TableCell>
+                        );
+                      })}
+                    </TableSummaryRow>
+                  )}
+                </Table>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Executive Footnote */}
       <div style={{ marginTop: '10px', padding: '14px 18px', background: '#ffffff', borderRadius: '10px', border: '1px solid #e2e8f0', fontSize: '11.5px', color: '#64748b', lineHeight: '1.6', boxShadow: 'var(--shadow-sm)' }}>
