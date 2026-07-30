@@ -474,8 +474,13 @@ export async function getFullDashboardData(filters?: {
   busmName?: string;
   asmName?: string;
 }): Promise<any> {
+  // MASTER_DATA specifically — WorkOrders only ever belong to a Master Data
+  // import. Without this filter, importing any other dataset type (MSM,
+  // Compliance, NPS, ...) after the last Master Data upload would make THAT
+  // import "latest", filtering workOrders down to zero and breaking the
+  // whole page.
   const latestImport = await prisma.monthlyImport.findFirst({
-    where: { status: 'COMPLETE' },
+    where: { status: 'COMPLETE', datasetType: 'MASTER_DATA' },
     orderBy: { importedAt: 'desc' },
   });
 
