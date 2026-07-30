@@ -850,19 +850,22 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                       );
                     })
                   )}
-                  {ovBusmRow && filteredAsmList.length > 0 && (
-                    <TableSummaryRow>
-                      <TableCell colSpan={2} style={{ textAlign: 'left' }}>
-                        Total / Average ({ovBusmRow})
-                      </TableCell>
-                      <TableCell style={{ textAlign: 'right' }}>{asmAvgTat}%</TableCell>
-                      <TableCell style={{ textAlign: 'right' }}>₹{asmAvgCpc}</TableCell>
-                      <TableCell style={{ textAlign: 'right' }}>{asmAvgSah}%</TableCell>
-                      <TableCell style={{ textAlign: 'right' }}>{asmAvgNps}%</TableCell>
-                      <TableCell style={{ textAlign: 'right' }}>{asmAvgDiag}%</TableCell>
-                      <TableCell style={{ textAlign: 'right' }}>{asmAvgCag}%</TableCell>
-                    </TableSummaryRow>
-                  )}
+                  {ovBusmRow && filteredAsmList.length > 0 && (() => {
+                    const selectedBusmObj = busmList.find(b => b.name === ovBusmRow);
+                    return (
+                      <TableSummaryRow>
+                        <TableCell colSpan={2} style={{ textAlign: 'left' }}>
+                          Total / Average ({ovBusmRow})
+                        </TableCell>
+                        <TableCell style={{ textAlign: 'right' }}>{selectedBusmObj ? selectedBusmObj.tat : asmAvgTat}%</TableCell>
+                        <TableCell style={{ textAlign: 'right' }}>₹{selectedBusmObj ? selectedBusmObj.cpc : asmAvgCpc}</TableCell>
+                        <TableCell style={{ textAlign: 'right' }}>{selectedBusmObj ? selectedBusmObj.sah : asmAvgSah}%</TableCell>
+                        <TableCell style={{ textAlign: 'right' }}>{selectedBusmObj ? selectedBusmObj.nps : asmAvgNps}%</TableCell>
+                        <TableCell style={{ textAlign: 'right' }}>{selectedBusmObj ? selectedBusmObj.diag : asmAvgDiag}%</TableCell>
+                        <TableCell style={{ textAlign: 'right' }}>{selectedBusmObj ? selectedBusmObj.cag : asmAvgCag}%</TableCell>
+                      </TableSummaryRow>
+                    );
+                  })()}
                 </TableBody>
               </Table>
             </div>
@@ -949,6 +952,36 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   ))
                 )}
               </tbody>
+              {filteredAspList.length > 0 && (() => {
+                const selectedAsmObj = allAsmList.find(a => a.name === ovAsmRow);
+                return (
+                  <tfoot>
+                    <tr style={{ background: '#f5f3ff', borderTop: '2px solid #ddd6fe', fontWeight: 800, color: '#6d28d9', fontSize: '12px' }}>
+                      <td colSpan={2} style={{ padding: '9px 10px', textAlign: 'left' }}>
+                        Total / Average ({ovAsmRow})
+                      </td>
+                      <td style={{ padding: '9px 10px', textAlign: 'right' }}>
+                        {filteredAspList.reduce((sum, a) => sum + (a.wo || 0), 0).toLocaleString('en-IN')}
+                      </td>
+                      <td style={{ padding: '9px 10px', textAlign: 'right' }}>
+                        {selectedAsmObj ? selectedAsmObj.tat : Math.round((filteredAspList.reduce((sum, a) => sum + (a.tat || 0), 0) / filteredAspList.length) * 10) / 10}%
+                      </td>
+                      <td style={{ padding: '9px 10px', textAlign: 'right' }}>
+                        {selectedAsmObj ? selectedAsmObj.sah : Math.round((filteredAspList.reduce((sum, a) => sum + (a.sah || 0), 0) / filteredAspList.length) * 10) / 10}%
+                      </td>
+                      <td style={{ padding: '9px 10px', textAlign: 'right' }}>
+                        {Math.round((filteredAspList.reduce((sum, a) => sum + (a.ftfr || 0), 0) / filteredAspList.length) * 10) / 10}%
+                      </td>
+                      <td style={{ padding: '9px 10px', textAlign: 'right' }}>
+                        {Math.round((filteredAspList.reduce((sum, a) => sum + (a.csat || 0), 0) / filteredAspList.length) * 10) / 10}%
+                      </td>
+                      <td style={{ padding: '9px 10px', textAlign: 'right' }}>
+                        {selectedAsmObj ? selectedAsmObj.nps : Math.round((filteredAspList.reduce((sum, a) => sum + (a.nps || 0), 0) / filteredAspList.length) * 10) / 10}%
+                      </td>
+                    </tr>
+                  </tfoot>
+                );
+              })()}
             </table>
           </div>
           {filteredAspList.length > 0 && (
