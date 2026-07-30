@@ -17,8 +17,23 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
   const [viewMode, setViewMode] = useState<'overall' | 'modelSegment'>('overall');
   const [deviceFilter, setDeviceFilter] = useState<'smart' | 'all'>('smart');
   const [selectedMonth, setSelectedMonth] = useState<string>('Jun');
-  const [selectedBusmRow, setSelectedBusmRow] = useState<string | null>(null);
-  const [selectedAsmRow, setSelectedAsmRow] = useState<string | null>(null);
+  // BUSM/ASM row-click drilldown state — deliberately ONE pair PER TABLE SECTION,
+  // not shared globally. Each section's tables (BUSM -> ASM -> ASP) drill down
+  // independently; clicking a row in one section must never filter another.
+  const [ovBusmRow, setOvBusmRow] = useState<string | null>(null);
+  const [ovAsmRow, setOvAsmRow] = useState<string | null>(null);
+  const [sahBusmRow, setSahBusmRow] = useState<string | null>(null);
+  const [sahAsmRow, setSahAsmRow] = useState<string | null>(null);
+  const [npsBusmRow, setNpsBusmRow] = useState<string | null>(null);
+  const [npsAsmRow, setNpsAsmRow] = useState<string | null>(null);
+  const [tatBusmRow, setTatBusmRow] = useState<string | null>(null);
+  const [tatAsmRow, setTatAsmRow] = useState<string | null>(null);
+  const [msCpcBusmRow, setMsCpcBusmRow] = useState<string | null>(null);
+  const [msCpcAsmRow, setMsCpcAsmRow] = useState<string | null>(null);
+  const [msNpsBusmRow, setMsNpsBusmRow] = useState<string | null>(null);
+  const [msNpsAsmRow, setMsNpsAsmRow] = useState<string | null>(null);
+  const [msTatBusmRow, setMsTatBusmRow] = useState<string | null>(null);
+  const [msTatAsmRow, setMsTatAsmRow] = useState<string | null>(null);
   const [collapsedTables, setCollapsedTables] = useState<Record<string, boolean>>({});
   const [segmentFilter, setSegmentFilter] = useState<string>('All');
   const [modelTypeFilter, setModelTypeFilter] = useState<string>('Smart & Tablet');
@@ -29,10 +44,10 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
   const [cpcBusmRepl, setCpcBusmRepl] = useState<string | null>(null);
   const [cpcAsmRepl, setCpcAsmRepl] = useState<string | null>(null);
 
-  // Reset ASM selection when BUSM selection changes
-  const handleBusmClick = (name: string | null) => {
-    setSelectedBusmRow(name);
-    setSelectedAsmRow(null);
+  // Reset ASM selection when BUSM selection changes (Overall Regional Performance Scorecards)
+  const handleOvBusmClick = (name: string | null) => {
+    setOvBusmRow(name);
+    setOvAsmRow(null);
   };
 
   // Smartphone-only BUSM NPS breakdown (Jun 2026 NPS survey dataset: 6,801 Smartphone surveys)
@@ -316,8 +331,8 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
   };
 
   // Filter ASMs by clicked BUSM row (or show all if no row is clicked)
-  const filteredAsmList = selectedBusmRow
-    ? allAsmList.filter((a) => a.busm === selectedBusmRow)
+  const filteredAsmList = ovBusmRow
+    ? allAsmList.filter((a) => a.busm === ovBusmRow)
     : allAsmList;
 
   // Calculate summary totals for filtered ASMs
@@ -358,8 +373,8 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
   ];
 
   // Filter ASPs by selected ASM (sourced from ALL_ASP_PERF_DATA covering all 610 ASP centres across the nation)
-  const filteredAspList = selectedAsmRow
-    ? ALL_ASP_PERF_DATA.filter(a => a.asm === selectedAsmRow)
+  const filteredAspList = ovAsmRow
+    ? ALL_ASP_PERF_DATA.filter(a => a.asm === ovAsmRow)
     : [];
 
   // DSAT reason breakdown — Jun 2026 NPS survey snapshot (static; sourced from Jun26 NPS Data.xlsx)
@@ -572,9 +587,9 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                 </span>
               </div>
             </div>
-          {selectedBusmRow && (
+          {ovBusmRow && (
               <button
-                onClick={(e) => { e.stopPropagation(); handleBusmClick(null); }}
+                onClick={(e) => { e.stopPropagation(); handleOvBusmClick(null); }}
                 style={{
                   background: '#f1f5f9',
                   border: '1px solid #cbd5e1',
@@ -586,7 +601,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   cursor: 'pointer',
                 }}
               >
-                Clear Filter ({selectedBusmRow})
+                Clear Filter ({ovBusmRow})
               </button>
             )}
           </div>
@@ -606,11 +621,11 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
               </TableHeader>
               <TableBody>
                 {busmList.map((r: any, i: number) => {
-                  const isSelected = selectedBusmRow === r.name;
+                  const isSelected = ovBusmRow === r.name;
                   return (
                     <TableRow
                       key={i}
-                      onClick={() => setSelectedBusmRow(isSelected ? null : r.name)}
+                      onClick={() => setOvBusmRow(isSelected ? null : r.name)}
                       style={{
                         background: isSelected ? 'var(--bg-surface-selected)' : undefined,
                         cursor: 'pointer'
@@ -685,7 +700,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
         </div>
 
         {/* TABLE 2: ASM BREAKDOWN MATRIX (Only visible when a BUSM is clicked) */}
-        {selectedBusmRow && (
+        {ovBusmRow && (
           <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '16px', borderLeft: '4px solid #2563eb' }}>
           <button
             onClick={scrollToTop}
@@ -707,12 +722,12 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
               <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                 {renderHeaderArrow('asmPerf')}
                 <div>
-                  <div style={{ fontSize: '11px', color: '#2563eb', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {selectedBusmRow}</div>
+                  <div style={{ fontSize: '11px', color: '#2563eb', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {ovBusmRow}</div>
                   <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
                     Supervisor (ASM) Performance &amp; Parameter Ranking Matrix
                   </h3>
                   <span style={{ fontSize: '12px', color: '#64748b' }}>
-                    Showing {filteredAsmList.length} Area Managers (ASMs) under {selectedBusmRow} — click an ASM to drill into ASP centres
+                    Showing {filteredAsmList.length} Area Managers (ASMs) under {ovBusmRow} — click an ASM to drill into ASP centres
                   </span>
                 </div>
               </div>
@@ -721,7 +736,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   Count: {filteredAsmList.length} ASMs
                 </span>
                 <button
-                  onClick={(e) => { e.stopPropagation(); setSelectedBusmRow(null); setSelectedAsmRow(null); }}
+                  onClick={(e) => { e.stopPropagation(); setOvBusmRow(null); setOvAsmRow(null); }}
                   style={{ background: '#f1f5f9', border: '1px solid #cbd5e1', padding: '4px 10px', borderRadius: '6px', fontSize: '11.5px', fontWeight: 700, color: '#475569', cursor: 'pointer' }}
                 >
                   Clear BUSM Filter
@@ -753,11 +768,11 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                     </TableRow>
                   ) : (
                     filteredAsmList.map((r: any, i: number) => {
-                      const isAsmSelected = selectedAsmRow === r.name;
+                      const isAsmSelected = ovAsmRow === r.name;
                       return (
                         <TableRow
                           key={i}
-                          onClick={() => setSelectedAsmRow(isAsmSelected ? null : r.name)}
+                          onClick={() => setOvAsmRow(isAsmSelected ? null : r.name)}
                           style={{
                             background: isAsmSelected ? '#f0fdf4' : undefined,
                             cursor: 'pointer'
@@ -819,10 +834,10 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                       );
                     })
                   )}
-                  {selectedBusmRow && filteredAsmList.length > 0 && (
+                  {ovBusmRow && filteredAsmList.length > 0 && (
                     <TableSummaryRow>
                       <TableCell colSpan={2} style={{ textAlign: 'left' }}>
-                        Total / Average ({selectedBusmRow})
+                        Total / Average ({ovBusmRow})
                       </TableCell>
                       <TableCell style={{ textAlign: 'right' }}>{asmAvgTat}%</TableCell>
                       <TableCell style={{ textAlign: 'right' }}>₹{asmAvgCpc}</TableCell>
@@ -840,7 +855,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
         )}
 
         {/* ─── ASP TABLE: revealed when ASM is selected ─── */}
-        {selectedAsmRow && (
+        {ovAsmRow && (
         <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '16px', borderLeft: '4px solid #7c3aed', marginTop: '4px' }}>
           <button
             onClick={scrollToTop}
@@ -856,18 +871,18 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             }}
           >↑ Top</button>
           <div style={{ marginBottom: '14px' }}>
-            <div style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 700, marginBottom: '4px' }}>▶ National &gt; {selectedBusmRow} &gt; {selectedAsmRow}</div>
+            <div style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 700, marginBottom: '4px' }}>▶ National &gt; {ovBusmRow} &gt; {ovAsmRow}</div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
                   ASP Centre Performance Breakdown
                 </h3>
                 <span style={{ fontSize: '12px', color: '#64748b' }}>
-                  {filteredAspList.length > 0 ? `${filteredAspList.length} ASP centre(s) under ${selectedAsmRow}` : `No ASP data available yet for ${selectedAsmRow} — will populate when backend is connected`}
+                  {filteredAspList.length > 0 ? `${filteredAspList.length} ASP centre(s) under ${ovAsmRow}` : `No ASP data available yet for ${ovAsmRow} — will populate when backend is connected`}
                 </span>
               </div>
               <button
-                onClick={() => setSelectedAsmRow(null)}
+                onClick={() => setOvAsmRow(null)}
                 style={{ background: '#f5f3ff', border: '1px solid #ddd6fe', padding: '4px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 700, color: '#7c3aed', cursor: 'pointer' }}
               >
                 Clear ASM Filter
@@ -892,7 +907,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                 {filteredAspList.length === 0 ? (
                   <tr>
                     <td colSpan={8} style={{ padding: '24px', textAlign: 'center', color: '#94a3b8', fontSize: '13px' }}>
-                      ASP-level performance data for <strong>{selectedAsmRow}</strong> is not yet available in the static dataset.
+                      ASP-level performance data for <strong>{ovAsmRow}</strong> is not yet available in the static dataset.
                     </td>
                   </tr>
                 ) : (
@@ -1314,11 +1329,11 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
               </thead>
               <tbody>
                 {currentSahDataset.busm.map((r: any, i: number) => {
-                  const isSelected = selectedBusmRow === r.name;
+                  const isSelected = sahBusmRow === r.name;
                   return (
                     <tr
                       key={i}
-                      onClick={() => setSelectedBusmRow(isSelected ? null : r.name)}
+                      onClick={() => setSahBusmRow(isSelected ? null : r.name)}
                       style={{
                         borderBottom: '1px solid #f1f5f9',
                         background: isSelected ? '#eff6ff' : i % 2 === 0 ? '#ffffff' : '#f8fafc',
@@ -1361,7 +1376,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
         </div>
 
         {/* TABLE 4: ASM APPOINTMENT METRICS TABLE (Only visible when a BUSM is clicked) */}
-        {selectedBusmRow && (
+        {sahBusmRow && (
           <div className="card-mock" style={{ position: 'relative', padding: '20px', marginTop: '16px' }}>
           <button
             onClick={scrollToTop}
@@ -1387,7 +1402,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                     Supervisor (ASM) Appointment Performance Matrix
                   </h3>
                   <span style={{ fontSize: '12px', color: '#64748b' }}>
-                    Showing Area Managers (ASMs) under {selectedBusmRow}
+                    Showing Area Managers (ASMs) under {sahBusmRow}
                   </span>
                 </div>
               </div>
@@ -1396,7 +1411,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   Count: {filteredAsmList.length} ASMs
                 </span>
                 <button
-                  onClick={(e) => { e.stopPropagation(); setSelectedBusmRow(null); }}
+                  onClick={(e) => { e.stopPropagation(); setSahBusmRow(null); }}
                   style={{ background: '#f1f5f9', border: '1px solid #cbd5e1', padding: '4px 10px', borderRadius: '6px', fontSize: '11.5px', fontWeight: 700, color: '#475569', cursor: 'pointer' }}
                 >
                   Clear BUSM Filter
@@ -1420,19 +1435,19 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentSahDataset.asm.filter((a: any) => a.busm === selectedBusmRow).length === 0 ? (
+                  {currentSahDataset.asm.filter((a: any) => a.busm === sahBusmRow).length === 0 ? (
                     <tr>
                       <td colSpan={8} style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>
-                        No ASMs found for {selectedBusmRow} in {selectedMonth}.
+                        No ASMs found for {sahBusmRow} in {selectedMonth}.
                       </td>
                     </tr>
                   ) : (
-                    currentSahDataset.asm.filter((a: any) => a.busm === selectedBusmRow).map((r: any, i: number) => {
-                      const isSelected = selectedAsmRow === r.name;
+                    currentSahDataset.asm.filter((a: any) => a.busm === sahBusmRow).map((r: any, i: number) => {
+                      const isSelected = sahAsmRow === r.name;
                       return (
                         <tr
                           key={i}
-                          onClick={() => setSelectedAsmRow(isSelected ? null : r.name)}
+                          onClick={() => setSahAsmRow(isSelected ? null : r.name)}
                           style={{
                             borderBottom: '1px solid #f1f5f9',
                             background: isSelected ? '#eff6ff' : undefined,
@@ -1458,7 +1473,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
 
                   {/* Total Summary Row for ASMs — all percentages computed dynamically (weighted by appointments) */}
                   {(() => {
-                    const filteredAsms = currentSahDataset.asm.filter((a: any) => a.busm === selectedBusmRow);
+                    const filteredAsms = currentSahDataset.asm.filter((a: any) => a.busm === sahBusmRow);
                     const totalAppts = filteredAsms.reduce((s: number, a: any) => s + (a.total || 0), 0);
                     const wavg = (key: string) => {
                       if (totalAppts === 0) return '0.0%';
@@ -1469,7 +1484,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                     return (
                       <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
                         <td style={{ padding: '10px 12px', color: '#0f172a', background: '#f1f5f9', fontWeight: 800 }}>Total / Average</td>
-                        <td style={{ padding: '10px 10px', color: '#64748b', borderRight: '1px solid #e2e8f0' }}>{selectedBusmRow}</td>
+                        <td style={{ padding: '10px 10px', color: '#64748b', borderRight: '1px solid #e2e8f0' }}>{sahBusmRow}</td>
                         <td style={{ padding: '10px 10px', textAlign: 'right', color: '#0f172a', borderRight: '1px solid #e2e8f0', fontWeight: 800 }}>
                           {totalAppts.toLocaleString('en-IN')}
                         </td>
@@ -1489,7 +1504,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
         )}
 
         {/* TABLE 5: ASP LEVEL S@H METRICS (Revealed on ASM Click) */}
-        {selectedAsmRow && (
+        {sahAsmRow && (
           <div className="card-mock" style={{ position: 'relative', padding: '20px', marginTop: '16px' }}>
           <button
             onClick={scrollToTop}
@@ -1506,23 +1521,23 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
           >↑ Top</button>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
               <div>
-                <div style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {selectedBusmRow} &gt; {selectedAsmRow} — S@H</div>
+                <div style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {sahBusmRow} &gt; {sahAsmRow} — S@H</div>
                 <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                  ASP Centre Appointment Performance (Filtered ASM: {selectedAsmRow})
+                  ASP Centre Appointment Performance (Filtered ASM: {sahAsmRow})
                 </h3>
                 <span style={{ fontSize: '12px', color: '#64748b' }}>
-                  Service at Home appointment metrics for all ASP centres reporting to {selectedAsmRow}
+                  Service at Home appointment metrics for all ASP centres reporting to {sahAsmRow}
                 </span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ background: '#f5f3ff', color: '#7c3aed', border: '1px solid #ddd6fe', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 700 }}>
-                  Count: {(currentSahDataset.asp || []).filter((a: any) => a.asm === selectedAsmRow).length} ASPs
+                  Count: {(currentSahDataset.asp || []).filter((a: any) => a.asm === sahAsmRow).length} ASPs
                 </span>
                 <button
-                  onClick={() => setSelectedAsmRow(null)}
+                  onClick={() => setSahAsmRow(null)}
                   style={{ background: '#f5f3ff', border: '1px solid #ddd6fe', padding: '4px 10px', borderRadius: '6px', fontSize: '11.5px', fontWeight: 700, color: '#7c3aed', cursor: 'pointer' }}
                 >
-                  Clear ASM Filter ({selectedAsmRow})
+                  Clear ASM Filter ({sahAsmRow})
                 </button>
               </div>
             </div>
@@ -1542,11 +1557,11 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   </tr>
                 </thead>
                 <tbody>
-                  {(currentSahDataset.asp || []).filter((a: any) => a.asm === selectedAsmRow).length === 0 ? (
-                    <tr><td colSpan={9} style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>No ASP centres found for {selectedAsmRow} in {selectedMonth}.</td></tr>
+                  {(currentSahDataset.asp || []).filter((a: any) => a.asm === sahAsmRow).length === 0 ? (
+                    <tr><td colSpan={9} style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>No ASP centres found for {sahAsmRow} in {selectedMonth}.</td></tr>
                   ) : (
                     (currentSahDataset.asp || [])
-                      .filter((a: any) => a.asm === selectedAsmRow)
+                      .filter((a: any) => a.asm === sahAsmRow)
                       .sort((a: any, b: any) => b.total - a.total)
                       .map((r: any, i: number) => (
                         <tr key={i} style={{ borderBottom: '1px solid #f1f5f9', background: i % 2 === 0 ? '#ffffff' : '#f8fafc' }}>
@@ -1667,9 +1682,9 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
               </span>
             </div>
 
-            {selectedBusmRow && (
+            {npsBusmRow && (
               <button
-                onClick={(e) => { e.stopPropagation(); setSelectedBusmRow(null); }}
+                onClick={(e) => { e.stopPropagation(); setNpsBusmRow(null); }}
                 style={{
                   background: '#f1f5f9',
                   border: '1px solid #cbd5e1',
@@ -1681,7 +1696,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   cursor: 'pointer',
                 }}
               >
-                Clear BUSM Filter ({selectedBusmRow})
+                Clear BUSM Filter ({npsBusmRow})
               </button>
             )}
           </div>
@@ -1705,11 +1720,11 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   .slice()
                   .sort((a, b) => a.name.localeCompare(b.name))
                   .map((r, i) => {
-                    const isSelected = selectedBusmRow === r.name;
+                    const isSelected = npsBusmRow === r.name;
                   return (
                     <TableRow
                       key={i}
-                      onClick={() => setSelectedBusmRow(isSelected ? null : r.name)}
+                      onClick={() => setNpsBusmRow(isSelected ? null : r.name)}
                       style={{
                         background: isSelected ? 'var(--bg-surface-selected)' : undefined,
                         cursor: 'pointer'
@@ -1772,7 +1787,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
         </div>
 
         {/* NPS TABLE 2 & 3 (Only visible when a BUSM is clicked) */}
-        {selectedBusmRow && (
+        {npsBusmRow && (
           <>
             {/* NPS TABLE 2: ASM LEVEL NPS BREAKDOWN */}
             <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px' }}>
@@ -1791,14 +1806,14 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
           >↑ Top</button>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                 <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                  Table 2: Supervisor (ASM) Wise NPS Performance Breakdown (Filtered: {selectedBusmRow})
+                  Table 2: Supervisor (ASM) Wise NPS Performance Breakdown (Filtered: {npsBusmRow})
                 </h3>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <span style={{ fontSize: '12px', color: '#64748b' }}>
-                    Showing {(deviceFilter === 'smart' ? spAsmData : asmNpsData).filter(r => r.busm === selectedBusmRow).length} Supervisors
+                    Showing {(deviceFilter === 'smart' ? spAsmData : asmNpsData).filter(r => r.busm === npsBusmRow).length} Supervisors
                   </span>
                   <button
-                    onClick={(e) => { e.stopPropagation(); setSelectedBusmRow(null); }}
+                    onClick={(e) => { e.stopPropagation(); setNpsBusmRow(null); }}
                     style={{ background: '#f1f5f9', border: '1px solid #cbd5e1', padding: '4px 10px', borderRadius: '6px', fontSize: '11.5px', fontWeight: 700, color: '#475569', cursor: 'pointer' }}
                   >
                     Clear BUSM Filter
@@ -1822,13 +1837,13 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   </thead>
                   <tbody>
                     {(deviceFilter === 'smart' ? spAsmData : asmNpsData)
-                      .filter(r => r.busm === selectedBusmRow)
+                      .filter(r => r.busm === npsBusmRow)
                       .map((r, i) => {
-                        const isSelected = selectedAsmRow === r.name;
+                        const isSelected = npsAsmRow === r.name;
                         return (
                           <tr
                             key={i}
-                            onClick={() => setSelectedAsmRow(isSelected ? null : r.name)}
+                            onClick={() => setNpsAsmRow(isSelected ? null : r.name)}
                             style={{
                               borderBottom: '1px solid #f1f5f9',
                               background: isSelected ? '#eff6ff' : undefined,
@@ -1875,7 +1890,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
           >↑ Top</button>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                 <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                  Table 4 &amp; 5: Detractor (DSAT) Root Cause Reasons Matrix by BUSM (Filtered: {selectedBusmRow})
+                  Table 4 &amp; 5: Detractor (DSAT) Root Cause Reasons Matrix by BUSM (Filtered: {npsBusmRow})
                 </h3>
               </div>
 
@@ -1895,7 +1910,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   </thead>
                   <tbody>
                     {dsatBusmData
-                      .filter(r => r.name === selectedBusmRow)
+                      .filter(r => r.name === npsBusmRow)
                       .map((r, i) => (
                         <tr key={i} style={{ borderBottom: '1px solid #f1f5f9', background: '#eff6ff' }}>
                           <td style={{ padding: '9px 12px', fontWeight: 700, color: '#1e293b' }}>{r.name}</td>
@@ -1917,7 +1932,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
 
 
         {/* NPS TABLE 3: ASP CENTER NPS — Renders independently when ASM is clicked */}
-        {selectedAsmRow && (
+        {npsAsmRow && (
           <div style={{ marginBottom: '0' }}>
 {/* NPS TABLE 3: ASP CENTER WISE NPS BREAKDOWN */}
             <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px' }}>
@@ -1936,18 +1951,18 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
           >↑ Top</button>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                 <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                  Table 3: Top ASP Center Wise NPS Performance Breakdown ({selectedAsmRow ? `Filtered ASM: ${selectedAsmRow}` : `Filtered BUSM: ${selectedBusmRow}`})
+                  Table 3: Top ASP Center Wise NPS Performance Breakdown ({npsAsmRow ? `Filtered ASM: ${npsAsmRow}` : `Filtered BUSM: ${npsBusmRow}`})
                 </h3>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <span style={{ fontSize: '12px', color: '#64748b' }}>
-                    Showing {topAspNpsData.filter(r => selectedAsmRow ? r.asm === selectedAsmRow : r.busm === selectedBusmRow).length} ASP Centers
+                    Showing {topAspNpsData.filter(r => npsAsmRow ? r.asm === npsAsmRow : r.busm === npsBusmRow).length} ASP Centers
                   </span>
-                  {selectedAsmRow && (
+                  {npsAsmRow && (
                     <button
-                      onClick={(e) => { e.stopPropagation(); setSelectedAsmRow(null); }}
+                      onClick={(e) => { e.stopPropagation(); setNpsAsmRow(null); }}
                       style={{ background: '#f1f5f9', border: '1px solid #cbd5e1', padding: '4px 10px', borderRadius: '6px', fontSize: '11.5px', fontWeight: 700, color: '#475569', cursor: 'pointer' }}
                     >
-                      Clear ASM Filter ({selectedAsmRow})
+                      Clear ASM Filter ({npsAsmRow})
                     </button>
                   )}
                 </div>
@@ -1971,7 +1986,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   </thead>
                   <tbody>
                     {topAspNpsData
-                      .filter(r => selectedAsmRow ? r.asm === selectedAsmRow : r.busm === selectedBusmRow)
+                      .filter(r => npsAsmRow ? r.asm === npsAsmRow : r.busm === npsBusmRow)
                       .slice()
                       .sort((a, b) => parseFloat(b.nps) - parseFloat(a.nps))
                       .map((r, i) => {
@@ -2072,7 +2087,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
               </thead>
               <tbody>
                 {busmList.map((r: any, i: number) => {
-                  const isSelected = selectedBusmRow === r.name;
+                  const isSelected = tatBusmRow === r.name;
                   const woVal = r.wo || 0;
                   const rawTc = r.tatClosure || {};
                   // Real per-BUSM TAT distributions from Lava Delivered Master Data (107,407 WOs, Apr–Jun 2026)
@@ -2103,7 +2118,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   return (
                     <tr
                       key={i}
-                      onClick={() => setSelectedBusmRow(isSelected ? null : r.name)}
+                      onClick={() => setTatBusmRow(isSelected ? null : r.name)}
                       style={{
                         borderBottom: '1px solid #f1f5f9',
                         background: isSelected ? '#eff6ff' : i % 2 === 0 ? '#ffffff' : '#f8fafc',
@@ -2188,7 +2203,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
         </div>
 
         {/* TAT TABLE 2: ASM LEVEL TAT CLOSURE MATRIX (Only visible when a BUSM is clicked) */}
-        {selectedBusmRow && (
+        {tatBusmRow && (
           <div className="card-mock" style={{ position: 'relative', padding: '20px', marginTop: '16px' }}>
           <button
             onClick={scrollToTop}
@@ -2209,7 +2224,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   Supervisor (ASM) TAT Closure Velocity Matrix
                 </h3>
                 <span style={{ fontSize: '12px', color: '#64748b' }}>
-                  Showing Area Managers (ASMs) under {selectedBusmRow}
+                  Showing Area Managers (ASMs) under {tatBusmRow}
                 </span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -2217,7 +2232,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   Count: {filteredAsmList.length} ASMs
                 </span>
                 <button
-                  onClick={(e) => { e.stopPropagation(); setSelectedBusmRow(null); }}
+                  onClick={(e) => { e.stopPropagation(); setTatBusmRow(null); }}
                   style={{ background: '#f1f5f9', border: '1px solid #cbd5e1', padding: '4px 10px', borderRadius: '6px', fontSize: '11.5px', fontWeight: 700, color: '#475569', cursor: 'pointer' }}
                 >
                   Clear BUSM Filter
@@ -2243,12 +2258,12 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   {filteredAsmList.length === 0 ? (
                     <tr>
                       <td colSpan={8} style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>
-                        No ASMs found for {selectedBusmRow}.
+                        No ASMs found for {tatBusmRow}.
                       </td>
                     </tr>
                   ) : (
                     filteredAsmList.map((r: any, i: number) => {
-                      const isSelected = selectedAsmRow === r.name;
+                      const isSelected = tatAsmRow === r.name;
                       const woVal = r.wo || 0;
                       const rawTc = r.tatClosure || {};
                       const ASM_BUSM_TAT: Record<string, { p1: number; p2: number; p3: number; p5: number }> = {
@@ -2278,7 +2293,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                       return (
                         <tr
                           key={i}
-                          onClick={() => setSelectedAsmRow(isSelected ? null : r.name)}
+                          onClick={() => setTatAsmRow(isSelected ? null : r.name)}
                           style={{
                             borderBottom: '1px solid #f1f5f9',
                             background: isSelected ? '#eff6ff' : undefined,
@@ -2315,7 +2330,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   {/* Total Summary Row for ASMs */}
                   <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
                     <td style={{ padding: '10px 12px', color: '#0f172a', background: '#f1f5f9', fontWeight: 800 }}>Total / Average</td>
-                    <td style={{ padding: '10px 10px', color: '#64748b', borderRight: '1px solid #e2e8f0' }}>{selectedBusmRow}</td>
+                    <td style={{ padding: '10px 10px', color: '#64748b', borderRight: '1px solid #e2e8f0' }}>{tatBusmRow}</td>
                     <td style={{ padding: '10px 10px', textAlign: 'right', color: '#0f172a', borderRight: '1px solid #e2e8f0', fontWeight: 800 }}>
                       {asmTotalWo.toLocaleString('en-IN')}
                     </td>
@@ -2328,7 +2343,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             </div>
 
             {/* TAT TABLE 3: ASP CENTER WISE TAT VELOCITY MATRIX */}
-            {selectedAsmRow && (
+            {tatAsmRow && (
               <div className="card-mock" style={{ position: 'relative', padding: '20px', marginTop: '16px' }}>
           <button
             onClick={scrollToTop}
@@ -2346,21 +2361,21 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
                   <div>
                     <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                      Table 3: Service Centre (ASP) TAT Closure Velocity Matrix (Filtered ASM: {selectedAsmRow})
+                      Table 3: Service Centre (ASP) TAT Closure Velocity Matrix (Filtered ASM: {tatAsmRow})
                     </h3>
                     <span style={{ fontSize: '12px', color: '#64748b' }}>
-                      Showing ASP Centres under {selectedAsmRow}
+                      Showing ASP Centres under {tatAsmRow}
                     </span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span style={{ background: '#f1f5f9', color: '#475569', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 700 }}>
-                      Count: {ALL_ASP_PERF_DATA.filter(a => a.asm === selectedAsmRow).length} ASPs
+                      Count: {ALL_ASP_PERF_DATA.filter(a => a.asm === tatAsmRow).length} ASPs
                     </span>
                     <button
-                      onClick={(e) => { e.stopPropagation(); setSelectedAsmRow(null); }}
+                      onClick={(e) => { e.stopPropagation(); setTatAsmRow(null); }}
                       style={{ background: '#f1f5f9', border: '1px solid #cbd5e1', padding: '4px 10px', borderRadius: '6px', fontSize: '11.5px', fontWeight: 700, color: '#475569', cursor: 'pointer' }}
                     >
-                      Clear ASM Filter ({selectedAsmRow})
+                      Clear ASM Filter ({tatAsmRow})
                     </button>
                   </div>
                 </div>
@@ -2380,14 +2395,14 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                       </tr>
                     </thead>
                     <tbody>
-                      {ALL_ASP_PERF_DATA.filter(a => a.asm === selectedAsmRow).length === 0 ? (
+                      {ALL_ASP_PERF_DATA.filter(a => a.asm === tatAsmRow).length === 0 ? (
                         <tr>
                           <td colSpan={8} style={{ padding: '16px', textAlign: 'center', color: '#64748b' }}>
-                            No ASP centers found for {selectedAsmRow}.
+                            No ASP centers found for {tatAsmRow}.
                           </td>
                         </tr>
                       ) : (
-                        ALL_ASP_PERF_DATA.filter(a => a.asm === selectedAsmRow).map((asp, i) => {
+                        ALL_ASP_PERF_DATA.filter(a => a.asm === tatAsmRow).map((asp, i) => {
                           const woVal = asp.wo || 0;
                           const tat1d = asp.tat || 0;
 
@@ -2586,11 +2601,11 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
         const cpcBusmRanks = getRankMap(cpcBusmList, (r: any) => r.busm, (r: any) => r.segments?.Total?.cpc, true);
         const cpcPctBusmRanks = getRankMap(cpcBusmList, (r: any) => r.busm, (r: any) => r.segments?.Total?.cpc_pct, true);
 
-        const cpcAsmList = (monthCpc.asm || []).filter((a: any) => a.busm === selectedBusmRow);
+        const cpcAsmList = (monthCpc.asm || []).filter((a: any) => a.busm === msCpcBusmRow);
         const cpcAsmRanks = getRankMap(cpcAsmList, (r: any) => r.asm, (r: any) => r.segments?.Total?.cpc, true);
         const cpcPctAsmRanks = getRankMap(cpcAsmList, (r: any) => r.asm, (r: any) => r.segments?.Total?.cpc_pct, true);
 
-        const cpcAspList = (monthCpc.asp || []).filter((a: any) => a.asm === selectedAsmRow);
+        const cpcAspList = (monthCpc.asp || []).filter((a: any) => a.asm === msCpcAsmRow);
         const cpcAspRanks = getRankMap(cpcAspList, (r: any) => r.code, (r: any) => r.segments?.Total?.cpc, true);
         const cpcPctAspRanks = getRankMap(cpcAspList, (r: any) => r.code, (r: any) => r.segments?.Total?.cpc_pct, true);
 
@@ -2598,20 +2613,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
         const npsBusmList = monthNps.busm || [];
         const npsBusmRanks = getRankMap(npsBusmList, (r: any) => r.busm, (r: any) => r.segments?.Total?.nps_pct, false);
 
-        const npsAsmList = (monthNps.asm || []).filter((a: any) => a.busm === selectedBusmRow);
+        const npsAsmList = (monthNps.asm || []).filter((a: any) => a.busm === msCpcBusmRow);
         const npsAsmRanks = getRankMap(npsAsmList, (r: any) => r.asm, (r: any) => r.segments?.Total?.nps_pct, false);
 
-        const npsAspList = (monthNps.asp || []).filter((a: any) => a.asm === selectedAsmRow);
+        const npsAspList = (monthNps.asp || []).filter((a: any) => a.asm === msCpcAsmRow);
         const npsAspRanks = getRankMap(npsAspList, (r: any) => r.code, (r: any) => r.segments?.Total?.nps_pct, false);
 
         // TAT Ranks (descending: higher TAT closure % is better)
         const tatBusmList = monthTat.busm || [];
         const tatBusmRanks = getRankMap(tatBusmList, (r: any) => r.busm, (r: any) => r.segments?.Total?.tat_pct, false);
 
-        const tatAsmList = (monthTat.asm || []).filter((a: any) => a.busm === selectedBusmRow);
+        const tatAsmList = (monthTat.asm || []).filter((a: any) => a.busm === msCpcBusmRow);
         const tatAsmRanks = getRankMap(tatAsmList, (r: any) => r.asm, (r: any) => r.segments?.Total?.tat_pct, false);
 
-        const tatAspList = (monthTat.asp || []).filter((a: any) => a.asm === selectedAsmRow);
+        const tatAspList = (monthTat.asp || []).filter((a: any) => a.asm === msCpcAsmRow);
         const tatAspRanks = getRankMap(tatAspList, (r: any) => r.code, (r: any) => r.segments?.Total?.tat_pct, false);
 
         return (
@@ -2664,12 +2679,12 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                     Average CPC (₹) and Total Expenditure (₹) across Price Brackets (&lt;8K, 8K-10K, 10K-15K, 15K-20K, &gt;20K). Click a BUSM row to view ASMs.
                   </span>
                 </div>
-                {selectedBusmRow && (
+                {msCpcBusmRow && (
                   <button
-                    onClick={() => { setSelectedBusmRow(null); setSelectedAsmRow(null); }}
+                    onClick={() => { setMsCpcBusmRow(null); setMsCpcAsmRow(null); }}
                     style={{ background: '#fffbeb', border: '1px solid #fcd34d', padding: '4px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 700, color: '#b45309', cursor: 'pointer' }}
                   >
-                    Clear BUSM Filter ({selectedBusmRow})
+                    Clear BUSM Filter ({msCpcBusmRow})
                   </button>
                 )}
               </div>
@@ -2689,13 +2704,13 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   </TableHeader>
                   <TableBody>
                     {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.cpc?.busm || []).map((r: any, i: number) => {
-                      const isSelected = selectedBusmRow === r.busm;
+                      const isSelected = msCpcBusmRow === r.busm;
                       return (
                         <TableRow
                           key={i}
                           onClick={() => {
-                            setSelectedBusmRow(isSelected ? null : r.busm);
-                            setSelectedAsmRow(null);
+                            setMsCpcBusmRow(isSelected ? null : r.busm);
+                            setMsCpcAsmRow(null);
                           }}
                           style={{
                             background: isSelected ? '#fffbeb' : undefined,
@@ -2781,13 +2796,13 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   </TableHeader>
                   <TableBody>
                     {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.cpc?.busm || []).map((r: any, i: number) => {
-                      const isSelected = selectedBusmRow === r.busm;
+                      const isSelected = msCpcBusmRow === r.busm;
                       return (
                         <TableRow
                           key={i}
                           onClick={() => {
-                            setSelectedBusmRow(isSelected ? null : r.busm);
-                            setSelectedAsmRow(null);
+                            setMsCpcBusmRow(isSelected ? null : r.busm);
+                            setMsCpcAsmRow(null);
                           }}
                           style={{
                             background: isSelected ? '#fffbeb' : undefined,
@@ -2833,7 +2848,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             </div>
 
             {/* TABLE 2: ASM LEVEL CPC BY PRICE BRACKETS (Revealed on BUSM Click) */}
-            {selectedBusmRow && (
+            {msCpcBusmRow && (
               <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px', borderLeft: '4px solid #d97706' }}>
           <button
             onClick={scrollToTop}
@@ -2850,20 +2865,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
           >↑ Top</button>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
                   <div>
-                    <div style={{ fontSize: '11px', color: '#d97706', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {selectedBusmRow}</div>
+                    <div style={{ fontSize: '11px', color: '#d97706', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {msCpcBusmRow}</div>
                     <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                      Supervisor (ASM) Combined CPC Breakdown (Filtered BUSM: {selectedBusmRow})
+                      Supervisor (ASM) Combined CPC Breakdown (Filtered BUSM: {msCpcBusmRow})
                     </h3>
                     <span style={{ fontSize: '12px', color: '#64748b' }}>
-                      Showing Area Managers (ASMs) under {selectedBusmRow} — click an ASM row to view ASP centres
+                      Showing Area Managers (ASMs) under {msCpcBusmRow} — click an ASM row to view ASP centres
                     </span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span style={{ background: '#fffbeb', color: '#b45309', border: '1px solid #fde68a', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 700 }}>
-                      Count: {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.cpc?.asm || []).filter((a: any) => a.busm === selectedBusmRow).length} ASMs
+                      Count: {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.cpc?.asm || []).filter((a: any) => a.busm === msCpcBusmRow).length} ASMs
                     </span>
                     <button
-                      onClick={() => { setSelectedBusmRow(null); setSelectedAsmRow(null); }}
+                      onClick={() => { setMsCpcBusmRow(null); setMsCpcAsmRow(null); }}
                       style={{ background: '#f1f5f9', border: '1px solid #cbd5e1', padding: '4px 10px', borderRadius: '6px', fontSize: '11.5px', fontWeight: 700, color: '#475569', cursor: 'pointer' }}
                     >
                       Clear BUSM Filter
@@ -2887,13 +2902,13 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                     </TableHeader>
                     <TableBody>
                       {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.cpc?.asm || [])
-                        .filter((a: any) => a.busm === selectedBusmRow)
+                        .filter((a: any) => a.busm === msCpcBusmRow)
                         .map((r: any, i: number) => {
-                          const isAsmSelected = selectedAsmRow === r.asm;
+                          const isAsmSelected = msCpcAsmRow === r.asm;
                           return (
                             <TableRow
                               key={i}
-                              onClick={() => setSelectedAsmRow(isAsmSelected ? null : r.asm)}
+                              onClick={() => setMsCpcAsmRow(isAsmSelected ? null : r.asm)}
                               style={{
                                 background: isAsmSelected ? '#f0fdf4' : undefined,
                                 cursor: 'pointer'
@@ -2927,7 +2942,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             )}
 
             {/* TABLE 3: ASP LEVEL CPC BY PRICE BRACKETS (Revealed on ASM Click) */}
-            {selectedAsmRow && (
+            {msCpcAsmRow && (
               <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px', borderLeft: '4px solid #7c3aed' }}>
           <button
             onClick={scrollToTop}
@@ -2944,23 +2959,23 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
           >↑ Top</button>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
                   <div>
-                    <div style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {selectedBusmRow} &gt; {selectedAsmRow}</div>
+                    <div style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {msCpcBusmRow} &gt; {msCpcAsmRow}</div>
                     <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                      ASP Centre Combined CPC Breakdown (Filtered ASM: {selectedAsmRow})
+                      ASP Centre Combined CPC Breakdown (Filtered ASM: {msCpcAsmRow})
                     </h3>
                     <span style={{ fontSize: '12px', color: '#64748b' }}>
-                      Showing ASP Centres reporting to {selectedAsmRow}
+                      Showing ASP Centres reporting to {msCpcAsmRow}
                     </span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span style={{ background: '#f5f3ff', color: '#7c3aed', border: '1px solid #ddd6fe', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 700 }}>
-                      Count: {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.cpc?.asp || []).filter((a: any) => a.asm === selectedAsmRow).length} ASPs
+                      Count: {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.cpc?.asp || []).filter((a: any) => a.asm === msCpcAsmRow).length} ASPs
                     </span>
                     <button
-                      onClick={() => setSelectedAsmRow(null)}
+                      onClick={() => setMsCpcAsmRow(null)}
                       style={{ background: '#f5f3ff', border: '1px solid #ddd6fe', padding: '4px 10px', borderRadius: '6px', fontSize: '11.5px', fontWeight: 700, color: '#7c3aed', cursor: 'pointer' }}
                     >
-                      Clear ASM Filter ({selectedAsmRow})
+                      Clear ASM Filter ({msCpcAsmRow})
                     </button>
                   </div>
                 </div>
@@ -2981,15 +2996,15 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.cpc?.asp || []).filter((a: any) => a.asm === selectedAsmRow).length === 0 ? (
+                      {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.cpc?.asp || []).filter((a: any) => a.asm === msCpcAsmRow).length === 0 ? (
                         <TableRow>
                           <TableCell colSpan={9} style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>
-                            No ASP centers found for {selectedAsmRow}.
+                            No ASP centers found for {msCpcAsmRow}.
                           </TableCell>
                         </TableRow>
                       ) : (
                         (MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.cpc?.asp || [])
-                          .filter((a: any) => a.asm === selectedAsmRow)
+                          .filter((a: any) => a.asm === msCpcAsmRow)
                           .map((r: any, i: number) => (
                             <TableRow key={r.code || i}>
                               <TableCell style={{ textAlign: 'left', fontFamily: 'monospace', color: '#7c3aed', fontWeight: 700 }}>{r.code}</TableCell>
@@ -3019,7 +3034,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             )}
 
             {/* TABLE 2B: ASM LEVEL CPC % BREAKDOWN (Revealed on BUSM Click) */}
-            {selectedBusmRow && (
+            {msCpcBusmRow && (
               <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px', borderLeft: '4px solid #b45309' }}>
           <button
             onClick={scrollToTop}
@@ -3036,9 +3051,9 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
           >↑ Top</button>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
                   <div>
-                    <div style={{ fontSize: '11px', color: '#b45309', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {selectedBusmRow} — CPC %</div>
+                    <div style={{ fontSize: '11px', color: '#b45309', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {msCpcBusmRow} — CPC %</div>
                     <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                      ASM CPC % Breakdown (Filtered BUSM: {selectedBusmRow})
+                      ASM CPC % Breakdown (Filtered BUSM: {msCpcBusmRow})
                     </h3>
                     <span style={{ fontSize: '12px', color: '#64748b' }}>
                       CPC % = (Sum of Part Value ÷ Sum of Handset Value) × 100 — click an ASM to view ASP centres
@@ -3046,10 +3061,10 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span style={{ background: '#fffbeb', color: '#b45309', border: '1px solid #fde68a', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 700 }}>
-                      Count: {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.cpc?.asm || []).filter((a: any) => a.busm === selectedBusmRow).length} ASMs
+                      Count: {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.cpc?.asm || []).filter((a: any) => a.busm === msCpcBusmRow).length} ASMs
                     </span>
                     <button
-                      onClick={() => { setSelectedBusmRow(null); setSelectedAsmRow(null); }}
+                      onClick={() => { setMsCpcBusmRow(null); setMsCpcAsmRow(null); }}
                       style={{ background: '#f1f5f9', border: '1px solid #cbd5e1', padding: '4px 10px', borderRadius: '6px', fontSize: '11.5px', fontWeight: 700, color: '#475569', cursor: 'pointer' }}
                     >
                       Clear BUSM Filter
@@ -3072,13 +3087,13 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                     </TableHeader>
                     <TableBody>
                       {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.cpc?.asm || [])
-                        .filter((a: any) => a.busm === selectedBusmRow)
+                        .filter((a: any) => a.busm === msCpcBusmRow)
                         .map((r: any, i: number) => {
-                          const isAsmSel = selectedAsmRow === r.asm;
+                          const isAsmSel = msCpcAsmRow === r.asm;
                           return (
                             <TableRow
                               key={i}
-                              onClick={() => setSelectedAsmRow(isAsmSel ? null : r.asm)}
+                              onClick={() => setMsCpcAsmRow(isAsmSel ? null : r.asm)}
                               style={{ background: isAsmSel ? '#f0fdf4' : undefined, cursor: 'pointer' }}
                             >
                               <TableCell style={{ textAlign: 'left', fontWeight: isAsmSel ? 800 : 700, color: isAsmSel ? '#15803d' : '#1e293b' }}>
@@ -3108,7 +3123,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             )}
 
             {/* TABLE 3B: ASP LEVEL CPC % BREAKDOWN (Revealed on ASM Click) */}
-            {selectedAsmRow && (
+            {msCpcAsmRow && (
               <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px', border: '2px dashed #b45309', borderRadius: '10px' }}>
           <button
             onClick={scrollToTop}
@@ -3125,9 +3140,9 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
           >↑ Top</button>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
                   <div>
-                    <div style={{ fontSize: '11px', color: '#b45309', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {selectedBusmRow} &gt; {selectedAsmRow} — CPC %</div>
+                    <div style={{ fontSize: '11px', color: '#b45309', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {msCpcBusmRow} &gt; {msCpcAsmRow} — CPC %</div>
                     <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                      ASP Centre CPC % Breakdown (Filtered ASM: {selectedAsmRow})
+                      ASP Centre CPC % Breakdown (Filtered ASM: {msCpcAsmRow})
                     </h3>
                     <span style={{ fontSize: '12px', color: '#64748b' }}>
                       CPC % = (Sum of Part Value ÷ Sum of Handset Value) × 100 for each ASP Centre by Price Bracket
@@ -3135,13 +3150,13 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span style={{ background: '#fffbeb', color: '#b45309', border: '1px solid #fde68a', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 700 }}>
-                      Count: {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.cpc?.asp || []).filter((a: any) => a.asm === selectedAsmRow).length} ASPs
+                      Count: {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.cpc?.asp || []).filter((a: any) => a.asm === msCpcAsmRow).length} ASPs
                     </span>
                     <button
-                      onClick={() => setSelectedAsmRow(null)}
+                      onClick={() => setMsCpcAsmRow(null)}
                       style={{ background: '#fffbeb', border: '1px solid #fde68a', padding: '4px 10px', borderRadius: '6px', fontSize: '11.5px', fontWeight: 700, color: '#b45309', cursor: 'pointer' }}
                     >
-                      Clear ASM Filter ({selectedAsmRow})
+                      Clear ASM Filter ({msCpcAsmRow})
                     </button>
                   </div>
                 </div>
@@ -3161,15 +3176,15 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.cpc?.asp || []).filter((a: any) => a.asm === selectedAsmRow).length === 0 ? (
+                      {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.cpc?.asp || []).filter((a: any) => a.asm === msCpcAsmRow).length === 0 ? (
                         <TableRow>
                           <TableCell colSpan={9} style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>
-                            No ASP centers found for {selectedAsmRow}.
+                            No ASP centers found for {msCpcAsmRow}.
                           </TableCell>
                         </TableRow>
                       ) : (
                         (MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.cpc?.asp || [])
-                          .filter((a: any) => a.asm === selectedAsmRow)
+                          .filter((a: any) => a.asm === msCpcAsmRow)
                           .map((r: any, i: number) => (
                             <TableRow key={r.code || i}>
                               <TableCell style={{ textAlign: 'left', fontFamily: 'monospace', color: '#7c3aed', fontWeight: 700 }}>{r.code}</TableCell>
@@ -3226,12 +3241,12 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                     Net Promoter Score (%) across Price Brackets. Click a BUSM row to view ASMs.
                   </span>
                 </div>
-                {selectedBusmRow && (
+                {msNpsBusmRow && (
                   <button
-                    onClick={() => { setSelectedBusmRow(null); setSelectedAsmRow(null); }}
+                    onClick={() => { setMsNpsBusmRow(null); setMsNpsAsmRow(null); }}
                     style={{ background: '#f5f3ff', border: '1px solid #ddd6fe', padding: '4px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 700, color: '#7c3aed', cursor: 'pointer' }}
                   >
-                    Clear BUSM Filter ({selectedBusmRow})
+                    Clear BUSM Filter ({msNpsBusmRow})
                   </button>
                 )}
               </div>
@@ -3251,13 +3266,13 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   </TableHeader>
                   <TableBody>
                     {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.nps?.busm || []).map((r: any, i: number) => {
-                      const isSelected = selectedBusmRow === r.busm;
+                      const isSelected = msNpsBusmRow === r.busm;
                       return (
                         <TableRow
                           key={i}
                           onClick={() => {
-                            setSelectedBusmRow(isSelected ? null : r.busm);
-                            setSelectedAsmRow(null);
+                            setMsNpsBusmRow(isSelected ? null : r.busm);
+                            setMsNpsAsmRow(null);
                           }}
                           style={{
                             background: isSelected ? '#f5f3ff' : undefined,
@@ -3302,7 +3317,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             </div>
 
             {/* TABLE 2: ASM LEVEL NPS BY PRICE BRACKETS (Revealed on BUSM Click) */}
-            {selectedBusmRow && (
+            {msNpsBusmRow && (
               <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px', borderLeft: '4px solid #7c3aed' }}>
           <button
             onClick={scrollToTop}
@@ -3319,20 +3334,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
           >↑ Top</button>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
                   <div>
-                    <div style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {selectedBusmRow}</div>
+                    <div style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {msNpsBusmRow}</div>
                     <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                      Supervisor (ASM) NPS Score Matrix (Filtered BUSM: {selectedBusmRow})
+                      Supervisor (ASM) NPS Score Matrix (Filtered BUSM: {msNpsBusmRow})
                     </h3>
                     <span style={{ fontSize: '12px', color: '#64748b' }}>
-                      Showing Area Managers (ASMs) under {selectedBusmRow} — click an ASM row to view ASP centres
+                      Showing Area Managers (ASMs) under {msNpsBusmRow} — click an ASM row to view ASP centres
                     </span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span style={{ background: '#f5f3ff', color: '#7c3aed', border: '1px solid #ddd6fe', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 700 }}>
-                      Count: {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.nps?.asm || []).filter((a: any) => a.busm === selectedBusmRow).length} ASMs
+                      Count: {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.nps?.asm || []).filter((a: any) => a.busm === msNpsBusmRow).length} ASMs
                     </span>
                     <button
-                      onClick={() => { setSelectedBusmRow(null); setSelectedAsmRow(null); }}
+                      onClick={() => { setMsNpsBusmRow(null); setMsNpsAsmRow(null); }}
                       style={{ background: '#f1f5f9', border: '1px solid #cbd5e1', padding: '4px 10px', borderRadius: '6px', fontSize: '11.5px', fontWeight: 700, color: '#475569', cursor: 'pointer' }}
                     >
                       Clear BUSM Filter
@@ -3356,13 +3371,13 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                     </TableHeader>
                     <TableBody>
                       {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.nps?.asm || [])
-                        .filter((a: any) => a.busm === selectedBusmRow)
+                        .filter((a: any) => a.busm === msNpsBusmRow)
                         .map((r: any, i: number) => {
-                          const isAsmSelected = selectedAsmRow === r.asm;
+                          const isAsmSelected = msNpsAsmRow === r.asm;
                           return (
                             <TableRow
                               key={i}
-                              onClick={() => setSelectedAsmRow(isAsmSelected ? null : r.asm)}
+                              onClick={() => setMsNpsAsmRow(isAsmSelected ? null : r.asm)}
                               style={{
                                 background: isAsmSelected ? '#f5f3ff' : undefined,
                                 cursor: 'pointer'
@@ -3395,7 +3410,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             )}
 
             {/* TABLE 3: ASP LEVEL NPS BY PRICE BRACKETS (Revealed on ASM Click) */}
-            {selectedAsmRow && (
+            {msNpsAsmRow && (
               <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px', borderLeft: '4px solid #7c3aed' }}>
           <button
             onClick={scrollToTop}
@@ -3412,23 +3427,23 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
           >↑ Top</button>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
                   <div>
-                    <div style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {selectedBusmRow} &gt; {selectedAsmRow}</div>
+                    <div style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {msNpsBusmRow} &gt; {msNpsAsmRow}</div>
                     <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                      ASP Centre NPS Score Matrix (Filtered ASM: {selectedAsmRow})
+                      ASP Centre NPS Score Matrix (Filtered ASM: {msNpsAsmRow})
                     </h3>
                     <span style={{ fontSize: '12px', color: '#64748b' }}>
-                      Showing ASP Centres reporting to {selectedAsmRow}
+                      Showing ASP Centres reporting to {msNpsAsmRow}
                     </span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span style={{ background: '#f5f3ff', color: '#7c3aed', border: '1px solid #ddd6fe', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 700 }}>
-                      Count: {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.nps?.asp || []).filter((a: any) => a.asm === selectedAsmRow).length} ASPs
+                      Count: {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.nps?.asp || []).filter((a: any) => a.asm === msNpsAsmRow).length} ASPs
                     </span>
                     <button
-                      onClick={() => setSelectedAsmRow(null)}
+                      onClick={() => setMsNpsAsmRow(null)}
                       style={{ background: '#f5f3ff', border: '1px solid #ddd6fe', padding: '4px 10px', borderRadius: '6px', fontSize: '11.5px', fontWeight: 700, color: '#7c3aed', cursor: 'pointer' }}
                     >
-                      Clear ASM Filter ({selectedAsmRow})
+                      Clear ASM Filter ({msNpsAsmRow})
                     </button>
                   </div>
                 </div>
@@ -3449,15 +3464,15 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.nps?.asp || []).filter((a: any) => a.asm === selectedAsmRow).length === 0 ? (
+                      {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.nps?.asp || []).filter((a: any) => a.asm === msNpsAsmRow).length === 0 ? (
                         <TableRow>
                           <TableCell colSpan={9} style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>
-                            No ASP centers found for {selectedAsmRow}.
+                            No ASP centers found for {msNpsAsmRow}.
                           </TableCell>
                         </TableRow>
                       ) : (
                         (MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.nps?.asp || [])
-                          .filter((a: any) => a.asm === selectedAsmRow)
+                          .filter((a: any) => a.asm === msNpsAsmRow)
                           .map((r: any, i: number) => (
                             <TableRow key={r.code || i}>
                               <TableCell style={{ textAlign: 'left', fontFamily: 'monospace', color: '#7c3aed', fontWeight: 700 }}>{r.code}</TableCell>
@@ -3519,12 +3534,12 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                     1-Day TAT Closure (%) and Total Work Orders across Price Brackets. Click a BUSM row to view ASMs.
                   </span>
                 </div>
-                {selectedBusmRow && (
+                {msTatBusmRow && (
                   <button
-                    onClick={() => { setSelectedBusmRow(null); setSelectedAsmRow(null); }}
+                    onClick={() => { setMsTatBusmRow(null); setMsTatAsmRow(null); }}
                     style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', padding: '4px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 700, color: '#15803d', cursor: 'pointer' }}
                   >
-                    Clear BUSM Filter ({selectedBusmRow})
+                    Clear BUSM Filter ({msTatBusmRow})
                   </button>
                 )}
               </div>
@@ -3544,13 +3559,13 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   </TableHeader>
                   <TableBody>
                     {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.tat?.busm || []).map((r: any, i: number) => {
-                      const isSelected = selectedBusmRow === r.busm;
+                      const isSelected = msTatBusmRow === r.busm;
                       return (
                         <TableRow
                           key={i}
                           onClick={() => {
-                            setSelectedBusmRow(isSelected ? null : r.busm);
-                            setSelectedAsmRow(null);
+                            setMsTatBusmRow(isSelected ? null : r.busm);
+                            setMsTatAsmRow(null);
                           }}
                           style={{
                             background: isSelected ? '#f0fdf4' : undefined,
@@ -3596,7 +3611,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             </div>
 
             {/* TABLE 2: ASM LEVEL TAT BY PRICE BRACKETS (Revealed on BUSM Click) */}
-            {selectedBusmRow && (
+            {msTatBusmRow && (
               <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px', borderLeft: '4px solid #16a34a' }}>
           <button
             onClick={scrollToTop}
@@ -3613,20 +3628,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
           >↑ Top</button>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
                   <div>
-                    <div style={{ fontSize: '11px', color: '#16a34a', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {selectedBusmRow}</div>
+                    <div style={{ fontSize: '11px', color: '#16a34a', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {msTatBusmRow}</div>
                     <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                      Supervisor (ASM) 1-Day Repair Closure TAT % (Filtered BUSM: {selectedBusmRow})
+                      Supervisor (ASM) 1-Day Repair Closure TAT % (Filtered BUSM: {msTatBusmRow})
                     </h3>
                     <span style={{ fontSize: '12px', color: '#64748b' }}>
-                      Showing Area Managers (ASMs) under {selectedBusmRow} — click an ASM row to view ASP centres
+                      Showing Area Managers (ASMs) under {msTatBusmRow} — click an ASM row to view ASP centres
                     </span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span style={{ background: '#f0fdf4', color: '#15803d', border: '1px solid #bbf7d0', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 700 }}>
-                      Count: {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.tat?.asm || []).filter((a: any) => a.busm === selectedBusmRow).length} ASMs
+                      Count: {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.tat?.asm || []).filter((a: any) => a.busm === msTatBusmRow).length} ASMs
                     </span>
                     <button
-                      onClick={() => { setSelectedBusmRow(null); setSelectedAsmRow(null); }}
+                      onClick={() => { setMsTatBusmRow(null); setMsTatAsmRow(null); }}
                       style={{ background: '#f1f5f9', border: '1px solid #cbd5e1', padding: '4px 10px', borderRadius: '6px', fontSize: '11.5px', fontWeight: 700, color: '#475569', cursor: 'pointer' }}
                     >
                       Clear BUSM Filter
@@ -3650,13 +3665,13 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                     </TableHeader>
                     <TableBody>
                       {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.tat?.asm || [])
-                        .filter((a: any) => a.busm === selectedBusmRow)
+                        .filter((a: any) => a.busm === msTatBusmRow)
                         .map((r: any, i: number) => {
-                          const isAsmSelected = selectedAsmRow === r.asm;
+                          const isAsmSelected = msTatAsmRow === r.asm;
                           return (
                             <TableRow
                               key={i}
-                              onClick={() => setSelectedAsmRow(isAsmSelected ? null : r.asm)}
+                              onClick={() => setMsTatAsmRow(isAsmSelected ? null : r.asm)}
                               style={{
                                 background: isAsmSelected ? '#f0fdf4' : undefined,
                                 cursor: 'pointer'
@@ -3690,7 +3705,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             )}
 
             {/* TABLE 3: ASP LEVEL TAT BY PRICE BRACKETS (Revealed on ASM Click) */}
-            {selectedAsmRow && (
+            {msTatAsmRow && (
               <div className="card-mock" style={{ position: 'relative', padding: '20px', marginBottom: '24px', borderLeft: '4px solid #16a34a' }}>
           <button
             onClick={scrollToTop}
@@ -3707,23 +3722,23 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
           >↑ Top</button>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
                   <div>
-                    <div style={{ fontSize: '11px', color: '#16a34a', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {selectedBusmRow} &gt; {selectedAsmRow}</div>
+                    <div style={{ fontSize: '11px', color: '#16a34a', fontWeight: 700, marginBottom: '2px' }}>▶ National &gt; {msTatBusmRow} &gt; {msTatAsmRow}</div>
                     <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                      ASP Centre 1-Day Repair Closure TAT % (Filtered ASM: {selectedAsmRow})
+                      ASP Centre 1-Day Repair Closure TAT % (Filtered ASM: {msTatAsmRow})
                     </h3>
                     <span style={{ fontSize: '12px', color: '#64748b' }}>
-                      Showing ASP Centres reporting to {selectedAsmRow}
+                      Showing ASP Centres reporting to {msTatAsmRow}
                     </span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span style={{ background: '#f0fdf4', color: '#15803d', border: '1px solid #bbf7d0', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 700 }}>
-                      Count: {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.tat?.asp || []).filter((a: any) => a.asm === selectedAsmRow).length} ASPs
+                      Count: {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.tat?.asp || []).filter((a: any) => a.asm === msTatAsmRow).length} ASPs
                     </span>
                     <button
-                      onClick={() => setSelectedAsmRow(null)}
+                      onClick={() => setMsTatAsmRow(null)}
                       style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', padding: '4px 10px', borderRadius: '6px', fontSize: '11.5px', fontWeight: 700, color: '#15803d', cursor: 'pointer' }}
                     >
-                      Clear ASM Filter ({selectedAsmRow})
+                      Clear ASM Filter ({msTatAsmRow})
                     </button>
                   </div>
                 </div>
@@ -3744,15 +3759,15 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.tat?.asp || []).filter((a: any) => a.asm === selectedAsmRow).length === 0 ? (
+                      {(MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.tat?.asp || []).filter((a: any) => a.asm === msTatAsmRow).length === 0 ? (
                         <TableRow>
                           <TableCell colSpan={9} style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>
-                            No ASP centers found for {selectedAsmRow}.
+                            No ASP centers found for {msTatAsmRow}.
                           </TableCell>
                         </TableRow>
                       ) : (
                         (MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.tat?.asp || [])
-                          .filter((a: any) => a.asm === selectedAsmRow)
+                          .filter((a: any) => a.asm === msTatAsmRow)
                           .map((r: any, i: number) => (
                             <TableRow key={r.code || i}>
                               <TableCell style={{ textAlign: 'left', fontFamily: 'monospace', color: '#16a34a', fontWeight: 700 }}>{r.code}</TableCell>
@@ -3782,7 +3797,8 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             )}
           </div>
         </div>
-      )()}
+        );
+      })()}
 
 
       {/* Executive Footnote */}
