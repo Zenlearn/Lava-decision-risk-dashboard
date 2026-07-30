@@ -6,6 +6,7 @@ import { ALL_ASP_PERF_DATA } from '../constants/aspData';
 import { DYNAMIC_CPC_DATA_BY_MONTH } from '../constants/cpcDataDynamic';
 import { DYNAMIC_SAH_DATA_BY_MONTH } from '../constants/sahDataDynamic';
 import { MODEL_SEGMENT_DATA_BY_MONTH } from '../constants/modelSegmentDataDynamic';
+import { ALL_ASP_NPS_DATA } from '../constants/npsAspDataDynamic';
 
 interface TabOrgKPIsProps {
   data: any;
@@ -344,18 +345,9 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
   const asmAvgDiag = filteredAsmList.length > 0 ? Math.round((filteredAsmList.reduce((sum, a) => sum + (a.diag || 0), 0) / filteredAsmList.length) * 10) / 10 : 0;
   const asmAvgCag = filteredAsmList.length > 0 ? Math.round((filteredAsmList.reduce((sum, a) => sum + (a.cag || 0), 0) / filteredAsmList.length) * 10) / 10 : 0;
 
-  const topAspNpsData = [
-    { code: 'ASP-1102652', name: 'CELL CARE SERVICES', asm: 'Abhishek Kumar', busm: 'Shivaprasad P U', total: 27, rr: '55.6%', d: '6.7%', p: '26.7%', pr: '66.7%', nps: '60.0%' },
-    { code: 'ASP-1102700', name: 'SAI SHOPEE', asm: 'Sushil R. Turkar', busm: 'Shivaprasad P U', total: 38, rr: '50.0%', d: '5.3%', p: '10.5%', pr: '84.2%', nps: '78.9%' },
-    { code: 'ASP-1103754', name: 'EXCELLENT SERVICES', asm: 'Abhishek Kumar', busm: 'Shivaprasad P U', total: 28, rr: '35.7%', d: '0.0%', p: '20.0%', pr: '80.0%', nps: '80.0%' },
-    { code: 'ASP-1102679', name: 'DRISHTI TECHNOLOGY', asm: 'Alpesh Rabari', busm: 'Rajesh Limbachia', total: 44, rr: '63.6%', d: '9.1%', p: '18.2%', pr: '72.7%', nps: '63.6%' },
-    { code: 'ASP-1103613', name: 'SMART SOLUTION', asm: 'Anisur Rehman Mullick', busm: 'Jitesh S Rath', total: 82, rr: '48.8%', d: '15.0%', p: '17.5%', pr: '67.5%', nps: '52.5%' },
-    { code: 'ASP-1103679', name: 'M/S NEW NOVELTY', asm: 'Firoj Alam', busm: 'Jitesh S Rath', total: 64, rr: '56.3%', d: '8.3%', p: '13.9%', pr: '77.8%', nps: '69.4%' },
-    { code: 'ASP-1102761', name: 'TECH SOLUTION', asm: 'Gajender Chandel', busm: 'Sukhbir Singh', total: 42, rr: '52.4%', d: '9.1%', p: '13.6%', pr: '77.3%', nps: '68.2%' },
-    { code: 'ASP-1102682', name: 'RAINBOW COMMUNICATION', asm: 'Hem Chandra Joshi', busm: 'Sukhbir Singh', total: 58, rr: '60.3%', d: '5.7%', p: '11.4%', pr: '82.9%', nps: '77.1%' },
-    { code: 'ASP-1101746', name: 'ABHISHEK SALES', asm: 'Nafis Ahmed', busm: 'Sukhbir Singh', total: 94, rr: '46.8%', d: '11.4%', p: '9.1%', pr: '79.5%', nps: '68.2%' },
-    { code: 'ASP-1102180', name: 'Q COM', asm: 'Pushpendra Singh', busm: 'Rajesh Limbachia', total: 76, rr: '55.3%', d: '7.1%', p: '7.1%', pr: '85.7%', nps: '78.6%' },
-  ];
+  // Full ASP-level NPS breakdown (Jun 2026 survey) — every ASP with survey
+  // coverage, not just a curated top-10 sample. See npsAspDataDynamic.ts.
+  const topAspNpsData = ALL_ASP_NPS_DATA;
 
   // Combined ASP performance dataset (NPS actuals + TAT/SAH/FTFR/CSAT from Lava Delivered Master Data)
   // TODO: Replace with API-driven data when ASP-level performance data is exposed from the backend
@@ -1873,7 +1865,8 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                 };
                 const wavgNps = () => {
                   if (totSurveys === 0) return '+0';
-                  const ws = src.reduce((s: number, r: any) => s + ((r.nps || 0) * (r.total || 0)), 0);
+                  const ws = src.reduce((s: number, r: any) =>
+                    s + (parseFloat((r.nps || '0').replace('%', '')) * (r.total || 0)), 0);
                   return `+${(ws / totSurveys).toFixed(1)}`;
                 };
                 const wavgRr = () => {
