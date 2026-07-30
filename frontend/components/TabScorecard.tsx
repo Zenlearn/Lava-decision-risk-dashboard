@@ -17,17 +17,6 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
   const [fb, setFb] = useState<string>(''); // Filter by BUSM (cohort mode)
   const [fa, setFa] = useState<string>(''); // Filter by ASM (cohort mode)
   const [fm, setFm] = useState<string>(''); // Filter by month
-  const [thrDrawer, setThrDrawer] = useState<{
-    open: boolean;
-    title: string;
-    overStrict: any[];
-    overP90: any[];
-  }>({
-    open: false,
-    title: '',
-    overStrict: [],
-    overP90: [],
-  });
 
   return (
     <div className="view-mock on">
@@ -102,28 +91,43 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
               return <div className="card-mock">No data available for this selection.</div>;
             }
 
+            // Weighted (by WO) average, null-safe — a metric with no data for
+            // some months just doesn't contribute to that average instead of
+            // corrupting it.
+            const wavg = (key: 'process' | 'skill' | 'audit' | 'overall') => {
+              const valid = filteredRows.filter((r: any) => r[key] !== null && r[key] !== undefined);
+              const w = valid.reduce((sum: number, r: any) => sum + r.wo, 0);
+              return w > 0 ? valid.reduce((sum: number, r: any) => sum + r[key] * r.wo, 0) / w : null;
+            };
             const totalWo = filteredRows.reduce((sum: number, r: any) => sum + r.wo, 0);
-            const processAvg = filteredRows.reduce((sum: number, r: any) => sum + r.process * r.wo, 0) / totalWo;
-            const skillAvg = filteredRows.reduce((sum: number, r: any) => sum + r.skill * r.wo, 0) / totalWo;
-            const auditAvg = filteredRows.reduce((sum: number, r: any) => sum + r.audit * r.wo, 0) / totalWo;
+            const processAvg = wavg('process');
+            const skillAvg = wavg('skill');
+            const auditAvg = wavg('audit');
+            const overallAvg = wavg('overall');
+            const fmt1 = (v: number | null) => (v === null ? '—' : v.toFixed(1));
 
             return (
               <>
-                <div className="grid-mock k3">
-                  <div className="card-mock kpi-mock">
-                    <h3>Process Score (Avg)</h3>
-                    <div className="big">{processAvg.toFixed(1)}</div>
+                <div className="grid-mock k4">
+                  <div className="card-mock kpi-mock" style={{ borderTop: '3px solid #0f172a' }}>
+                    <h3>Overall Score (Avg)</h3>
+                    <div className="big">{fmt1(overallAvg)}</div>
                     <div className="sub">across period, {totalWo} WO</div>
                   </div>
                   <div className="card-mock kpi-mock">
                     <h3>Skill Score (Avg)</h3>
-                    <div className="big">{skillAvg.toFixed(1)}</div>
-                    <div className="sub">across period, {totalWo} WO</div>
+                    <div className="big">{fmt1(skillAvg)}</div>
+                    <div className="sub">FTFR, MTTR, CPC, repeat-rate</div>
+                  </div>
+                  <div className="card-mock kpi-mock">
+                    <h3>Process Score (Avg)</h3>
+                    <div className="big">{fmt1(processAvg)}</div>
+                    <div className="sub">TAT, S@H, MSM</div>
                   </div>
                   <div className="card-mock kpi-mock">
                     <h3>Audit Score (Avg)</h3>
-                    <div className="big">{auditAvg.toFixed(1)}</div>
-                    <div className="sub">across period, {totalWo} WO</div>
+                    <div className="big">{fmt1(auditAvg)}</div>
+                    <div className="sub">Compliance, NPS, leakage flags</div>
                   </div>
                 </div>
 
@@ -136,11 +140,12 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
                           <LineChart data={actRows}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--line)" />
                             <XAxis dataKey="month" tickLine={false} />
-                            <YAxis domain={[70, 100]} tickLine={false} />
+                            <YAxis domain={[0, 100]} tickLine={false} />
                             <Tooltip />
-                            <Line type="monotone" dataKey="process" name="Process Score" stroke="#4E67EB" strokeWidth={3} />
-                            <Line type="monotone" dataKey="skill" name="Skill Score" stroke="#294D89" strokeWidth={3} />
-                            <Line type="monotone" dataKey="audit" name="Audit Score" stroke="#C0392B" strokeWidth={3} />
+                            <Line type="monotone" dataKey="overall" name="Overall Score" stroke="#0f172a" strokeWidth={4} />
+                            <Line type="monotone" dataKey="process" name="Process Score" stroke="#4E67EB" strokeWidth={2} />
+                            <Line type="monotone" dataKey="skill" name="Skill Score" stroke="#294D89" strokeWidth={2} />
+                            <Line type="monotone" dataKey="audit" name="Audit Score" stroke="#C0392B" strokeWidth={2} />
                           </LineChart>
                         </ResponsiveContainer>
                       )}
@@ -230,14 +235,23 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
               groupedActors.set(r.actor, list);
             });
 
+            // Null-safe, WO-weighted average — a score missing for some months
+            // (e.g. no MSM data yet) just doesn't drag the average toward 0.
+            const wavgList = (list: any[], key: 'process' | 'skill' | 'audit' | 'overall'): number | null => {
+              const valid = list.filter((r) => r[key] !== null && r[key] !== undefined);
+              const w = valid.reduce((s, r) => s + r.wo, 0);
+              return w > 0 ? valid.reduce((s, r) => s + r[key] * r.wo, 0) / w : null;
+            };
+
             const aggData = Array.from(groupedActors.entries()).map(([actName, list]) => {
               const totalWo = list.reduce((sum, r) => sum + r.wo, 0);
               return {
                 actor: actName,
                 wo: totalWo,
-                process: list.reduce((sum, r) => sum + r.process * r.wo, 0) / totalWo,
-                skill: list.reduce((sum, r) => sum + r.skill * r.wo, 0) / totalWo,
-                audit: list.reduce((sum, r) => sum + r.audit * r.wo, 0) / totalWo,
+                process: wavgList(list, 'process'),
+                skill: wavgList(list, 'skill'),
+                audit: wavgList(list, 'audit'),
+                overall: wavgList(list, 'overall'),
                 ghost: list.reduce((sum, r) => sum + r.ghost, 0),
                 home_board: list.reduce((sum, r) => sum + r.home_board, 0),
                 cross: list.reduce((sum, r) => sum + r.cross, 0),
@@ -247,19 +261,19 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
                 doa: list.reduce((sum, r) => sum + r.doa, 0),
                 conf: list.some((r) => r.conf === 'LOW') ? 'LOW' : 'OK',
               };
-            }).sort((x, y) => x.audit - y.audit);
+            }).sort((x, y) => (x.overall ?? 0) - (y.overall ?? 0));
 
             if (aggData.length === 0) {
               return <div className="card-mock">No comparative cohort data matching active filters.</div>;
             }
 
-            const totalCohortWo = aggData.reduce((sum, r) => sum + r.wo, 0);
-            const wAvgProcess = aggData.reduce((sum, r) => sum + r.process * r.wo, 0) / totalCohortWo;
-            const wAvgSkill = aggData.reduce((sum, r) => sum + r.skill * r.wo, 0) / totalCohortWo;
-            const wAvgAudit = aggData.reduce((sum, r) => sum + r.audit * r.wo, 0) / totalCohortWo;
+            const wAvgProcess = wavgList(aggData, 'process');
+            const wAvgSkill = wavgList(aggData, 'skill');
+            const wAvgAudit = wavgList(aggData, 'audit');
+            const wAvgOverall = wavgList(aggData, 'overall');
 
             const rankDataSlice = aggData.slice(0, 12);
-            const minScore = Math.min(...rankDataSlice.map((r) => r.audit));
+            const minScore = Math.min(...rankDataSlice.map((r) => r.overall ?? 0));
 
             return (
               <>
@@ -270,17 +284,19 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
                       {isMounted && (
                         <ResponsiveContainer width="100%" height="100%">
                           <BarChart data={[
-                            { name: 'Process', score: wAvgProcess },
-                            { name: 'Skill', score: wAvgSkill },
-                            { name: 'Audit', score: wAvgAudit }
+                            { name: 'Overall', score: wAvgOverall ?? 0 },
+                            { name: 'Skill', score: wAvgSkill ?? 0 },
+                            { name: 'Process', score: wAvgProcess ?? 0 },
+                            { name: 'Audit', score: wAvgAudit ?? 0 }
                           ]}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--line)" />
                             <XAxis dataKey="name" tickLine={false} />
-                            <YAxis domain={[75, 100]} tickLine={false} />
+                            <YAxis domain={[0, 100]} tickLine={false} />
                             <Tooltip />
                             <Bar dataKey="score" radius={[4, 4, 0, 0]}>
-                              <Cell fill="#4E67EB" />
+                              <Cell fill="#0f172a" />
                               <Cell fill="#294D89" />
+                              <Cell fill="#4E67EB" />
                               <Cell fill="#C0392B" />
                             </Bar>
                           </BarChart>
@@ -290,7 +306,7 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
                   </div>
 
                   <div className="card-mock">
-                    <h3>Worst 12 Outliers by Audit Score</h3>
+                    <h3>Worst 12 Outliers by Overall Score</h3>
                     <div className="chart-box-mock">
                       {isMounted && (
                         <ResponsiveContainer width="100%" height="100%">
@@ -299,9 +315,10 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
                             <XAxis type="number" domain={[Math.max(0, Math.floor(minScore - 3)), 100]} tickLine={false} />
                             <YAxis type="category" dataKey="actor" tickLine={false} width={130} />
                             <Tooltip />
-                            <Bar dataKey="audit" radius={[0, 4, 4, 0]}>
+                            <Bar dataKey="overall" radius={[0, 4, 4, 0]}>
                               {rankDataSlice.map((entry: any, index: number) => {
-                                const fill = entry.audit >= 95 ? '#1F9E6B' : entry.audit >= 90 ? '#D98A1F' : '#C0392B';
+                                const v = entry.overall ?? 0;
+                                const fill = v >= 70 ? '#1F9E6B' : v >= 50 ? '#D98A1F' : '#C0392B';
                                 return <Cell key={`cell-${index}`} fill={fill} />;
                               })}
                             </Bar>
@@ -319,8 +336,9 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
                       <thead>
                         <tr>
                           <th>{scLevel.toUpperCase()} Name</th>
-                          <th>Process</th>
+                          <th>Overall</th>
                           <th>Skill</th>
+                          <th>Process</th>
                           <th>Audit</th>
                           <th>WO Count</th>
                           <th>Same-day Swap</th>
@@ -334,23 +352,29 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
                         </tr>
                       </thead>
                       <tbody>
-                        {aggData.map((r, idx) => (
-                          <tr key={idx}>
-                            <td><b>{r.actor}</b></td>
-                            <td><span className={`score-pill ${r.process >= 95 ? 's-good' : r.process >= 90 ? 's-warn' : 's-bad'}`}>{r.process.toFixed(1)}</span></td>
-                            <td><span className={`score-pill ${r.skill >= 95 ? 's-good' : r.skill >= 90 ? 's-warn' : 's-bad'}`}>{r.skill.toFixed(1)}</span></td>
-                            <td><span className={`score-pill ${r.audit >= 95 ? 's-good' : r.audit >= 90 ? 's-warn' : 's-bad'}`}>{r.audit.toFixed(1)}</span></td>
-                            <td>{r.wo.toLocaleString('en-IN')}</td>
-                            <td>{r.ghost}</td>
-                            <td>{r.home_board}</td>
-                            <td>{r.cross}</td>
-                            <td>{r.bounce}</td>
-                            <td>{r.mismatch}</td>
-                            <td>{r.detractor}</td>
-                            <td>{r.doa}</td>
-                            <td>{r.conf === 'LOW' ? <span style={{ color: 'var(--bad)', fontWeight: 700 }}>LOW</span> : 'OK'}</td>
-                          </tr>
-                        ))}
+                        {aggData.map((r, idx) => {
+                          const pill = (v: number | null) => v === null
+                            ? <span className="score-pill">—</span>
+                            : <span className={`score-pill ${v >= 70 ? 's-good' : v >= 50 ? 's-warn' : 's-bad'}`}>{v.toFixed(1)}</span>;
+                          return (
+                            <tr key={idx}>
+                              <td><b>{r.actor}</b></td>
+                              <td>{pill(r.overall)}</td>
+                              <td>{pill(r.skill)}</td>
+                              <td>{pill(r.process)}</td>
+                              <td>{pill(r.audit)}</td>
+                              <td>{r.wo.toLocaleString('en-IN')}</td>
+                              <td>{r.ghost}</td>
+                              <td>{r.home_board}</td>
+                              <td>{r.cross}</td>
+                              <td>{r.bounce}</td>
+                              <td>{r.mismatch}</td>
+                              <td>{r.detractor}</td>
+                              <td>{r.doa}</td>
+                              <td>{r.conf === 'LOW' ? <span style={{ color: 'var(--bad)', fontWeight: 700 }}>LOW</span> : 'OK'}</td>
+                            </tr>
+                          );
+                        })}
                         {/* Highlighted Total Summary Row */}
                         {(() => {
                           const totWo = aggData.reduce((sum, r) => sum + r.wo, 0);
@@ -361,15 +385,18 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
                           const totMismatch = aggData.reduce((sum, r) => sum + r.mismatch, 0);
                           const totDetractor = aggData.reduce((sum, r) => sum + r.detractor, 0);
                           const totDoa = aggData.reduce((sum, r) => sum + r.doa, 0);
-                          const avgProc = totWo > 0 ? (aggData.reduce((sum, r) => sum + r.process * r.wo, 0) / totWo) : 0;
-                          const avgSk = totWo > 0 ? (aggData.reduce((sum, r) => sum + r.skill * r.wo, 0) / totWo) : 0;
-                          const avgAud = totWo > 0 ? (aggData.reduce((sum, r) => sum + r.audit * r.wo, 0) / totWo) : 0;
+                          const avgOverall = wavgList(aggData, 'overall');
+                          const avgSk = wavgList(aggData, 'skill');
+                          const avgProc = wavgList(aggData, 'process');
+                          const avgAud = wavgList(aggData, 'audit');
+                          const fmt1 = (v: number | null) => (v === null ? '—' : v.toFixed(1));
                           return (
                             <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
                               <td style={{ background: '#f1f5f9', color: '#0f172a', fontWeight: 800 }}>TOTAL / AVERAGE</td>
-                              <td><span className="score-pill s-good">{avgProc.toFixed(1)}</span></td>
-                              <td><span className="score-pill s-good">{avgSk.toFixed(1)}</span></td>
-                              <td><span className="score-pill s-good">{avgAud.toFixed(1)}</span></td>
+                              <td><span className="score-pill s-good">{fmt1(avgOverall)}</span></td>
+                              <td><span className="score-pill s-good">{fmt1(avgSk)}</span></td>
+                              <td><span className="score-pill s-good">{fmt1(avgProc)}</span></td>
+                              <td><span className="score-pill s-good">{fmt1(avgAud)}</span></td>
                               <td style={{ color: '#0f172a', fontWeight: 800 }}>{totWo.toLocaleString('en-IN')}</td>
                               <td style={{ color: '#0f172a', fontWeight: 800 }}>{totGhost}</td>
                               <td style={{ color: '#0f172a', fontWeight: 800 }}>{totHomeBoard}</td>
@@ -392,85 +419,53 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
         </div>
       )}
 
-      {/* Outlier thresholds list drawer panel */}
+      {/* Scoring methodology — replaces the old ad-hoc anomaly-threshold footer */}
       <div className="sec-title">
         <div className="bar"></div>
-        <span>Cohort Risk Threshold Configurations</span>
-      </div>
-      
-      <div className="card-mock">
-        <table>
-          <thead>
-            <tr>
-              <th>Anomalous Indicator</th>
-              <th>Mean Rate (Typical)</th>
-              <th>Spread (StdDev)</th>
-              <th>Strict Threshold (Mean + 2SD)</th>
-              <th>Watch Threshold (P90)</th>
-              <th>Actors Over Strict Line</th>
-              <th>Actors Over Watch Line</th>
-            </tr>
-          </thead>
-          <tbody>
-            {Object.entries(data.coaching[scLevel].thresholds).map(([key, t]: [string, any]) => (
-              <tr key={key} style={{ cursor: 'pointer' }} onClick={() => setThrDrawer({ open: true, title: t.indicator, overStrict: t.over_strict, overP90: t.over_p90 })}>
-                <td><b>{t.indicator}</b></td>
-                <td>{t.mean}%</td>
-                <td>{t.sd}</td>
-                <td>{t.strict}%</td>
-                <td>{t.p90}%</td>
-                <td style={{ color: 'var(--bad)', fontWeight: 700 }}>{t.over_strict.length}</td>
-                <td style={{ color: 'var(--warn)', fontWeight: 700 }}>{t.over_p90.length}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <span>Scoring Methodology</span>
       </div>
 
-      {thrDrawer.open && (
-        <div className="drawer-mock open" style={{ marginTop: '16px', background: 'var(--ice)', borderRadius: '12px', padding: '16px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-            <b style={{ color: 'var(--deep)', fontSize: '14px' }}>Outlier Details &mdash; {thrDrawer.title}</b>
-            <button onClick={() => setThrDrawer({ open: false, title: '', overStrict: [], overP90: [] })} style={{ background: 'transparent', border: 'none', color: 'var(--bad)', cursor: 'pointer', fontWeight: 700 }}>[Close Details]</button>
-          </div>
-          <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
-            <div style={{ flex: 1, minWidth: '240px' }}>
-              <b style={{ fontSize: '12px', color: 'var(--bad)' }}>Over Strict Investigation Limit ({thrDrawer.overStrict.length})</b>
-              <table style={{ marginTop: '8px' }}>
-                <thead>
-                  <tr><th>Name</th><th>Flagged Rate</th></tr>
-                </thead>
-                <tbody>
-                  {thrDrawer.overStrict.length === 0 ? (
-                    <tr><td colSpan={2}>None in this category.</td></tr>
-                  ) : (
-                    thrDrawer.overStrict.map((x: any, i: number) => (
-                      <tr key={i}><td><b>{x.asm}</b></td><td>{x.rate}%</td></tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-            <div style={{ flex: 1, minWidth: '240px' }}>
-              <b style={{ fontSize: '12px', color: 'var(--warn)' }}>Over P90 Watch Limit ({thrDrawer.overP90.length})</b>
-              <table style={{ marginTop: '8px' }}>
-                <thead>
-                  <tr><th>Name</th><th>Flagged Rate</th></tr>
-                </thead>
-                <tbody>
-                  {thrDrawer.overP90.length === 0 ? (
-                    <tr><td colSpan={2}>None in this category.</td></tr>
-                  ) : (
-                    thrDrawer.overP90.map((x: any, i: number) => (
-                      <tr key={i}><td><b>{x.asm}</b></td><td>{x.rate}%</td></tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
+      <div className="card-mock">
+        <p style={{ fontSize: '12.5px', color: '#64748b', marginBottom: '16px' }}>
+          Every BUSM, ASM, and ASP is scored monthly on three pillars, each built entirely from metrics already tracked
+          elsewhere in this dashboard — nothing here is a separate, independently-collected number. Each pillar metric is
+          converted to a <b>national percentile rank</b> (this ASP vs. every other ASP with data that month, 0–100, where
+          100 means it outperformed the entire national cohort), then averaged into the pillar score. ASM and BUSM scores
+          are the WO-weighted average of their constituent ASPs/ASMs for that month — not re-ranked independently — so a
+          5-WO outlier can't move an ASM's number as much as a 500-WO center. A metric with no data for an ASP that month
+          (e.g. MSM not yet imported) is simply left out of that ASP's average, never defaulted to 0 or 100.
+        </p>
+
+        <div className="tbl-wrap-mock">
+          <table>
+            <thead>
+              <tr>
+                <th>Pillar</th>
+                <th>What it means</th>
+                <th>Metric</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td rowSpan={4}><b>Skill</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>can this ASP actually fix the device?</span></td><td>Fixed right</td><td>FTFR (First-Time-Fix Rate)</td></tr>
+              <tr><td>Fixed fast</td><td>MTTR (Mean Time to Repair)</td></tr>
+              <tr><td>Fixed cheaply</td><td>CPC (Cost Per Call)</td></tr>
+              <tr><td>Didn't come back</td><td>Repeat / bounce-IMEI rate</td></tr>
+
+              <tr><td rowSpan={4} style={{ borderTop: '2px solid #e2e8f0' }}><b>Process</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>is the shop run the way Lava requires?</span></td><td style={{ borderTop: '2px solid #e2e8f0' }}>Closed on time</td><td style={{ borderTop: '2px solid #e2e8f0' }}>TAT 1–2 day closure %</td></tr>
+              <tr><td>Kept appointments</td><td>S@H cancellation % / reschedule %</td></tr>
+              <tr><td>Stayed within financial limits</td><td>MSM Achievement % (deposit/stock compliance)</td></tr>
+
+              <tr><td rowSpan={3} style={{ borderTop: '2px solid #e2e8f0' }}><b>Audit</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>can we trust what this ASP reports?</span></td><td style={{ borderTop: '2px solid #e2e8f0' }}>Passed internal compliance checks</td><td style={{ borderTop: '2px solid #e2e8f0' }}>Compliance QC / ELS DOA / DEF(S+D) pass rate</td></tr>
+              <tr><td>Told the truth (external, independent)</td><td>NPS</td></tr>
+              <tr><td>No leakage / fraud red flags</td><td>Ghost-swap / Home-board / Cross-ASP flag rate</td></tr>
+            </tbody>
+          </table>
         </div>
-      )}
+
+        <p style={{ fontSize: '12.5px', color: '#64748b', marginTop: '16px', marginBottom: 0 }}>
+          <b>Overall Score = (Skill + Process + Audit) / 3</b> — the single number to track for standings and outlier review above.
+        </p>
+      </div>
     </div>
   );
 }

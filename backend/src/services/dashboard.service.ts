@@ -531,6 +531,7 @@ export async function getFullDashboardData(filters?: {
       totalAnomalies: true,
       serviceCentre: {
         select: {
+          id: true,
           code: true,
           name: true,
           dealer: {
@@ -756,6 +757,7 @@ export async function getFullDashboardData(filters?: {
       row: index + 2,
       wo: String(raw[FIELD_MAP.workorder] ?? wo.id),
       aspCode: wo.serviceCentre?.code || String(raw['Asp Code'] || raw['ASP Code'] || raw['Service Center Code'] || ''),
+      serviceCentreId: wo.serviceCentre?.id || '',
       asp,
       asm,
       busm,
@@ -1143,6 +1145,243 @@ export async function getFullDashboardData(filters?: {
   const busmStats = compileActorStats('busm');
   const asmStats = compileActorStats('asm');
   const aspStats = compileActorStats('asp');
+
+  // 5b. Score Card v2 — Skill / Process / Audit, each a composite of metrics
+  // already tracked elsewhere, combined via NATIONAL percentile rank (ASP vs
+  // every other ASP that month) rather than the old per-row 100-minus-penalty
+  // formula. Computed at ASP-month granularity, then rolled up to ASM/BUSM as
+  // a WO-weighted average of their constituent ASPs — replaces .process/
+  // .skill/.audit on busmStats/asmStats/aspStats below (all other fields on
+  // those rows — ghost/home_board/cross/etc — are untouched, still used by
+  // the Coaching tab's threshold system).
+  //
+  //   Skill   = avg( FTFR, MTTR(inv), CPC(inv), Repeat-rate(inv) )         — "fixed right, fast, cheap, for good"
+  //   Process = avg( TAT 1-2 day closure %, S@H cancel %(inv),
+  //                  S@H reschedule %(inv), MSM Achievement % )            — operational discipline
+  //   Audit   = avg( Compliance QC/ELS/DEF pass %, NPS, Leakage-flag rate(inv) ) — trust / independent verification
+  //   Overall = avg( Skill, Process, Audit )
+  //
+  // Every metric that has no data for an ASP that month is simply left out
+  // of that ASP's average (not defaulted to 0/100) rather than penalizing or
+  // rewarding absence of data.
+  const scIdsWithData = [...new Set(processedRows.map((r) => r.serviceCentreId).filter(Boolean))];
+
+  const [msmRowsRaw, qcRowsRaw, elsRowsRaw, defRowsRaw] = await Promise.all([
+    prisma.msmDailyRecord.findMany({ where: { serviceCentreId: { in: scIdsWithData } }, select: { serviceCentreId: true, month: true, complianceStatus: true } }),
+    prisma.complianceQcRecord.findMany({ where: { serviceCentreId: { in: scIdsWithData } }, select: { serviceCentreId: true, month: true, complianceStatus: true } }),
+    prisma.complianceElsDoaRecord.findMany({ where: { serviceCentreId: { in: scIdsWithData } }, select: { serviceCentreId: true, month: true, complianceStatus: true } }),
+    prisma.complianceDefectiveSpareRecord.findMany({ where: { serviceCentreId: { in: scIdsWithData } }, select: { serviceCentreId: true, month: true, complianceStatus: true } }),
+  ]);
+
+  const isCompliant = (status: string | null) => (status || '').trim().toLowerCase() === 'compliance';
+
+  // Pooled compliant/total counts per (serviceCentreId, month), null status
+  // rows (MSM non-working days) excluded from both numerator and denominator.
+  function buildComplianceCounts(rows: { serviceCentreId: string; month: string | null; complianceStatus: string | null }[]) {
+    const map = new Map<string, { compliant: number; total: number }>();
+    rows.forEach((r) => {
+      if (r.complianceStatus === null || r.month === null) return;
+      const key = `${r.serviceCentreId}:${r.month}`;
+      const cur = map.get(key) || { compliant: 0, total: 0 };
+      cur.total += 1;
+      if (isCompliant(r.complianceStatus)) cur.compliant += 1;
+      map.set(key, cur);
+    });
+    return map;
+  }
+
+  const msmCounts = buildComplianceCounts(msmRowsRaw);
+  const qcCounts = buildComplianceCounts(qcRowsRaw);
+  const elsCounts = buildComplianceCounts(elsRowsRaw);
+  const defCounts = buildComplianceCounts(defRowsRaw);
+
+  function pctFrom(map: Map<string, { compliant: number; total: number }>, key: string): number | null {
+    const e = map.get(key);
+    return e && e.total > 0 ? (e.compliant / e.total) * 100 : null;
+  }
+
+  // Pooled QC + ELS + DEF into one Compliance pass-rate (weighted by each
+  // sub-check's own record count, not a naive average of 3 percentages).
+  function compliancePctFor(key: string): number | null {
+    const parts = [qcCounts.get(key), elsCounts.get(key), defCounts.get(key)].filter(Boolean) as { compliant: number; total: number }[];
+    if (parts.length === 0) return null;
+    const compliant = parts.reduce((s, p) => s + p.compliant, 0);
+    const total = parts.reduce((s, p) => s + p.total, 0);
+    return total > 0 ? (compliant / total) * 100 : null;
+  }
+
+  interface AspMonthRaw {
+    asp: string; asm: string; busm: string; month: string; wo: number;
+    ftfr: number; mttr: number | null; cpc: number; repeatRate: number;
+    tatClosurePct: number | null; sahCancelPct: number; sahReschedulePct: number;
+    msmPct: number | null; compliancePct: number | null; npsPct: number | null; leakageRate: number;
+  }
+
+  const aspMonthGroups = new Map<string, typeof processedRows>();
+  processedRows.forEach((r) => {
+    const key = `${r.asp}|||${r.month}`;
+    if (!aspMonthGroups.has(key)) aspMonthGroups.set(key, []);
+    aspMonthGroups.get(key)!.push(r);
+  });
+
+  const aspMonthRaw: AspMonthRaw[] = [];
+  aspMonthGroups.forEach((rows) => {
+    const asp = rows[0]!.asp;
+    const month = rows[0]!.month;
+    const wo = rows.length;
+    const scId = rows.find((r) => r.serviceCentreId)?.serviceCentreId || '';
+    const complianceKey = `${scId}:${month}`;
+
+    const bounceCount = rows.filter((r) => r.isBounce).length;
+    const ftfr = wo > 0 ? (1 - bounceCount / wo) * 100 : 0;
+    const repeatRate = wo > 0 ? (bounceCount / wo) * 100 : 0;
+
+    const tatRows = rows.filter((r) => r.tat !== null && r.tat !== undefined);
+    const mttr = tatRows.length > 0 ? tatRows.reduce((s, r) => s + (r.tat as number), 0) / tatRows.length : null;
+    const c1d2d = tatRows.filter((r) => (r.tat as number) <= 2).length;
+    const tatClosurePct = tatRows.length > 0 ? (c1d2d / tatRows.length) * 100 : null;
+
+    const totalPartVal = rows.reduce((s, r) => s + (r.partLeakageVal || 0), 0);
+    const cpc = wo > 0 ? totalPartVal / wo : 0;
+
+    const cancelCount = rows.filter((r) => r.isBounce || r.isDetractor || (r.flag && r.flag.includes('cancel'))).length;
+    const sahCancelPct = wo > 0 ? (cancelCount / wo) * 100 : 0;
+    const rescheduleCount = rows.filter((r) => r.tat !== null && r.tat !== undefined && (r.tat as number) > 3).length;
+    const sahReschedulePct = wo > 0 ? (rescheduleCount / wo) * 100 : 0;
+
+    const surveyRows = rows.filter((r) => {
+      const rating = String(r.rawData[FIELD_MAP.npsRating] || '');
+      return rating !== '' && rating !== 'No Response' && rating !== 'LS' && !isNaN(parseInt(rating, 10));
+    });
+    let npsPct: number | null = null;
+    if (surveyRows.length > 0) {
+      const promoters = surveyRows.filter((r) => parseInt(String(r.rawData[FIELD_MAP.npsRating]), 10) === 5).length;
+      const detractors = surveyRows.filter((r) => parseInt(String(r.rawData[FIELD_MAP.npsRating]), 10) <= 2).length;
+      npsPct = ((promoters - detractors) / surveyRows.length) * 100;
+    }
+
+    const leakageCount = rows.filter((r) => r.isGhost || r.isHomeBoard || r.isCrossAsp).length;
+    const leakageRate = wo > 0 ? (leakageCount / wo) * 100 : 0;
+
+    aspMonthRaw.push({
+      asp, asm: rows[0]!.asm, busm: rows[0]!.busm, month, wo,
+      ftfr, mttr, cpc, repeatRate,
+      tatClosurePct, sahCancelPct, sahReschedulePct,
+      msmPct: pctFrom(msmCounts, complianceKey),
+      compliancePct: compliancePctFor(complianceKey),
+      npsPct,
+      leakageRate,
+    });
+  });
+
+  // National percentile rank: what fraction of this month's ASP cohort does
+  // this ASP perform equal-to-or-better than, after orienting "better" as
+  // "higher" (metrics where lower is better are inverted via higherIsBetter=false).
+  function percentileRank(values: number[], value: number, higherIsBetter: boolean): number {
+    const n = values.length;
+    if (n <= 1) return 100;
+    const countNoBetter = higherIsBetter ? values.filter((v) => v <= value).length : values.filter((v) => v >= value).length;
+    return (countNoBetter / n) * 100;
+  }
+
+  function rankMetric(rowsForMonth: AspMonthRaw[], getter: (r: AspMonthRaw) => number | null, higherIsBetter: boolean): Map<string, number> {
+    const withValues = rowsForMonth.map((r) => ({ asp: r.asp, v: getter(r) })).filter((x): x is { asp: string; v: number } => x.v !== null);
+    const values = withValues.map((x) => x.v);
+    const out = new Map<string, number>();
+    withValues.forEach((x) => out.set(x.asp, percentileRank(values, x.v, higherIsBetter)));
+    return out;
+  }
+
+  interface AspMonthScore { asp: string; asm: string; busm: string; month: string; wo: number; skill: number | null; process: number | null; audit: number | null; overall: number | null; }
+  const aspMonthScores: AspMonthScore[] = [];
+
+  uniqueMonths.forEach((month) => {
+    const monthRows = aspMonthRaw.filter((r) => r.month === month);
+    if (monthRows.length === 0) return;
+
+    const ftfrRank = rankMetric(monthRows, (r) => r.ftfr, true);
+    const mttrRank = rankMetric(monthRows, (r) => r.mttr, false);
+    const cpcRank = rankMetric(monthRows, (r) => r.cpc, false);
+    const repeatRank = rankMetric(monthRows, (r) => r.repeatRate, false);
+
+    const tatRank = rankMetric(monthRows, (r) => r.tatClosurePct, true);
+    const cancelRank = rankMetric(monthRows, (r) => r.sahCancelPct, false);
+    const rescheduleRank = rankMetric(monthRows, (r) => r.sahReschedulePct, false);
+    const msmRank = rankMetric(monthRows, (r) => r.msmPct, true);
+
+    const complianceRank = rankMetric(monthRows, (r) => r.compliancePct, true);
+    const npsRank = rankMetric(monthRows, (r) => r.npsPct, true);
+    const leakageRank = rankMetric(monthRows, (r) => r.leakageRate, false);
+
+    const avgOf = (asp: string, maps: Map<string, number>[]): number | null => {
+      const vals = maps.map((m) => m.get(asp)).filter((v): v is number => v !== undefined);
+      return vals.length > 0 ? vals.reduce((s, v) => s + v, 0) / vals.length : null;
+    };
+
+    monthRows.forEach((r) => {
+      const skill = avgOf(r.asp, [ftfrRank, mttrRank, cpcRank, repeatRank]);
+      const process = avgOf(r.asp, [tatRank, cancelRank, rescheduleRank, msmRank]);
+      const audit = avgOf(r.asp, [complianceRank, npsRank, leakageRank]);
+      const parts = [skill, process, audit].filter((v): v is number => v !== null);
+      const overall = parts.length > 0 ? parts.reduce((s, v) => s + v, 0) / parts.length : null;
+      aspMonthScores.push({ asp: r.asp, asm: r.asm, busm: r.busm, month: r.month, wo: r.wo, skill, process, audit, overall });
+    });
+  });
+
+  // Roll up ASP scores to ASM and BUSM as a WO-weighted average.
+  function weightedAvg(items: { v: number | null; w: number }[]): number | null {
+    const valid = items.filter((x) => x.v !== null) as { v: number; w: number }[];
+    const totalW = valid.reduce((s, x) => s + x.w, 0);
+    if (totalW === 0) return null;
+    return valid.reduce((s, x) => s + x.v * x.w, 0) / totalW;
+  }
+
+  function rollup(groupKeyFn: (s: AspMonthScore) => string): Map<string, { skill: number | null; process: number | null; audit: number | null; overall: number | null }> {
+    const groups = new Map<string, AspMonthScore[]>();
+    aspMonthScores.forEach((s) => {
+      const key = `${groupKeyFn(s)}:${s.month}`;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key)!.push(s);
+    });
+    const out = new Map<string, { skill: number | null; process: number | null; audit: number | null; overall: number | null }>();
+    groups.forEach((items, key) => {
+      out.set(key, {
+        skill: weightedAvg(items.map((i) => ({ v: i.skill, w: i.wo }))),
+        process: weightedAvg(items.map((i) => ({ v: i.process, w: i.wo }))),
+        audit: weightedAvg(items.map((i) => ({ v: i.audit, w: i.wo }))),
+        overall: weightedAvg(items.map((i) => ({ v: i.overall, w: i.wo }))),
+      });
+    });
+    return out;
+  }
+
+  const aspScoreByKey = new Map(aspMonthScores.map((s) => [`${s.asp}:${s.month}`, s]));
+  const asmScoreByKey = rollup((s) => s.asm);
+  const busmScoreByKey = rollup((s) => s.busm);
+
+  const round1 = (v: number | null) => (v === null ? null : Math.round(v * 10) / 10);
+
+  aspStats.forEach((row: any) => {
+    const s = aspScoreByKey.get(`${row.actor}:${row.month}`);
+    row.skill = round1(s?.skill ?? null);
+    row.process = round1(s?.process ?? null);
+    row.audit = round1(s?.audit ?? null);
+    row.overall = round1(s?.overall ?? null);
+  });
+  asmStats.forEach((row: any) => {
+    const s = asmScoreByKey.get(`${row.actor}:${row.month}`);
+    row.skill = round1(s?.skill ?? null);
+    row.process = round1(s?.process ?? null);
+    row.audit = round1(s?.audit ?? null);
+    row.overall = round1(s?.overall ?? null);
+  });
+  busmStats.forEach((row: any) => {
+    const s = busmScoreByKey.get(`${row.actor}:${row.month}`);
+    row.skill = round1(s?.skill ?? null);
+    row.process = round1(s?.process ?? null);
+    row.audit = round1(s?.audit ?? null);
+    row.overall = round1(s?.overall ?? null);
+  });
 
   // 6. Evidence table: all flagged rows (limited to 5000 max to keep payload light)
   const evidence = processedRows
