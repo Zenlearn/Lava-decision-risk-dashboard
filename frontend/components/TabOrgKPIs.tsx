@@ -1408,7 +1408,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ background: '#f1f5f9', color: '#475569', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 700 }}>
-                  Count: {filteredAsmList.length} ASMs
+                  Count: {currentSahDataset.asm.filter((a: any) => a.busm === sahBusmRow).length} ASMs
                 </span>
                 <button
                   onClick={(e) => { e.stopPropagation(); setSahBusmRow(null); }}
@@ -2203,7 +2203,10 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
         </div>
 
         {/* TAT TABLE 2: ASM LEVEL TAT CLOSURE MATRIX (Only visible when a BUSM is clicked) */}
-        {tatBusmRow && (
+        {tatBusmRow && (() => {
+          const tatFilteredAsmList = allAsmList.filter((a) => a.busm === tatBusmRow);
+          return (
+          <div>
           <div className="card-mock" style={{ position: 'relative', padding: '20px', marginTop: '16px' }}>
           <button
             onClick={scrollToTop}
@@ -2229,7 +2232,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ background: '#f1f5f9', color: '#475569', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 700 }}>
-                  Count: {filteredAsmList.length} ASMs
+                  Count: {tatFilteredAsmList.length} ASMs
                 </span>
                 <button
                   onClick={(e) => { e.stopPropagation(); setTatBusmRow(null); }}
@@ -2255,14 +2258,14 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredAsmList.length === 0 ? (
+                  {tatFilteredAsmList.length === 0 ? (
                     <tr>
                       <td colSpan={8} style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>
                         No ASMs found for {tatBusmRow}.
                       </td>
                     </tr>
                   ) : (
-                    filteredAsmList.map((r: any, i: number) => {
+                    tatFilteredAsmList.map((r: any, i: number) => {
                       const isSelected = tatAsmRow === r.name;
                       const woVal = r.wo || 0;
                       const rawTc = r.tatClosure || {};
@@ -2332,7 +2335,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                     <td style={{ padding: '10px 12px', color: '#0f172a', background: '#f1f5f9', fontWeight: 800 }}>Total / Average</td>
                     <td style={{ padding: '10px 10px', color: '#64748b', borderRight: '1px solid #e2e8f0' }}>{tatBusmRow}</td>
                     <td style={{ padding: '10px 10px', textAlign: 'right', color: '#0f172a', borderRight: '1px solid #e2e8f0', fontWeight: 800 }}>
-                      {asmTotalWo.toLocaleString('en-IN')}
+                      {tatFilteredAsmList.reduce((sum, a) => sum + (a.wo || 0), 0).toLocaleString('en-IN')}
                     </td>
                     <td colSpan={5} style={{ padding: '10px 10px', textAlign: 'center', color: '#64748b', fontSize: '11px', textTransform: 'uppercase' }}>
                       Regional TAT Closure Velocity Total
@@ -2342,8 +2345,8 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
               </table>
             </div>
 
-            {/* TAT TABLE 3: ASP CENTER WISE TAT VELOCITY MATRIX */}
-            {tatAsmRow && (
+          {/* TAT TABLE 3: ASP CENTER WISE TAT VELOCITY MATRIX */}
+          {tatAsmRow && (
               <div className="card-mock" style={{ position: 'relative', padding: '20px', marginTop: '16px' }}>
           <button
             onClick={scrollToTop}
@@ -2446,7 +2449,8 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
               </div>
             )}
           </div>
-        )}
+          );
+        })()}
       </div>
 
       {/* SECTION FOOTER: KPI FORMULAS & OPERATIONAL REVIEW METHODOLOGY ACCORDION */}
@@ -2613,20 +2617,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
         const npsBusmList = monthNps.busm || [];
         const npsBusmRanks = getRankMap(npsBusmList, (r: any) => r.busm, (r: any) => r.segments?.Total?.nps_pct, false);
 
-        const npsAsmList = (monthNps.asm || []).filter((a: any) => a.busm === msCpcBusmRow);
+        const npsAsmList = (monthNps.asm || []).filter((a: any) => a.busm === msNpsBusmRow);
         const npsAsmRanks = getRankMap(npsAsmList, (r: any) => r.asm, (r: any) => r.segments?.Total?.nps_pct, false);
 
-        const npsAspList = (monthNps.asp || []).filter((a: any) => a.asm === msCpcAsmRow);
+        const npsAspList = (monthNps.asp || []).filter((a: any) => a.asm === msNpsAsmRow);
         const npsAspRanks = getRankMap(npsAspList, (r: any) => r.code, (r: any) => r.segments?.Total?.nps_pct, false);
 
         // TAT Ranks (descending: higher TAT closure % is better)
         const tatBusmList = monthTat.busm || [];
         const tatBusmRanks = getRankMap(tatBusmList, (r: any) => r.busm, (r: any) => r.segments?.Total?.tat_pct, false);
 
-        const tatAsmList = (monthTat.asm || []).filter((a: any) => a.busm === msCpcBusmRow);
+        const tatAsmList = (monthTat.asm || []).filter((a: any) => a.busm === msTatBusmRow);
         const tatAsmRanks = getRankMap(tatAsmList, (r: any) => r.asm, (r: any) => r.segments?.Total?.tat_pct, false);
 
-        const tatAspList = (monthTat.asp || []).filter((a: any) => a.asm === msCpcAsmRow);
+        const tatAspList = (monthTat.asp || []).filter((a: any) => a.asm === msTatAsmRow);
         const tatAspRanks = getRankMap(tatAspList, (r: any) => r.code, (r: any) => r.segments?.Total?.tat_pct, false);
 
         return (
