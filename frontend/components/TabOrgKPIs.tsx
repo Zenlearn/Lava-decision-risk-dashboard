@@ -104,6 +104,21 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
     }
   };
 
+  const getRankMap = (list: any[], keyFn: (item: any) => string, valFn: (item: any) => number, ascending = false) => {
+    if (!list || list.length === 0) return {};
+    const sorted = [...list].sort((a, b) => {
+      const va = valFn(a) ?? 0;
+      const vb = valFn(b) ?? 0;
+      return ascending ? va - vb : vb - va;
+    });
+    const map: Record<string, number> = {};
+    sorted.forEach((item, idx) => {
+      map[keyFn(item)] = idx + 1;
+    });
+    return map;
+  };
+
+
 
   const toggleTable = (key: string) => {
     setCollapsedTables(prev => ({ ...prev, [key]: !prev[key] }));
@@ -2561,9 +2576,57 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
       )}
 
       {/* ─── MODEL SEGMENT VIEW ─── */}
-      {viewMode === 'modelSegment' && (
-        <div>
-          {/* SECTION 1: CPC BREAKDOWN (MODEL SEGMENT VIEW) */}
+      {viewMode === 'modelSegment' && (() => {
+        const monthCpc = MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.cpc || {};
+        const monthNps = MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.nps || {};
+        const monthTat = MODEL_SEGMENT_DATA_BY_MONTH[selectedMonth]?.tat || {};
+
+        // CPC Ranks (ascending: lower cost / % is better)
+        const cpcBusmList = monthCpc.busm || [];
+        const cpcBusmRanks = getRankMap(cpcBusmList, (r: any) => r.busm, (r: any) => r.segments?.Total?.cpc, true);
+        const cpcPctBusmRanks = getRankMap(cpcBusmList, (r: any) => r.busm, (r: any) => r.segments?.Total?.cpc_pct, true);
+
+        const cpcAsmList = (monthCpc.asm || []).filter((a: any) => a.busm === selectedBusmRow);
+        const cpcAsmRanks = getRankMap(cpcAsmList, (r: any) => r.asm, (r: any) => r.segments?.Total?.cpc, true);
+        const cpcPctAsmRanks = getRankMap(cpcAsmList, (r: any) => r.asm, (r: any) => r.segments?.Total?.cpc_pct, true);
+
+        const cpcAspList = (monthCpc.asp || []).filter((a: any) => a.asm === selectedAsmRow);
+        const cpcAspRanks = getRankMap(cpcAspList, (r: any) => r.code, (r: any) => r.segments?.Total?.cpc, true);
+        const cpcPctAspRanks = getRankMap(cpcAspList, (r: any) => r.code, (r: any) => r.segments?.Total?.cpc_pct, true);
+
+        // NPS Ranks (descending: higher NPS % is better)
+        const npsBusmList = monthNps.busm || [];
+        const npsBusmRanks = getRankMap(npsBusmList, (r: any) => r.busm, (r: any) => r.segments?.Total?.nps_pct, false);
+
+        const npsAsmList = (monthNps.asm || []).filter((a: any) => a.busm === selectedBusmRow);
+        const npsAsmRanks = getRankMap(npsAsmList, (r: any) => r.asm, (r: any) => r.segments?.Total?.nps_pct, false);
+
+        const npsAspList = (monthNps.asp || []).filter((a: any) => a.asm === selectedAsmRow);
+        const npsAspRanks = getRankMap(npsAspList, (r: any) => r.code, (r: any) => r.segments?.Total?.nps_pct, false);
+
+        // TAT Ranks (descending: higher TAT closure % is better)
+        const tatBusmList = monthTat.busm || [];
+        const tatBusmRanks = getRankMap(tatBusmList, (r: any) => r.busm, (r: any) => r.segments?.Total?.tat_pct, false);
+
+        const tatAsmList = (monthTat.asm || []).filter((a: any) => a.busm === selectedBusmRow);
+        const tatAsmRanks = getRankMap(tatAsmList, (r: any) => r.asm, (r: any) => r.segments?.Total?.tat_pct, false);
+
+        const tatAspList = (monthTat.asp || []).filter((a: any) => a.asm === selectedAsmRow);
+        const tatAspRanks = getRankMap(tatAspList, (r: any) => r.code, (r: any) => r.segments?.Total?.tat_pct, false);
+
+        return (
+          <div>
+            {/* Rank Badge Percentile Scale Legend for Model Segment View */}
+            <div style={{ marginBottom: '20px', padding: '12px 18px', background: '#f8fafc', borderRadius: '10px', border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
+              <span style={{ fontWeight: 800, color: '#0f172a', fontSize: '11.5px', textTransform: 'uppercase' }}>Rank Badge Percentile Scale:</span>
+              <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#f0fdf4', color: '#15803d', border: '1px solid #bbf7d0', padding: '2px 8px', borderRadius: '4px' }}>Top 20% (Best Performers)</span>
+              <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', padding: '2px 8px', borderRadius: '4px' }}>20% – 50% (Above Average)</span>
+              <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#fffbeb', color: '#b45309', border: '1px solid #fde68a', padding: '2px 8px', borderRadius: '4px' }}>50% – 70% (Watch-list / Mid-tier)</span>
+              <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#fef2f2', color: '#dc2626', border: '1px solid #fca5a5', padding: '2px 8px', borderRadius: '4px' }}>Below 70% (Bottom 30% / Attention Required)</span>
+            </div>
+
+            {/* SECTION 1: CPC BREAKDOWN (MODEL SEGMENT VIEW) */}
+
           <div id="sec-mod-cpc" style={{ marginBottom: '36px' }}>
             <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -2650,6 +2713,11 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                           ))}
                           <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', fontWeight: 800, background: '#fffbeb', color: '#b45309' }}>
                             ₹{Math.round(r.segments.Total.cpc)} (₹{Math.round(r.segments.Total.total_cost).toLocaleString('en-IN')})
+                            {cpcBusmRanks[r.busm] && (
+                              <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(cpcBusmRanks[r.busm], cpcBusmList.length) }}>
+                                #{cpcBusmRanks[r.busm]}
+                              </span>
+                            )}
                           </TableCell>
                         </TableRow>
                       );
@@ -2736,7 +2804,13 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                           ))}
                           <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', fontWeight: 800, background: '#fffbeb', color: '#b45309' }}>
                             {Math.round(r.segments.Total.cpc_pct)}%
+                            {cpcPctBusmRanks[r.busm] && (
+                              <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(cpcPctBusmRanks[r.busm], cpcBusmList.length) }}>
+                                #{cpcPctBusmRanks[r.busm]}
+                              </span>
+                            )}
                           </TableCell>
+
                         </TableRow>
                       );
                     })}
@@ -2837,6 +2911,11 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                               ))}
                               <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', fontWeight: 800, background: '#fffbeb', color: '#b45309' }}>
                                 ₹{Math.round(r.segments.Total.cpc)} (₹{Math.round(r.segments.Total.total_cost).toLocaleString('en-IN')})
+                                {cpcAsmRanks[r.asm] && (
+                                  <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(cpcAsmRanks[r.asm], cpcAsmList.length) }}>
+                                    #{cpcAsmRanks[r.asm]}
+                                  </span>
+                                )}
                               </TableCell>
                             </TableRow>
                           );
@@ -2924,6 +3003,11 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                               ))}
                               <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', fontWeight: 800, background: '#fffbeb', color: '#b45309' }}>
                                 ₹{Math.round(r.segments.Total.cpc)} (₹{Math.round(r.segments.Total.total_cost).toLocaleString('en-IN')})
+                                {cpcAspRanks[r.code] && (
+                                  <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(cpcAspRanks[r.code], cpcAspList.length) }}>
+                                    #{cpcAspRanks[r.code]}
+                                  </span>
+                                )}
                               </TableCell>
                             </TableRow>
                           ))
@@ -2933,8 +3017,6 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                 </div>
               </div>
             )}
-          </div>
-
 
             {/* TABLE 2B: ASM LEVEL CPC % BREAKDOWN (Revealed on BUSM Click) */}
             {selectedBusmRow && (
@@ -3010,6 +3092,11 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                               ))}
                               <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', fontWeight: 800, background: '#fffbeb', color: '#b45309' }}>
                                 {Math.round(r.segments.Total.cpc_pct)}%
+                                {cpcPctAsmRanks[r.asm] && (
+                                  <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(cpcPctAsmRanks[r.asm], cpcAsmList.length) }}>
+                                    #{cpcPctAsmRanks[r.asm]}
+                                  </span>
+                                )}
                               </TableCell>
                             </TableRow>
                           );
@@ -3104,6 +3191,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                 </div>
               </div>
             )}
+          </div>
 
           {/* SECTION 2: NPS BREAKDOWN (MODEL SEGMENT VIEW) */}
           <div id="sec-mod-nps" style={{ marginBottom: '36px' }}>
@@ -3184,7 +3272,14 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                               {Math.round(r.segments[ps]?.nps_pct || 0)}%
                             </TableCell>
                           ))}
-                          <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', color: '#6d28d9', fontWeight: 800, background: '#f5f3ff' }}>{Math.round(r.segments.Total.nps_pct)}%</TableCell>
+                          <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', color: '#6d28d9', fontWeight: 800, background: '#f5f3ff' }}>
+                            {Math.round(r.segments.Total.nps_pct)}%
+                            {npsBusmRanks[r.busm] && (
+                              <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(npsBusmRanks[r.busm], npsBusmList.length) }}>
+                                #{npsBusmRanks[r.busm]}
+                              </span>
+                            )}
+                          </TableCell>
                         </TableRow>
                       );
                     })}
@@ -3282,7 +3377,14 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                                   {r.segments[ps]?.nps_pct}%
                                 </TableCell>
                               ))}
-                              <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', color: '#6d28d9', fontWeight: 800, background: '#f5f3ff' }}>{r.segments.Total.nps_pct}%</TableCell>
+                              <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', color: '#6d28d9', fontWeight: 800, background: '#f5f3ff' }}>
+                                {r.segments.Total.nps_pct}%
+                                {npsAsmRanks[r.asm] && (
+                                  <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(npsAsmRanks[r.asm], npsAsmList.length) }}>
+                                    #{npsAsmRanks[r.asm]}
+                                  </span>
+                                )}
+                              </TableCell>
                             </TableRow>
                           );
                         })}
@@ -3366,7 +3468,14 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                                   {Math.round(r.segments[ps]?.nps_pct || 0)}%
                                 </TableCell>
                               ))}
-                              <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', color: '#6d28d9', fontWeight: 800, background: '#f5f3ff' }}>{Math.round(r.segments.Total.nps_pct)}%</TableCell>
+                              <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', color: '#6d28d9', fontWeight: 800, background: '#f5f3ff' }}>
+                                {Math.round(r.segments.Total.nps_pct)}%
+                                {npsAspRanks[r.code] && (
+                                  <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(npsAspRanks[r.code], npsAspList.length) }}>
+                                    #{npsAspRanks[r.code]}
+                                  </span>
+                                )}
+                              </TableCell>
                             </TableRow>
                           ))
                       )}
@@ -3459,6 +3568,11 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                           ))}
                           <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', fontWeight: 800, background: '#f0fdf4', color: '#15803d' }}>
                             {Math.round(r.segments.Total.tat_pct)}% ({r.segments.Total.wo.toLocaleString('en-IN')})
+                            {tatBusmRanks[r.busm] && (
+                              <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(tatBusmRanks[r.busm], tatBusmList.length) }}>
+                                #{tatBusmRanks[r.busm]}
+                              </span>
+                            )}
                           </TableCell>
                         </TableRow>
                       );
@@ -3560,6 +3674,11 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                               ))}
                               <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', fontWeight: 800, background: '#f0fdf4', color: '#15803d' }}>
                                 {Math.round(r.segments.Total.tat_pct)}% ({r.segments.Total.wo.toLocaleString('en-IN')})
+                                {tatAsmRanks[r.asm] && (
+                                  <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(tatAsmRanks[r.asm], tatAsmList.length) }}>
+                                    #{tatAsmRanks[r.asm]}
+                                  </span>
+                                )}
                               </TableCell>
                             </TableRow>
                           );
@@ -3647,6 +3766,11 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                               ))}
                               <TableCell style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9', fontWeight: 800, background: '#f0fdf4', color: '#15803d' }}>
                                 {Math.round(r.segments.Total.tat_pct)}% ({r.segments.Total.wo.toLocaleString('en-IN')})
+                                {tatAspRanks[r.code] && (
+                                  <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(tatAspRanks[r.code], tatAspList.length) }}>
+                                    #{tatAspRanks[r.code]}
+                                  </span>
+                                )}
                               </TableCell>
                             </TableRow>
                           ))
@@ -3658,7 +3782,8 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
             )}
           </div>
         </div>
-      )}
+      )()}
+
 
       {/* Executive Footnote */}
       <div style={{ marginTop: '10px', padding: '14px 18px', background: '#ffffff', borderRadius: '10px', border: '1px solid #e2e8f0', fontSize: '11.5px', color: '#64748b', lineHeight: '1.6', boxShadow: 'var(--shadow-sm)' }}>
