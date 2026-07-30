@@ -2,7 +2,7 @@ export const DASHBOARD_DEFINITIONS = {
   kpiCalculations: [
     {
       title: 'Estimated monthly leakage exposure',
-      definition: 'Calculated strictly for Service at Home (S@H / Doorstep) work orders (excluding Customer Walk-in and Trade Walk-in calls): (PCBA count × PCBA cost) + (LCD count × LCD cost) across anomalous doorstep repairs, plus (repeat home-visit bounces × travel cost). Board-level parts only — battery/charger swaps are excluded as legitimate doorstep work. Unit costs align with Part Exposure settings. Annualised run-rate = monthly × 12.'
+      definition: 'Calculated strictly for Smartphone Service at Home (S@H / Doorstep) work orders: 1) Same-day repairs at >15 km each side. 2) Repeat repairs within 60 days of previous call (matched by IMEI in Delivered Master Data), adding Total Part Cost attributed to the 1st repairer but accounted for in the latest call month. 3) Return Without Repair (RWR) doorstep calls valued at ₹200 per visit (₹150 visit fee + ₹50 incentive). Board-level parts only — battery/charger swaps excluded. Annualised run-rate = monthly × 12.'
     },
     {
       title: 'First-time fix rate (FTFR)',
