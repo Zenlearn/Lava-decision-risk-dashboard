@@ -2344,6 +2344,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                 </tbody>
               </table>
             </div>
+          </div>
 
           {/* TAT TABLE 3: ASP CENTER WISE TAT VELOCITY MATRIX */}
           {tatAsmRow && (
@@ -2449,8 +2450,8 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
               </div>
             )}
           </div>
-          );
-        })()}
+        );
+      })()}
       </div>
 
       {/* SECTION FOOTER: KPI FORMULAS & OPERATIONAL REVIEW METHODOLOGY ACCORDION */}
@@ -3192,7 +3193,14 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                           .map((r: any, i: number) => (
                             <TableRow key={r.code || i}>
                               <TableCell style={{ textAlign: 'left', fontFamily: 'monospace', color: '#7c3aed', fontWeight: 700 }}>{r.code}</TableCell>
-                              <TableCell style={{ textAlign: 'left', fontWeight: 700, color: '#1e293b' }}>{r.name}</TableCell>
+                              <TableCell style={{ textAlign: 'left', fontWeight: 700, color: '#1e293b' }}>
+                                {r.name}
+                                {cpcPctAspRanks[r.code] && (
+                                  <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', ...getRankBadgeStyle(cpcPctAspRanks[r.code], cpcAspList.length) }}>
+                                    #{cpcPctAspRanks[r.code]}
+                                  </span>
+                                )}
+                              </TableCell>
                               <TableCell style={{ textAlign: 'left', color: '#64748b' }}>{r.asm}</TableCell>
                               {['<8K', '8K-10K', '10K-15K', '15K-20K', '>20K'].map((ps) => (
                                 <TableCell key={ps} style={{ textAlign: 'right', borderLeft: '1px solid #f1f5f9' }}>
