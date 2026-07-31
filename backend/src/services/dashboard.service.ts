@@ -574,6 +574,9 @@ export async function getFullDashboardData(filters?: {
   const phoneCounts = new Map<string, number>();
   const imeiToAsps = new Map<string, Set<string>>();
 
+  // 60-day repeat detection: collect all creation dates per IMEI across the full dataset
+  const imeiCreationDates = new Map<string, Date[]>();
+
   workOrders.forEach((wo) => {
     const raw = wo.rawData as any;
     const imei = String(raw[FIELD_MAP.imei] || '').trim();
@@ -586,12 +589,23 @@ export async function getFullDashboardData(filters?: {
         imeiToAsps.set(imei, new Set());
       }
       imeiToAsps.get(imei)!.add(asp);
+
+      // Collect creation dates for 60-day repeat check
+      const cDateStr = raw[FIELD_MAP.creationDate] || raw['Call Date'] || raw['Call Creation Date'] || raw['Job Sheet Date'] || raw['Creation Date'];
+      const cDate = parseDateRobust(cDateStr);
+      if (cDate) {
+        if (!imeiCreationDates.has(imei)) imeiCreationDates.set(imei, []);
+        imeiCreationDates.get(imei)!.push(cDate);
+      }
     }
 
     if (phone && phone !== 'nan') {
       phoneCounts.set(phone, (phoneCounts.get(phone) || 0) + 1);
     }
   });
+
+  // Sort each IMEI's creation date list ascending (needed for O(log n) bisect below)
+  imeiCreationDates.forEach((dates) => dates.sort((a, b) => a.getTime() - b.getTime()));
 
   let crossRowsCount = 0;
   
@@ -616,6 +630,26 @@ export async function getFullDashboardData(filters?: {
     const dDateStr = raw[FIELD_MAP.deliveryDate] || raw['Closed Date'] || raw['Delivery Date'] || raw['Call Closed Date'];
     const tat = getDaysDiff(cDateStr, dDateStr);
     const isSameDay = tat === 0 || tat === 1;
+
+    // 60-day repeat detection: this WO is a repeat if the same IMEI had any
+    // earlier call within 60 calendar days of this call's creation date.
+    let isRepeat60d = false;
+    if (imei && imei !== 'nan') {
+      const thisCDate = parseDateRobust(cDateStr);
+      const allDates = imeiCreationDates.get(imei);
+      if (thisCDate && allDates && allDates.length > 1) {
+        const thisTime = thisCDate.getTime();
+        for (const priorDate of allDates) {
+          const priorTime = priorDate.getTime();
+          if (priorTime >= thisTime) break; // sorted ascending — no earlier dates remain
+          const daysDiff = Math.round((thisTime - priorTime) / (1000 * 60 * 60 * 24));
+          if (daysDiff <= 60) {
+            isRepeat60d = true;
+            break;
+          }
+        }
+      }
+    }
 
     const isWalkIn = matchesField(raw[FIELD_MAP.callType], raw[FIELD_MAP.callCategory], 'walk-in') || 
                      matchesField(raw[FIELD_MAP.callType], raw[FIELD_MAP.callCategory], 'walk in');
@@ -792,6 +826,7 @@ export async function getFullDashboardData(filters?: {
       isHomeBoard,
       isHome,
       isBounce,
+      isRepeat60d,
       isCrossAsp,
       isMismatch,
       isMismatchBounced,
@@ -943,7 +978,10 @@ export async function getFullDashboardData(filters?: {
     const pcbaRows = sahSmartRows.filter((r) => r.leakageValue > 0 && isYesVal(r.rawData[FIELD_MAP.pcbaConsumption] || r.rawData['PCBA Consumption']));
     const tpLcdRows = sahSmartRows.filter((r) => r.leakageValue > 0 && isYesVal(r.rawData[FIELD_MAP.tpLcdConsumption] || r.rawData['TP/LCD Consumption']));
 
-    const repeat60dRows = sahSmartRows.filter((r) => r.isBounce || r.isCrossAsp);
+    // 60-day repeat: WOs where the same IMEI was serviced within 60 days of a prior call.
+    // Cost = Total Part Cost of this (the repeat) call, attributed to the 1st repairer and
+    // bucketed into the repeat call's own month.
+    const repeat60dRows = sahSmartRows.filter((r) => r.isRepeat60d);
     const rwrRows = sahSmartRows.filter((r) => {
       const act = String(r.rawData['Action Code Desc'] || r.rawData['Action Taken'] || '').toLowerCase();
       const sym = String(r.rawData[FIELD_MAP.symptomDesc] || '').toLowerCase();
@@ -974,8 +1012,18 @@ export async function getFullDashboardData(filters?: {
 
     const repeat60dQty = repeat60dRows.length;
     const repeat60dCost = Math.round(repeat60dRows.reduce((sum, r) => {
-      const pCost = (r.partLeakageVal && r.partLeakageVal > 0) ? r.partLeakageVal : parseNum(r.rawData[FIELD_MAP.totalPartValue]);
-      return sum + pCost;
+      // Total Part Cost of this (the repeat) call — attributed to the 1st repairer
+      const raw = r.rawData;
+      const totalPart = parseNum(raw[FIELD_MAP.totalPartValue] || raw['Total Part Value']);
+      if (totalPart > 0) return sum + totalPart;
+      // Fallback: sum component values if total is absent
+      const fallback = parseNum(raw[FIELD_MAP.pcbaValue] || 0)
+        + parseNum(raw[FIELD_MAP.tpLcdValue] || 0)
+        + parseNum(raw[FIELD_MAP.batteryValue] || 0)
+        + parseNum(raw[FIELD_MAP.subPcbaValue] || 0)
+        + parseNum(raw[FIELD_MAP.accessoriesValue] || 0)
+        + parseNum(raw[FIELD_MAP.othersValue] || 0);
+      return sum + fallback;
     }, 0));
 
     const rwrQty = rwrRows.length;
