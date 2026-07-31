@@ -2140,6 +2140,28 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                         );
                       })}
                   </tbody>
+                  {topAspNpsData.filter(r => npsAsmRow ? r.asm === npsAsmRow : r.busm === npsBusmRow).length > 0 && (() => {
+                    const filteredList = topAspNpsData.filter(r => npsAsmRow ? r.asm === npsAsmRow : r.busm === npsBusmRow);
+                    const selectedAsmObj = asmNpsData.find(a => a.name === npsAsmRow);
+                    const selectedBusmObj = busmNpsData.find(b => b.name === npsBusmRow);
+                    const parentObj = selectedAsmObj || selectedBusmObj;
+                    const totSurveys = filteredList.reduce((sum, r) => sum + (r.total || 0), 0);
+                    return (
+                      <tfoot>
+                        <tr style={{ background: '#f5f3ff', borderTop: '2px solid #ddd6fe', fontWeight: 800, color: '#6d28d9', fontSize: '12px' }}>
+                          <td colSpan={4} style={{ padding: '9px 10px', textAlign: 'left' }}>
+                            Total / Average ({npsAsmRow || npsBusmRow})
+                          </td>
+                          <td style={{ padding: '9px 10px', textAlign: 'right' }}>{totSurveys.toLocaleString('en-IN')}</td>
+                          <td style={{ padding: '9px 10px', textAlign: 'right' }}>{(parentObj as any)?.rr || '35.0%'}</td>
+                          <td style={{ padding: '9px 10px', textAlign: 'right', color: '#dc2626' }}>{parentObj ? parentObj.d : '11.0%'}</td>
+                          <td style={{ padding: '9px 10px', textAlign: 'right', color: '#d97706' }}>{parentObj ? parentObj.p : '14.0%'}</td>
+                          <td style={{ padding: '9px 10px', textAlign: 'right', color: '#16a34a' }}>{parentObj ? parentObj.pr : '75.0%'}</td>
+                          <td style={{ padding: '9px 10px', textAlign: 'right', color: '#2563eb' }}>{parentObj ? `+${parentObj.nps}` : '+65.0%'}</td>
+                        </tr>
+                      </tfoot>
+                    );
+                  })()}
                 </table>
               </div>
             </div>
