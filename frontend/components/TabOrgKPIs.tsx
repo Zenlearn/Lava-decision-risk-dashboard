@@ -177,6 +177,10 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
   const tatOrgKpi = activeOrgKpiMonth[tatWarrantyFilter] || { busms: [], asms: [], national: {} };
   const tatRawBusmList: any[] = (tatOrgKpi.busms || []).filter((b: any) => b.name && !b.name.toLowerCase().includes('unknown'));
   const tatRawAsmList: any[] = (tatOrgKpi.asms || []).filter((a: any) => a.name && !a.name.toLowerCase().includes('unknown') && a.busm && !a.busm.toLowerCase().includes('unknown'));
+  // Real per-ASP TAT closure (backend-computed) — replaces the old synthetic
+  // allocation that split a static ASP list's national/BUSM distribution
+  // proportionally, with no basis in that ASP's own actual work orders.
+  const tatRawAspList: any[] = (tatOrgKpi.asps || []).filter((a: any) => a.name && !a.name.toLowerCase().includes('unknown') && a.asm && !a.asm.toLowerCase().includes('unknown'));
   const tatRawNational: any = tatOrgKpi.national || {};
   const currentCpcDataset = DYNAMIC_CPC_DATA_BY_MONTH[selectedMonth] || DYNAMIC_CPC_DATA_BY_MONTH['Jun'];
   const currentSahDataset = DYNAMIC_SAH_DATA_BY_MONTH[selectedMonth] || DYNAMIC_SAH_DATA_BY_MONTH['All'];
@@ -2622,7 +2626,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span style={{ background: '#f1f5f9', color: '#475569', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 700 }}>
-                      Count: {ALL_ASP_PERF_DATA.filter(a => a.asm === tatAsmRow).length} ASPs
+                      Count: {tatRawAspList.filter(a => a.asm === tatAsmRow).length} ASPs
                     </span>
                     <button
                       onClick={(e) => { e.stopPropagation(); setTatAsmRow(null); }}
@@ -2648,47 +2652,26 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                       </tr>
                     </thead>
                     <tbody>
-                      {ALL_ASP_PERF_DATA.filter(a => a.asm === tatAsmRow).length === 0 ? (
+                      {tatRawAspList.filter(a => a.asm === tatAsmRow).length === 0 ? (
                         <tr>
                           <td colSpan={8} style={{ padding: '16px', textAlign: 'center', color: '#64748b' }}>
                             No ASP centers found for {tatAsmRow}.
                           </td>
                         </tr>
                       ) : (
-                        ALL_ASP_PERF_DATA.filter(a => a.asm === tatAsmRow).map((asp, i) => {
+                        tatRawAspList.filter(a => a.asm === tatAsmRow).map((asp, i) => {
                           const woVal = asp.wo || 0;
-                          const tat1d = asp.tat || 0;
-
-                          // Look up the BUSM's TAT distribution ratios to split the remaining percentage
-                          const ASM_BUSM_TAT: Record<string, { p1: number; p2: number; p3: number; p5: number }> = {
-                            'Jitesh S Rath':            { p1: 36.7, p2:  6.9, p3: 23.9, p5: 32.6 },
-                            'Sukhbir Singh':            { p1: 44.5, p2:  9.4, p3: 22.8, p5: 23.2 },
-                            'Tamilselvan Subramanian':  { p1: 31.8, p2: 11.2, p3: 27.7, p5: 29.3 },
-                            'Shivaprasad P U':          { p1: 38.0, p2: 10.7, p3: 29.0, p5: 22.3 },
-                            'Rajesh Limbachia':         { p1: 44.3, p2: 10.3, p3: 27.1, p5: 18.3 },
-                          };
-                          const aDist = ASM_BUSM_TAT[asp.busm] || { p1: 26.9, p2: 12.0, p3: 21.0, p5: 40.1 };
-                          const remaining = Math.max(0, 100 - tat1d);
-                          const sumWeights = (aDist.p2 + aDist.p3 + aDist.p5) || 1;
-
-                          const tat2d = +(remaining * aDist.p2 / sumWeights).toFixed(1);
-                          const tat3d = +(remaining * aDist.p3 / sumWeights).toFixed(1);
-                          const tat5d = Math.max(0, +(remaining - tat2d - tat3d).toFixed(1));
-
-                          const c1d = Math.round(woVal * tat1d / 100);
-                          const c2d = Math.round(woVal * tat2d / 100);
-                          const c3d = Math.round(woVal * tat3d / 100);
-                          const c5d = Math.max(0, woVal - c1d - c2d - c3d);
+                          const tc = asp.tatClosure || {};
                           return (
                             <tr key={asp.code || i} style={{ borderBottom: '1px solid #f1f5f9', background: '#eff6ff' }}>
                               <td style={{ padding: '8px 10px', fontFamily: 'monospace', color: '#64748b' }}>{asp.code}</td>
                               <td style={{ padding: '8px 12px', fontWeight: 700, color: '#1e293b' }}>{asp.name}</td>
                               <td style={{ padding: '8px 10px', color: '#64748b', borderRight: '1px solid #f1f5f9' }}>{asp.asm}</td>
                               <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, borderRight: '1px solid #f1f5f9' }}>{woVal.toLocaleString('en-IN')}</td>
-                              <td style={{ padding: '8px 10px', textAlign: 'right', color: '#16a34a', fontWeight: 700 }}>{c1d} ({tat1d}%)</td>
-                              <td style={{ padding: '8px 10px', textAlign: 'right', color: '#2563eb', fontWeight: 600 }}>{c2d} ({tat2d}%)</td>
-                              <td style={{ padding: '8px 10px', textAlign: 'right', color: '#d97706', fontWeight: 600 }}>{c3d} ({tat3d}%)</td>
-                              <td style={{ padding: '8px 10px', textAlign: 'right', color: '#dc2626', fontWeight: 700 }}>{c5d} ({tat5d}%)</td>
+                              <td style={{ padding: '8px 10px', textAlign: 'right', color: '#16a34a', fontWeight: 700 }}>{tc.c1d || 0} ({tc.tat1dPct || 0}%)</td>
+                              <td style={{ padding: '8px 10px', textAlign: 'right', color: '#2563eb', fontWeight: 600 }}>{tc.c2d || 0} ({tc.tat2dPct || 0}%)</td>
+                              <td style={{ padding: '8px 10px', textAlign: 'right', color: '#d97706', fontWeight: 600 }}>{tc.c3d || 0} ({tc.tat3dPct || 0}%)</td>
+                              <td style={{ padding: '8px 10px', textAlign: 'right', color: '#dc2626', fontWeight: 700 }}>{tc.c5d || 0} ({tc.tat5dPct || 0}%)</td>
                             </tr>
                           );
                         })

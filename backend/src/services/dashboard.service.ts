@@ -1993,6 +1993,55 @@ export async function getFullDashboardData(filters?: {
       },
     }));
 
+    // 3. Group by ASP — real per-ASP TAT closure, replacing the frontend's
+    // previous synthetic allocation (a national/BUSM distribution applied
+    // proportionally to a static ASP list, not derived from this ASP's own
+    // work orders at all). Kept deliberately minimal (just what the ASP-level
+    // TAT table needs) rather than duplicating every BUSM/ASM-level metric.
+    const aspMap = new Map<string, { code: string; asm: string; busm: string; rows: any[] }>();
+    rows.forEach((r) => {
+      const name = r.asp || 'Unknown';
+      if (!name || name === 'Unknown' || name.toLowerCase().includes('unknown')) return;
+      if (!r.asm || r.asm.toLowerCase().includes('unknown')) return;
+      if (!aspMap.has(name)) aspMap.set(name, { code: r.aspCode || '', asm: r.asm, busm: r.busm || 'Unknown', rows: [] });
+      aspMap.get(name)!.rows.push(r);
+    });
+
+    const aspList = Array.from(aspMap.entries()).map(([aspName, obj]) => {
+      const aspRows = obj.rows;
+      const wo = aspRows.length;
+
+      const tatValidRows = aspRows.filter((r) => r.tat !== null && r.tat !== undefined);
+      const c1d = tatValidRows.filter((r) => r.tat <= 1).length;
+      const c2d = tatValidRows.filter((r) => r.tat === 2).length;
+      const c3d = tatValidRows.filter((r) => r.tat === 3 || r.tat === 4).length;
+      const c5d = tatValidRows.filter((r) => r.tat >= 5).length;
+      const cStillOpen = aspRows.filter((r) => r.tat === null || r.tat === undefined).length;
+
+      // No hardcoded distribution fallback — an ASP with zero known-TAT
+      // rows this month honestly shows 0/0/0/0, not a synthetic split.
+      const tat1dPct = wo > 0 ? Math.round((c1d / wo) * 1000) / 10 : 0;
+      const tat2dPct = wo > 0 ? Math.round((c2d / wo) * 1000) / 10 : 0;
+      const tat3dPct = wo > 0 ? Math.round((c3d / wo) * 1000) / 10 : 0;
+      const tat5dPct = wo > 0 ? Math.round((c5d / wo) * 1000) / 10 : 0;
+      const stillOpenPct = wo > 0 ? Math.round((cStillOpen / wo) * 1000) / 10 : 0;
+
+      return {
+        code: obj.code,
+        name: aspName,
+        asm: obj.asm,
+        busm: obj.busm,
+        wo,
+        tatClosure: {
+          c1d, tat1dPct,
+          c2d, tat2dPct,
+          c3d, tat3dPct,
+          c5d, tat5dPct,
+          cStillOpen, stillOpenPct
+        }
+      };
+    });
+
     // National Summary Row
     const totalWo = rows.length;
     const totalBounce = rows.filter((r) => r.isBounce).length;
@@ -2068,6 +2117,7 @@ export async function getFullDashboardData(filters?: {
     return {
       busms: rankedBusms,
       asms: rankedAsms,
+      asps: aspList,
       national: nationalSummary,
     };
   }
