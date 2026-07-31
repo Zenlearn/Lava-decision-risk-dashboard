@@ -318,11 +318,16 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
   const sortedAsmsByCpc = [...allAsmListWithCpc].sort((x, y) => x.cpc - y.cpc);
   const asmCpcRankMap = new Map(sortedAsmsByCpc.map((x, idx) => [normalizeKey(x.name), idx + 1]));
 
+  // Rank ASMs by In-Warranty TAT % (descending: highest In-Warranty TAT % = rank #1)
+  const sortedAsmsByTat = [...allAsmListWithCpc].sort((x, y) => (y.tat || 0) - (x.tat || 0));
+  const asmTatRankMap = new Map(sortedAsmsByTat.map((x, idx) => [normalizeKey(x.name), idx + 1]));
+
   const allAsmList = allAsmListWithCpc.map((a: any) => ({
     ...a,
     ranks: {
       ...a.ranks,
-      cpc: asmCpcRankMap.get(normalizeKey(a.name)) || a.ranks?.cpc || 1
+      cpc: asmCpcRankMap.get(normalizeKey(a.name)) || a.ranks?.cpc || 1,
+      tat: asmTatRankMap.get(normalizeKey(a.name)) || a.ranks?.tat || 1
     }
   }));
 
