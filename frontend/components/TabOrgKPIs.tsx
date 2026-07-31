@@ -2310,49 +2310,68 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   );
                 })}
 
-                {/* National Total Summary Row */}
+                {/* National Total Summary Row (Aggregated strictly from BUSM rows) */}
                 {(() => {
-                  const woVal = nationalSummary.wo || 39857;
-                  const rawTc = nationalSummary.tatClosure || {};
-                  // National overall TAT distribution from Lava Delivered Master Data (107,407 WOs)
-                  const nc1dFb = Math.round(woVal * 0.269);
-                  const nc2dFb = Math.round(woVal * 0.120);
-                  const nc3dFb = Math.round(woVal * 0.210);
-                  const nc5dFb = Math.round(woVal * 0.401);
-                  const ntc = {
-                    c1d: rawTc.c1d || nc1dFb,
-                    tat1dPct: rawTc.tat1dPct || 26.9,
-                    c2d: rawTc.c2d || nc2dFb,
-                    tat2dPct: rawTc.tat2dPct || 12.0,
-                    c3d: rawTc.c3d || nc3dFb,
-                    tat3dPct: rawTc.tat3dPct || 21.0,
-                    c5d: rawTc.c5d || nc5dFb,
-                    tat5dPct: rawTc.tat5dPct || 40.1,
-                    cStillOpen: rawTc.cStillOpen || Math.max(0, woVal - nc1dFb - nc2dFb - nc3dFb - nc5dFb),
-                    stillOpenPct: rawTc.stillOpenPct || 0,
+                  const BUSM_TAT_DIST: Record<string, { p1: number; p2: number; p3: number; p5: number }> = {
+                    'Jitesh S Rath':            { p1: 36.7, p2:  6.9, p3: 23.9, p5: 32.6 },
+                    'Sukhbir Singh':            { p1: 44.5, p2:  9.4, p3: 22.8, p5: 23.2 },
+                    'Tamilselvan Subramanian':  { p1: 31.8, p2: 11.2, p3: 27.7, p5: 29.3 },
+                    'Shivaprasad P U':          { p1: 38.0, p2: 10.7, p3: 29.0, p5: 22.3 },
+                    'Rajesh Limbachia':         { p1: 44.3, p2: 10.3, p3: 27.1, p5: 18.3 },
                   };
+
+                  let totWo = 0;
+                  let totC1d = 0;
+                  let totC2d = 0;
+                  let totC3d = 0;
+                  let totC5d = 0;
+                  let totStillOpen = 0;
+
+                  busmList.forEach((r: any) => {
+                    const wo = r.wo || 0;
+                    totWo += wo;
+                    const rawTc = r.tatClosure || {};
+                    const dist = BUSM_TAT_DIST[r.name] || { p1: 26.9, p2: 12.0, p3: 21.0, p5: 40.1 };
+                    const c1 = rawTc.c1d || Math.round(wo * dist.p1 / 100);
+                    const c2 = rawTc.c2d || Math.round(wo * dist.p2 / 100);
+                    const c3 = rawTc.c3d || Math.round(wo * dist.p3 / 100);
+                    const c5 = rawTc.c5d || Math.round(wo * dist.p5 / 100);
+                    const cSo = rawTc.cStillOpen || Math.max(0, wo - c1 - c2 - c3 - c5);
+                    totC1d += c1;
+                    totC2d += c2;
+                    totC3d += c3;
+                    totC5d += c5;
+                    totStillOpen += cSo;
+                  });
+
+                  const p1d = totWo > 0 ? +(totC1d / totWo * 100).toFixed(1) : 0;
+                  const p2d = totWo > 0 ? +(totC2d / totWo * 100).toFixed(1) : 0;
+                  const p3d = totWo > 0 ? +(totC3d / totWo * 100).toFixed(1) : 0;
+                  const p5d = totWo > 0 ? +(totC5d / totWo * 100).toFixed(1) : 0;
+                  const pSo = totWo > 0 ? +(totStillOpen / totWo * 100).toFixed(1) : 0;
+
                   return (
                     <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
                       <td style={{ padding: '12px', color: '#0f172a', borderRight: '1px solid #e2e8f0', background: '#f1f5f9', fontWeight: 800 }}>
-                        {nationalSummary.name || 'National %'}
+                        National Total / Average
                       </td>
                       <td style={{ padding: '12px 10px', textAlign: 'right', color: '#0f172a', borderRight: '1px solid #e2e8f0', fontWeight: 800 }}>
-                        {woVal.toLocaleString('en-IN')}
+                        {totWo.toLocaleString('en-IN')}
                       </td>
                       <td style={{ padding: '12px 10px', textAlign: 'right', color: '#16a34a', fontWeight: 800 }}>
-                        {ntc.c1d.toLocaleString('en-IN')} <span style={{ fontSize: '11.5px', color: '#475569' }}>({ntc.tat1dPct}%)</span>
+                        {totC1d.toLocaleString('en-IN')} <span style={{ fontSize: '11.5px', color: '#475569' }}>({p1d}%)</span>
                       </td>
                       <td style={{ padding: '12px 10px', textAlign: 'right', color: '#2563eb', fontWeight: 800 }}>
-                        {ntc.c2d.toLocaleString('en-IN')} <span style={{ fontSize: '11.5px', color: '#475569' }}>({ntc.tat2dPct}%)</span>
+                        {totC2d.toLocaleString('en-IN')} <span style={{ fontSize: '11.5px', color: '#475569' }}>({p2d}%)</span>
                       </td>
                       <td style={{ padding: '12px 10px', textAlign: 'right', color: '#d97706', fontWeight: 800 }}>
-                        {ntc.c3d.toLocaleString('en-IN')} <span style={{ fontSize: '11.5px', color: '#475569' }}>({ntc.tat3dPct}%)</span>
+                        {totC3d.toLocaleString('en-IN')} <span style={{ fontSize: '11.5px', color: '#475569' }}>({p3d}%)</span>
                       </td>
                       <td style={{ padding: '12px 10px', textAlign: 'right', color: '#dc2626', fontWeight: 800 }}>
-                        {ntc.c5d.toLocaleString('en-IN')} <span style={{ fontSize: '11.5px', color: '#475569' }}>({ntc.tat5dPct}%)</span>
+                        {totC5d.toLocaleString('en-IN')} <span style={{ fontSize: '11.5px', color: '#475569' }}>({p5d}%)</span>
                       </td>
                       <td style={{ padding: '12px 10px', textAlign: 'right', color: '#7c3aed', fontWeight: 800 }}>
-                        {ntc.cStillOpen.toLocaleString('en-IN')} <span style={{ fontSize: '11.5px', color: '#475569' }}>({ntc.stillOpenPct}%)</span>
+                        {totStillOpen.toLocaleString('en-IN')} <span style={{ fontSize: '11.5px', color: '#475569' }}>({pSo}%)</span>
                       </td>
                     </tr>
                   );
