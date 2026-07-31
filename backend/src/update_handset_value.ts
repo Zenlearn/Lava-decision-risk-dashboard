@@ -1,16 +1,18 @@
 import { PrismaClient } from '@prisma/client';
-import { logger } from './utils/logger';
+import * as fs from 'fs';
+import * as path from 'path';
+import logger from './configs/logger.config';
 import { invalidateDashboardCache } from './services/cache.service';
-import handsetMapData from './handset_values_map.json';
 
 const prisma = new PrismaClient();
 
 async function main() {
   logger.info('Starting update of Handset Value in WorkOrder rawData...');
 
-  const handsetMap: Record<string, number> = handsetMapData as any;
+  const handsetMapPath = path.join(__dirname, 'handset_values_map.json');
+  const handsetMap: Record<string, number> = JSON.parse(fs.readFileSync(handsetMapPath, 'utf-8'));
   const mapSize = Object.keys(handsetMap).length;
-  logger.info(`Loaded ${mapSize} handset value mappings from handset_values_map.json`);
+  logger.info(`Loaded ${mapSize} handset value mappings from ${handsetMapPath}`);
 
   const allWorkOrders = await prisma.workOrder.findMany({
     select: {
