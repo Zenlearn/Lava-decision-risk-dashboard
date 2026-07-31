@@ -25,7 +25,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 87.0,
     "ftfr": 84.0,
     "csat": 86.0,
-    "nps": 56.0
+    "nps": 56.0,
+    "cpc": 1358,
+    "diag": 85.4,
+    "cag": 5
   },
   {
     "busm": "Jitesh S Rath",
@@ -37,7 +40,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 86.0,
     "ftfr": 91.0,
     "csat": 91.0,
-    "nps": 63.0
+    "nps": 63.0,
+    "cpc": 1013,
+    "diag": 86.1,
+    "cag": 2
   },
   {
     "busm": "Jitesh S Rath",
@@ -49,7 +55,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 75.0,
     "ftfr": 87.0,
     "csat": 93.0,
-    "nps": 71.0
+    "nps": 71.0,
+    "cpc": 283,
+    "diag": 86.4,
+    "cag": 5
   },
   {
     "busm": "Jitesh S Rath",
@@ -61,7 +70,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 84.0,
     "ftfr": 83.0,
     "csat": 88.0,
-    "nps": 64.0
+    "nps": 64.0,
+    "cpc": 1650,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Jitesh S Rath",
@@ -73,7 +85,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 85.0,
     "ftfr": 84.0,
     "csat": 95.0,
-    "nps": 53.0
+    "nps": 53.0,
+    "cpc": 1232,
+    "diag": 86.9,
+    "cag": 5
   },
   {
     "busm": "Jitesh S Rath",
@@ -85,7 +100,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 73.0,
     "ftfr": 92.0,
     "csat": 87.0,
-    "nps": 55.0
+    "nps": 55.0,
+    "cpc": 272,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Jitesh S Rath",
@@ -97,7 +115,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 88.0,
     "ftfr": 91.0,
     "csat": 90.0,
-    "nps": 79.0
+    "nps": 79.0,
+    "cpc": 2550,
+    "diag": 86.9,
+    "cag": 5
   },
   {
     "busm": "Jitesh S Rath",
@@ -109,7 +130,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 83.0,
     "ftfr": 91.0,
     "csat": 88.0,
-    "nps": 67.0
+    "nps": 67.0,
+    "cpc": 1742,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Jitesh S Rath",
@@ -121,7 +145,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 70.0,
     "ftfr": 82.0,
     "csat": 85.0,
-    "nps": 79.0
+    "nps": 79.0,
+    "cpc": 1650,
+    "diag": 86.0,
+    "cag": 1
   },
   {
     "busm": "Jitesh S Rath",
@@ -133,7 +160,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 80.0,
     "ftfr": 81.0,
     "csat": 88.0,
-    "nps": 58.0
+    "nps": 58.0,
+    "cpc": 1650,
+    "diag": 85.7,
+    "cag": 3
   },
   {
     "busm": "Jitesh S Rath",
@@ -145,7 +175,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 86.0,
     "ftfr": 92.0,
     "csat": 94.0,
-    "nps": 58.0
+    "nps": 58.0,
+    "cpc": 1650,
+    "diag": 86.1,
+    "cag": 2
   },
   {
     "busm": "Jitesh S Rath",
@@ -157,7 +190,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 80.0,
     "ftfr": 89.0,
     "csat": 89.0,
-    "nps": 66.0
+    "nps": 66.0,
+    "cpc": 1650,
+    "diag": 87.2,
+    "cag": 3
   },
   {
     "busm": "Jitesh S Rath",
@@ -169,7 +205,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 79.0,
     "ftfr": 92.0,
     "csat": 86.0,
-    "nps": 62.0
+    "nps": 62.0,
+    "cpc": 3339,
+    "diag": 85.5,
+    "cag": 1
   },
   {
     "busm": "Jitesh S Rath",
@@ -181,7 +220,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 79.0,
     "ftfr": 87.0,
     "csat": 85.0,
-    "nps": 57.0
+    "nps": 57.0,
+    "cpc": 2582,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Jitesh S Rath",
@@ -193,7 +235,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 85.0,
     "ftfr": 92.0,
     "csat": 91.0,
-    "nps": 82.0
+    "nps": 82.0,
+    "cpc": 1570,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Jitesh S Rath",
@@ -205,7 +250,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 93.0,
     "ftfr": 90.0,
     "csat": 96.0,
-    "nps": 66.0
+    "nps": 66.0,
+    "cpc": 2115,
+    "diag": 87.1,
+    "cag": 2
   },
   {
     "busm": "Jitesh S Rath",
@@ -217,7 +265,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 74.0,
     "ftfr": 81.0,
     "csat": 86.0,
-    "nps": 56.0
+    "nps": 56.0,
+    "cpc": 2241,
+    "diag": 86.1,
+    "cag": 2
   },
   {
     "busm": "Jitesh S Rath",
@@ -229,7 +280,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 80.0,
     "ftfr": 80.0,
     "csat": 87.0,
-    "nps": 74.0
+    "nps": 74.0,
+    "cpc": 5007,
+    "diag": 86.8,
+    "cag": 4
   },
   {
     "busm": "Jitesh S Rath",
@@ -241,7 +295,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 92.0,
     "ftfr": 89.0,
     "csat": 92.0,
-    "nps": 53.0
+    "nps": 53.0,
+    "cpc": 1650,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Jitesh S Rath",
@@ -253,7 +310,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 74.0,
     "ftfr": 88.0,
     "csat": 88.0,
-    "nps": 75.0
+    "nps": 75.0,
+    "cpc": 136,
+    "diag": 87.3,
+    "cag": 4
   },
   {
     "busm": "Jitesh S Rath",
@@ -265,7 +325,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 92.0,
     "ftfr": 83.0,
     "csat": 96.0,
-    "nps": 59.0
+    "nps": 59.0,
+    "cpc": 508,
+    "diag": 87.6,
+    "cag": 2
   },
   {
     "busm": "Jitesh S Rath",
@@ -277,7 +340,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 82.0,
     "ftfr": 93.0,
     "csat": 90.0,
-    "nps": 75.0
+    "nps": 75.0,
+    "cpc": 1650,
+    "diag": 92.3,
+    "cag": 4
   },
   {
     "busm": "Jitesh S Rath",
@@ -289,7 +355,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 80.0,
     "ftfr": 84.0,
     "csat": 91.0,
-    "nps": 60.0
+    "nps": 60.0,
+    "cpc": 3656,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Jitesh S Rath",
@@ -301,7 +370,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 93.0,
     "ftfr": 92.0,
     "csat": 93.0,
-    "nps": 61.0
+    "nps": 61.0,
+    "cpc": 432,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Jitesh S Rath",
@@ -313,7 +385,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 80.0,
     "ftfr": 87.0,
     "csat": 85.0,
-    "nps": 55.0
+    "nps": 55.0,
+    "cpc": 1650,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Jitesh S Rath",
@@ -325,7 +400,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 83.0,
     "ftfr": 92.0,
     "csat": 86.0,
-    "nps": 74.0
+    "nps": 74.0,
+    "cpc": 98,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Jitesh S Rath",
@@ -337,7 +415,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 75.0,
     "ftfr": 85.0,
     "csat": 85.0,
-    "nps": 52.0
+    "nps": 52.0,
+    "cpc": 1166,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Jitesh S Rath",
@@ -349,7 +430,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 76.0,
     "ftfr": 86.0,
     "csat": 94.0,
-    "nps": 63.0
+    "nps": 63.0,
+    "cpc": 85,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Jitesh S Rath",
@@ -361,7 +445,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 81.0,
     "ftfr": 91.0,
     "csat": 94.0,
-    "nps": 69.0
+    "nps": 69.0,
+    "cpc": 1023,
+    "diag": 87.1,
+    "cag": 2
   },
   {
     "busm": "Jitesh S Rath",
@@ -373,7 +460,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 80.0,
     "ftfr": 82.0,
     "csat": 92.0,
-    "nps": 80.0
+    "nps": 80.0,
+    "cpc": 1650,
+    "diag": 85.8,
+    "cag": 4
   },
   {
     "busm": "Jitesh S Rath",
@@ -385,7 +475,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 71.0,
     "ftfr": 85.0,
     "csat": 85.0,
-    "nps": 75.0
+    "nps": 75.0,
+    "cpc": 1650,
+    "diag": 85.6,
+    "cag": 2
   },
   {
     "busm": "Jitesh S Rath",
@@ -397,7 +490,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 88.0,
     "ftfr": 92.0,
     "csat": 90.0,
-    "nps": 76.0
+    "nps": 76.0,
+    "cpc": 3202,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Jitesh S Rath",
@@ -409,7 +505,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 90.0,
     "ftfr": 81.0,
     "csat": 91.0,
-    "nps": 65.0
+    "nps": 65.0,
+    "cpc": 1650,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Jitesh S Rath",
@@ -421,7 +520,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 90.0,
     "ftfr": 81.0,
     "csat": 93.0,
-    "nps": 53.0
+    "nps": 53.0,
+    "cpc": 1236,
+    "diag": 87.4,
+    "cag": 5
   },
   {
     "busm": "Jitesh S Rath",
@@ -433,7 +535,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 94.0,
     "ftfr": 90.0,
     "csat": 94.0,
-    "nps": 67.0
+    "nps": 67.0,
+    "cpc": 104,
+    "diag": 85.7,
+    "cag": 3
   },
   {
     "busm": "Jitesh S Rath",
@@ -445,7 +550,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 78.0,
     "ftfr": 93.0,
     "csat": 92.0,
-    "nps": 84.0
+    "nps": 84.0,
+    "cpc": 1612,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Jitesh S Rath",
@@ -457,7 +565,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 76.0,
     "ftfr": 85.0,
     "csat": 90.0,
-    "nps": 65.0
+    "nps": 65.0,
+    "cpc": 1653,
+    "diag": 87.3,
+    "cag": 4
   },
   {
     "busm": "Jitesh S Rath",
@@ -469,7 +580,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 88.0,
     "ftfr": 92.0,
     "csat": 93.0,
-    "nps": 78.0
+    "nps": 78.0,
+    "cpc": 3239,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Jitesh S Rath",
@@ -481,7 +595,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 89.0,
     "ftfr": 94.0,
     "csat": 94.0,
-    "nps": 84.0
+    "nps": 84.0,
+    "cpc": 1281,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Jitesh S Rath",
@@ -493,7 +610,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 74.0,
     "ftfr": 80.0,
     "csat": 92.0,
-    "nps": 63.0
+    "nps": 63.0,
+    "cpc": 258,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Jitesh S Rath",
@@ -505,7 +625,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 87.0,
     "ftfr": 87.0,
     "csat": 91.0,
-    "nps": 60.0
+    "nps": 60.0,
+    "cpc": 1650,
+    "diag": 86.0,
+    "cag": 1
   },
   {
     "busm": "Jitesh S Rath",
@@ -517,7 +640,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 83.0,
     "ftfr": 87.0,
     "csat": 90.0,
-    "nps": 52.0
+    "nps": 52.0,
+    "cpc": 1650,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Jitesh S Rath",
@@ -529,7 +655,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 71.0,
     "ftfr": 84.0,
     "csat": 88.0,
-    "nps": 77.0
+    "nps": 77.0,
+    "cpc": 5007,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Jitesh S Rath",
@@ -541,7 +670,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 83.0,
     "ftfr": 83.0,
     "csat": 95.0,
-    "nps": 67.0
+    "nps": 67.0,
+    "cpc": 238,
+    "diag": 86.9,
+    "cag": 5
   },
   {
     "busm": "Jitesh S Rath",
@@ -553,7 +685,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 74.0,
     "ftfr": 91.0,
     "csat": 89.0,
-    "nps": 52.0
+    "nps": 52.0,
+    "cpc": 750,
+    "diag": 85.8,
+    "cag": 4
   },
   {
     "busm": "Jitesh S Rath",
@@ -565,7 +700,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 87.0,
     "ftfr": 82.0,
     "csat": 95.0,
-    "nps": 62.0
+    "nps": 62.0,
+    "cpc": 98,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Jitesh S Rath",
@@ -577,7 +715,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 88.0,
     "ftfr": 81.0,
     "csat": 96.0,
-    "nps": 69.0
+    "nps": 69.0,
+    "cpc": 2194,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Jitesh S Rath",
@@ -589,7 +730,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 84.0,
     "ftfr": 88.0,
     "csat": 88.0,
-    "nps": 80.0
+    "nps": 80.0,
+    "cpc": 1351,
+    "diag": 86.0,
+    "cag": 1
   },
   {
     "busm": "Jitesh S Rath",
@@ -601,7 +745,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 84.0,
     "ftfr": 94.0,
     "csat": 91.0,
-    "nps": 60.0
+    "nps": 60.0,
+    "cpc": 2932,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Jitesh S Rath",
@@ -613,7 +760,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 94.0,
     "ftfr": 87.0,
     "csat": 88.0,
-    "nps": 76.0
+    "nps": 76.0,
+    "cpc": 2951,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Jitesh S Rath",
@@ -625,7 +775,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 86.0,
     "ftfr": 85.0,
     "csat": 89.0,
-    "nps": 51.0
+    "nps": 51.0,
+    "cpc": 2540,
+    "diag": 87.3,
+    "cag": 4
   },
   {
     "busm": "Jitesh S Rath",
@@ -637,7 +790,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 87.0,
     "ftfr": 89.0,
     "csat": 96.0,
-    "nps": 65.0
+    "nps": 65.0,
+    "cpc": 2538,
+    "diag": 86.9,
+    "cag": 5
   },
   {
     "busm": "Jitesh S Rath",
@@ -649,7 +805,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 75.0,
     "ftfr": 82.0,
     "csat": 89.0,
-    "nps": 68.0
+    "nps": 68.0,
+    "cpc": 1054,
+    "diag": 86.9,
+    "cag": 5
   },
   {
     "busm": "Jitesh S Rath",
@@ -661,7 +820,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 74.0,
     "ftfr": 85.0,
     "csat": 92.0,
-    "nps": 80.0
+    "nps": 80.0,
+    "cpc": 2860,
+    "diag": 86.9,
+    "cag": 5
   },
   {
     "busm": "Jitesh S Rath",
@@ -673,7 +835,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 81.0,
     "ftfr": 89.0,
     "csat": 94.0,
-    "nps": 63.0
+    "nps": 63.0,
+    "cpc": 1678,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Jitesh S Rath",
@@ -685,7 +850,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 82.0,
     "ftfr": 94.0,
     "csat": 86.0,
-    "nps": 61.0
+    "nps": 61.0,
+    "cpc": 178,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Jitesh S Rath",
@@ -697,7 +865,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 76.0,
     "ftfr": 89.0,
     "csat": 86.0,
-    "nps": 67.0
+    "nps": 67.0,
+    "cpc": 763,
+    "diag": 85.8,
+    "cag": 4
   },
   {
     "busm": "Jitesh S Rath",
@@ -709,7 +880,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 81.0,
     "ftfr": 82.0,
     "csat": 94.0,
-    "nps": 79.0
+    "nps": 79.0,
+    "cpc": 2182,
+    "diag": 85.9,
+    "cag": 5
   },
   {
     "busm": "Jitesh S Rath",
@@ -721,7 +895,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 86.0,
     "ftfr": 87.0,
     "csat": 88.0,
-    "nps": 73.0
+    "nps": 73.0,
+    "cpc": 2206,
+    "diag": 85.9,
+    "cag": 5
   },
   {
     "busm": "Jitesh S Rath",
@@ -733,7 +910,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 94.0,
     "ftfr": 91.0,
     "csat": 96.0,
-    "nps": 84.0
+    "nps": 84.0,
+    "cpc": 1902,
+    "diag": 87.0,
+    "cag": 1
   },
   {
     "busm": "Jitesh S Rath",
@@ -745,7 +925,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 81.0,
     "ftfr": 90.0,
     "csat": 91.0,
-    "nps": 58.0
+    "nps": 58.0,
+    "cpc": 933,
+    "diag": 87.0,
+    "cag": 1
   },
   {
     "busm": "Jitesh S Rath",
@@ -757,7 +940,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 87.0,
     "ftfr": 89.0,
     "csat": 94.0,
-    "nps": 83.0
+    "nps": 83.0,
+    "cpc": 1555,
+    "diag": 85.9,
+    "cag": 5
   },
   {
     "busm": "Jitesh S Rath",
@@ -769,7 +955,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 78.0,
     "ftfr": 91.0,
     "csat": 87.0,
-    "nps": 71.0
+    "nps": 71.0,
+    "cpc": 1014,
+    "diag": 85.8,
+    "cag": 4
   },
   {
     "busm": "Jitesh S Rath",
@@ -781,7 +970,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 74.0,
     "ftfr": 84.0,
     "csat": 95.0,
-    "nps": 80.0
+    "nps": 80.0,
+    "cpc": 1650,
+    "diag": 85.9,
+    "cag": 5
   },
   {
     "busm": "Jitesh S Rath",
@@ -793,7 +985,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 89.0,
     "ftfr": 86.0,
     "csat": 94.0,
-    "nps": 69.0
+    "nps": 69.0,
+    "cpc": 2083,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Jitesh S Rath",
@@ -805,7 +1000,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 74.0,
     "ftfr": 86.0,
     "csat": 87.0,
-    "nps": 78.0
+    "nps": 78.0,
+    "cpc": 1650,
+    "diag": 85.9,
+    "cag": 5
   },
   {
     "busm": "Jitesh S Rath",
@@ -817,7 +1015,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 73.0,
     "ftfr": 87.0,
     "csat": 90.0,
-    "nps": 54.0
+    "nps": 54.0,
+    "cpc": 1650,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Jitesh S Rath",
@@ -829,7 +1030,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 79.0,
     "ftfr": 80.0,
     "csat": 93.0,
-    "nps": 56.0
+    "nps": 56.0,
+    "cpc": 250,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Jitesh S Rath",
@@ -841,7 +1045,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 87.0,
     "ftfr": 82.0,
     "csat": 88.0,
-    "nps": 66.0
+    "nps": 66.0,
+    "cpc": 2737,
+    "diag": 86.9,
+    "cag": 5
   },
   {
     "busm": "Jitesh S Rath",
@@ -853,7 +1060,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 86.0,
     "ftfr": 86.0,
     "csat": 96.0,
-    "nps": 69.0
+    "nps": 69.0,
+    "cpc": 1314,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Jitesh S Rath",
@@ -865,7 +1075,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 93.0,
     "ftfr": 92.0,
     "csat": 91.0,
-    "nps": 84.0
+    "nps": 84.0,
+    "cpc": 1650,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Jitesh S Rath",
@@ -877,7 +1090,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 85.0,
     "ftfr": 94.0,
     "csat": 86.0,
-    "nps": 66.0
+    "nps": 66.0,
+    "cpc": 2078,
+    "diag": 85.9,
+    "cag": 5
   },
   {
     "busm": "Jitesh S Rath",
@@ -889,7 +1105,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 75.0,
     "ftfr": 91.0,
     "csat": 95.0,
-    "nps": 57.0
+    "nps": 57.0,
+    "cpc": 229,
+    "diag": 86.4,
+    "cag": 5
   },
   {
     "busm": "Jitesh S Rath",
@@ -901,7 +1120,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 93.0,
     "ftfr": 94.0,
     "csat": 89.0,
-    "nps": 55.0
+    "nps": 55.0,
+    "cpc": 986,
+    "diag": 86.0,
+    "cag": 1
   },
   {
     "busm": "Jitesh S Rath",
@@ -913,7 +1135,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 88.0,
     "ftfr": 80.0,
     "csat": 89.0,
-    "nps": 53.0
+    "nps": 53.0,
+    "cpc": 791,
+    "diag": 86.4,
+    "cag": 5
   },
   {
     "busm": "Jitesh S Rath",
@@ -925,7 +1150,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 87.0,
     "ftfr": 87.0,
     "csat": 89.0,
-    "nps": 60.0
+    "nps": 60.0,
+    "cpc": 1650,
+    "diag": 86.1,
+    "cag": 2
   },
   {
     "busm": "Jitesh S Rath",
@@ -937,7 +1165,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 92.0,
     "ftfr": 89.0,
     "csat": 93.0,
-    "nps": 56.0
+    "nps": 56.0,
+    "cpc": 102,
+    "diag": 86.8,
+    "cag": 4
   },
   {
     "busm": "Jitesh S Rath",
@@ -949,7 +1180,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 86.0,
     "ftfr": 80.0,
     "csat": 95.0,
-    "nps": 75.0
+    "nps": 75.0,
+    "cpc": 83,
+    "diag": 87.2,
+    "cag": 3
   },
   {
     "busm": "Jitesh S Rath",
@@ -961,7 +1195,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 70.0,
     "ftfr": 86.0,
     "csat": 86.0,
-    "nps": 50.0
+    "nps": 50.0,
+    "cpc": 1650,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Jitesh S Rath",
@@ -973,7 +1210,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 78.0,
     "ftfr": 94.0,
     "csat": 85.0,
-    "nps": 62.0
+    "nps": 62.0,
+    "cpc": 4458,
+    "diag": 85.7,
+    "cag": 3
   },
   {
     "busm": "Jitesh S Rath",
@@ -985,7 +1225,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 91.0,
     "ftfr": 83.0,
     "csat": 87.0,
-    "nps": 83.0
+    "nps": 83.0,
+    "cpc": 184,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Jitesh S Rath",
@@ -997,7 +1240,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 94.0,
     "ftfr": 89.0,
     "csat": 87.0,
-    "nps": 54.0
+    "nps": 54.0,
+    "cpc": 4367,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Jitesh S Rath",
@@ -1009,7 +1255,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 73.0,
     "ftfr": 86.0,
     "csat": 88.0,
-    "nps": 74.0
+    "nps": 74.0,
+    "cpc": 340,
+    "diag": 85.9,
+    "cag": 5
   },
   {
     "busm": "Jitesh S Rath",
@@ -1021,7 +1270,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 71.0,
     "ftfr": 81.0,
     "csat": 95.0,
-    "nps": 54.0
+    "nps": 54.0,
+    "cpc": 56,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Jitesh S Rath",
@@ -1033,7 +1285,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 79.0,
     "ftfr": 82.0,
     "csat": 94.0,
-    "nps": 63.0
+    "nps": 63.0,
+    "cpc": 1650,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Jitesh S Rath",
@@ -1045,7 +1300,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 83.0,
     "ftfr": 93.0,
     "csat": 87.0,
-    "nps": 67.0
+    "nps": 67.0,
+    "cpc": 2111,
+    "diag": 86.4,
+    "cag": 5
   },
   {
     "busm": "Jitesh S Rath",
@@ -1057,7 +1315,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 72.0,
     "ftfr": 91.0,
     "csat": 88.0,
-    "nps": 83.0
+    "nps": 83.0,
+    "cpc": 1956,
+    "diag": 86.4,
+    "cag": 5
   },
   {
     "busm": "Jitesh S Rath",
@@ -1069,7 +1330,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 83.0,
     "ftfr": 82.0,
     "csat": 90.0,
-    "nps": 74.0
+    "nps": 74.0,
+    "cpc": 682,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Jitesh S Rath",
@@ -1081,7 +1345,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 86.0,
     "ftfr": 88.0,
     "csat": 88.0,
-    "nps": 79.0
+    "nps": 79.0,
+    "cpc": 1650,
+    "diag": 86.8,
+    "cag": 4
   },
   {
     "busm": "Jitesh S Rath",
@@ -1093,7 +1360,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 84.0,
     "ftfr": 88.0,
     "csat": 91.0,
-    "nps": 55.0
+    "nps": 55.0,
+    "cpc": 1898,
+    "diag": 85.9,
+    "cag": 5
   },
   {
     "busm": "Jitesh S Rath",
@@ -1105,7 +1375,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 93.0,
     "ftfr": 85.0,
     "csat": 87.0,
-    "nps": 53.0
+    "nps": 53.0,
+    "cpc": 1650,
+    "diag": 85.7,
+    "cag": 3
   },
   {
     "busm": "Jitesh S Rath",
@@ -1117,7 +1390,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 86.0,
     "ftfr": 93.0,
     "csat": 86.0,
-    "nps": 56.0
+    "nps": 56.0,
+    "cpc": 1650,
+    "diag": 86.0,
+    "cag": 1
   },
   {
     "busm": "Jitesh S Rath",
@@ -1129,7 +1405,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 71.0,
     "ftfr": 92.0,
     "csat": 94.0,
-    "nps": 59.0
+    "nps": 59.0,
+    "cpc": 1314,
+    "diag": 85.4,
+    "cag": 5
   },
   {
     "busm": "Jitesh S Rath",
@@ -1141,7 +1420,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 70.0,
     "ftfr": 87.0,
     "csat": 87.0,
-    "nps": 50.0
+    "nps": 50.0,
+    "cpc": 1650,
+    "diag": 85.7,
+    "cag": 3
   },
   {
     "busm": "Jitesh S Rath",
@@ -1153,7 +1435,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 85.0,
     "ftfr": 86.0,
     "csat": 94.0,
-    "nps": 83.0
+    "nps": 83.0,
+    "cpc": 5627,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Jitesh S Rath",
@@ -1165,7 +1450,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 85.0,
     "ftfr": 85.0,
     "csat": 87.0,
-    "nps": 71.0
+    "nps": 71.0,
+    "cpc": 1496,
+    "diag": 86.4,
+    "cag": 5
   },
   {
     "busm": "Jitesh S Rath",
@@ -1177,7 +1465,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 83.0,
     "ftfr": 88.0,
     "csat": 96.0,
-    "nps": 64.0
+    "nps": 64.0,
+    "cpc": 2110,
+    "diag": 86.1,
+    "cag": 2
   },
   {
     "busm": "Jitesh S Rath",
@@ -1189,7 +1480,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 87.0,
     "ftfr": 86.0,
     "csat": 85.0,
-    "nps": 84.0
+    "nps": 84.0,
+    "cpc": 189,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Jitesh S Rath",
@@ -1201,7 +1495,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 91.0,
     "ftfr": 82.0,
     "csat": 92.0,
-    "nps": 69.0
+    "nps": 69.0,
+    "cpc": 1650,
+    "diag": 86.0,
+    "cag": 1
   },
   {
     "busm": "Jitesh S Rath",
@@ -1213,7 +1510,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 92.0,
     "ftfr": 91.0,
     "csat": 90.0,
-    "nps": 50.0
+    "nps": 50.0,
+    "cpc": 18,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Jitesh S Rath",
@@ -1225,7 +1525,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 86.0,
     "ftfr": 84.0,
     "csat": 88.0,
-    "nps": 51.0
+    "nps": 51.0,
+    "cpc": 3766,
+    "diag": 85.6,
+    "cag": 2
   },
   {
     "busm": "Jitesh S Rath",
@@ -1237,7 +1540,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 81.0,
     "ftfr": 94.0,
     "csat": 88.0,
-    "nps": 71.0
+    "nps": 71.0,
+    "cpc": 2491,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Jitesh S Rath",
@@ -1249,7 +1555,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 71.0,
     "ftfr": 89.0,
     "csat": 87.0,
-    "nps": 82.0
+    "nps": 82.0,
+    "cpc": 2698,
+    "diag": 87.0,
+    "cag": 1
   },
   {
     "busm": "Jitesh S Rath",
@@ -1261,7 +1570,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 86.0,
     "ftfr": 82.0,
     "csat": 95.0,
-    "nps": 75.0
+    "nps": 75.0,
+    "cpc": 333,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Jitesh S Rath",
@@ -1273,7 +1585,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 87.0,
     "ftfr": 88.0,
     "csat": 95.0,
-    "nps": 76.0
+    "nps": 76.0,
+    "cpc": 284,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Jitesh S Rath",
@@ -1285,7 +1600,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 80.0,
     "ftfr": 81.0,
     "csat": 96.0,
-    "nps": 74.0
+    "nps": 74.0,
+    "cpc": 2377,
+    "diag": 86.1,
+    "cag": 2
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1297,7 +1615,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 90.0,
     "ftfr": 80.0,
     "csat": 86.0,
-    "nps": 74.0
+    "nps": 74.0,
+    "cpc": 1650,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1309,7 +1630,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 87.0,
     "ftfr": 92.0,
     "csat": 96.0,
-    "nps": 51.0
+    "nps": 51.0,
+    "cpc": 705,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1321,7 +1645,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 91.0,
     "ftfr": 91.0,
     "csat": 85.0,
-    "nps": 80.0
+    "nps": 80.0,
+    "cpc": 1089,
+    "diag": 87.0,
+    "cag": 1
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1333,7 +1660,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 81.0,
     "ftfr": 91.0,
     "csat": 94.0,
-    "nps": 62.0
+    "nps": 62.0,
+    "cpc": 473,
+    "diag": 87.2,
+    "cag": 3
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1345,7 +1675,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 81.0,
     "ftfr": 86.0,
     "csat": 86.0,
-    "nps": 64.0
+    "nps": 64.0,
+    "cpc": 1126,
+    "diag": 87.1,
+    "cag": 2
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1357,7 +1690,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 92.0,
     "ftfr": 80.0,
     "csat": 92.0,
-    "nps": 59.0
+    "nps": 59.0,
+    "cpc": 3335,
+    "diag": 87.0,
+    "cag": 1
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1369,7 +1705,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 79.0,
     "ftfr": 94.0,
     "csat": 93.0,
-    "nps": 70.0
+    "nps": 70.0,
+    "cpc": 1325,
+    "diag": 87.1,
+    "cag": 2
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1381,7 +1720,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 79.0,
     "ftfr": 83.0,
     "csat": 89.0,
-    "nps": 62.0
+    "nps": 62.0,
+    "cpc": 1650,
+    "diag": 87.3,
+    "cag": 4
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1393,7 +1735,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 71.0,
     "ftfr": 87.0,
     "csat": 85.0,
-    "nps": 74.0
+    "nps": 74.0,
+    "cpc": 840,
+    "diag": 85.6,
+    "cag": 2
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1405,7 +1750,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 85.0,
     "ftfr": 88.0,
     "csat": 91.0,
-    "nps": 81.0
+    "nps": 81.0,
+    "cpc": 508,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1417,7 +1765,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 81.0,
     "ftfr": 89.0,
     "csat": 87.0,
-    "nps": 65.0
+    "nps": 65.0,
+    "cpc": 1402,
+    "diag": 87.3,
+    "cag": 4
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1429,7 +1780,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 84.0,
     "ftfr": 81.0,
     "csat": 85.0,
-    "nps": 53.0
+    "nps": 53.0,
+    "cpc": 880,
+    "diag": 86.4,
+    "cag": 5
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1441,7 +1795,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 76.0,
     "ftfr": 94.0,
     "csat": 88.0,
-    "nps": 59.0
+    "nps": 59.0,
+    "cpc": 1407,
+    "diag": 86.8,
+    "cag": 4
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1453,7 +1810,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 79.0,
     "ftfr": 82.0,
     "csat": 91.0,
-    "nps": 84.0
+    "nps": 84.0,
+    "cpc": 1874,
+    "diag": 86.9,
+    "cag": 5
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1465,7 +1825,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 71.0,
     "ftfr": 88.0,
     "csat": 85.0,
-    "nps": 66.0
+    "nps": 66.0,
+    "cpc": 333,
+    "diag": 86.1,
+    "cag": 2
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1477,7 +1840,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 81.0,
     "ftfr": 86.0,
     "csat": 92.0,
-    "nps": 52.0
+    "nps": 52.0,
+    "cpc": 6766,
+    "diag": 86.8,
+    "cag": 4
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1489,7 +1855,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 88.0,
     "ftfr": 94.0,
     "csat": 92.0,
-    "nps": 52.0
+    "nps": 52.0,
+    "cpc": 2680,
+    "diag": 86.8,
+    "cag": 4
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1501,7 +1870,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 88.0,
     "ftfr": 82.0,
     "csat": 93.0,
-    "nps": 66.0
+    "nps": 66.0,
+    "cpc": 693,
+    "diag": 87.0,
+    "cag": 1
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1513,7 +1885,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 75.0,
     "ftfr": 89.0,
     "csat": 90.0,
-    "nps": 74.0
+    "nps": 74.0,
+    "cpc": 2427,
+    "diag": 85.4,
+    "cag": 5
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1525,7 +1900,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 90.0,
     "ftfr": 87.0,
     "csat": 87.0,
-    "nps": 73.0
+    "nps": 73.0,
+    "cpc": 2555,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1537,7 +1915,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 82.0,
     "ftfr": 87.0,
     "csat": 95.0,
-    "nps": 64.0
+    "nps": 64.0,
+    "cpc": 2105,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1549,7 +1930,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 78.0,
     "ftfr": 80.0,
     "csat": 88.0,
-    "nps": 66.0
+    "nps": 66.0,
+    "cpc": 107,
+    "diag": 86.4,
+    "cag": 5
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1561,7 +1945,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 86.0,
     "ftfr": 85.0,
     "csat": 85.0,
-    "nps": 71.0
+    "nps": 71.0,
+    "cpc": 966,
+    "diag": 86.8,
+    "cag": 4
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1573,7 +1960,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 74.0,
     "ftfr": 82.0,
     "csat": 94.0,
-    "nps": 72.0
+    "nps": 72.0,
+    "cpc": 1098,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1585,7 +1975,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 74.0,
     "ftfr": 92.0,
     "csat": 93.0,
-    "nps": 53.0
+    "nps": 53.0,
+    "cpc": 1290,
+    "diag": 86.9,
+    "cag": 5
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1597,7 +1990,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 70.0,
     "ftfr": 90.0,
     "csat": 94.0,
-    "nps": 79.0
+    "nps": 79.0,
+    "cpc": 1650,
+    "diag": 92.0,
+    "cag": 1
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1609,7 +2005,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 82.0,
     "ftfr": 93.0,
     "csat": 92.0,
-    "nps": 83.0
+    "nps": 83.0,
+    "cpc": 1650,
+    "diag": 91.9,
+    "cag": 5
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1621,7 +2020,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 79.0,
     "ftfr": 87.0,
     "csat": 87.0,
-    "nps": 70.0
+    "nps": 70.0,
+    "cpc": 2033,
+    "diag": 86.4,
+    "cag": 5
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1633,7 +2035,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 88.0,
     "ftfr": 87.0,
     "csat": 92.0,
-    "nps": 54.0
+    "nps": 54.0,
+    "cpc": 2043,
+    "diag": 85.5,
+    "cag": 1
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1645,7 +2050,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 82.0,
     "ftfr": 85.0,
     "csat": 93.0,
-    "nps": 81.0
+    "nps": 81.0,
+    "cpc": 1650,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1657,7 +2065,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 71.0,
     "ftfr": 82.0,
     "csat": 96.0,
-    "nps": 65.0
+    "nps": 65.0,
+    "cpc": 204,
+    "diag": 86.8,
+    "cag": 4
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1669,7 +2080,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 70.0,
     "ftfr": 87.0,
     "csat": 89.0,
-    "nps": 77.0
+    "nps": 77.0,
+    "cpc": 418,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1681,7 +2095,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 92.0,
     "ftfr": 84.0,
     "csat": 94.0,
-    "nps": 79.0
+    "nps": 79.0,
+    "cpc": 1796,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1693,7 +2110,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 78.0,
     "ftfr": 85.0,
     "csat": 91.0,
-    "nps": 63.0
+    "nps": 63.0,
+    "cpc": 3924,
+    "diag": 86.8,
+    "cag": 4
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1705,7 +2125,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 79.0,
     "ftfr": 80.0,
     "csat": 96.0,
-    "nps": 68.0
+    "nps": 68.0,
+    "cpc": 2123,
+    "diag": 85.3,
+    "cag": 4
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1717,7 +2140,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 89.0,
     "ftfr": 87.0,
     "csat": 96.0,
-    "nps": 69.0
+    "nps": 69.0,
+    "cpc": 1169,
+    "diag": 86.0,
+    "cag": 1
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1729,7 +2155,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 72.0,
     "ftfr": 93.0,
     "csat": 91.0,
-    "nps": 56.0
+    "nps": 56.0,
+    "cpc": 1650,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1741,7 +2170,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 81.0,
     "ftfr": 90.0,
     "csat": 96.0,
-    "nps": 61.0
+    "nps": 61.0,
+    "cpc": 125,
+    "diag": 85.9,
+    "cag": 5
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1753,7 +2185,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 75.0,
     "ftfr": 90.0,
     "csat": 93.0,
-    "nps": 68.0
+    "nps": 68.0,
+    "cpc": 2244,
+    "diag": 85.2,
+    "cag": 3
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1765,7 +2200,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 89.0,
     "ftfr": 90.0,
     "csat": 85.0,
-    "nps": 81.0
+    "nps": 81.0,
+    "cpc": 2867,
+    "diag": 86.0,
+    "cag": 1
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1777,7 +2215,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 84.0,
     "ftfr": 81.0,
     "csat": 93.0,
-    "nps": 68.0
+    "nps": 68.0,
+    "cpc": 109,
+    "diag": 86.0,
+    "cag": 1
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1789,7 +2230,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 89.0,
     "ftfr": 87.0,
     "csat": 86.0,
-    "nps": 51.0
+    "nps": 51.0,
+    "cpc": 3234,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1801,7 +2245,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 72.0,
     "ftfr": 90.0,
     "csat": 87.0,
-    "nps": 75.0
+    "nps": 75.0,
+    "cpc": 1228,
+    "diag": 86.1,
+    "cag": 2
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1813,7 +2260,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 77.0,
     "ftfr": 91.0,
     "csat": 90.0,
-    "nps": 81.0
+    "nps": 81.0,
+    "cpc": 599,
+    "diag": 85.7,
+    "cag": 3
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1825,7 +2275,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 80.0,
     "ftfr": 86.0,
     "csat": 93.0,
-    "nps": 83.0
+    "nps": 83.0,
+    "cpc": 416,
+    "diag": 86.8,
+    "cag": 4
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1837,7 +2290,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 87.0,
     "ftfr": 90.0,
     "csat": 87.0,
-    "nps": 83.0
+    "nps": 83.0,
+    "cpc": 1650,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1849,7 +2305,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 77.0,
     "ftfr": 87.0,
     "csat": 96.0,
-    "nps": 61.0
+    "nps": 61.0,
+    "cpc": 141,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1861,7 +2320,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 74.0,
     "ftfr": 86.0,
     "csat": 89.0,
-    "nps": 57.0
+    "nps": 57.0,
+    "cpc": 1415,
+    "diag": 87.2,
+    "cag": 3
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1873,7 +2335,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 77.0,
     "ftfr": 85.0,
     "csat": 87.0,
-    "nps": 71.0
+    "nps": 71.0,
+    "cpc": 1230,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1885,7 +2350,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 89.0,
     "ftfr": 89.0,
     "csat": 89.0,
-    "nps": 75.0
+    "nps": 75.0,
+    "cpc": 1650,
+    "diag": 87.1,
+    "cag": 2
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1897,7 +2365,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 77.0,
     "ftfr": 90.0,
     "csat": 88.0,
-    "nps": 59.0
+    "nps": 59.0,
+    "cpc": 1778,
+    "diag": 87.4,
+    "cag": 5
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1909,7 +2380,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 92.0,
     "ftfr": 93.0,
     "csat": 92.0,
-    "nps": 65.0
+    "nps": 65.0,
+    "cpc": 1650,
+    "diag": 86.4,
+    "cag": 5
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1921,7 +2395,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 74.0,
     "ftfr": 92.0,
     "csat": 91.0,
-    "nps": 78.0
+    "nps": 78.0,
+    "cpc": 232,
+    "diag": 86.0,
+    "cag": 1
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1933,7 +2410,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 79.0,
     "ftfr": 91.0,
     "csat": 89.0,
-    "nps": 56.0
+    "nps": 56.0,
+    "cpc": 136,
+    "diag": 86.4,
+    "cag": 5
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1945,7 +2425,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 70.0,
     "ftfr": 86.0,
     "csat": 91.0,
-    "nps": 74.0
+    "nps": 74.0,
+    "cpc": 1368,
+    "diag": 85.9,
+    "cag": 5
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1957,7 +2440,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 75.0,
     "ftfr": 87.0,
     "csat": 95.0,
-    "nps": 64.0
+    "nps": 64.0,
+    "cpc": 1717,
+    "diag": 85.7,
+    "cag": 3
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1969,7 +2455,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 72.0,
     "ftfr": 83.0,
     "csat": 86.0,
-    "nps": 82.0
+    "nps": 82.0,
+    "cpc": 1650,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1981,7 +2470,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 93.0,
     "ftfr": 93.0,
     "csat": 88.0,
-    "nps": 77.0
+    "nps": 77.0,
+    "cpc": 57,
+    "diag": 86.1,
+    "cag": 2
   },
   {
     "busm": "Rajesh Limbachia",
@@ -1993,7 +2485,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 94.0,
     "ftfr": 90.0,
     "csat": 95.0,
-    "nps": 67.0
+    "nps": 67.0,
+    "cpc": 1650,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2005,7 +2500,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 81.0,
     "ftfr": 90.0,
     "csat": 94.0,
-    "nps": 67.0
+    "nps": 67.0,
+    "cpc": 1367,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2017,7 +2515,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 79.0,
     "ftfr": 85.0,
     "csat": 94.0,
-    "nps": 81.0
+    "nps": 81.0,
+    "cpc": 1504,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2029,7 +2530,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 74.0,
     "ftfr": 85.0,
     "csat": 92.0,
-    "nps": 82.0
+    "nps": 82.0,
+    "cpc": 451,
+    "diag": 86.9,
+    "cag": 5
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2041,7 +2545,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 90.0,
     "ftfr": 83.0,
     "csat": 87.0,
-    "nps": 57.0
+    "nps": 57.0,
+    "cpc": 65,
+    "diag": 86.8,
+    "cag": 4
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2053,7 +2560,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 94.0,
     "ftfr": 91.0,
     "csat": 95.0,
-    "nps": 84.0
+    "nps": 84.0,
+    "cpc": 3553,
+    "diag": 86.4,
+    "cag": 5
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2065,7 +2575,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 72.0,
     "ftfr": 92.0,
     "csat": 90.0,
-    "nps": 52.0
+    "nps": 52.0,
+    "cpc": 2314,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2077,7 +2590,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 88.0,
     "ftfr": 81.0,
     "csat": 92.0,
-    "nps": 59.0
+    "nps": 59.0,
+    "cpc": 1030,
+    "diag": 87.1,
+    "cag": 2
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2089,7 +2605,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 73.0,
     "ftfr": 87.0,
     "csat": 94.0,
-    "nps": 55.0
+    "nps": 55.0,
+    "cpc": 403,
+    "diag": 87.2,
+    "cag": 3
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2101,7 +2620,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 90.0,
     "ftfr": 91.0,
     "csat": 93.0,
-    "nps": 51.0
+    "nps": 51.0,
+    "cpc": 1573,
+    "diag": 85.3,
+    "cag": 4
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2113,7 +2635,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 79.0,
     "ftfr": 86.0,
     "csat": 93.0,
-    "nps": 70.0
+    "nps": 70.0,
+    "cpc": 56,
+    "diag": 85.7,
+    "cag": 3
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2125,7 +2650,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 84.0,
     "ftfr": 89.0,
     "csat": 93.0,
-    "nps": 52.0
+    "nps": 52.0,
+    "cpc": 136,
+    "diag": 86.1,
+    "cag": 2
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2137,7 +2665,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 78.0,
     "ftfr": 90.0,
     "csat": 96.0,
-    "nps": 81.0
+    "nps": 81.0,
+    "cpc": 970,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2149,7 +2680,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 87.0,
     "ftfr": 82.0,
     "csat": 91.0,
-    "nps": 72.0
+    "nps": 72.0,
+    "cpc": 46,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2161,7 +2695,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 79.0,
     "ftfr": 87.0,
     "csat": 90.0,
-    "nps": 69.0
+    "nps": 69.0,
+    "cpc": 1081,
+    "diag": 86.4,
+    "cag": 5
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2173,7 +2710,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 71.0,
     "ftfr": 88.0,
     "csat": 89.0,
-    "nps": 60.0
+    "nps": 60.0,
+    "cpc": 154,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2185,7 +2725,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 81.0,
     "ftfr": 81.0,
     "csat": 88.0,
-    "nps": 81.0
+    "nps": 81.0,
+    "cpc": 1562,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2197,7 +2740,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 94.0,
     "ftfr": 92.0,
     "csat": 94.0,
-    "nps": 67.0
+    "nps": 67.0,
+    "cpc": 1650,
+    "diag": 86.0,
+    "cag": 1
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2209,7 +2755,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 74.0,
     "ftfr": 94.0,
     "csat": 92.0,
-    "nps": 82.0
+    "nps": 82.0,
+    "cpc": 2210,
+    "diag": 86.9,
+    "cag": 5
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2221,7 +2770,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 91.0,
     "ftfr": 85.0,
     "csat": 85.0,
-    "nps": 65.0
+    "nps": 65.0,
+    "cpc": 880,
+    "diag": 85.7,
+    "cag": 3
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2233,7 +2785,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 89.0,
     "ftfr": 87.0,
     "csat": 95.0,
-    "nps": 83.0
+    "nps": 83.0,
+    "cpc": 1614,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2245,7 +2800,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 92.0,
     "ftfr": 90.0,
     "csat": 90.0,
-    "nps": 67.0
+    "nps": 67.0,
+    "cpc": 1650,
+    "diag": 86.4,
+    "cag": 5
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2257,7 +2815,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 92.0,
     "ftfr": 83.0,
     "csat": 88.0,
-    "nps": 51.0
+    "nps": 51.0,
+    "cpc": 1650,
+    "diag": 87.0,
+    "cag": 1
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2269,7 +2830,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 86.0,
     "ftfr": 89.0,
     "csat": 88.0,
-    "nps": 50.0
+    "nps": 50.0,
+    "cpc": 1544,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2281,7 +2845,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 93.0,
     "ftfr": 87.0,
     "csat": 96.0,
-    "nps": 60.0
+    "nps": 60.0,
+    "cpc": 1650,
+    "diag": 85.9,
+    "cag": 5
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2293,7 +2860,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 86.0,
     "ftfr": 94.0,
     "csat": 94.0,
-    "nps": 80.0
+    "nps": 80.0,
+    "cpc": 1111,
+    "diag": 86.0,
+    "cag": 1
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2305,7 +2875,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 73.0,
     "ftfr": 82.0,
     "csat": 91.0,
-    "nps": 62.0
+    "nps": 62.0,
+    "cpc": 74,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2317,7 +2890,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 70.0,
     "ftfr": 90.0,
     "csat": 85.0,
-    "nps": 74.0
+    "nps": 74.0,
+    "cpc": 1650,
+    "diag": 93.4,
+    "cag": 5
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2329,7 +2905,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 90.0,
     "ftfr": 93.0,
     "csat": 87.0,
-    "nps": 64.0
+    "nps": 64.0,
+    "cpc": 1663,
+    "diag": 85.9,
+    "cag": 5
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2341,7 +2920,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 90.0,
     "ftfr": 86.0,
     "csat": 92.0,
-    "nps": 57.0
+    "nps": 57.0,
+    "cpc": 525,
+    "diag": 86.4,
+    "cag": 5
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2353,7 +2935,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 70.0,
     "ftfr": 87.0,
     "csat": 93.0,
-    "nps": 79.0
+    "nps": 79.0,
+    "cpc": 1650,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2365,7 +2950,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 92.0,
     "ftfr": 83.0,
     "csat": 86.0,
-    "nps": 83.0
+    "nps": 83.0,
+    "cpc": 1650,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2377,7 +2965,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 82.0,
     "ftfr": 87.0,
     "csat": 86.0,
-    "nps": 54.0
+    "nps": 54.0,
+    "cpc": 569,
+    "diag": 86.0,
+    "cag": 1
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2389,7 +2980,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 80.0,
     "ftfr": 85.0,
     "csat": 89.0,
-    "nps": 73.0
+    "nps": 73.0,
+    "cpc": 157,
+    "diag": 86.4,
+    "cag": 5
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2401,7 +2995,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 81.0,
     "ftfr": 92.0,
     "csat": 86.0,
-    "nps": 78.0
+    "nps": 78.0,
+    "cpc": 1130,
+    "diag": 85.8,
+    "cag": 4
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2413,7 +3010,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 75.0,
     "ftfr": 89.0,
     "csat": 88.0,
-    "nps": 84.0
+    "nps": 84.0,
+    "cpc": 52,
+    "diag": 85.8,
+    "cag": 4
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2425,7 +3025,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 84.0,
     "ftfr": 84.0,
     "csat": 90.0,
-    "nps": 74.0
+    "nps": 74.0,
+    "cpc": 1162,
+    "diag": 85.9,
+    "cag": 5
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2437,7 +3040,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 84.0,
     "ftfr": 83.0,
     "csat": 96.0,
-    "nps": 74.0
+    "nps": 74.0,
+    "cpc": 166,
+    "diag": 87.1,
+    "cag": 2
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2449,7 +3055,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 90.0,
     "ftfr": 94.0,
     "csat": 89.0,
-    "nps": 79.0
+    "nps": 79.0,
+    "cpc": 796,
+    "diag": 85.8,
+    "cag": 4
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2461,7 +3070,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 81.0,
     "ftfr": 82.0,
     "csat": 87.0,
-    "nps": 69.0
+    "nps": 69.0,
+    "cpc": 47,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2473,7 +3085,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 76.0,
     "ftfr": 88.0,
     "csat": 91.0,
-    "nps": 54.0
+    "nps": 54.0,
+    "cpc": 2143,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2485,7 +3100,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 75.0,
     "ftfr": 84.0,
     "csat": 87.0,
-    "nps": 80.0
+    "nps": 80.0,
+    "cpc": 1204,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2497,7 +3115,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 83.0,
     "ftfr": 90.0,
     "csat": 85.0,
-    "nps": 74.0
+    "nps": 74.0,
+    "cpc": 1650,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2509,7 +3130,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 93.0,
     "ftfr": 93.0,
     "csat": 96.0,
-    "nps": 77.0
+    "nps": 77.0,
+    "cpc": 51,
+    "diag": 87.3,
+    "cag": 4
   },
   {
     "busm": "Rajesh Limbachia",
@@ -2521,7 +3145,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 76.0,
     "ftfr": 87.0,
     "csat": 86.0,
-    "nps": 58.0
+    "nps": 58.0,
+    "cpc": 1650,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Shivaprasad P U",
@@ -2533,7 +3160,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 79.0,
     "ftfr": 91.0,
     "csat": 93.0,
-    "nps": 72.0
+    "nps": 72.0,
+    "cpc": 1650,
+    "diag": 93.6,
+    "cag": 2
   },
   {
     "busm": "Shivaprasad P U",
@@ -2545,7 +3175,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 90.0,
     "ftfr": 90.0,
     "csat": 86.0,
-    "nps": 74.0
+    "nps": 74.0,
+    "cpc": 76,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Shivaprasad P U",
@@ -2557,7 +3190,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 76.0,
     "ftfr": 82.0,
     "csat": 88.0,
-    "nps": 50.0
+    "nps": 50.0,
+    "cpc": 832,
+    "diag": 85.8,
+    "cag": 4
   },
   {
     "busm": "Shivaprasad P U",
@@ -2569,7 +3205,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 78.0,
     "ftfr": 83.0,
     "csat": 88.0,
-    "nps": 60.0
+    "nps": 60.0,
+    "cpc": 2160,
+    "diag": 85.9,
+    "cag": 5
   },
   {
     "busm": "Shivaprasad P U",
@@ -2581,7 +3220,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 78.0,
     "ftfr": 89.0,
     "csat": 88.0,
-    "nps": 64.0
+    "nps": 64.0,
+    "cpc": 2033,
+    "diag": 85.8,
+    "cag": 4
   },
   {
     "busm": "Shivaprasad P U",
@@ -2593,7 +3235,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 75.0,
     "ftfr": 92.0,
     "csat": 96.0,
-    "nps": 73.0
+    "nps": 73.0,
+    "cpc": 22,
+    "diag": 86.0,
+    "cag": 1
   },
   {
     "busm": "Shivaprasad P U",
@@ -2605,7 +3250,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 70.0,
     "ftfr": 91.0,
     "csat": 92.0,
-    "nps": 63.0
+    "nps": 63.0,
+    "cpc": 636,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Shivaprasad P U",
@@ -2617,7 +3265,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 94.0,
     "ftfr": 88.0,
     "csat": 95.0,
-    "nps": 79.0
+    "nps": 79.0,
+    "cpc": 1445,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Shivaprasad P U",
@@ -2629,7 +3280,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 84.0,
     "ftfr": 81.0,
     "csat": 95.0,
-    "nps": 60.0
+    "nps": 60.0,
+    "cpc": 689,
+    "diag": 86.0,
+    "cag": 1
   },
   {
     "busm": "Shivaprasad P U",
@@ -2641,7 +3295,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 93.0,
     "ftfr": 92.0,
     "csat": 94.0,
-    "nps": 50.0
+    "nps": 50.0,
+    "cpc": 1650,
+    "diag": 87.0,
+    "cag": 1
   },
   {
     "busm": "Shivaprasad P U",
@@ -2653,7 +3310,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 74.0,
     "ftfr": 91.0,
     "csat": 87.0,
-    "nps": 82.0
+    "nps": 82.0,
+    "cpc": 606,
+    "diag": 87.1,
+    "cag": 2
   },
   {
     "busm": "Shivaprasad P U",
@@ -2665,7 +3325,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 94.0,
     "ftfr": 91.0,
     "csat": 88.0,
-    "nps": 66.0
+    "nps": 66.0,
+    "cpc": 2392,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Shivaprasad P U",
@@ -2677,7 +3340,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 80.0,
     "ftfr": 83.0,
     "csat": 93.0,
-    "nps": 78.0
+    "nps": 78.0,
+    "cpc": 136,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Shivaprasad P U",
@@ -2689,7 +3355,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 92.0,
     "ftfr": 87.0,
     "csat": 85.0,
-    "nps": 76.0
+    "nps": 76.0,
+    "cpc": 1650,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Shivaprasad P U",
@@ -2701,7 +3370,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 90.0,
     "ftfr": 80.0,
     "csat": 88.0,
-    "nps": 59.0
+    "nps": 59.0,
+    "cpc": 3320,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Shivaprasad P U",
@@ -2713,7 +3385,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 79.0,
     "ftfr": 88.0,
     "csat": 95.0,
-    "nps": 59.0
+    "nps": 59.0,
+    "cpc": 1650,
+    "diag": 85.6,
+    "cag": 2
   },
   {
     "busm": "Shivaprasad P U",
@@ -2725,7 +3400,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 75.0,
     "ftfr": 83.0,
     "csat": 96.0,
-    "nps": 84.0
+    "nps": 84.0,
+    "cpc": 136,
+    "diag": 86.0,
+    "cag": 1
   },
   {
     "busm": "Shivaprasad P U",
@@ -2737,7 +3415,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 71.0,
     "ftfr": 80.0,
     "csat": 88.0,
-    "nps": 81.0
+    "nps": 81.0,
+    "cpc": 1061,
+    "diag": 87.0,
+    "cag": 1
   },
   {
     "busm": "Shivaprasad P U",
@@ -2749,7 +3430,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 90.0,
     "ftfr": 87.0,
     "csat": 89.0,
-    "nps": 56.0
+    "nps": 56.0,
+    "cpc": 989,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Shivaprasad P U",
@@ -2761,7 +3445,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 92.0,
     "ftfr": 91.0,
     "csat": 87.0,
-    "nps": 66.0
+    "nps": 66.0,
+    "cpc": 1650,
+    "diag": 92.6,
+    "cag": 2
   },
   {
     "busm": "Shivaprasad P U",
@@ -2773,7 +3460,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 84.0,
     "ftfr": 89.0,
     "csat": 91.0,
-    "nps": 61.0
+    "nps": 61.0,
+    "cpc": 1845,
+    "diag": 85.8,
+    "cag": 4
   },
   {
     "busm": "Shivaprasad P U",
@@ -2785,7 +3475,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 94.0,
     "ftfr": 80.0,
     "csat": 88.0,
-    "nps": 66.0
+    "nps": 66.0,
+    "cpc": 2086,
+    "diag": 87.3,
+    "cag": 4
   },
   {
     "busm": "Shivaprasad P U",
@@ -2797,7 +3490,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 89.0,
     "ftfr": 88.0,
     "csat": 90.0,
-    "nps": 56.0
+    "nps": 56.0,
+    "cpc": 1013,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Shivaprasad P U",
@@ -2809,7 +3505,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 90.0,
     "ftfr": 81.0,
     "csat": 95.0,
-    "nps": 57.0
+    "nps": 57.0,
+    "cpc": 2022,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Shivaprasad P U",
@@ -2821,7 +3520,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 81.0,
     "ftfr": 82.0,
     "csat": 91.0,
-    "nps": 52.0
+    "nps": 52.0,
+    "cpc": 2178,
+    "diag": 86.9,
+    "cag": 5
   },
   {
     "busm": "Shivaprasad P U",
@@ -2833,7 +3535,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 87.0,
     "ftfr": 81.0,
     "csat": 88.0,
-    "nps": 72.0
+    "nps": 72.0,
+    "cpc": 1908,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Shivaprasad P U",
@@ -2845,7 +3550,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 86.0,
     "ftfr": 89.0,
     "csat": 94.0,
-    "nps": 60.0
+    "nps": 60.0,
+    "cpc": 1650,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Shivaprasad P U",
@@ -2857,7 +3565,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 70.0,
     "ftfr": 85.0,
     "csat": 88.0,
-    "nps": 66.0
+    "nps": 66.0,
+    "cpc": 1650,
+    "diag": 85.8,
+    "cag": 4
   },
   {
     "busm": "Shivaprasad P U",
@@ -2869,7 +3580,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 82.0,
     "ftfr": 92.0,
     "csat": 95.0,
-    "nps": 78.0
+    "nps": 78.0,
+    "cpc": 3772,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Shivaprasad P U",
@@ -2881,7 +3595,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 89.0,
     "ftfr": 88.0,
     "csat": 94.0,
-    "nps": 55.0
+    "nps": 55.0,
+    "cpc": 182,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Shivaprasad P U",
@@ -2893,7 +3610,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 78.0,
     "ftfr": 87.0,
     "csat": 85.0,
-    "nps": 53.0
+    "nps": 53.0,
+    "cpc": 1650,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Shivaprasad P U",
@@ -2905,7 +3625,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 88.0,
     "ftfr": 91.0,
     "csat": 91.0,
-    "nps": 68.0
+    "nps": 68.0,
+    "cpc": 2024,
+    "diag": 86.8,
+    "cag": 4
   },
   {
     "busm": "Shivaprasad P U",
@@ -2917,7 +3640,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 75.0,
     "ftfr": 87.0,
     "csat": 88.0,
-    "nps": 67.0
+    "nps": 67.0,
+    "cpc": 1311,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Shivaprasad P U",
@@ -2929,7 +3655,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 74.0,
     "ftfr": 91.0,
     "csat": 87.0,
-    "nps": 54.0
+    "nps": 54.0,
+    "cpc": 1650,
+    "diag": 85.8,
+    "cag": 4
   },
   {
     "busm": "Shivaprasad P U",
@@ -2941,7 +3670,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 70.0,
     "ftfr": 83.0,
     "csat": 86.0,
-    "nps": 78.0
+    "nps": 78.0,
+    "cpc": 1074,
+    "diag": 86.8,
+    "cag": 4
   },
   {
     "busm": "Shivaprasad P U",
@@ -2953,7 +3685,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 86.0,
     "ftfr": 80.0,
     "csat": 87.0,
-    "nps": 62.0
+    "nps": 62.0,
+    "cpc": 85,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Shivaprasad P U",
@@ -2965,7 +3700,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 76.0,
     "ftfr": 94.0,
     "csat": 88.0,
-    "nps": 59.0
+    "nps": 59.0,
+    "cpc": 1494,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Shivaprasad P U",
@@ -2977,7 +3715,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 83.0,
     "ftfr": 90.0,
     "csat": 89.0,
-    "nps": 81.0
+    "nps": 81.0,
+    "cpc": 489,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Shivaprasad P U",
@@ -2989,7 +3730,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 83.0,
     "ftfr": 80.0,
     "csat": 90.0,
-    "nps": 79.0
+    "nps": 79.0,
+    "cpc": 2708,
+    "diag": 86.8,
+    "cag": 4
   },
   {
     "busm": "Shivaprasad P U",
@@ -3001,7 +3745,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 88.0,
     "ftfr": 86.0,
     "csat": 85.0,
-    "nps": 61.0
+    "nps": 61.0,
+    "cpc": 1888,
+    "diag": 87.2,
+    "cag": 3
   },
   {
     "busm": "Shivaprasad P U",
@@ -3013,7 +3760,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 84.0,
     "ftfr": 89.0,
     "csat": 87.0,
-    "nps": 50.0
+    "nps": 50.0,
+    "cpc": 203,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Shivaprasad P U",
@@ -3025,7 +3775,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 93.0,
     "ftfr": 93.0,
     "csat": 93.0,
-    "nps": 78.0
+    "nps": 78.0,
+    "cpc": 1793,
+    "diag": 85.6,
+    "cag": 2
   },
   {
     "busm": "Shivaprasad P U",
@@ -3037,7 +3790,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 84.0,
     "ftfr": 81.0,
     "csat": 89.0,
-    "nps": 50.0
+    "nps": 50.0,
+    "cpc": 1497,
+    "diag": 87.0,
+    "cag": 1
   },
   {
     "busm": "Shivaprasad P U",
@@ -3049,7 +3805,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 85.0,
     "ftfr": 90.0,
     "csat": 93.0,
-    "nps": 75.0
+    "nps": 75.0,
+    "cpc": 796,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Shivaprasad P U",
@@ -3061,7 +3820,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 90.0,
     "ftfr": 84.0,
     "csat": 90.0,
-    "nps": 82.0
+    "nps": 82.0,
+    "cpc": 1142,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Shivaprasad P U",
@@ -3073,7 +3835,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 94.0,
     "ftfr": 92.0,
     "csat": 89.0,
-    "nps": 84.0
+    "nps": 84.0,
+    "cpc": 1050,
+    "diag": 86.1,
+    "cag": 2
   },
   {
     "busm": "Shivaprasad P U",
@@ -3085,7 +3850,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 83.0,
     "ftfr": 86.0,
     "csat": 89.0,
-    "nps": 73.0
+    "nps": 73.0,
+    "cpc": 1650,
+    "diag": 85.6,
+    "cag": 2
   },
   {
     "busm": "Shivaprasad P U",
@@ -3097,7 +3865,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 87.0,
     "ftfr": 89.0,
     "csat": 86.0,
-    "nps": 80.0
+    "nps": 80.0,
+    "cpc": 2875,
+    "diag": 86.9,
+    "cag": 5
   },
   {
     "busm": "Shivaprasad P U",
@@ -3109,7 +3880,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 82.0,
     "ftfr": 82.0,
     "csat": 86.0,
-    "nps": 78.0
+    "nps": 78.0,
+    "cpc": 1396,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Shivaprasad P U",
@@ -3121,7 +3895,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 89.0,
     "ftfr": 91.0,
     "csat": 94.0,
-    "nps": 60.0
+    "nps": 60.0,
+    "cpc": 1099,
+    "diag": 86.1,
+    "cag": 2
   },
   {
     "busm": "Shivaprasad P U",
@@ -3133,7 +3910,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 82.0,
     "ftfr": 85.0,
     "csat": 86.0,
-    "nps": 65.0
+    "nps": 65.0,
+    "cpc": 527,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Shivaprasad P U",
@@ -3145,7 +3925,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 71.0,
     "ftfr": 81.0,
     "csat": 87.0,
-    "nps": 68.0
+    "nps": 68.0,
+    "cpc": 764,
+    "diag": 87.1,
+    "cag": 2
   },
   {
     "busm": "Shivaprasad P U",
@@ -3157,7 +3940,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 93.0,
     "ftfr": 91.0,
     "csat": 96.0,
-    "nps": 57.0
+    "nps": 57.0,
+    "cpc": 1907,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Shivaprasad P U",
@@ -3169,7 +3955,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 86.0,
     "ftfr": 89.0,
     "csat": 94.0,
-    "nps": 75.0
+    "nps": 75.0,
+    "cpc": 2284,
+    "diag": 86.1,
+    "cag": 2
   },
   {
     "busm": "Shivaprasad P U",
@@ -3181,7 +3970,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 76.0,
     "ftfr": 87.0,
     "csat": 90.0,
-    "nps": 68.0
+    "nps": 68.0,
+    "cpc": 1235,
+    "diag": 85.3,
+    "cag": 4
   },
   {
     "busm": "Shivaprasad P U",
@@ -3193,7 +3985,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 71.0,
     "ftfr": 87.0,
     "csat": 93.0,
-    "nps": 54.0
+    "nps": 54.0,
+    "cpc": 1650,
+    "diag": 86.1,
+    "cag": 2
   },
   {
     "busm": "Shivaprasad P U",
@@ -3205,7 +4000,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 81.0,
     "ftfr": 93.0,
     "csat": 86.0,
-    "nps": 65.0
+    "nps": 65.0,
+    "cpc": 4876,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Shivaprasad P U",
@@ -3217,7 +4015,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 72.0,
     "ftfr": 94.0,
     "csat": 87.0,
-    "nps": 55.0
+    "nps": 55.0,
+    "cpc": 347,
+    "diag": 86.1,
+    "cag": 2
   },
   {
     "busm": "Shivaprasad P U",
@@ -3229,7 +4030,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 82.0,
     "ftfr": 92.0,
     "csat": 96.0,
-    "nps": 56.0
+    "nps": 56.0,
+    "cpc": 917,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Shivaprasad P U",
@@ -3241,7 +4045,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 75.0,
     "ftfr": 82.0,
     "csat": 93.0,
-    "nps": 68.0
+    "nps": 68.0,
+    "cpc": 1650,
+    "diag": 86.9,
+    "cag": 5
   },
   {
     "busm": "Shivaprasad P U",
@@ -3253,7 +4060,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 90.0,
     "ftfr": 90.0,
     "csat": 94.0,
-    "nps": 52.0
+    "nps": 52.0,
+    "cpc": 2542,
+    "diag": 86.1,
+    "cag": 2
   },
   {
     "busm": "Shivaprasad P U",
@@ -3265,7 +4075,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 94.0,
     "ftfr": 89.0,
     "csat": 92.0,
-    "nps": 77.0
+    "nps": 77.0,
+    "cpc": 1650,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Shivaprasad P U",
@@ -3277,7 +4090,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 73.0,
     "ftfr": 94.0,
     "csat": 92.0,
-    "nps": 53.0
+    "nps": 53.0,
+    "cpc": 4754,
+    "diag": 86.9,
+    "cag": 5
   },
   {
     "busm": "Shivaprasad P U",
@@ -3289,7 +4105,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 89.0,
     "ftfr": 88.0,
     "csat": 94.0,
-    "nps": 73.0
+    "nps": 73.0,
+    "cpc": 2568,
+    "diag": 86.8,
+    "cag": 4
   },
   {
     "busm": "Shivaprasad P U",
@@ -3301,7 +4120,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 86.0,
     "ftfr": 94.0,
     "csat": 89.0,
-    "nps": 80.0
+    "nps": 80.0,
+    "cpc": 2033,
+    "diag": 87.1,
+    "cag": 2
   },
   {
     "busm": "Shivaprasad P U",
@@ -3313,7 +4135,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 92.0,
     "ftfr": 85.0,
     "csat": 96.0,
-    "nps": 54.0
+    "nps": 54.0,
+    "cpc": 1650,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Shivaprasad P U",
@@ -3325,7 +4150,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 92.0,
     "ftfr": 91.0,
     "csat": 91.0,
-    "nps": 62.0
+    "nps": 62.0,
+    "cpc": 2554,
+    "diag": 86.1,
+    "cag": 2
   },
   {
     "busm": "Shivaprasad P U",
@@ -3337,7 +4165,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 77.0,
     "ftfr": 93.0,
     "csat": 88.0,
-    "nps": 79.0
+    "nps": 79.0,
+    "cpc": 1896,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Shivaprasad P U",
@@ -3349,7 +4180,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 81.0,
     "ftfr": 85.0,
     "csat": 94.0,
-    "nps": 56.0
+    "nps": 56.0,
+    "cpc": 70,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Shivaprasad P U",
@@ -3361,7 +4195,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 71.0,
     "ftfr": 91.0,
     "csat": 90.0,
-    "nps": 81.0
+    "nps": 81.0,
+    "cpc": 98,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Shivaprasad P U",
@@ -3373,7 +4210,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 94.0,
     "ftfr": 93.0,
     "csat": 96.0,
-    "nps": 61.0
+    "nps": 61.0,
+    "cpc": 1650,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Shivaprasad P U",
@@ -3385,7 +4225,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 82.0,
     "ftfr": 93.0,
     "csat": 95.0,
-    "nps": 71.0
+    "nps": 71.0,
+    "cpc": 2311,
+    "diag": 85.8,
+    "cag": 4
   },
   {
     "busm": "Shivaprasad P U",
@@ -3397,7 +4240,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 87.0,
     "ftfr": 89.0,
     "csat": 96.0,
-    "nps": 51.0
+    "nps": 51.0,
+    "cpc": 74,
+    "diag": 86.1,
+    "cag": 2
   },
   {
     "busm": "Shivaprasad P U",
@@ -3409,7 +4255,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 76.0,
     "ftfr": 89.0,
     "csat": 93.0,
-    "nps": 59.0
+    "nps": 59.0,
+    "cpc": 1255,
+    "diag": 85.7,
+    "cag": 3
   },
   {
     "busm": "Shivaprasad P U",
@@ -3421,7 +4270,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 87.0,
     "ftfr": 91.0,
     "csat": 87.0,
-    "nps": 78.0
+    "nps": 78.0,
+    "cpc": 1755,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Shivaprasad P U",
@@ -3433,7 +4285,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 93.0,
     "ftfr": 89.0,
     "csat": 91.0,
-    "nps": 83.0
+    "nps": 83.0,
+    "cpc": 878,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Shivaprasad P U",
@@ -3445,7 +4300,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 90.0,
     "ftfr": 86.0,
     "csat": 89.0,
-    "nps": 58.0
+    "nps": 58.0,
+    "cpc": 1716,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Shivaprasad P U",
@@ -3457,7 +4315,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 70.0,
     "ftfr": 91.0,
     "csat": 87.0,
-    "nps": 82.0
+    "nps": 82.0,
+    "cpc": 2086,
+    "diag": 85.4,
+    "cag": 5
   },
   {
     "busm": "Shivaprasad P U",
@@ -3469,7 +4330,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 79.0,
     "ftfr": 90.0,
     "csat": 90.0,
-    "nps": 57.0
+    "nps": 57.0,
+    "cpc": 906,
+    "diag": 85.7,
+    "cag": 3
   },
   {
     "busm": "Shivaprasad P U",
@@ -3481,7 +4345,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 88.0,
     "ftfr": 83.0,
     "csat": 87.0,
-    "nps": 73.0
+    "nps": 73.0,
+    "cpc": 1650,
+    "diag": 86.1,
+    "cag": 2
   },
   {
     "busm": "Shivaprasad P U",
@@ -3493,7 +4360,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 92.0,
     "ftfr": 94.0,
     "csat": 86.0,
-    "nps": 60.0
+    "nps": 60.0,
+    "cpc": 1099,
+    "diag": 86.0,
+    "cag": 1
   },
   {
     "busm": "Shivaprasad P U",
@@ -3505,7 +4375,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 80.0,
     "ftfr": 86.0,
     "csat": 88.0,
-    "nps": 74.0
+    "nps": 74.0,
+    "cpc": 1197,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Shivaprasad P U",
@@ -3517,7 +4390,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 75.0,
     "ftfr": 81.0,
     "csat": 91.0,
-    "nps": 52.0
+    "nps": 52.0,
+    "cpc": 1140,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Shivaprasad P U",
@@ -3529,7 +4405,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 73.0,
     "ftfr": 82.0,
     "csat": 95.0,
-    "nps": 80.0
+    "nps": 80.0,
+    "cpc": 1908,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Shivaprasad P U",
@@ -3541,7 +4420,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 88.0,
     "ftfr": 86.0,
     "csat": 88.0,
-    "nps": 52.0
+    "nps": 52.0,
+    "cpc": 1650,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Shivaprasad P U",
@@ -3553,7 +4435,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 87.0,
     "ftfr": 81.0,
     "csat": 88.0,
-    "nps": 61.0
+    "nps": 61.0,
+    "cpc": 1650,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Shivaprasad P U",
@@ -3565,7 +4450,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 79.0,
     "ftfr": 82.0,
     "csat": 86.0,
-    "nps": 80.0
+    "nps": 80.0,
+    "cpc": 112,
+    "diag": 85.9,
+    "cag": 5
   },
   {
     "busm": "Shivaprasad P U",
@@ -3577,7 +4465,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 89.0,
     "ftfr": 87.0,
     "csat": 88.0,
-    "nps": 59.0
+    "nps": 59.0,
+    "cpc": 1650,
+    "diag": 93.2,
+    "cag": 3
   },
   {
     "busm": "Shivaprasad P U",
@@ -3589,7 +4480,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 76.0,
     "ftfr": 89.0,
     "csat": 90.0,
-    "nps": 70.0
+    "nps": 70.0,
+    "cpc": 2227,
+    "diag": 85.5,
+    "cag": 1
   },
   {
     "busm": "Shivaprasad P U",
@@ -3601,7 +4495,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 90.0,
     "ftfr": 85.0,
     "csat": 93.0,
-    "nps": 60.0
+    "nps": 60.0,
+    "cpc": 3156,
+    "diag": 85.8,
+    "cag": 4
   },
   {
     "busm": "Shivaprasad P U",
@@ -3613,7 +4510,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 70.0,
     "ftfr": 87.0,
     "csat": 94.0,
-    "nps": 69.0
+    "nps": 69.0,
+    "cpc": 1079,
+    "diag": 86.0,
+    "cag": 1
   },
   {
     "busm": "Shivaprasad P U",
@@ -3625,7 +4525,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 83.0,
     "ftfr": 93.0,
     "csat": 90.0,
-    "nps": 69.0
+    "nps": 69.0,
+    "cpc": 125,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Shivaprasad P U",
@@ -3637,7 +4540,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 93.0,
     "ftfr": 88.0,
     "csat": 91.0,
-    "nps": 77.0
+    "nps": 77.0,
+    "cpc": 132,
+    "diag": 86.0,
+    "cag": 1
   },
   {
     "busm": "Shivaprasad P U",
@@ -3649,7 +4555,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 89.0,
     "ftfr": 87.0,
     "csat": 88.0,
-    "nps": 65.0
+    "nps": 65.0,
+    "cpc": 94,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Shivaprasad P U",
@@ -3661,7 +4570,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 83.0,
     "ftfr": 82.0,
     "csat": 86.0,
-    "nps": 52.0
+    "nps": 52.0,
+    "cpc": 1627,
+    "diag": 87.0,
+    "cag": 1
   },
   {
     "busm": "Shivaprasad P U",
@@ -3673,7 +4585,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 73.0,
     "ftfr": 81.0,
     "csat": 93.0,
-    "nps": 81.0
+    "nps": 81.0,
+    "cpc": 1002,
+    "diag": 85.8,
+    "cag": 4
   },
   {
     "busm": "Shivaprasad P U",
@@ -3685,7 +4600,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 70.0,
     "ftfr": 92.0,
     "csat": 85.0,
-    "nps": 70.0
+    "nps": 70.0,
+    "cpc": 116,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Shivaprasad P U",
@@ -3697,7 +4615,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 79.0,
     "ftfr": 87.0,
     "csat": 87.0,
-    "nps": 74.0
+    "nps": 74.0,
+    "cpc": 1650,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Shivaprasad P U",
@@ -3709,7 +4630,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 94.0,
     "ftfr": 83.0,
     "csat": 91.0,
-    "nps": 78.0
+    "nps": 78.0,
+    "cpc": 2207,
+    "diag": 85.8,
+    "cag": 4
   },
   {
     "busm": "Shivaprasad P U",
@@ -3721,7 +4645,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 86.0,
     "ftfr": 86.0,
     "csat": 96.0,
-    "nps": 75.0
+    "nps": 75.0,
+    "cpc": 1650,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Shivaprasad P U",
@@ -3733,7 +4660,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 89.0,
     "ftfr": 81.0,
     "csat": 90.0,
-    "nps": 71.0
+    "nps": 71.0,
+    "cpc": 2025,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Shivaprasad P U",
@@ -3745,7 +4675,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 81.0,
     "ftfr": 93.0,
     "csat": 88.0,
-    "nps": 60.0
+    "nps": 60.0,
+    "cpc": 4064,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Shivaprasad P U",
@@ -3757,7 +4690,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 85.0,
     "ftfr": 91.0,
     "csat": 94.0,
-    "nps": 62.0
+    "nps": 62.0,
+    "cpc": 1756,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Shivaprasad P U",
@@ -3769,7 +4705,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 85.0,
     "ftfr": 85.0,
     "csat": 90.0,
-    "nps": 71.0
+    "nps": 71.0,
+    "cpc": 2161,
+    "diag": 85.9,
+    "cag": 5
   },
   {
     "busm": "Shivaprasad P U",
@@ -3781,7 +4720,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 72.0,
     "ftfr": 86.0,
     "csat": 90.0,
-    "nps": 62.0
+    "nps": 62.0,
+    "cpc": 1082,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Shivaprasad P U",
@@ -3793,7 +4735,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 91.0,
     "ftfr": 82.0,
     "csat": 88.0,
-    "nps": 51.0
+    "nps": 51.0,
+    "cpc": 1084,
+    "diag": 85.9,
+    "cag": 5
   },
   {
     "busm": "Shivaprasad P U",
@@ -3805,7 +4750,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 71.0,
     "ftfr": 89.0,
     "csat": 94.0,
-    "nps": 51.0
+    "nps": 51.0,
+    "cpc": 726,
+    "diag": 86.8,
+    "cag": 4
   },
   {
     "busm": "Shivaprasad P U",
@@ -3817,7 +4765,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 71.0,
     "ftfr": 86.0,
     "csat": 95.0,
-    "nps": 66.0
+    "nps": 66.0,
+    "cpc": 2086,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Shivaprasad P U",
@@ -3829,7 +4780,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 91.0,
     "ftfr": 85.0,
     "csat": 91.0,
-    "nps": 79.0
+    "nps": 79.0,
+    "cpc": 1451,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Sukhbir Singh",
@@ -3841,7 +4795,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 80.0,
     "ftfr": 85.0,
     "csat": 96.0,
-    "nps": 70.0
+    "nps": 70.0,
+    "cpc": 1424,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Sukhbir Singh",
@@ -3853,7 +4810,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 87.0,
     "ftfr": 86.0,
     "csat": 90.0,
-    "nps": 64.0
+    "nps": 64.0,
+    "cpc": 2113,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Sukhbir Singh",
@@ -3865,7 +4825,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 72.0,
     "ftfr": 81.0,
     "csat": 87.0,
-    "nps": 53.0
+    "nps": 53.0,
+    "cpc": 1650,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Sukhbir Singh",
@@ -3877,7 +4840,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 88.0,
     "ftfr": 80.0,
     "csat": 86.0,
-    "nps": 79.0
+    "nps": 79.0,
+    "cpc": 288,
+    "diag": 85.6,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -3889,7 +4855,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 75.0,
     "ftfr": 83.0,
     "csat": 85.0,
-    "nps": 54.0
+    "nps": 54.0,
+    "cpc": 326,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Sukhbir Singh",
@@ -3901,7 +4870,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 77.0,
     "ftfr": 84.0,
     "csat": 95.0,
-    "nps": 55.0
+    "nps": 55.0,
+    "cpc": 2157,
+    "diag": 86.1,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -3913,7 +4885,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 92.0,
     "ftfr": 80.0,
     "csat": 88.0,
-    "nps": 71.0
+    "nps": 71.0,
+    "cpc": 1803,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Sukhbir Singh",
@@ -3925,7 +4900,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 77.0,
     "ftfr": 80.0,
     "csat": 85.0,
-    "nps": 55.0
+    "nps": 55.0,
+    "cpc": 2077,
+    "diag": 86.0,
+    "cag": 1
   },
   {
     "busm": "Sukhbir Singh",
@@ -3937,7 +4915,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 78.0,
     "ftfr": 80.0,
     "csat": 90.0,
-    "nps": 68.0
+    "nps": 68.0,
+    "cpc": 4462,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Sukhbir Singh",
@@ -3949,7 +4930,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 83.0,
     "ftfr": 81.0,
     "csat": 94.0,
-    "nps": 77.0
+    "nps": 77.0,
+    "cpc": 354,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Sukhbir Singh",
@@ -3961,7 +4945,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 91.0,
     "ftfr": 83.0,
     "csat": 86.0,
-    "nps": 62.0
+    "nps": 62.0,
+    "cpc": 1068,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Sukhbir Singh",
@@ -3973,7 +4960,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 85.0,
     "ftfr": 84.0,
     "csat": 85.0,
-    "nps": 52.0
+    "nps": 52.0,
+    "cpc": 1650,
+    "diag": 91.7,
+    "cag": 3
   },
   {
     "busm": "Sukhbir Singh",
@@ -3985,7 +4975,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 74.0,
     "ftfr": 93.0,
     "csat": 92.0,
-    "nps": 66.0
+    "nps": 66.0,
+    "cpc": 1650,
+    "diag": 92.6,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -3997,7 +4990,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 84.0,
     "ftfr": 88.0,
     "csat": 91.0,
-    "nps": 84.0
+    "nps": 84.0,
+    "cpc": 2123,
+    "diag": 86.0,
+    "cag": 1
   },
   {
     "busm": "Sukhbir Singh",
@@ -4009,7 +5005,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 79.0,
     "ftfr": 91.0,
     "csat": 93.0,
-    "nps": 52.0
+    "nps": 52.0,
+    "cpc": 2128,
+    "diag": 87.0,
+    "cag": 1
   },
   {
     "busm": "Sukhbir Singh",
@@ -4021,7 +5020,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 77.0,
     "ftfr": 83.0,
     "csat": 85.0,
-    "nps": 61.0
+    "nps": 61.0,
+    "cpc": 3633,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -4033,7 +5035,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 80.0,
     "ftfr": 91.0,
     "csat": 95.0,
-    "nps": 77.0
+    "nps": 77.0,
+    "cpc": 375,
+    "diag": 85.7,
+    "cag": 3
   },
   {
     "busm": "Sukhbir Singh",
@@ -4045,7 +5050,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 81.0,
     "ftfr": 88.0,
     "csat": 93.0,
-    "nps": 60.0
+    "nps": 60.0,
+    "cpc": 1650,
+    "diag": 87.1,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -4057,7 +5065,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 83.0,
     "ftfr": 82.0,
     "csat": 88.0,
-    "nps": 52.0
+    "nps": 52.0,
+    "cpc": 1650,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Sukhbir Singh",
@@ -4069,7 +5080,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 85.0,
     "ftfr": 84.0,
     "csat": 85.0,
-    "nps": 53.0
+    "nps": 53.0,
+    "cpc": 1650,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -4081,7 +5095,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 88.0,
     "ftfr": 87.0,
     "csat": 86.0,
-    "nps": 82.0
+    "nps": 82.0,
+    "cpc": 1650,
+    "diag": 85.8,
+    "cag": 4
   },
   {
     "busm": "Sukhbir Singh",
@@ -4093,7 +5110,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 76.0,
     "ftfr": 80.0,
     "csat": 86.0,
-    "nps": 56.0
+    "nps": 56.0,
+    "cpc": 172,
+    "diag": 85.6,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -4105,7 +5125,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 92.0,
     "ftfr": 90.0,
     "csat": 88.0,
-    "nps": 50.0
+    "nps": 50.0,
+    "cpc": 1650,
+    "diag": 85.9,
+    "cag": 5
   },
   {
     "busm": "Sukhbir Singh",
@@ -4117,7 +5140,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 82.0,
     "ftfr": 94.0,
     "csat": 94.0,
-    "nps": 54.0
+    "nps": 54.0,
+    "cpc": 1650,
+    "diag": 86.4,
+    "cag": 5
   },
   {
     "busm": "Sukhbir Singh",
@@ -4129,7 +5155,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 91.0,
     "ftfr": 81.0,
     "csat": 95.0,
-    "nps": 51.0
+    "nps": 51.0,
+    "cpc": 1650,
+    "diag": 86.8,
+    "cag": 4
   },
   {
     "busm": "Sukhbir Singh",
@@ -4141,7 +5170,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 71.0,
     "ftfr": 91.0,
     "csat": 87.0,
-    "nps": 61.0
+    "nps": 61.0,
+    "cpc": 833,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -4153,7 +5185,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 71.0,
     "ftfr": 93.0,
     "csat": 91.0,
-    "nps": 74.0
+    "nps": 74.0,
+    "cpc": 2871,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Sukhbir Singh",
@@ -4165,7 +5200,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 86.0,
     "ftfr": 87.0,
     "csat": 96.0,
-    "nps": 50.0
+    "nps": 50.0,
+    "cpc": 306,
+    "diag": 86.9,
+    "cag": 5
   },
   {
     "busm": "Sukhbir Singh",
@@ -4177,7 +5215,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 89.0,
     "ftfr": 84.0,
     "csat": 89.0,
-    "nps": 62.0
+    "nps": 62.0,
+    "cpc": 170,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Sukhbir Singh",
@@ -4189,7 +5230,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 76.0,
     "ftfr": 94.0,
     "csat": 91.0,
-    "nps": 64.0
+    "nps": 64.0,
+    "cpc": 1650,
+    "diag": 92.7,
+    "cag": 3
   },
   {
     "busm": "Sukhbir Singh",
@@ -4201,7 +5245,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 93.0,
     "ftfr": 86.0,
     "csat": 87.0,
-    "nps": 62.0
+    "nps": 62.0,
+    "cpc": 590,
+    "diag": 85.8,
+    "cag": 4
   },
   {
     "busm": "Sukhbir Singh",
@@ -4213,7 +5260,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 85.0,
     "ftfr": 84.0,
     "csat": 89.0,
-    "nps": 63.0
+    "nps": 63.0,
+    "cpc": 1706,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -4225,7 +5275,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 75.0,
     "ftfr": 92.0,
     "csat": 85.0,
-    "nps": 56.0
+    "nps": 56.0,
+    "cpc": 1523,
+    "diag": 85.2,
+    "cag": 3
   },
   {
     "busm": "Sukhbir Singh",
@@ -4237,7 +5290,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 85.0,
     "ftfr": 85.0,
     "csat": 87.0,
-    "nps": 69.0
+    "nps": 69.0,
+    "cpc": 231,
+    "diag": 86.4,
+    "cag": 5
   },
   {
     "busm": "Sukhbir Singh",
@@ -4249,7 +5305,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 82.0,
     "ftfr": 88.0,
     "csat": 93.0,
-    "nps": 50.0
+    "nps": 50.0,
+    "cpc": 539,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -4261,7 +5320,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 81.0,
     "ftfr": 89.0,
     "csat": 85.0,
-    "nps": 82.0
+    "nps": 82.0,
+    "cpc": 158,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -4273,7 +5335,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 90.0,
     "ftfr": 84.0,
     "csat": 87.0,
-    "nps": 50.0
+    "nps": 50.0,
+    "cpc": 1443,
+    "diag": 85.9,
+    "cag": 5
   },
   {
     "busm": "Sukhbir Singh",
@@ -4285,7 +5350,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 75.0,
     "ftfr": 88.0,
     "csat": 91.0,
-    "nps": 52.0
+    "nps": 52.0,
+    "cpc": 2374,
+    "diag": 86.9,
+    "cag": 5
   },
   {
     "busm": "Sukhbir Singh",
@@ -4297,7 +5365,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 71.0,
     "ftfr": 90.0,
     "csat": 86.0,
-    "nps": 75.0
+    "nps": 75.0,
+    "cpc": 4344,
+    "diag": 87.3,
+    "cag": 4
   },
   {
     "busm": "Sukhbir Singh",
@@ -4309,7 +5380,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 94.0,
     "ftfr": 91.0,
     "csat": 96.0,
-    "nps": 68.0
+    "nps": 68.0,
+    "cpc": 1467,
+    "diag": 85.4,
+    "cag": 5
   },
   {
     "busm": "Sukhbir Singh",
@@ -4321,7 +5395,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 75.0,
     "ftfr": 84.0,
     "csat": 95.0,
-    "nps": 56.0
+    "nps": 56.0,
+    "cpc": 1650,
+    "diag": 86.1,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -4333,7 +5410,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 94.0,
     "ftfr": 82.0,
     "csat": 88.0,
-    "nps": 77.0
+    "nps": 77.0,
+    "cpc": 3337,
+    "diag": 85.6,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -4345,7 +5425,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 78.0,
     "ftfr": 90.0,
     "csat": 95.0,
-    "nps": 81.0
+    "nps": 81.0,
+    "cpc": 1036,
+    "diag": 86.9,
+    "cag": 5
   },
   {
     "busm": "Sukhbir Singh",
@@ -4357,7 +5440,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 94.0,
     "ftfr": 88.0,
     "csat": 85.0,
-    "nps": 53.0
+    "nps": 53.0,
+    "cpc": 628,
+    "diag": 85.7,
+    "cag": 3
   },
   {
     "busm": "Sukhbir Singh",
@@ -4369,7 +5455,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 77.0,
     "ftfr": 85.0,
     "csat": 89.0,
-    "nps": 58.0
+    "nps": 58.0,
+    "cpc": 6018,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Sukhbir Singh",
@@ -4381,7 +5470,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 89.0,
     "ftfr": 88.0,
     "csat": 87.0,
-    "nps": 75.0
+    "nps": 75.0,
+    "cpc": 79,
+    "diag": 86.1,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -4393,7 +5485,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 81.0,
     "ftfr": 94.0,
     "csat": 93.0,
-    "nps": 52.0
+    "nps": 52.0,
+    "cpc": 1782,
+    "diag": 86.8,
+    "cag": 4
   },
   {
     "busm": "Sukhbir Singh",
@@ -4405,7 +5500,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 74.0,
     "ftfr": 82.0,
     "csat": 85.0,
-    "nps": 62.0
+    "nps": 62.0,
+    "cpc": 162,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Sukhbir Singh",
@@ -4417,7 +5515,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 71.0,
     "ftfr": 87.0,
     "csat": 87.0,
-    "nps": 67.0
+    "nps": 67.0,
+    "cpc": 1650,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Sukhbir Singh",
@@ -4429,7 +5530,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 72.0,
     "ftfr": 80.0,
     "csat": 88.0,
-    "nps": 51.0
+    "nps": 51.0,
+    "cpc": 1623,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Sukhbir Singh",
@@ -4441,7 +5545,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 94.0,
     "ftfr": 80.0,
     "csat": 89.0,
-    "nps": 82.0
+    "nps": 82.0,
+    "cpc": 252,
+    "diag": 85.7,
+    "cag": 3
   },
   {
     "busm": "Sukhbir Singh",
@@ -4453,7 +5560,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 73.0,
     "ftfr": 87.0,
     "csat": 91.0,
-    "nps": 68.0
+    "nps": 68.0,
+    "cpc": 3633,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Sukhbir Singh",
@@ -4465,7 +5575,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 92.0,
     "ftfr": 83.0,
     "csat": 87.0,
-    "nps": 73.0
+    "nps": 73.0,
+    "cpc": 1115,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Sukhbir Singh",
@@ -4477,7 +5590,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 91.0,
     "ftfr": 89.0,
     "csat": 92.0,
-    "nps": 67.0
+    "nps": 67.0,
+    "cpc": 1968,
+    "diag": 86.4,
+    "cag": 5
   },
   {
     "busm": "Sukhbir Singh",
@@ -4489,7 +5605,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 74.0,
     "ftfr": 82.0,
     "csat": 87.0,
-    "nps": 76.0
+    "nps": 76.0,
+    "cpc": 1650,
+    "diag": 87.4,
+    "cag": 5
   },
   {
     "busm": "Sukhbir Singh",
@@ -4501,7 +5620,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 76.0,
     "ftfr": 93.0,
     "csat": 87.0,
-    "nps": 79.0
+    "nps": 79.0,
+    "cpc": 447,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Sukhbir Singh",
@@ -4513,7 +5635,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 79.0,
     "ftfr": 81.0,
     "csat": 85.0,
-    "nps": 56.0
+    "nps": 56.0,
+    "cpc": 1253,
+    "diag": 87.1,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -4525,7 +5650,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 83.0,
     "ftfr": 89.0,
     "csat": 92.0,
-    "nps": 62.0
+    "nps": 62.0,
+    "cpc": 135,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -4537,7 +5665,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 85.0,
     "ftfr": 86.0,
     "csat": 94.0,
-    "nps": 79.0
+    "nps": 79.0,
+    "cpc": 1908,
+    "diag": 86.8,
+    "cag": 4
   },
   {
     "busm": "Sukhbir Singh",
@@ -4549,7 +5680,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 93.0,
     "ftfr": 92.0,
     "csat": 90.0,
-    "nps": 58.0
+    "nps": 58.0,
+    "cpc": 336,
+    "diag": 87.0,
+    "cag": 1
   },
   {
     "busm": "Sukhbir Singh",
@@ -4561,7 +5695,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 93.0,
     "ftfr": 89.0,
     "csat": 93.0,
-    "nps": 65.0
+    "nps": 65.0,
+    "cpc": 1759,
+    "diag": 85.4,
+    "cag": 5
   },
   {
     "busm": "Sukhbir Singh",
@@ -4573,7 +5710,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 73.0,
     "ftfr": 92.0,
     "csat": 93.0,
-    "nps": 67.0
+    "nps": 67.0,
+    "cpc": 1650,
+    "diag": 87.0,
+    "cag": 1
   },
   {
     "busm": "Sukhbir Singh",
@@ -4585,7 +5725,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 76.0,
     "ftfr": 82.0,
     "csat": 85.0,
-    "nps": 65.0
+    "nps": 65.0,
+    "cpc": 2586,
+    "diag": 86.8,
+    "cag": 4
   },
   {
     "busm": "Sukhbir Singh",
@@ -4597,7 +5740,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 73.0,
     "ftfr": 80.0,
     "csat": 93.0,
-    "nps": 56.0
+    "nps": 56.0,
+    "cpc": 133,
+    "diag": 87.2,
+    "cag": 3
   },
   {
     "busm": "Sukhbir Singh",
@@ -4609,7 +5755,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 87.0,
     "ftfr": 93.0,
     "csat": 96.0,
-    "nps": 73.0
+    "nps": 73.0,
+    "cpc": 337,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Sukhbir Singh",
@@ -4621,7 +5770,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 91.0,
     "ftfr": 85.0,
     "csat": 90.0,
-    "nps": 63.0
+    "nps": 63.0,
+    "cpc": 826,
+    "diag": 87.5,
+    "cag": 1
   },
   {
     "busm": "Sukhbir Singh",
@@ -4633,7 +5785,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 92.0,
     "ftfr": 92.0,
     "csat": 92.0,
-    "nps": 68.0
+    "nps": 68.0,
+    "cpc": 1691,
+    "diag": 86.1,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -4645,7 +5800,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 94.0,
     "ftfr": 88.0,
     "csat": 86.0,
-    "nps": 67.0
+    "nps": 67.0,
+    "cpc": 1650,
+    "diag": 85.3,
+    "cag": 4
   },
   {
     "busm": "Sukhbir Singh",
@@ -4657,7 +5815,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 79.0,
     "ftfr": 94.0,
     "csat": 95.0,
-    "nps": 54.0
+    "nps": 54.0,
+    "cpc": 901,
+    "diag": 85.6,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -4669,7 +5830,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 75.0,
     "ftfr": 89.0,
     "csat": 93.0,
-    "nps": 69.0
+    "nps": 69.0,
+    "cpc": 2086,
+    "diag": 85.6,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -4681,7 +5845,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 80.0,
     "ftfr": 87.0,
     "csat": 93.0,
-    "nps": 67.0
+    "nps": 67.0,
+    "cpc": 1384,
+    "diag": 85.8,
+    "cag": 4
   },
   {
     "busm": "Sukhbir Singh",
@@ -4693,7 +5860,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 76.0,
     "ftfr": 80.0,
     "csat": 88.0,
-    "nps": 54.0
+    "nps": 54.0,
+    "cpc": 762,
+    "diag": 85.6,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -4705,7 +5875,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 90.0,
     "ftfr": 90.0,
     "csat": 96.0,
-    "nps": 61.0
+    "nps": 61.0,
+    "cpc": 1505,
+    "diag": 86.0,
+    "cag": 1
   },
   {
     "busm": "Sukhbir Singh",
@@ -4717,7 +5890,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 92.0,
     "ftfr": 87.0,
     "csat": 87.0,
-    "nps": 76.0
+    "nps": 76.0,
+    "cpc": 508,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Sukhbir Singh",
@@ -4729,7 +5905,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 80.0,
     "ftfr": 94.0,
     "csat": 96.0,
-    "nps": 78.0
+    "nps": 78.0,
+    "cpc": 1650,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Sukhbir Singh",
@@ -4741,7 +5920,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 80.0,
     "ftfr": 90.0,
     "csat": 91.0,
-    "nps": 62.0
+    "nps": 62.0,
+    "cpc": 125,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -4753,7 +5935,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 80.0,
     "ftfr": 85.0,
     "csat": 86.0,
-    "nps": 78.0
+    "nps": 78.0,
+    "cpc": 1650,
+    "diag": 86.8,
+    "cag": 4
   },
   {
     "busm": "Sukhbir Singh",
@@ -4765,7 +5950,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 81.0,
     "ftfr": 83.0,
     "csat": 93.0,
-    "nps": 72.0
+    "nps": 72.0,
+    "cpc": 172,
+    "diag": 86.9,
+    "cag": 5
   },
   {
     "busm": "Sukhbir Singh",
@@ -4777,7 +5965,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 75.0,
     "ftfr": 90.0,
     "csat": 91.0,
-    "nps": 63.0
+    "nps": 63.0,
+    "cpc": 771,
+    "diag": 87.0,
+    "cag": 1
   },
   {
     "busm": "Sukhbir Singh",
@@ -4789,7 +5980,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 72.0,
     "ftfr": 93.0,
     "csat": 87.0,
-    "nps": 74.0
+    "nps": 74.0,
+    "cpc": 710,
+    "diag": 86.9,
+    "cag": 5
   },
   {
     "busm": "Sukhbir Singh",
@@ -4801,7 +5995,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 87.0,
     "ftfr": 89.0,
     "csat": 90.0,
-    "nps": 74.0
+    "nps": 74.0,
+    "cpc": 5367,
+    "diag": 86.0,
+    "cag": 1
   },
   {
     "busm": "Sukhbir Singh",
@@ -4813,7 +6010,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 74.0,
     "ftfr": 83.0,
     "csat": 85.0,
-    "nps": 55.0
+    "nps": 55.0,
+    "cpc": 279,
+    "diag": 85.8,
+    "cag": 4
   },
   {
     "busm": "Sukhbir Singh",
@@ -4825,7 +6025,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 76.0,
     "ftfr": 83.0,
     "csat": 96.0,
-    "nps": 67.0
+    "nps": 67.0,
+    "cpc": 658,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Sukhbir Singh",
@@ -4837,7 +6040,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 89.0,
     "ftfr": 87.0,
     "csat": 86.0,
-    "nps": 61.0
+    "nps": 61.0,
+    "cpc": 297,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Sukhbir Singh",
@@ -4849,7 +6055,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 71.0,
     "ftfr": 87.0,
     "csat": 89.0,
-    "nps": 81.0
+    "nps": 81.0,
+    "cpc": 1650,
+    "diag": 92.0,
+    "cag": 1
   },
   {
     "busm": "Sukhbir Singh",
@@ -4861,7 +6070,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 78.0,
     "ftfr": 88.0,
     "csat": 86.0,
-    "nps": 57.0
+    "nps": 57.0,
+    "cpc": 152,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -4873,7 +6085,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 80.0,
     "ftfr": 94.0,
     "csat": 87.0,
-    "nps": 70.0
+    "nps": 70.0,
+    "cpc": 83,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Sukhbir Singh",
@@ -4885,7 +6100,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 73.0,
     "ftfr": 85.0,
     "csat": 96.0,
-    "nps": 56.0
+    "nps": 56.0,
+    "cpc": 2094,
+    "diag": 86.9,
+    "cag": 5
   },
   {
     "busm": "Sukhbir Singh",
@@ -4897,7 +6115,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 75.0,
     "ftfr": 83.0,
     "csat": 93.0,
-    "nps": 69.0
+    "nps": 69.0,
+    "cpc": 124,
+    "diag": 85.9,
+    "cag": 5
   },
   {
     "busm": "Sukhbir Singh",
@@ -4909,7 +6130,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 89.0,
     "ftfr": 90.0,
     "csat": 87.0,
-    "nps": 56.0
+    "nps": 56.0,
+    "cpc": 752,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -4921,7 +6145,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 94.0,
     "ftfr": 81.0,
     "csat": 92.0,
-    "nps": 80.0
+    "nps": 80.0,
+    "cpc": 172,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Sukhbir Singh",
@@ -4933,7 +6160,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 84.0,
     "ftfr": 91.0,
     "csat": 94.0,
-    "nps": 80.0
+    "nps": 80.0,
+    "cpc": 717,
+    "diag": 85.7,
+    "cag": 3
   },
   {
     "busm": "Sukhbir Singh",
@@ -4945,7 +6175,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 71.0,
     "ftfr": 88.0,
     "csat": 87.0,
-    "nps": 57.0
+    "nps": 57.0,
+    "cpc": 502,
+    "diag": 85.5,
+    "cag": 1
   },
   {
     "busm": "Sukhbir Singh",
@@ -4957,7 +6190,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 91.0,
     "ftfr": 87.0,
     "csat": 96.0,
-    "nps": 81.0
+    "nps": 81.0,
+    "cpc": 763,
+    "diag": 86.0,
+    "cag": 1
   },
   {
     "busm": "Sukhbir Singh",
@@ -4969,7 +6205,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 79.0,
     "ftfr": 80.0,
     "csat": 87.0,
-    "nps": 51.0
+    "nps": 51.0,
+    "cpc": 188,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Sukhbir Singh",
@@ -4981,7 +6220,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 72.0,
     "ftfr": 81.0,
     "csat": 91.0,
-    "nps": 77.0
+    "nps": 77.0,
+    "cpc": 104,
+    "diag": 86.1,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -4993,7 +6235,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 94.0,
     "ftfr": 82.0,
     "csat": 90.0,
-    "nps": 56.0
+    "nps": 56.0,
+    "cpc": 749,
+    "diag": 85.9,
+    "cag": 5
   },
   {
     "busm": "Sukhbir Singh",
@@ -5005,7 +6250,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 78.0,
     "ftfr": 81.0,
     "csat": 93.0,
-    "nps": 82.0
+    "nps": 82.0,
+    "cpc": 4697,
+    "diag": 87.1,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -5017,7 +6265,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 76.0,
     "ftfr": 93.0,
     "csat": 95.0,
-    "nps": 56.0
+    "nps": 56.0,
+    "cpc": 786,
+    "diag": 85.9,
+    "cag": 5
   },
   {
     "busm": "Sukhbir Singh",
@@ -5029,7 +6280,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 88.0,
     "ftfr": 80.0,
     "csat": 93.0,
-    "nps": 68.0
+    "nps": 68.0,
+    "cpc": 550,
+    "diag": 85.2,
+    "cag": 3
   },
   {
     "busm": "Sukhbir Singh",
@@ -5041,7 +6295,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 92.0,
     "ftfr": 84.0,
     "csat": 94.0,
-    "nps": 73.0
+    "nps": 73.0,
+    "cpc": 1058,
+    "diag": 86.8,
+    "cag": 4
   },
   {
     "busm": "Sukhbir Singh",
@@ -5053,7 +6310,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 89.0,
     "ftfr": 89.0,
     "csat": 95.0,
-    "nps": 62.0
+    "nps": 62.0,
+    "cpc": 901,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Sukhbir Singh",
@@ -5065,7 +6325,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 82.0,
     "ftfr": 80.0,
     "csat": 93.0,
-    "nps": 59.0
+    "nps": 59.0,
+    "cpc": 2597,
+    "diag": 87.5,
+    "cag": 1
   },
   {
     "busm": "Sukhbir Singh",
@@ -5077,7 +6340,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 70.0,
     "ftfr": 92.0,
     "csat": 94.0,
-    "nps": 70.0
+    "nps": 70.0,
+    "cpc": 2689,
+    "diag": 86.4,
+    "cag": 5
   },
   {
     "busm": "Sukhbir Singh",
@@ -5089,7 +6355,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 93.0,
     "ftfr": 82.0,
     "csat": 92.0,
-    "nps": 58.0
+    "nps": 58.0,
+    "cpc": 1340,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Sukhbir Singh",
@@ -5101,7 +6370,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 94.0,
     "ftfr": 85.0,
     "csat": 93.0,
-    "nps": 76.0
+    "nps": 76.0,
+    "cpc": 1477,
+    "diag": 85.8,
+    "cag": 4
   },
   {
     "busm": "Sukhbir Singh",
@@ -5113,7 +6385,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 71.0,
     "ftfr": 92.0,
     "csat": 95.0,
-    "nps": 80.0
+    "nps": 80.0,
+    "cpc": 780,
+    "diag": 85.9,
+    "cag": 5
   },
   {
     "busm": "Sukhbir Singh",
@@ -5125,7 +6400,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 71.0,
     "ftfr": 92.0,
     "csat": 88.0,
-    "nps": 77.0
+    "nps": 77.0,
+    "cpc": 1202,
+    "diag": 87.5,
+    "cag": 1
   },
   {
     "busm": "Sukhbir Singh",
@@ -5137,7 +6415,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 82.0,
     "ftfr": 87.0,
     "csat": 91.0,
-    "nps": 76.0
+    "nps": 76.0,
+    "cpc": 1949,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -5149,7 +6430,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 87.0,
     "ftfr": 91.0,
     "csat": 92.0,
-    "nps": 77.0
+    "nps": 77.0,
+    "cpc": 1403,
+    "diag": 86.1,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -5161,7 +6445,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 78.0,
     "ftfr": 90.0,
     "csat": 96.0,
-    "nps": 51.0
+    "nps": 51.0,
+    "cpc": 352,
+    "diag": 86.1,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -5173,7 +6460,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 78.0,
     "ftfr": 88.0,
     "csat": 87.0,
-    "nps": 80.0
+    "nps": 80.0,
+    "cpc": 994,
+    "diag": 87.0,
+    "cag": 1
   },
   {
     "busm": "Sukhbir Singh",
@@ -5185,7 +6475,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 80.0,
     "ftfr": 81.0,
     "csat": 85.0,
-    "nps": 74.0
+    "nps": 74.0,
+    "cpc": 406,
+    "diag": 86.4,
+    "cag": 5
   },
   {
     "busm": "Sukhbir Singh",
@@ -5197,7 +6490,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 92.0,
     "ftfr": 91.0,
     "csat": 87.0,
-    "nps": 65.0
+    "nps": 65.0,
+    "cpc": 347,
+    "diag": 85.8,
+    "cag": 4
   },
   {
     "busm": "Sukhbir Singh",
@@ -5209,7 +6505,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 85.0,
     "ftfr": 93.0,
     "csat": 90.0,
-    "nps": 55.0
+    "nps": 55.0,
+    "cpc": 1650,
+    "diag": 87.1,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -5221,7 +6520,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 78.0,
     "ftfr": 89.0,
     "csat": 93.0,
-    "nps": 54.0
+    "nps": 54.0,
+    "cpc": 110,
+    "diag": 85.9,
+    "cag": 5
   },
   {
     "busm": "Sukhbir Singh",
@@ -5233,7 +6535,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 91.0,
     "ftfr": 94.0,
     "csat": 92.0,
-    "nps": 65.0
+    "nps": 65.0,
+    "cpc": 3964,
+    "diag": 86.1,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -5245,7 +6550,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 89.0,
     "ftfr": 87.0,
     "csat": 93.0,
-    "nps": 50.0
+    "nps": 50.0,
+    "cpc": 203,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Sukhbir Singh",
@@ -5257,7 +6565,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 79.0,
     "ftfr": 83.0,
     "csat": 94.0,
-    "nps": 76.0
+    "nps": 76.0,
+    "cpc": 2035,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Sukhbir Singh",
@@ -5269,7 +6580,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 93.0,
     "ftfr": 80.0,
     "csat": 87.0,
-    "nps": 67.0
+    "nps": 67.0,
+    "cpc": 24,
+    "diag": 86.4,
+    "cag": 5
   },
   {
     "busm": "Sukhbir Singh",
@@ -5281,7 +6595,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 93.0,
     "ftfr": 87.0,
     "csat": 85.0,
-    "nps": 77.0
+    "nps": 77.0,
+    "cpc": 8661,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Sukhbir Singh",
@@ -5293,7 +6610,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 71.0,
     "ftfr": 82.0,
     "csat": 91.0,
-    "nps": 80.0
+    "nps": 80.0,
+    "cpc": 3703,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Sukhbir Singh",
@@ -5305,7 +6625,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 79.0,
     "ftfr": 84.0,
     "csat": 94.0,
-    "nps": 54.0
+    "nps": 54.0,
+    "cpc": 76,
+    "diag": 86.9,
+    "cag": 5
   },
   {
     "busm": "Sukhbir Singh",
@@ -5317,7 +6640,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 86.0,
     "ftfr": 80.0,
     "csat": 91.0,
-    "nps": 57.0
+    "nps": 57.0,
+    "cpc": 968,
+    "diag": 86.8,
+    "cag": 4
   },
   {
     "busm": "Sukhbir Singh",
@@ -5329,7 +6655,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 86.0,
     "ftfr": 85.0,
     "csat": 90.0,
-    "nps": 84.0
+    "nps": 84.0,
+    "cpc": 1650,
+    "diag": 87.2,
+    "cag": 3
   },
   {
     "busm": "Sukhbir Singh",
@@ -5341,7 +6670,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 87.0,
     "ftfr": 83.0,
     "csat": 92.0,
-    "nps": 57.0
+    "nps": 57.0,
+    "cpc": 1650,
+    "diag": 87.3,
+    "cag": 4
   },
   {
     "busm": "Sukhbir Singh",
@@ -5353,7 +6685,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 89.0,
     "ftfr": 88.0,
     "csat": 92.0,
-    "nps": 74.0
+    "nps": 74.0,
+    "cpc": 1650,
+    "diag": 86.1,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -5365,7 +6700,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 91.0,
     "ftfr": 91.0,
     "csat": 87.0,
-    "nps": 59.0
+    "nps": 59.0,
+    "cpc": 2371,
+    "diag": 86.9,
+    "cag": 5
   },
   {
     "busm": "Sukhbir Singh",
@@ -5377,7 +6715,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 85.0,
     "ftfr": 90.0,
     "csat": 87.0,
-    "nps": 62.0
+    "nps": 62.0,
+    "cpc": 197,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -5389,7 +6730,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 75.0,
     "ftfr": 92.0,
     "csat": 93.0,
-    "nps": 73.0
+    "nps": 73.0,
+    "cpc": 472,
+    "diag": 86.4,
+    "cag": 5
   },
   {
     "busm": "Sukhbir Singh",
@@ -5401,7 +6745,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 87.0,
     "ftfr": 90.0,
     "csat": 85.0,
-    "nps": 54.0
+    "nps": 54.0,
+    "cpc": 91,
+    "diag": 86.0,
+    "cag": 1
   },
   {
     "busm": "Sukhbir Singh",
@@ -5413,7 +6760,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 76.0,
     "ftfr": 82.0,
     "csat": 95.0,
-    "nps": 76.0
+    "nps": 76.0,
+    "cpc": 2086,
+    "diag": 86.1,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -5425,7 +6775,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 82.0,
     "ftfr": 94.0,
     "csat": 92.0,
-    "nps": 78.0
+    "nps": 78.0,
+    "cpc": 1650,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Sukhbir Singh",
@@ -5437,7 +6790,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 75.0,
     "ftfr": 92.0,
     "csat": 85.0,
-    "nps": 67.0
+    "nps": 67.0,
+    "cpc": 1586,
+    "diag": 87.0,
+    "cag": 1
   },
   {
     "busm": "Sukhbir Singh",
@@ -5449,7 +6805,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 90.0,
     "ftfr": 83.0,
     "csat": 90.0,
-    "nps": 64.0
+    "nps": 64.0,
+    "cpc": 1002,
+    "diag": 87.1,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -5461,7 +6820,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 86.0,
     "ftfr": 80.0,
     "csat": 95.0,
-    "nps": 83.0
+    "nps": 83.0,
+    "cpc": 73,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -5473,7 +6835,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 94.0,
     "ftfr": 85.0,
     "csat": 87.0,
-    "nps": 81.0
+    "nps": 81.0,
+    "cpc": 1050,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Sukhbir Singh",
@@ -5485,7 +6850,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 71.0,
     "ftfr": 88.0,
     "csat": 87.0,
-    "nps": 82.0
+    "nps": 82.0,
+    "cpc": 1316,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Sukhbir Singh",
@@ -5497,7 +6865,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 82.0,
     "ftfr": 92.0,
     "csat": 92.0,
-    "nps": 59.0
+    "nps": 59.0,
+    "cpc": 593,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Sukhbir Singh",
@@ -5509,7 +6880,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 84.0,
     "ftfr": 85.0,
     "csat": 92.0,
-    "nps": 61.0
+    "nps": 61.0,
+    "cpc": 2648,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -5521,7 +6895,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 89.0,
     "ftfr": 82.0,
     "csat": 96.0,
-    "nps": 57.0
+    "nps": 57.0,
+    "cpc": 1068,
+    "diag": 85.9,
+    "cag": 5
   },
   {
     "busm": "Sukhbir Singh",
@@ -5533,7 +6910,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 71.0,
     "ftfr": 92.0,
     "csat": 88.0,
-    "nps": 79.0
+    "nps": 79.0,
+    "cpc": 300,
+    "diag": 85.9,
+    "cag": 5
   },
   {
     "busm": "Sukhbir Singh",
@@ -5545,7 +6925,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 90.0,
     "ftfr": 91.0,
     "csat": 86.0,
-    "nps": 50.0
+    "nps": 50.0,
+    "cpc": 1411,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Sukhbir Singh",
@@ -5557,7 +6940,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 79.0,
     "ftfr": 80.0,
     "csat": 91.0,
-    "nps": 57.0
+    "nps": 57.0,
+    "cpc": 1089,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Sukhbir Singh",
@@ -5569,7 +6955,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 79.0,
     "ftfr": 92.0,
     "csat": 95.0,
-    "nps": 69.0
+    "nps": 69.0,
+    "cpc": 1385,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Sukhbir Singh",
@@ -5581,7 +6970,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 86.0,
     "ftfr": 86.0,
     "csat": 86.0,
-    "nps": 61.0
+    "nps": 61.0,
+    "cpc": 589,
+    "diag": 85.9,
+    "cag": 5
   },
   {
     "busm": "Sukhbir Singh",
@@ -5593,7 +6985,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 83.0,
     "ftfr": 94.0,
     "csat": 91.0,
-    "nps": 83.0
+    "nps": 83.0,
+    "cpc": 1650,
+    "diag": 85.8,
+    "cag": 4
   },
   {
     "busm": "Sukhbir Singh",
@@ -5605,7 +7000,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 74.0,
     "ftfr": 90.0,
     "csat": 93.0,
-    "nps": 74.0
+    "nps": 74.0,
+    "cpc": 632,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Sukhbir Singh",
@@ -5617,7 +7015,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 74.0,
     "ftfr": 89.0,
     "csat": 88.0,
-    "nps": 67.0
+    "nps": 67.0,
+    "cpc": 2142,
+    "diag": 87.0,
+    "cag": 1
   },
   {
     "busm": "Sukhbir Singh",
@@ -5629,7 +7030,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 76.0,
     "ftfr": 87.0,
     "csat": 85.0,
-    "nps": 77.0
+    "nps": 77.0,
+    "cpc": 1650,
+    "diag": 86.0,
+    "cag": 1
   },
   {
     "busm": "Sukhbir Singh",
@@ -5641,7 +7045,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 80.0,
     "ftfr": 84.0,
     "csat": 86.0,
-    "nps": 66.0
+    "nps": 66.0,
+    "cpc": 840,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Sukhbir Singh",
@@ -5653,7 +7060,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 87.0,
     "ftfr": 94.0,
     "csat": 95.0,
-    "nps": 70.0
+    "nps": 70.0,
+    "cpc": 1776,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -5665,7 +7075,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 93.0,
     "ftfr": 87.0,
     "csat": 91.0,
-    "nps": 71.0
+    "nps": 71.0,
+    "cpc": 1650,
+    "diag": 92.1,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -5677,7 +7090,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 91.0,
     "ftfr": 81.0,
     "csat": 89.0,
-    "nps": 80.0
+    "nps": 80.0,
+    "cpc": 1650,
+    "diag": 92.2,
+    "cag": 3
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -5689,7 +7105,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 83.0,
     "ftfr": 87.0,
     "csat": 89.0,
-    "nps": 82.0
+    "nps": 82.0,
+    "cpc": 1650,
+    "diag": 92.2,
+    "cag": 3
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -5701,7 +7120,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 76.0,
     "ftfr": 85.0,
     "csat": 87.0,
-    "nps": 61.0
+    "nps": 61.0,
+    "cpc": 1650,
+    "diag": 92.2,
+    "cag": 3
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -5713,7 +7135,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 86.0,
     "ftfr": 83.0,
     "csat": 88.0,
-    "nps": 74.0
+    "nps": 74.0,
+    "cpc": 2860,
+    "diag": 85.4,
+    "cag": 5
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -5725,7 +7150,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 93.0,
     "ftfr": 92.0,
     "csat": 91.0,
-    "nps": 56.0
+    "nps": 56.0,
+    "cpc": 2598,
+    "diag": 85.7,
+    "cag": 3
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -5737,7 +7165,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 70.0,
     "ftfr": 88.0,
     "csat": 85.0,
-    "nps": 63.0
+    "nps": 63.0,
+    "cpc": 47,
+    "diag": 86.1,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -5749,7 +7180,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 70.0,
     "ftfr": 91.0,
     "csat": 91.0,
-    "nps": 62.0
+    "nps": 62.0,
+    "cpc": 136,
+    "diag": 87.1,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -5761,7 +7195,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 88.0,
     "ftfr": 80.0,
     "csat": 92.0,
-    "nps": 75.0
+    "nps": 75.0,
+    "cpc": 687,
+    "diag": 87.0,
+    "cag": 1
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -5773,7 +7210,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 87.0,
     "ftfr": 80.0,
     "csat": 85.0,
-    "nps": 65.0
+    "nps": 65.0,
+    "cpc": 707,
+    "diag": 87.1,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -5785,7 +7225,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 84.0,
     "ftfr": 90.0,
     "csat": 93.0,
-    "nps": 50.0
+    "nps": 50.0,
+    "cpc": 1002,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -5797,7 +7240,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 74.0,
     "ftfr": 92.0,
     "csat": 85.0,
-    "nps": 62.0
+    "nps": 62.0,
+    "cpc": 86,
+    "diag": 86.1,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -5809,7 +7255,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 91.0,
     "ftfr": 85.0,
     "csat": 90.0,
-    "nps": 52.0
+    "nps": 52.0,
+    "cpc": 2070,
+    "diag": 85.7,
+    "cag": 3
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -5821,7 +7270,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 78.0,
     "ftfr": 87.0,
     "csat": 92.0,
-    "nps": 55.0
+    "nps": 55.0,
+    "cpc": 1145,
+    "diag": 85.6,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -5833,7 +7285,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 86.0,
     "ftfr": 85.0,
     "csat": 91.0,
-    "nps": 51.0
+    "nps": 51.0,
+    "cpc": 372,
+    "diag": 87.0,
+    "cag": 1
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -5845,7 +7300,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 85.0,
     "ftfr": 80.0,
     "csat": 89.0,
-    "nps": 84.0
+    "nps": 84.0,
+    "cpc": 2104,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -5857,7 +7315,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 78.0,
     "ftfr": 82.0,
     "csat": 94.0,
-    "nps": 69.0
+    "nps": 69.0,
+    "cpc": 739,
+    "diag": 87.4,
+    "cag": 5
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -5869,7 +7330,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 72.0,
     "ftfr": 88.0,
     "csat": 92.0,
-    "nps": 50.0
+    "nps": 50.0,
+    "cpc": 146,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -5881,7 +7345,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 87.0,
     "ftfr": 92.0,
     "csat": 92.0,
-    "nps": 59.0
+    "nps": 59.0,
+    "cpc": 1650,
+    "diag": 86.4,
+    "cag": 5
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -5893,7 +7360,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 88.0,
     "ftfr": 80.0,
     "csat": 95.0,
-    "nps": 55.0
+    "nps": 55.0,
+    "cpc": 836,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -5905,7 +7375,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 74.0,
     "ftfr": 91.0,
     "csat": 88.0,
-    "nps": 71.0
+    "nps": 71.0,
+    "cpc": 1304,
+    "diag": 86.4,
+    "cag": 5
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -5917,7 +7390,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 77.0,
     "ftfr": 82.0,
     "csat": 95.0,
-    "nps": 53.0
+    "nps": 53.0,
+    "cpc": 4666,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -5929,7 +7405,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 82.0,
     "ftfr": 81.0,
     "csat": 88.0,
-    "nps": 72.0
+    "nps": 72.0,
+    "cpc": 203,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -5941,7 +7420,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 88.0,
     "ftfr": 86.0,
     "csat": 89.0,
-    "nps": 66.0
+    "nps": 66.0,
+    "cpc": 1650,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -5953,7 +7435,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 71.0,
     "ftfr": 85.0,
     "csat": 96.0,
-    "nps": 59.0
+    "nps": 59.0,
+    "cpc": 1650,
+    "diag": 87.1,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -5965,7 +7450,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 91.0,
     "ftfr": 85.0,
     "csat": 86.0,
-    "nps": 83.0
+    "nps": 83.0,
+    "cpc": 83,
+    "diag": 85.4,
+    "cag": 5
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -5977,7 +7465,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 74.0,
     "ftfr": 87.0,
     "csat": 87.0,
-    "nps": 57.0
+    "nps": 57.0,
+    "cpc": 2086,
+    "diag": 86.1,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -5989,7 +7480,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 93.0,
     "ftfr": 81.0,
     "csat": 95.0,
-    "nps": 72.0
+    "nps": 72.0,
+    "cpc": 5007,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6001,7 +7495,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 75.0,
     "ftfr": 91.0,
     "csat": 93.0,
-    "nps": 64.0
+    "nps": 64.0,
+    "cpc": 5374,
+    "diag": 86.8,
+    "cag": 4
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6013,7 +7510,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 81.0,
     "ftfr": 94.0,
     "csat": 85.0,
-    "nps": 72.0
+    "nps": 72.0,
+    "cpc": 2010,
+    "diag": 86.0,
+    "cag": 1
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6025,7 +7525,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 74.0,
     "ftfr": 84.0,
     "csat": 94.0,
-    "nps": 73.0
+    "nps": 73.0,
+    "cpc": 1605,
+    "diag": 86.4,
+    "cag": 5
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6037,7 +7540,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 85.0,
     "ftfr": 93.0,
     "csat": 93.0,
-    "nps": 81.0
+    "nps": 81.0,
+    "cpc": 1130,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6049,7 +7555,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 91.0,
     "ftfr": 87.0,
     "csat": 91.0,
-    "nps": 66.0
+    "nps": 66.0,
+    "cpc": 116,
+    "diag": 86.0,
+    "cag": 1
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6061,7 +7570,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 77.0,
     "ftfr": 80.0,
     "csat": 92.0,
-    "nps": 78.0
+    "nps": 78.0,
+    "cpc": 1650,
+    "diag": 86.4,
+    "cag": 5
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6073,7 +7585,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 78.0,
     "ftfr": 81.0,
     "csat": 88.0,
-    "nps": 59.0
+    "nps": 59.0,
+    "cpc": 24,
+    "diag": 86.4,
+    "cag": 5
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6085,7 +7600,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 84.0,
     "ftfr": 83.0,
     "csat": 92.0,
-    "nps": 78.0
+    "nps": 78.0,
+    "cpc": 92,
+    "diag": 86.8,
+    "cag": 4
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6097,7 +7615,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 85.0,
     "ftfr": 82.0,
     "csat": 85.0,
-    "nps": 70.0
+    "nps": 70.0,
+    "cpc": 1650,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6109,7 +7630,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 89.0,
     "ftfr": 91.0,
     "csat": 94.0,
-    "nps": 82.0
+    "nps": 82.0,
+    "cpc": 1650,
+    "diag": 87.2,
+    "cag": 3
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6121,7 +7645,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 83.0,
     "ftfr": 86.0,
     "csat": 93.0,
-    "nps": 83.0
+    "nps": 83.0,
+    "cpc": 1650,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6133,7 +7660,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 72.0,
     "ftfr": 93.0,
     "csat": 92.0,
-    "nps": 69.0
+    "nps": 69.0,
+    "cpc": 2708,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6145,7 +7675,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 86.0,
     "ftfr": 87.0,
     "csat": 90.0,
-    "nps": 81.0
+    "nps": 81.0,
+    "cpc": 1650,
+    "diag": 92.8,
+    "cag": 4
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6157,7 +7690,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 77.0,
     "ftfr": 85.0,
     "csat": 90.0,
-    "nps": 65.0
+    "nps": 65.0,
+    "cpc": 3624,
+    "diag": 86.0,
+    "cag": 1
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6169,7 +7705,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 88.0,
     "ftfr": 83.0,
     "csat": 90.0,
-    "nps": 53.0
+    "nps": 53.0,
+    "cpc": 131,
+    "diag": 85.3,
+    "cag": 4
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6181,7 +7720,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 75.0,
     "ftfr": 80.0,
     "csat": 87.0,
-    "nps": 75.0
+    "nps": 75.0,
+    "cpc": 2780,
+    "diag": 86.9,
+    "cag": 5
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6193,7 +7735,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 93.0,
     "ftfr": 88.0,
     "csat": 94.0,
-    "nps": 62.0
+    "nps": 62.0,
+    "cpc": 1064,
+    "diag": 86.0,
+    "cag": 1
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6205,7 +7750,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 81.0,
     "ftfr": 89.0,
     "csat": 90.0,
-    "nps": 50.0
+    "nps": 50.0,
+    "cpc": 1650,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6217,7 +7765,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 79.0,
     "ftfr": 83.0,
     "csat": 86.0,
-    "nps": 53.0
+    "nps": 53.0,
+    "cpc": 1650,
+    "diag": 87.1,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6229,7 +7780,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 75.0,
     "ftfr": 94.0,
     "csat": 95.0,
-    "nps": 70.0
+    "nps": 70.0,
+    "cpc": 1157,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6241,7 +7795,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 79.0,
     "ftfr": 89.0,
     "csat": 96.0,
-    "nps": 82.0
+    "nps": 82.0,
+    "cpc": 2123,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6253,7 +7810,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 94.0,
     "ftfr": 90.0,
     "csat": 88.0,
-    "nps": 79.0
+    "nps": 79.0,
+    "cpc": 1650,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6265,7 +7825,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 89.0,
     "ftfr": 89.0,
     "csat": 92.0,
-    "nps": 60.0
+    "nps": 60.0,
+    "cpc": 1650,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6277,7 +7840,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 81.0,
     "ftfr": 81.0,
     "csat": 92.0,
-    "nps": 75.0
+    "nps": 75.0,
+    "cpc": 66,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6289,7 +7855,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 77.0,
     "ftfr": 91.0,
     "csat": 87.0,
-    "nps": 67.0
+    "nps": 67.0,
+    "cpc": 78,
+    "diag": 85.9,
+    "cag": 5
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6301,7 +7870,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 83.0,
     "ftfr": 85.0,
     "csat": 85.0,
-    "nps": 51.0
+    "nps": 51.0,
+    "cpc": 136,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6313,7 +7885,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 78.0,
     "ftfr": 91.0,
     "csat": 94.0,
-    "nps": 75.0
+    "nps": 75.0,
+    "cpc": 508,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6325,7 +7900,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 76.0,
     "ftfr": 81.0,
     "csat": 96.0,
-    "nps": 71.0
+    "nps": 71.0,
+    "cpc": 1650,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6337,7 +7915,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 81.0,
     "ftfr": 80.0,
     "csat": 86.0,
-    "nps": 79.0
+    "nps": 79.0,
+    "cpc": 1650,
+    "diag": 86.4,
+    "cag": 5
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6349,7 +7930,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 82.0,
     "ftfr": 90.0,
     "csat": 87.0,
-    "nps": 74.0
+    "nps": 74.0,
+    "cpc": 1541,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6361,7 +7945,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 73.0,
     "ftfr": 87.0,
     "csat": 95.0,
-    "nps": 73.0
+    "nps": 73.0,
+    "cpc": 3664,
+    "diag": 87.1,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6373,7 +7960,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 84.0,
     "ftfr": 84.0,
     "csat": 86.0,
-    "nps": 72.0
+    "nps": 72.0,
+    "cpc": 1650,
+    "diag": 86.9,
+    "cag": 5
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6385,7 +7975,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 74.0,
     "ftfr": 84.0,
     "csat": 89.0,
-    "nps": 69.0
+    "nps": 69.0,
+    "cpc": 2086,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6397,7 +7990,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 84.0,
     "ftfr": 92.0,
     "csat": 85.0,
-    "nps": 76.0
+    "nps": 76.0,
+    "cpc": 136,
+    "diag": 85.5,
+    "cag": 1
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6409,7 +8005,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 78.0,
     "ftfr": 82.0,
     "csat": 87.0,
-    "nps": 61.0
+    "nps": 61.0,
+    "cpc": 220,
+    "diag": 85.6,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6421,7 +8020,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 79.0,
     "ftfr": 89.0,
     "csat": 88.0,
-    "nps": 80.0
+    "nps": 80.0,
+    "cpc": 1650,
+    "diag": 86.0,
+    "cag": 1
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6433,7 +8035,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 89.0,
     "ftfr": 87.0,
     "csat": 89.0,
-    "nps": 70.0
+    "nps": 70.0,
+    "cpc": 2206,
+    "diag": 85.9,
+    "cag": 5
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6445,7 +8050,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 73.0,
     "ftfr": 84.0,
     "csat": 88.0,
-    "nps": 73.0
+    "nps": 73.0,
+    "cpc": 1020,
+    "diag": 87.0,
+    "cag": 1
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6457,7 +8065,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 83.0,
     "ftfr": 89.0,
     "csat": 87.0,
-    "nps": 57.0
+    "nps": 57.0,
+    "cpc": 56,
+    "diag": 87.1,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6469,7 +8080,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 82.0,
     "ftfr": 90.0,
     "csat": 95.0,
-    "nps": 65.0
+    "nps": 65.0,
+    "cpc": 1650,
+    "diag": 87.1,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6481,7 +8095,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 76.0,
     "ftfr": 94.0,
     "csat": 88.0,
-    "nps": 82.0
+    "nps": 82.0,
+    "cpc": 1009,
+    "diag": 87.3,
+    "cag": 4
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6493,7 +8110,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 78.0,
     "ftfr": 91.0,
     "csat": 90.0,
-    "nps": 78.0
+    "nps": 78.0,
+    "cpc": 125,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6505,7 +8125,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 77.0,
     "ftfr": 89.0,
     "csat": 94.0,
-    "nps": 56.0
+    "nps": 56.0,
+    "cpc": 1650,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6517,7 +8140,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 80.0,
     "ftfr": 91.0,
     "csat": 93.0,
-    "nps": 55.0
+    "nps": 55.0,
+    "cpc": 2290,
+    "diag": 87.0,
+    "cag": 1
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6529,7 +8155,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 82.0,
     "ftfr": 88.0,
     "csat": 85.0,
-    "nps": 84.0
+    "nps": 84.0,
+    "cpc": 484,
+    "diag": 87.1,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6541,7 +8170,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 87.0,
     "ftfr": 82.0,
     "csat": 91.0,
-    "nps": 54.0
+    "nps": 54.0,
+    "cpc": 1595,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6553,7 +8185,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 87.0,
     "ftfr": 86.0,
     "csat": 88.0,
-    "nps": 52.0
+    "nps": 52.0,
+    "cpc": 1650,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6565,7 +8200,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 79.0,
     "ftfr": 89.0,
     "csat": 90.0,
-    "nps": 80.0
+    "nps": 80.0,
+    "cpc": 1287,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6577,7 +8215,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 90.0,
     "ftfr": 84.0,
     "csat": 96.0,
-    "nps": 50.0
+    "nps": 50.0,
+    "cpc": 1650,
+    "diag": 92.9,
+    "cag": 5
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6589,7 +8230,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 76.0,
     "ftfr": 84.0,
     "csat": 88.0,
-    "nps": 68.0
+    "nps": 68.0,
+    "cpc": 1650,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6601,7 +8245,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 90.0,
     "ftfr": 88.0,
     "csat": 85.0,
-    "nps": 81.0
+    "nps": 81.0,
+    "cpc": 944,
+    "diag": 86.4,
+    "cag": 5
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6613,7 +8260,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 83.0,
     "ftfr": 92.0,
     "csat": 88.0,
-    "nps": 64.0
+    "nps": 64.0,
+    "cpc": 2589,
+    "diag": 85.3,
+    "cag": 4
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6625,7 +8275,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 81.0,
     "ftfr": 81.0,
     "csat": 86.0,
-    "nps": 76.0
+    "nps": 76.0,
+    "cpc": 1650,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6637,7 +8290,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 74.0,
     "ftfr": 84.0,
     "csat": 95.0,
-    "nps": 59.0
+    "nps": 59.0,
+    "cpc": 5007,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6649,7 +8305,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 87.0,
     "ftfr": 82.0,
     "csat": 90.0,
-    "nps": 50.0
+    "nps": 50.0,
+    "cpc": 136,
+    "diag": 86.0,
+    "cag": 1
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6661,7 +8320,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 84.0,
     "ftfr": 91.0,
     "csat": 92.0,
-    "nps": 79.0
+    "nps": 79.0,
+    "cpc": 553,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6673,7 +8335,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 88.0,
     "ftfr": 81.0,
     "csat": 93.0,
-    "nps": 60.0
+    "nps": 60.0,
+    "cpc": 1650,
+    "diag": 86.9,
+    "cag": 5
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6685,7 +8350,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 71.0,
     "ftfr": 85.0,
     "csat": 92.0,
-    "nps": 80.0
+    "nps": 80.0,
+    "cpc": 2960,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6697,7 +8365,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 92.0,
     "ftfr": 87.0,
     "csat": 88.0,
-    "nps": 54.0
+    "nps": 54.0,
+    "cpc": 1650,
+    "diag": 87.2,
+    "cag": 3
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6709,7 +8380,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 74.0,
     "ftfr": 90.0,
     "csat": 94.0,
-    "nps": 65.0
+    "nps": 65.0,
+    "cpc": 1650,
+    "diag": 85.9,
+    "cag": 5
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6721,7 +8395,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 83.0,
     "ftfr": 90.0,
     "csat": 92.0,
-    "nps": 76.0
+    "nps": 76.0,
+    "cpc": 1650,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6733,7 +8410,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 76.0,
     "ftfr": 88.0,
     "csat": 85.0,
-    "nps": 64.0
+    "nps": 64.0,
+    "cpc": 1650,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6745,7 +8425,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 86.0,
     "ftfr": 91.0,
     "csat": 89.0,
-    "nps": 54.0
+    "nps": 54.0,
+    "cpc": 46,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6757,7 +8440,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 89.0,
     "ftfr": 90.0,
     "csat": 85.0,
-    "nps": 52.0
+    "nps": 52.0,
+    "cpc": 1650,
+    "diag": 86.8,
+    "cag": 4
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6769,7 +8455,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 88.0,
     "ftfr": 82.0,
     "csat": 87.0,
-    "nps": 66.0
+    "nps": 66.0,
+    "cpc": 1650,
+    "diag": 86.4,
+    "cag": 5
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6781,7 +8470,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 92.0,
     "ftfr": 91.0,
     "csat": 94.0,
-    "nps": 66.0
+    "nps": 66.0,
+    "cpc": 1650,
+    "diag": 87.2,
+    "cag": 3
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6793,7 +8485,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 70.0,
     "ftfr": 93.0,
     "csat": 93.0,
-    "nps": 75.0
+    "nps": 75.0,
+    "cpc": 1650,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6805,7 +8500,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 71.0,
     "ftfr": 92.0,
     "csat": 89.0,
-    "nps": 80.0
+    "nps": 80.0,
+    "cpc": 1650,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6817,7 +8515,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 85.0,
     "ftfr": 89.0,
     "csat": 90.0,
-    "nps": 78.0
+    "nps": 78.0,
+    "cpc": 2052,
+    "diag": 87.0,
+    "cag": 1
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6829,7 +8530,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 85.0,
     "ftfr": 90.0,
     "csat": 95.0,
-    "nps": 70.0
+    "nps": 70.0,
+    "cpc": 1650,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6841,7 +8545,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 81.0,
     "ftfr": 85.0,
     "csat": 89.0,
-    "nps": 64.0
+    "nps": 64.0,
+    "cpc": 1979,
+    "diag": 86.9,
+    "cag": 5
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6853,7 +8560,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 76.0,
     "ftfr": 93.0,
     "csat": 92.0,
-    "nps": 84.0
+    "nps": 84.0,
+    "cpc": 155,
+    "diag": 87.7,
+    "cag": 3
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6865,7 +8575,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 83.0,
     "ftfr": 88.0,
     "csat": 95.0,
-    "nps": 79.0
+    "nps": 79.0,
+    "cpc": 1650,
+    "diag": 86.0,
+    "cag": 1
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6877,7 +8590,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 82.0,
     "ftfr": 90.0,
     "csat": 86.0,
-    "nps": 61.0
+    "nps": 61.0,
+    "cpc": 388,
+    "diag": 85.9,
+    "cag": 5
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6889,7 +8605,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 81.0,
     "ftfr": 89.0,
     "csat": 94.0,
-    "nps": 61.0
+    "nps": 61.0,
+    "cpc": 80,
+    "diag": 85.2,
+    "cag": 3
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6901,7 +8620,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 88.0,
     "ftfr": 87.0,
     "csat": 93.0,
-    "nps": 77.0
+    "nps": 77.0,
+    "cpc": 4367,
+    "diag": 85.9,
+    "cag": 5
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6913,7 +8635,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 80.0,
     "ftfr": 85.0,
     "csat": 87.0,
-    "nps": 84.0
+    "nps": 84.0,
+    "cpc": 4627,
+    "diag": 86.1,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6925,7 +8650,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 71.0,
     "ftfr": 82.0,
     "csat": 96.0,
-    "nps": 70.0
+    "nps": 70.0,
+    "cpc": 3004,
+    "diag": 85.7,
+    "cag": 3
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6937,7 +8665,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 71.0,
     "ftfr": 90.0,
     "csat": 88.0,
-    "nps": 73.0
+    "nps": 73.0,
+    "cpc": 5007,
+    "diag": 85.8,
+    "cag": 4
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6949,7 +8680,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 86.0,
     "ftfr": 82.0,
     "csat": 95.0,
-    "nps": 84.0
+    "nps": 84.0,
+    "cpc": 3010,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6961,7 +8695,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 92.0,
     "ftfr": 88.0,
     "csat": 86.0,
-    "nps": 78.0
+    "nps": 78.0,
+    "cpc": 2513,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6973,7 +8710,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 74.0,
     "ftfr": 88.0,
     "csat": 95.0,
-    "nps": 78.0
+    "nps": 78.0,
+    "cpc": 1650,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6985,7 +8725,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 77.0,
     "ftfr": 92.0,
     "csat": 93.0,
-    "nps": 82.0
+    "nps": 82.0,
+    "cpc": 528,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -6997,7 +8740,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 92.0,
     "ftfr": 90.0,
     "csat": 87.0,
-    "nps": 54.0
+    "nps": 54.0,
+    "cpc": 2704,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -7009,7 +8755,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 85.0,
     "ftfr": 81.0,
     "csat": 96.0,
-    "nps": 69.0
+    "nps": 69.0,
+    "cpc": 282,
+    "diag": 86.8,
+    "cag": 4
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -7021,7 +8770,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 76.0,
     "ftfr": 85.0,
     "csat": 96.0,
-    "nps": 51.0
+    "nps": 51.0,
+    "cpc": 1650,
+    "diag": 85.8,
+    "cag": 4
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -7033,7 +8785,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 86.0,
     "ftfr": 86.0,
     "csat": 96.0,
-    "nps": 53.0
+    "nps": 53.0,
+    "cpc": 1650,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -7045,7 +8800,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 70.0,
     "ftfr": 89.0,
     "csat": 85.0,
-    "nps": 55.0
+    "nps": 55.0,
+    "cpc": 508,
+    "diag": 85.9,
+    "cag": 5
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -7057,7 +8815,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 93.0,
     "ftfr": 82.0,
     "csat": 86.0,
-    "nps": 73.0
+    "nps": 73.0,
+    "cpc": 2834,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -7069,7 +8830,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 82.0,
     "ftfr": 87.0,
     "csat": 89.0,
-    "nps": 52.0
+    "nps": 52.0,
+    "cpc": 1650,
+    "diag": 85.5,
+    "cag": 1
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -7081,7 +8845,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 83.0,
     "ftfr": 88.0,
     "csat": 90.0,
-    "nps": 78.0
+    "nps": 78.0,
+    "cpc": 1650,
+    "diag": 86.7,
+    "cag": 3
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -7093,7 +8860,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 84.0,
     "ftfr": 93.0,
     "csat": 90.0,
-    "nps": 68.0
+    "nps": 68.0,
+    "cpc": 1423,
+    "diag": 85.6,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -7105,7 +8875,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 89.0,
     "ftfr": 82.0,
     "csat": 90.0,
-    "nps": 56.0
+    "nps": 56.0,
+    "cpc": 25,
+    "diag": 86.0,
+    "cag": 1
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -7117,7 +8890,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 73.0,
     "ftfr": 92.0,
     "csat": 85.0,
-    "nps": 78.0
+    "nps": 78.0,
+    "cpc": 91,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -7129,7 +8905,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 75.0,
     "ftfr": 93.0,
     "csat": 96.0,
-    "nps": 74.0
+    "nps": 74.0,
+    "cpc": 1650,
+    "diag": 87.2,
+    "cag": 3
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -7141,7 +8920,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 90.0,
     "ftfr": 89.0,
     "csat": 93.0,
-    "nps": 55.0
+    "nps": 55.0,
+    "cpc": 1650,
+    "diag": 86.6,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -7153,7 +8935,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 91.0,
     "ftfr": 80.0,
     "csat": 88.0,
-    "nps": 73.0
+    "nps": 73.0,
+    "cpc": 4616,
+    "diag": 87.2,
+    "cag": 3
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -7165,7 +8950,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 86.0,
     "ftfr": 83.0,
     "csat": 93.0,
-    "nps": 77.0
+    "nps": 77.0,
+    "cpc": 3122,
+    "diag": 86.4,
+    "cag": 5
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -7177,7 +8965,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 86.0,
     "ftfr": 93.0,
     "csat": 87.0,
-    "nps": 75.0
+    "nps": 75.0,
+    "cpc": 1111,
+    "diag": 86.5,
+    "cag": 1
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -7189,7 +8980,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 88.0,
     "ftfr": 86.0,
     "csat": 88.0,
-    "nps": 58.0
+    "nps": 58.0,
+    "cpc": 136,
+    "diag": 85.6,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -7201,7 +8995,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 80.0,
     "ftfr": 83.0,
     "csat": 87.0,
-    "nps": 64.0
+    "nps": 64.0,
+    "cpc": 136,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -7213,7 +9010,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 77.0,
     "ftfr": 80.0,
     "csat": 86.0,
-    "nps": 65.0
+    "nps": 65.0,
+    "cpc": 1650,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -7225,7 +9025,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 94.0,
     "ftfr": 89.0,
     "csat": 96.0,
-    "nps": 51.0
+    "nps": 51.0,
+    "cpc": 2123,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -7237,7 +9040,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 93.0,
     "ftfr": 81.0,
     "csat": 96.0,
-    "nps": 74.0
+    "nps": 74.0,
+    "cpc": 1650,
+    "diag": 86.1,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -7249,7 +9055,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 82.0,
     "ftfr": 87.0,
     "csat": 90.0,
-    "nps": 83.0
+    "nps": 83.0,
+    "cpc": 1650,
+    "diag": 86.2,
+    "cag": 3
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -7261,7 +9070,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 80.0,
     "ftfr": 81.0,
     "csat": 85.0,
-    "nps": 66.0
+    "nps": 66.0,
+    "cpc": 4120,
+    "diag": 86.3,
+    "cag": 4
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -7273,7 +9085,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 90.0,
     "ftfr": 93.0,
     "csat": 86.0,
-    "nps": 68.0
+    "nps": 68.0,
+    "cpc": 4046,
+    "diag": 86.1,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -7285,7 +9100,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 84.0,
     "ftfr": 93.0,
     "csat": 86.0,
-    "nps": 68.0
+    "nps": 68.0,
+    "cpc": 1013,
+    "diag": 86.0,
+    "cag": 1
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -7297,7 +9115,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 79.0,
     "ftfr": 92.0,
     "csat": 88.0,
-    "nps": 78.0
+    "nps": 78.0,
+    "cpc": 2086,
+    "diag": 86.4,
+    "cag": 5
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -7309,7 +9130,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 76.0,
     "ftfr": 88.0,
     "csat": 91.0,
-    "nps": 61.0
+    "nps": 61.0,
+    "cpc": 3103,
+    "diag": 86.9,
+    "cag": 5
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -7321,7 +9145,10 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 82.0,
     "ftfr": 86.0,
     "csat": 85.0,
-    "nps": 50.0
+    "nps": 50.0,
+    "cpc": 2566,
+    "diag": 87.6,
+    "cag": 2
   },
   {
     "busm": "Tamilselvan Subramanian",
@@ -7333,6 +9160,9 @@ export const ALL_ASP_PERF_DATA: AspPerfItem[] = [
     "sah": 77.0,
     "ftfr": 86.0,
     "csat": 96.0,
-    "nps": 62.0
+    "nps": 62.0,
+    "cpc": 1242,
+    "diag": 86.0,
+    "cag": 1
   }
 ];
