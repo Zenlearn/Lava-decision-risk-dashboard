@@ -313,84 +313,84 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
 
                 </div>
 
-                <div className="grid-mock k2" style={{ marginTop: '20px' }}>
-                  <div className="card-mock">
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-                      <h3 style={{ margin: 0 }}>Score Trend — {actorSel}</h3>
-                      <span style={{ fontSize: '11px', color: '#64748b' }}>Monthly Pillar Progression</span>
-                    </div>
-                    <div className="chart-box-mock">
-                      {isMounted && (
-                        <ResponsiveContainer width="100%" height="100%">
-                          <LineChart data={actRows} margin={{ top: 18, right: 15, left: -10, bottom: 5 }}>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--line)" />
-                            <XAxis dataKey="month" tickLine={false} />
-                            <YAxis domain={[0, 100]} tickLine={false} />
-                            <Tooltip />
-                            <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: '11.5px', fontWeight: 700 }} />
-                            <Line type="monotone" dataKey="overall" name="Overall Score" stroke="#0f172a" strokeWidth={4} dot={{ r: 5 }}>
-                              <LabelList dataKey="overall" position="top" formatter={(v: any) => v !== null && v !== undefined ? Number(v).toFixed(1) : ''} style={{ fontSize: '11px', fontWeight: 800, fill: '#0f172a' }} />
-                            </Line>
-                            <Line type="monotone" dataKey="process" name="Process Score" stroke="#4E67EB" strokeWidth={2} dot={{ r: 4 }}>
-                              <LabelList dataKey="process" position="top" formatter={(v: any) => v !== null && v !== undefined ? Number(v).toFixed(1) : ''} style={{ fontSize: '10px', fontWeight: 700, fill: '#4E67EB' }} />
-                            </Line>
-                            <Line type="monotone" dataKey="skill" name="Skill Score" stroke="#294D89" strokeWidth={2} dot={{ r: 4 }}>
-                              <LabelList dataKey="skill" position="bottom" formatter={(v: any) => v !== null && v !== undefined ? Number(v).toFixed(1) : ''} style={{ fontSize: '10px', fontWeight: 700, fill: '#294D89' }} />
-                            </Line>
-                            <Line type="monotone" dataKey="audit" name="Audit Score" stroke="#C0392B" strokeWidth={2} dot={{ r: 4 }}>
-                              <LabelList dataKey="audit" position="bottom" formatter={(v: any) => v !== null && v !== undefined ? Number(v).toFixed(1) : ''} style={{ fontSize: '10px', fontWeight: 700, fill: '#C0392B' }} />
-                            </Line>
-                          </LineChart>
-                        </ResponsiveContainer>
-                      )}
-                    </div>
+                {/* Score Trend Line Chart (Full Width) */}
+                <div className="card-mock" style={{ marginTop: '20px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                    <h3 style={{ margin: 0 }}>Score Trend — {actorSel}</h3>
+                    <span style={{ fontSize: '11px', color: '#64748b' }}>Monthly Pillar Progression</span>
                   </div>
+                  <div className="chart-box-mock" style={{ height: '320px' }}>
+                    {isMounted && (
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={actRows} margin={{ top: 18, right: 25, left: -5, bottom: 5 }}>
+                          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--line)" />
+                          <XAxis dataKey="month" tickLine={false} />
+                          <YAxis domain={[0, 100]} tickLine={false} />
+                          <Tooltip />
+                          <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: '12px', fontWeight: 700 }} />
+                          <Line type="monotone" dataKey="overall" name="Overall Score" stroke="#0f172a" strokeWidth={4} dot={{ r: 6 }}>
+                            <LabelList dataKey="overall" position="top" formatter={(v: any) => v !== null && v !== undefined ? Number(v).toFixed(1) : ''} style={{ fontSize: '11px', fontWeight: 800, fill: '#0f172a' }} />
+                          </Line>
+                          <Line type="monotone" dataKey="process" name="Process Score" stroke="#4E67EB" strokeWidth={2.5} dot={{ r: 4 }}>
+                            <LabelList dataKey="process" position="top" formatter={(v: any) => v !== null && v !== undefined ? Number(v).toFixed(1) : ''} style={{ fontSize: '10px', fontWeight: 700, fill: '#4E67EB' }} />
+                          </Line>
+                          <Line type="monotone" dataKey="skill" name="Skill Score" stroke="#294D89" strokeWidth={2.5} dot={{ r: 4 }}>
+                            <LabelList dataKey="skill" position="bottom" formatter={(v: any) => v !== null && v !== undefined ? Number(v).toFixed(1) : ''} style={{ fontSize: '10px', fontWeight: 700, fill: '#294D89' }} />
+                          </Line>
+                          <Line type="monotone" dataKey="audit" name="Audit Score" stroke="#C0392B" strokeWidth={2.5} dot={{ r: 4 }}>
+                            <LabelList dataKey="audit" position="bottom" formatter={(v: any) => v !== null && v !== undefined ? Number(v).toFixed(1) : ''} style={{ fontSize: '10px', fontWeight: 700, fill: '#C0392B' }} />
+                          </Line>
+                        </LineChart>
+                      </ResponsiveContainer>
+                    )}
+                  </div>
+                </div>
 
-                  <div className="card-mock">
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-                      <h3 style={{ margin: 0 }}>Score &amp; Anomaly Trend Table — {actorSel}</h3>
-                      <span style={{ fontSize: '11px', color: '#64748b' }}>Monthly Scores &amp; Flags</span>
-                    </div>
-                    <div className="tbl-wrap-mock">
-                      <table>
-                        <thead>
-                          <tr>
-                            <th>Month</th>
-                            <th>Overall</th>
-                            <th>Skill</th>
-                            <th>Process</th>
-                            <th>Audit</th>
-                            <th>WO</th>
-                            <th>Same-day Swap</th>
-                            <th>Board@Home</th>
-                            <th>Cross-ASP</th>
-                            <th>Bounce</th>
-                            <th>Mismatch</th>
-                            <th>Detractor</th>
-                            <th>DOA</th>
+                {/* Score & Anomaly Trend Table (Full Width Below Chart) */}
+                <div className="card-mock" style={{ marginTop: '20px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                    <h3 style={{ margin: 0 }}>Score &amp; Anomaly Trend Table — {actorSel}</h3>
+                    <span style={{ fontSize: '11px', color: '#64748b' }}>Monthly Scores &amp; Anomaly Flag Breakdown</span>
+                  </div>
+                  <div className="tbl-wrap-mock">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Month</th>
+                          <th>Overall</th>
+                          <th>Skill</th>
+                          <th>Process</th>
+                          <th>Audit</th>
+                          <th>WO</th>
+                          <th>Same-day Swap</th>
+                          <th>Board@Home</th>
+                          <th>Cross-ASP</th>
+                          <th>Bounce</th>
+                          <th>Mismatch</th>
+                          <th>Detractor</th>
+                          <th>DOA</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredRows.map((r: any, idx: number) => (
+                          <tr key={idx}>
+                            <td><b>{r.month}</b></td>
+                            <td><span className={`score-pill ${(r.overall ?? 0) >= 70 ? 's-good' : (r.overall ?? 0) >= 50 ? 's-warn' : 's-bad'}`}>{r.overall ? r.overall.toFixed(1) : '—'}</span></td>
+                            <td><span className="score-pill" style={{ color: '#294D89', fontWeight: 700 }}>{r.skill ? r.skill.toFixed(1) : '—'}</span></td>
+                            <td><span className="score-pill" style={{ color: '#4E67EB', fontWeight: 700 }}>{r.process ? r.process.toFixed(1) : '—'}</span></td>
+                            <td><span className="score-pill" style={{ color: '#C0392B', fontWeight: 700 }}>{r.audit ? r.audit.toFixed(1) : '—'}</span></td>
+                            <td>{r.wo}</td>
+                            <td>{r.ghost}</td>
+                            <td>{r.home_board}</td>
+                            <td>{r.cross}</td>
+                            <td>{r.bounce}</td>
+                            <td>{r.mismatch}</td>
+                            <td>{r.detractor}</td>
+                            <td>{r.doa}</td>
                           </tr>
-                        </thead>
-                        <tbody>
-                          {filteredRows.map((r: any, idx: number) => (
-                            <tr key={idx}>
-                              <td><b>{r.month}</b></td>
-                              <td><span className={`score-pill ${(r.overall ?? 0) >= 70 ? 's-good' : (r.overall ?? 0) >= 50 ? 's-warn' : 's-bad'}`}>{r.overall ? r.overall.toFixed(1) : '—'}</span></td>
-                              <td><span className="score-pill" style={{ color: '#294D89', fontWeight: 700 }}>{r.skill ? r.skill.toFixed(1) : '—'}</span></td>
-                              <td><span className="score-pill" style={{ color: '#4E67EB', fontWeight: 700 }}>{r.process ? r.process.toFixed(1) : '—'}</span></td>
-                              <td><span className="score-pill" style={{ color: '#C0392B', fontWeight: 700 }}>{r.audit ? r.audit.toFixed(1) : '—'}</span></td>
-                              <td>{r.wo}</td>
-                              <td>{r.ghost}</td>
-                              <td>{r.home_board}</td>
-                              <td>{r.cross}</td>
-                              <td>{r.bounce}</td>
-                              <td>{r.mismatch}</td>
-                              <td>{r.detractor}</td>
-                              <td>{r.doa}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </>
