@@ -451,7 +451,7 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
               <tr><td>Fixed cheaply</td><td>CPC (Cost Per Call)</td></tr>
               <tr><td>Didn't come back</td><td>Repeat / bounce-IMEI rate</td></tr>
 
-              <tr><td rowSpan={4} style={{ borderTop: '2px solid #e2e8f0' }}><b>Process</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>is the shop run the way Lava requires?</span></td><td style={{ borderTop: '2px solid #e2e8f0' }}>Closed on time</td><td style={{ borderTop: '2px solid #e2e8f0' }}>TAT 1–2 day closure %</td></tr>
+              <tr><td rowSpan={3} style={{ borderTop: '2px solid #e2e8f0' }}><b>Process</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>is the shop run the way Lava requires?</span></td><td style={{ borderTop: '2px solid #e2e8f0' }}>Closed on time</td><td style={{ borderTop: '2px solid #e2e8f0' }}>TAT 1–2 day closure %</td></tr>
               <tr><td>Kept appointments</td><td>S@H cancellation % / reschedule %</td></tr>
               <tr><td>Stayed within financial limits</td><td>MSM Achievement % (deposit/stock compliance)</td></tr>
 
