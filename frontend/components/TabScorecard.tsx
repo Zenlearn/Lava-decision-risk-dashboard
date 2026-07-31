@@ -13,10 +13,21 @@ interface TabScorecardProps {
 export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScorecardProps) {
   const [scMode, setScMode] = useState<'single' | 'cohort'>('single');
   const [scLevel, setScLevel] = useState<'busm' | 'asm' | 'asp'>('busm');
-  const [actorSel, setActorSel] = useState<string>(data.busm[0]?.actor || '');
+  const [actorSel, setActorSel] = useState<string>(data?.busm?.[0]?.actor || '');
   const [fb, setFb] = useState<string>(''); // Filter by BUSM (cohort mode)
   const [fa, setFa] = useState<string>(''); // Filter by ASM (cohort mode)
   const [fm, setFm] = useState<string>(''); // Filter by month
+
+  if (!data || !data.busm || data.busm.length === 0) {
+    return (
+      <div className="view-mock on">
+        <div className="card-mock" style={{ textAlign: 'center', padding: '40px', color: '#64748b' }}>
+          <strong>Score Card data is not yet available.</strong><br />
+          <span style={{ fontSize: '13px' }}>Please ensure the Master Data has been ingested successfully. If data was recently ingested, try refreshing the page.</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="view-mock on">

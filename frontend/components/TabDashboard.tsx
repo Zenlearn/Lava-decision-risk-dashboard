@@ -349,7 +349,7 @@ export default function TabDashboard({
             noData: false
           },
           {
-            label: 'Customer Satisfaction (C-SAT)',
+            label: 'NPS Score',
             value: currentKPI?.csat || 0,
             target: data?.kpi?.targets?.csat || 95,
             delta: prevKPI ? Math.round((currentKPI.csat - prevKPI.csat) * 10) / 10 : null,
@@ -479,7 +479,7 @@ export default function TabDashboard({
             MTTR Deep Dive
           </button>
           <button onClick={() => scrollToSection('sec-csat')} style={{ background: '#f8fafc', border: '1px solid #cbd5e1', color: '#0f172a', padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 700, cursor: 'pointer' }}>
-            C-SAT Deep Dive
+            NPS Deep Dive
           </button>
           <button onClick={() => scrollToSection('sec-trends')} style={{ background: '#f8fafc', border: '1px solid #cbd5e1', color: '#0f172a', padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 700, cursor: 'pointer' }}>
             KPI Trends &amp; Changes
@@ -811,7 +811,7 @@ export default function TabDashboard({
             </span>
             <div>
               <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: '#0f172a' }}>
-                Customer Satisfaction (C-SAT) Deep Dive
+                NPS Score Deep Dive
               </h3>
               <span style={{ fontSize: '12px', color: '#64748b' }}>
                 Empirical NPS survey distribution, feedback channel breakdown (WhatsApp vs IVR), and rating frequencies for {currentKPI?.month || selectedMonth}
@@ -823,7 +823,7 @@ export default function TabDashboard({
               ✓ Verified NPS Dataset (10,570 Surveys)
             </span>
             <span style={{ background: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', padding: '6px 14px', borderRadius: '8px', fontSize: '13px', fontWeight: 800 }}>
-              C-SAT Score: {hasSurveyData ? fmtPct(currentKPI?.csat ?? 0) : '— (no responses)'}
+              NPS Score: {hasSurveyData ? fmtPct(currentKPI?.csat ?? 0) : '— (no responses)'}
             </span>
           </div>
         </div>
@@ -844,7 +844,7 @@ export default function TabDashboard({
               return (
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: '12px', marginBottom: '20px' }}>
                   <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '14px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>C-SAT Satisfaction Index</span>
+                    <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>NPS Satisfaction Index</span>
                     <span style={{ fontSize: '20px', fontWeight: 800, color: '#16a34a' }}>{hasSurveyData ? fmtPct(currentKPI?.csat ?? 0) : '—'}</span>
                     <span style={{ fontSize: '11px', color: '#475569' }}>{hasSurveyData ? 'Target 95.0%' : 'No survey responses this month'}</span>
                   </div>
@@ -1013,7 +1013,7 @@ export default function TabDashboard({
                         <Tooltip />
                         <Legend verticalAlign="bottom" height={36} iconType="circle" />
                         <Line yAxisId="left" type="monotone" dataKey="ftfr" name="First-time fix rate (%)" stroke="#2E4D8E" strokeWidth={3} />
-                        <Line yAxisId="left" type="monotone" dataKey="csat" name="C-SAT (%)" stroke="#4E67EB" strokeWidth={3} />
+                        <Line yAxisId="left" type="monotone" dataKey="csat" name="NPS Score (%)" stroke="#4E67EB" strokeWidth={3} />
                         <Line yAxisId="left" type="monotone" dataKey="diag" name="Diagnostic accuracy (%)" stroke="#C0392B" strokeWidth={3} />
                         <Line yAxisId="right" type="monotone" dataKey="mttr" name="MTTR (days)" stroke="#D98A1F" strokeWidth={3} strokeDasharray="5 5" />
                       </LineChart>
@@ -1039,7 +1039,7 @@ export default function TabDashboard({
                       negativeBad: true 
                     },
                     { 
-                      title: 'C-SAT / Detractors count', 
+                      title: 'NPS Score / Detractors count', 
                       diff: prevKPI ? (currentKPI.detractor - (prevKPI.detractor || 0)) : 0, 
                       desc: `Detractors count: ${currentKPI.detractor} cases.`, 
                       negativeBad: true 
