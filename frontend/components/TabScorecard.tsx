@@ -212,6 +212,26 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
                             <td style={{ textAlign: 'center', color: '#475569' }}>3.5% <span style={{ fontSize: '10px', color: '#94a3b8' }}>(Nat. Avg)</span></td>
                             <td style={{ textAlign: 'center' }}><span className="score-pill s-good">{getPercentileRank(curRow?.skill ?? skillAvg, 1)}</span></td>
                           </tr>
+                          {/* Total Row */}
+                          <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
+                            <td style={{ background: '#f1f5f9', color: '#0f172a', fontWeight: 800 }}>TOTAL / SKILL PILLAR AVERAGE</td>
+                            <td style={{ textAlign: 'center' }}>
+                              <span className={`score-pill ${(curRow?.skill ?? skillAvg ?? 0) >= 70 ? 's-good' : (curRow?.skill ?? skillAvg ?? 0) >= 50 ? 's-warn' : 's-bad'}`}>
+                                {fmt1(curRow?.skill ?? skillAvg)}
+                              </span>
+                            </td>
+                            <td style={{ textAlign: 'center', color: '#64748b' }}>
+                              <span className="score-pill">
+                                {fmt1(prevRow?.skill ?? skillAvg)}
+                              </span>
+                            </td>
+                            <td style={{ textAlign: 'center', color: '#0f172a', fontWeight: 800 }}>
+                              78.5 <span style={{ fontSize: '10px', color: '#94a3b8' }}>(Nat. Benchmark)</span>
+                            </td>
+                            <td style={{ textAlign: 'center' }}>
+                              <span className="score-pill s-good">{getPercentileRank(curRow?.skill ?? skillAvg)}</span>
+                            </td>
+                          </tr>
                         </tbody>
                       </table>
                     </div>
@@ -259,6 +279,26 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
                             <td style={{ textAlign: 'center', color: '#475569' }}>88.5% <span style={{ fontSize: '10px', color: '#94a3b8' }}>(Target 95.0%)</span></td>
                             <td style={{ textAlign: 'center' }}><span className="score-pill s-good">{getPercentileRank(curRow?.process ?? processAvg, -1)}</span></td>
                           </tr>
+                          {/* Total Row */}
+                          <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
+                            <td style={{ background: '#f1f5f9', color: '#0f172a', fontWeight: 800 }}>TOTAL / PROCESS PILLAR AVERAGE</td>
+                            <td style={{ textAlign: 'center' }}>
+                              <span className={`score-pill ${(curRow?.process ?? processAvg ?? 0) >= 70 ? 's-good' : (curRow?.process ?? processAvg ?? 0) >= 50 ? 's-warn' : 's-bad'}`}>
+                                {fmt1(curRow?.process ?? processAvg)}
+                              </span>
+                            </td>
+                            <td style={{ textAlign: 'center', color: '#64748b' }}>
+                              <span className="score-pill">
+                                {fmt1(prevRow?.process ?? processAvg)}
+                              </span>
+                            </td>
+                            <td style={{ textAlign: 'center', color: '#0f172a', fontWeight: 800 }}>
+                              82.0 <span style={{ fontSize: '10px', color: '#94a3b8' }}>(Nat. Benchmark)</span>
+                            </td>
+                            <td style={{ textAlign: 'center' }}>
+                              <span className="score-pill s-good">{getPercentileRank(curRow?.process ?? processAvg)}</span>
+                            </td>
+                          </tr>
                         </tbody>
                       </table>
                     </div>
@@ -305,6 +345,26 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
                             <td style={{ textAlign: 'center', color: '#64748b' }}>{getFlagRate(prevRow).toFixed(1)}%</td>
                             <td style={{ textAlign: 'center', color: '#475569' }}>2.4% <span style={{ fontSize: '10px', color: '#94a3b8' }}>(Nat. Avg)</span></td>
                             <td style={{ textAlign: 'center' }}><span className="score-pill s-good">{getPercentileRank(curRow?.audit ?? auditAvg, 3)}</span></td>
+                          </tr>
+                          {/* Total Row */}
+                          <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
+                            <td style={{ background: '#f1f5f9', color: '#0f172a', fontWeight: 800 }}>TOTAL / AUDIT PILLAR AVERAGE</td>
+                            <td style={{ textAlign: 'center' }}>
+                              <span className={`score-pill ${(curRow?.audit ?? auditAvg ?? 0) >= 70 ? 's-good' : (curRow?.audit ?? auditAvg ?? 0) >= 50 ? 's-warn' : 's-bad'}`}>
+                                {fmt1(curRow?.audit ?? auditAvg)}
+                              </span>
+                            </td>
+                            <td style={{ textAlign: 'center', color: '#64748b' }}>
+                              <span className="score-pill">
+                                {fmt1(prevRow?.audit ?? auditAvg)}
+                              </span>
+                            </td>
+                            <td style={{ textAlign: 'center', color: '#0f172a', fontWeight: 800 }}>
+                              84.5 <span style={{ fontSize: '10px', color: '#94a3b8' }}>(Nat. Benchmark)</span>
+                            </td>
+                            <td style={{ textAlign: 'center' }}>
+                              <span className="score-pill s-good">{getPercentileRank(curRow?.audit ?? auditAvg)}</span>
+                            </td>
                           </tr>
                         </tbody>
                       </table>
