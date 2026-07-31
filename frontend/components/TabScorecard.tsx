@@ -104,6 +104,7 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
             const skillAvg = wavg('skill');
             const auditAvg = wavg('audit');
             const overallAvg = wavg('overall');
+            const fmt1 = (v: number | null) => (v === null ? '—' : v.toFixed(1));
             const monthsOrder = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
             const sortedActRows = [...actRows].sort((a: any, b: any) => monthsOrder.indexOf(a.month) - monthsOrder.indexOf(b.month));
 
