@@ -2083,14 +2083,35 @@ export async function getFullDashboardData(filters?: {
     };
   }
 
+  // TAT section's warranty-scope toggle needs two REAL, independently
+  // computed datasets — not one dataset with a fabricated volume multiplier
+  // applied on top (a prior version scaled the in-warranty numbers by a
+  // flat "+18%" to fake an "Overall" view, which is why every closure
+  // percentage was identical between the two toggle states regardless of
+  // month or BUSM — scaling every bucket by the same constant preserves
+  // ratios exactly). "In-Warranty" = Warranty=Yes AND Model type in
+  // (Smart, Tablet); "Overall" = every row, no filter.
+  const isInWarrantySmartTablet = (r: any) => {
+    const raw = r.rawData || {};
+    const warranty = String(raw[FIELD_MAP.warranty] || '').trim().toLowerCase();
+    const modelType = String(raw[FIELD_MAP.modelType] || raw['Model type'] || '').trim().toLowerCase();
+    return warranty === 'yes' && (modelType === 'smart' || modelType === 'tablet');
+  };
+
   const orgKpisByMonth: Record<string, any> = {};
   allHomeMonths.forEach((m) => {
     const monthRows = processedRows.filter((r) => r.month === m);
-    orgKpisByMonth[m] = computeOrgKpiTable(monthRows);
+    orgKpisByMonth[m] = {
+      overall: computeOrgKpiTable(monthRows),
+      inWarranty: computeOrgKpiTable(monthRows.filter(isInWarrantySmartTablet)),
+    };
   });
 
   const orgKpis = {
-    all: computeOrgKpiTable(processedRows),
+    all: {
+      overall: computeOrgKpiTable(processedRows),
+      inWarranty: computeOrgKpiTable(processedRows.filter(isInWarrantySmartTablet)),
+    },
     by_month: orgKpisByMonth,
   };
 

@@ -64,10 +64,9 @@ export default function TabPartCosts({
   const itemDefinitions = [
     { key: 'pcba', label: 'PCBA' },
     { key: 'lcd', label: 'TP/LCD' },
-    { key: 'battery', label: 'Battery' },
-    { key: 'sub_pcba', label: 'Sub PCBA' },
-    { key: 'accessories', label: 'Accessories' },
-    { key: 'others', label: 'Others' },
+    { key: 'sah_15km', label: 'Same-Day S@H Travel (>15km each side)' },
+    { key: 'repeat_60d_parts', label: '60-Day Repeat Repair Parts (Attributed 1st Repairer)' },
+    { key: 'rwr_fee', label: 'S@H Return Without Repair (RWR ₹200 Fee)' },
     { key: 'travel', label: 'Technician Home Travel Fee' },
   ];
 

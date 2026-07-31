@@ -164,7 +164,20 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
     </span>
   );
 
-  const activeOrgKpi = data?.orgKpis?.by_month?.[selectedMonth] || data?.orgKpis?.all || { busms: [], asms: [], national: {} };
+  // orgKpis now carries two REAL, independently-computed variants per month —
+  // "overall" (every row, no filter) and "inWarranty" (Warranty=Yes + Smart/
+  // Tablet only). Every section except the TAT warranty toggle uses "overall"
+  // (matching this table's behavior before the split existed).
+  const activeOrgKpiMonth = data?.orgKpis?.by_month?.[selectedMonth] || data?.orgKpis?.all || {};
+  const activeOrgKpi = activeOrgKpiMonth.overall || { busms: [], asms: [], national: {} };
+  // TAT section's own source, switched by the In-Warranty/Overall toggle —
+  // was previously a single dataset with a fabricated "+18%" multiplier
+  // applied for "Overall" (which is why every closure % was identical
+  // between the two toggle states); now genuinely two different populations.
+  const tatOrgKpi = activeOrgKpiMonth[tatWarrantyFilter] || { busms: [], asms: [], national: {} };
+  const tatRawBusmList: any[] = (tatOrgKpi.busms || []).filter((b: any) => b.name && !b.name.toLowerCase().includes('unknown'));
+  const tatRawAsmList: any[] = (tatOrgKpi.asms || []).filter((a: any) => a.name && !a.name.toLowerCase().includes('unknown') && a.busm && !a.busm.toLowerCase().includes('unknown'));
+  const tatRawNational: any = tatOrgKpi.national || {};
   const currentCpcDataset = DYNAMIC_CPC_DATA_BY_MONTH[selectedMonth] || DYNAMIC_CPC_DATA_BY_MONTH['Jun'];
   const currentSahDataset = DYNAMIC_SAH_DATA_BY_MONTH[selectedMonth] || DYNAMIC_SAH_DATA_BY_MONTH['All'];
 

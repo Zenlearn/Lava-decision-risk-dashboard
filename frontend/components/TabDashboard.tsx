@@ -574,28 +574,24 @@ export default function TabDashboard({
             {/* Underlying Risk Signals & Leakage Criteria Explanation */}
             <div style={{ marginTop: '16px', padding: '14px 18px', background: '#f8fafc', borderRadius: '10px', border: '1px solid #e2e8f0', fontSize: '12.5px', color: '#475569', lineHeight: '1.6' }}>
               <div style={{ fontWeight: 800, color: '#0f172a', marginBottom: '6px', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <span>🛡️ Underlying Decision-Risk Signals Included in Headline Leakage:</span>
+                <span>🛡️ Smartphone Service at Home (S@H) Leakage Exposure Criteria:</span>
               </div>
-              Total monthly leakage measures financial exposure across all flagged anomalous work orders, incorporating:
+              Total headline monthly leakage measures financial exposure strictly for Smartphone doorstep (S@H) calls, incorporating:
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '10px', marginTop: '10px' }}>
                 <div style={{ background: '#ffffff', padding: '10px 12px', borderRadius: '6px', border: '1px solid #cbd5e1' }}>
-                  <strong style={{ color: '#0f172a', display: 'block' }}>1. Repeat Repairs &amp; Repeat Bounces</strong>
-                  Part and travel costs logged on devices returning for repeat service calls (matched by IMEI in Master Data).
+                  <strong style={{ color: '#0f172a', display: 'block' }}>1. Same-Day S@H Travel (&gt;15km each side)</strong>
+                  Same-day doorstep repairs completed at distances &gt;15 km each side.
                 </div>
                 <div style={{ background: '#ffffff', padding: '10px 12px', borderRadius: '6px', border: '1px solid #cbd5e1' }}>
-                  <strong style={{ color: '#0f172a', display: 'block' }}>2. Same-Day Board Swaps (Walk-In)</strong>
-                  Major PCBA motherboards &amp; TP/LCD display replacements completed on the same day as creation.
+                  <strong style={{ color: '#0f172a', display: 'block' }}>2. 60-Day Repeat Repairs (Attributed 1st Repairer)</strong>
+                  Repeat repairs within 60 days of previous call (matched by IMEI), attributing Total Part Cost to 1st repairer in latest call month.
                 </div>
                 <div style={{ background: '#ffffff', padding: '10px 12px', borderRadius: '6px', border: '1px solid #cbd5e1' }}>
-                  <strong style={{ color: '#0f172a', display: 'block' }}>3. Doorstep Board Repairs (S@H)</strong>
-                  Board-level repairs logged as completed at customer doorstep in violation of workshop policy.
+                  <strong style={{ color: '#0f172a', display: 'block' }}>3. Return Without Repair (RWR ₹200 Visit Fee)</strong>
+                  Return Without Repair doorstep calls valued at ₹200 per visit (₹150 visit fee + ₹50 incentive).
                 </div>
-                <div style={{ background: '#ffffff', padding: '10px 12px', borderRadius: '6px', border: '1px solid #cbd5e1' }}>
-                  <strong style={{ color: '#0f172a', display: 'block' }}>4. Diagnostic Mismatches &amp; Cross-ASP Calls</strong>
-                  Hardware symptoms closed with software actions that subsequently bounced, or served across multiple ASPs.
               </div>
             </div>
-          </div>
         )}
       </div>
 
