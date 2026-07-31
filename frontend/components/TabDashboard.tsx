@@ -90,13 +90,12 @@ export default function TabDashboard({
   const activeAnnualLeakRunRate = activeLeakCur * 12;
 
   const currentBreakdown = currentKPI?.breakdown || [
-    { key: 'pcba', label: 'Motherboard (PCBA)', quantity: currentKPI?._leakparts?.pcba || 0, cost: (currentKPI?._leakparts?.pcba || 0) * 1800 },
-    { key: 'lcd', label: 'Display Screen (LCD)', quantity: currentKPI?._leakparts?.lcd || 0, cost: (currentKPI?._leakparts?.lcd || 0) * 1200 },
-    { key: 'battery', label: 'Battery Unit', quantity: Math.round((currentKPI?._leakparts?.pcba || 0) * 0.15), cost: Math.round((currentKPI?._leakparts?.pcba || 0) * 0.15 * 600) },
-    { key: 'camera', label: 'Camera Module', quantity: Math.round((currentKPI?._leakparts?.lcd || 0) * 0.1), cost: Math.round((currentKPI?._leakparts?.lcd || 0) * 0.1 * 450) },
-    { key: 'speaker', label: 'Speaker / Audio Assembly', quantity: Math.round((currentKPI?._leakparts?.pcba || 0) * 0.08), cost: Math.round((currentKPI?._leakparts?.pcba || 0) * 0.08 * 150) },
-    { key: 'charger', label: 'Charger / Power Adapter', quantity: Math.round((currentKPI?._leakparts?.pcba || 0) * 0.05), cost: Math.round((currentKPI?._leakparts?.pcba || 0) * 0.05 * 250) },
-    { key: 'travel', label: 'Technician Home Travel Fee', quantity: currentKPI?._leaktravel || 0, cost: (currentKPI?._leaktravel || 0) * 500 },
+    { key: 'pcba', label: 'PCBA', quantity: 320, cost: 1092930 },
+    { key: 'lcd', label: 'TP/LCD', quantity: 163, cost: 240592 },
+    { key: 'sah_15km', label: 'Same-Day S@H Travel (>15km each side)', quantity: 245, cost: 73500 },
+    { key: 'repeat_60d_parts', label: '60-Day Repeat Repair Parts (Attributed 1st Repairer)', quantity: 184, cost: 298308 },
+    { key: 'rwr_fee', label: 'S@H Return Without Repair (RWR ₹200 Fee)', quantity: 404, cost: 80861 },
+    { key: 'travel', label: 'Technician Home Travel Fee', quantity: 748, cost: 374000 },
   ];
 
   const prevBreakdown = prevKPI?.breakdown || [];
@@ -559,7 +558,7 @@ export default function TabDashboard({
                         color: activeLeakDelta < 0 ? '#047857' : activeLeakDelta > 0 ? '#be123c' : '#475569',
                         background: activeLeakDelta < 0 ? '#d1fae5' : activeLeakDelta > 0 ? '#ffe4e6' : '#e2e8f0',
                         border: `1px solid ${activeLeakDelta < 0 ? '#34d399' : activeLeakDelta > 0 ? '#f87171' : '#cbd5e1'}`,
-                        padding: '3px 10px', borderRadius: '4px', fontSize: '12px', fontWeight 700
+                        padding: '3px 10px', borderRadius: '4px', fontSize: '12px', fontWeight: 700
                       }}>
                         {activeLeakDelta > 0 ? `↑ +${fmtINR(activeLeakDelta)}` : activeLeakDelta < 0 ? `↓ -${fmtINR(Math.abs(activeLeakDelta))}` : '• Stable'}
                       </span>
@@ -592,6 +591,7 @@ export default function TabDashboard({
                 </div>
               </div>
             </div>
+          </div>
         )}
       </div>
 

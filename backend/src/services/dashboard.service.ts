@@ -926,12 +926,18 @@ export async function getFullDashboardData(filters?: {
       return str === 'yes' || str === 'y' || str === '1' || str === 'true';
     };
 
+    const sahRows = mRows.filter((r) => r.isHome);
     const pcbaRows = mRows.filter((r) => r.leakageValue > 0 && isYesVal(r.rawData[FIELD_MAP.pcbaConsumption] || r.rawData['PCBA Consumption']));
     const tpLcdRows = mRows.filter((r) => r.leakageValue > 0 && isYesVal(r.rawData[FIELD_MAP.tpLcdConsumption] || r.rawData['TP/LCD Consumption']));
-    const batteryRows = mRows.filter((r) => r.leakageValue > 0 && isYesVal(r.rawData[FIELD_MAP.batteryConsumption] || r.rawData['Battery Consumption']));
-    const subPcbaRows = mRows.filter((r) => r.leakageValue > 0 && isYesVal(r.rawData[FIELD_MAP.subPcbaConsumption] || r.rawData['Sub PCBA Consumprtion'] || r.rawData['Sub PCBA Consumption']));
-    const accRows = mRows.filter((r) => r.leakageValue > 0 && isYesVal(r.rawData[FIELD_MAP.accessoriesConsumption] || r.rawData['Accessories Consumption']));
-    const othersRows = mRows.filter((r) => r.leakageValue > 0 && isYesVal(r.rawData[FIELD_MAP.othersConsumption] || r.rawData['Others Consumption']));
+
+    const repeat60dRows = mRows.filter((r) => r.isBounce || r.isCrossAsp);
+    const rwrRows = mRows.filter((r) => {
+      const act = String(r.rawData['Action Code Desc'] || r.rawData['Action Taken'] || '').toLowerCase();
+      const sym = String(r.rawData[FIELD_MAP.symptomDesc] || '').toLowerCase();
+      return act.includes('rwr') || act.includes('return without') || sym.includes('rwr');
+    });
+    const sah15kmRows = sahRows.filter((r) => r.tat !== null && r.tat <= 1 && (r.isPCBA || r.isLCD));
+    const travelRows = mRows.filter((r) => r.leakageValue > 0 && r.travelVal > 0);
 
     const parseNum = (val: any): number => {
       if (val === null || val === undefined) return 0;
@@ -952,22 +958,25 @@ export async function getFullDashboardData(filters?: {
 
     const pcbaData = calcSumCost(pcbaRows, FIELD_MAP.pcbaValue, 1800);
     const tpLcdData = calcSumCost(tpLcdRows, FIELD_MAP.tpLcdValue, 1200);
-    const batteryData = calcSumCost(batteryRows, FIELD_MAP.batteryValue, 600);
-    const subPcbaData = calcSumCost(subPcbaRows, FIELD_MAP.subPcbaValue, 400);
-    const accData = calcSumCost(accRows, FIELD_MAP.accessoriesValue, 250);
-    const othersData = calcSumCost(othersRows, FIELD_MAP.othersValue, 300);
 
-    const travelRows = mRows.filter((r) => r.leakageValue > 0 && r.travelVal > 0);
+    const repeat60dQty = repeat60dRows.length;
+    const repeat60dCost = Math.round(repeat60dRows.reduce((sum, r) => sum + (r.partLeakageVal || parseNum(r.rawData[FIELD_MAP.totalPartValue]) || 1500), 0));
+
+    const rwrQty = rwrRows.length;
+    const rwrCost = rwrQty * 200;
+
+    const sah15kmQty = sah15kmRows.length;
+    const sah15kmCost = sah15kmQty * 300;
+
     const travelQty = travelRows.length;
     const travelCost = travelQty * 500;
 
     const breakdown = [
       { key: 'pcba', label: 'PCBA', quantity: pcbaData.qty, cost: pcbaData.cost },
       { key: 'lcd', label: 'TP/LCD', quantity: tpLcdData.qty, cost: tpLcdData.cost },
-      { key: 'battery', label: 'Battery', quantity: batteryData.qty, cost: batteryData.cost },
-      { key: 'sub_pcba', label: 'Sub PCBA', quantity: subPcbaData.qty, cost: subPcbaData.cost },
-      { key: 'accessories', label: 'Accessories', quantity: accData.qty, cost: accData.cost },
-      { key: 'others', label: 'Others', quantity: othersData.qty, cost: othersData.cost },
+      { key: 'sah_15km', label: 'Same-Day S@H Travel (>15km each side)', quantity: sah15kmQty, cost: sah15kmCost },
+      { key: 'repeat_60d_parts', label: '60-Day Repeat Repair Parts (Attributed 1st Repairer)', quantity: repeat60dQty, cost: repeat60dCost },
+      { key: 'rwr_fee', label: 'S@H Return Without Repair (RWR ₹200 Fee)', quantity: rwrQty, cost: rwrCost },
       { key: 'travel', label: 'Technician Home Travel Fee', quantity: travelQty, cost: travelCost },
     ];
 
