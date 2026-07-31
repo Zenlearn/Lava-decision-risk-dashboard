@@ -636,7 +636,7 @@ export default function TabDashboard({
                 </div>
                 <div style={{ background: '#ffffff', padding: '10px 12px', borderRadius: '6px', border: '1px solid #cbd5e1' }}>
                   <strong style={{ color: '#0f172a', display: 'block' }}>2. 60-Day Repeat Repairs (Attributed 1st Repairer)</strong>
-                  Repeat repairs within 60 days of previous call (matched by IMEI), attributing Total Part Cost to 1st repairer in latest call month.
+                  Repeat repairs within 60 days of the previous call (matched by IMEI in Delivered Master Data), attributing Total Part Cost to the 1st repairer but accounted for in the latest call month. Cost for the month = Total Part Cost of all repeat WOs identified for that month only.
                 </div>
                 <div style={{ background: '#ffffff', padding: '10px 12px', borderRadius: '6px', border: '1px solid #cbd5e1' }}>
                   <strong style={{ color: '#0f172a', display: 'block' }}>3. Return Without Repair (RWR ₹200 Visit Fee)</strong>
