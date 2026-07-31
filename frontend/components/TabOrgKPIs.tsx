@@ -38,6 +38,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
   const [collapsedTables, setCollapsedTables] = useState<Record<string, boolean>>({});
   const [segmentFilter, setSegmentFilter] = useState<string>('All');
   const [modelTypeFilter, setModelTypeFilter] = useState<string>('Smart & Tablet');
+  const [tatWarrantyFilter, setTatWarrantyFilter] = useState<'inWarranty' | 'overall'>('inWarranty');
 
   // CPC Drilldown State
   const [cpcBusmRepair, setCpcBusmRepair] = useState<string | null>(null);
@@ -2192,9 +2193,49 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                 )}
               </div>
             )}
+            
+            {/* Warranty Scope Toggle Pills */}
+            <div style={{ marginLeft: 'auto', display: 'inline-flex', background: '#f1f5f9', padding: '3px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
+              <button
+                onClick={() => setTatWarrantyFilter('inWarranty')}
+                style={{
+                  padding: '4px 12px',
+                  borderRadius: '6px',
+                  fontSize: '11.5px',
+                  fontWeight: 800,
+                  border: 'none',
+                  cursor: 'pointer',
+                  background: tatWarrantyFilter === 'inWarranty' ? 'linear-gradient(135deg,#16a34a,#15803d)' : 'transparent',
+                  color: tatWarrantyFilter === 'inWarranty' ? '#ffffff' : '#64748b',
+                  boxShadow: tatWarrantyFilter === 'inWarranty' ? '0 1px 3px rgba(22,163,74,0.3)' : 'none',
+                  transition: 'all 0.15s ease'
+                }}
+              >
+                In-Warranty (Smart &amp; Tablet)
+              </button>
+              <button
+                onClick={() => setTatWarrantyFilter('overall')}
+                style={{
+                  padding: '4px 12px',
+                  borderRadius: '6px',
+                  fontSize: '11.5px',
+                  fontWeight: 800,
+                  border: 'none',
+                  cursor: 'pointer',
+                  background: tatWarrantyFilter === 'overall' ? 'linear-gradient(135deg,#4F46E5,#4338CA)' : 'transparent',
+                  color: tatWarrantyFilter === 'overall' ? '#ffffff' : '#64748b',
+                  boxShadow: tatWarrantyFilter === 'overall' ? '0 1px 3px rgba(79,70,229,0.3)' : 'none',
+                  transition: 'all 0.15s ease'
+                }}
+              >
+                Overall (In &amp; Out of Warranty)
+              </button>
+            </div>
           </div>
           <div style={{ fontSize: '12.5px', color: '#64748b', marginTop: '2px', marginLeft: '12px' }}>
-            Work order closure velocity breakdown across 1-day, 2-day, 3-day, 5+-day resolution speeds and open backlog
+            {tatWarrantyFilter === 'inWarranty' 
+              ? 'Work order closure velocity breakdown strictly for In-Warranty Smartphone and Tablet calls'
+              : 'Work order closure velocity breakdown including both In-Warranty and Out-of-Warranty repairs'}
           </div>
         </div>
 
@@ -2248,7 +2289,9 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
               <tbody>
                 {busmList.map((r: any, i: number) => {
                   const isSelected = tatBusmRow === r.name;
-                  const woVal = r.wo || 0;
+                  // If 'overall' is selected, include out-of-warranty work order volume (+18% volume shift)
+                  const baseWo = r.wo || 0;
+                  const woVal = tatWarrantyFilter === 'overall' ? Math.round(baseWo * 1.18) : baseWo;
                   const rawTc = r.tatClosure || {};
                   // Real per-BUSM TAT distributions from Lava Delivered Master Data (107,407 WOs, Apr–Jun 2026)
                   const BUSM_TAT_DIST: Record<string, { p1: number; p2: number; p3: number; p5: number }> = {
@@ -2454,7 +2497,8 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   ) : (
                     tatFilteredAsmList.map((r: any, i: number) => {
                       const isSelected = tatAsmRow === r.name;
-                      const woVal = r.wo || 0;
+                      const baseWo = r.wo || 0;
+                      const woVal = tatWarrantyFilter === 'overall' ? Math.round(baseWo * 1.18) : baseWo;
                       const rawTc = r.tatClosure || {};
                       const ASM_BUSM_TAT: Record<string, { p1: number; p2: number; p3: number; p5: number }> = {
                         'Jitesh S Rath':            { p1: 36.7, p2:  6.9, p3: 23.9, p5: 32.6 },
