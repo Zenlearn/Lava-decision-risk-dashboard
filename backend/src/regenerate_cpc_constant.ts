@@ -249,12 +249,14 @@ async function main() {
     };
   });
 
-  // Write file out
-  const targetPath = path.join(__dirname, '../../frontend/constants/cpcDataDynamic.ts');
+  // Write file to /tmp so it can be docker cp'd out to the host.
+  // The container has no access to the frontend folder.
+  const targetPath = '/tmp/cpcDataDynamic.ts';
   const codeContent = `export const DYNAMIC_CPC_DATA_BY_MONTH: Record<string, any> = ${JSON.stringify(resultData, null, 2)};\n`;
   
   fs.writeFileSync(targetPath, codeContent, 'utf-8');
   logger.info(`Successfully wrote regenerated CPC data to ${targetPath}`);
+  logger.info(`Copy it out with:  docker cp pathwaysbackend-lava-api-1:/tmp/cpcDataDynamic.ts ../frontend/constants/cpcDataDynamic.ts`);
 }
 
 main()
