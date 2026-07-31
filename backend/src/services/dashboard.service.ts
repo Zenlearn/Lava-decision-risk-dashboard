@@ -1816,27 +1816,14 @@ export async function getFullDashboardData(filters?: {
       let c5d = tatValidRows.filter((r) => r.tat >= 5).length;
       let cStillOpen = busmRows.filter((r) => r.tat === null || r.tat === undefined).length;
 
-      // Real per-BUSM TAT distributions — Lava Delivered Master Data (107,407 WOs, Apr–Jun 2026)
-      const BUSM_TAT_DIST: Record<string, { p1: number; p2: number; p3: number; p5: number }> = {
-        'Jitesh S Rath':            { p1: 36.7, p2:  6.9, p3: 23.9, p5: 32.6 },
-        'Sukhbir Singh':            { p1: 44.5, p2:  9.4, p3: 22.8, p5: 23.2 },
-        'Tamilselvan Subramanian':  { p1: 31.8, p2: 11.2, p3: 27.7, p5: 29.3 },
-        'Shivaprasad P U':          { p1: 38.0, p2: 10.7, p3: 29.0, p5: 22.3 },
-        'Rajesh Limbachia':         { p1: 44.3, p2: 10.3, p3: 27.1, p5: 18.3 },
-      };
-      const busmDist = BUSM_TAT_DIST[busmName] || { p1: 26.9, p2: 12.0, p3: 21.0, p5: 40.1 };
-      if (c1d === 0 && c2d === 0 && c3d === 0 && c5d === 0 && wo > 0) {
-        c1d = Math.round(wo * busmDist.p1 / 100);
-        c2d = Math.round(wo * busmDist.p2 / 100);
-        c3d = Math.round(wo * busmDist.p3 / 100);
-        c5d = Math.round(wo * busmDist.p5 / 100);
-        cStillOpen = Math.max(0, wo - (c1d + c2d + c3d + c5d));
-      }
-
-      const tat1dPct = wo > 0 ? Math.round((c1d / wo) * 1000) / 10 : busmDist.p1;
-      const tat2dPct = wo > 0 ? Math.round((c2d / wo) * 1000) / 10 : busmDist.p2;
-      const tat3dPct = wo > 0 ? Math.round((c3d / wo) * 1000) / 10 : busmDist.p3;
-      const tat5dPct = wo > 0 ? Math.round((c5d / wo) * 1000) / 10 : busmDist.p5;
+      // No hardcoded distribution fallback: if a BUSM genuinely has zero
+      // rows with a known TAT that month, its closure buckets are honestly
+      // 0/0/0/0 with everything counted as still-open — not a synthetic
+      // split that looks like real data.
+      const tat1dPct = wo > 0 ? Math.round((c1d / wo) * 1000) / 10 : 0;
+      const tat2dPct = wo > 0 ? Math.round((c2d / wo) * 1000) / 10 : 0;
+      const tat3dPct = wo > 0 ? Math.round((c3d / wo) * 1000) / 10 : 0;
+      const tat5dPct = wo > 0 ? Math.round((c5d / wo) * 1000) / 10 : 0;
       const stillOpenPct = wo > 0 ? Math.round((cStillOpen / wo) * 1000) / 10 : 0;
 
       return {
@@ -1955,27 +1942,11 @@ export async function getFullDashboardData(filters?: {
       let c5d = tatValidRows.filter((r) => r.tat >= 5).length;
       let cStillOpen = asmRows.filter((r) => r.tat === null || r.tat === undefined).length;
 
-      // Real per-BUSM TAT distributions inherited by ASMs — Lava Delivered Master Data (107,407 WOs)
-      const ASM_BUSM_DIST: Record<string, { p1: number; p2: number; p3: number; p5: number }> = {
-        'Jitesh S Rath':            { p1: 36.7, p2:  6.9, p3: 23.9, p5: 32.6 },
-        'Sukhbir Singh':            { p1: 44.5, p2:  9.4, p3: 22.8, p5: 23.2 },
-        'Tamilselvan Subramanian':  { p1: 31.8, p2: 11.2, p3: 27.7, p5: 29.3 },
-        'Shivaprasad P U':          { p1: 38.0, p2: 10.7, p3: 29.0, p5: 22.3 },
-        'Rajesh Limbachia':         { p1: 44.3, p2: 10.3, p3: 27.1, p5: 18.3 },
-      };
-      const asmDist = ASM_BUSM_DIST[obj.busm as string] || { p1: 26.9, p2: 12.0, p3: 21.0, p5: 40.1 };
-      if (c1d === 0 && c2d === 0 && c3d === 0 && c5d === 0 && wo > 0) {
-        c1d = Math.round(wo * asmDist.p1 / 100);
-        c2d = Math.round(wo * asmDist.p2 / 100);
-        c3d = Math.round(wo * asmDist.p3 / 100);
-        c5d = Math.round(wo * asmDist.p5 / 100);
-        cStillOpen = Math.max(0, wo - (c1d + c2d + c3d + c5d));
-      }
-
-      const tat1dPct = wo > 0 ? Math.round((c1d / wo) * 1000) / 10 : asmDist.p1;
-      const tat2dPct = wo > 0 ? Math.round((c2d / wo) * 1000) / 10 : asmDist.p2;
-      const tat3dPct = wo > 0 ? Math.round((c3d / wo) * 1000) / 10 : asmDist.p3;
-      const tat5dPct = wo > 0 ? Math.round((c5d / wo) * 1000) / 10 : asmDist.p5;
+      // No hardcoded distribution fallback — see BUSM-level note above.
+      const tat1dPct = wo > 0 ? Math.round((c1d / wo) * 1000) / 10 : 0;
+      const tat2dPct = wo > 0 ? Math.round((c2d / wo) * 1000) / 10 : 0;
+      const tat3dPct = wo > 0 ? Math.round((c3d / wo) * 1000) / 10 : 0;
+      const tat5dPct = wo > 0 ? Math.round((c5d / wo) * 1000) / 10 : 0;
       const stillOpenPct = wo > 0 ? Math.round((cStillOpen / wo) * 1000) / 10 : 0;
 
       return {
@@ -2063,19 +2034,11 @@ export async function getFullDashboardData(filters?: {
     let natC5d = natTatValidRows.filter((r) => r.tat >= 5).length;
     let natStillOpen = rows.filter((r) => r.tat === null || r.tat === undefined).length;
 
-    // National overall TAT distribution from Lava Delivered Master Data (107,407 WOs, Apr–Jun 2026)
-    if (natC1d === 0 && natC2d === 0 && natC3d === 0 && natC5d === 0 && totalWo > 0) {
-      natC1d = Math.round(totalWo * 0.269);
-      natC2d = Math.round(totalWo * 0.120);
-      natC3d = Math.round(totalWo * 0.210);
-      natC5d = Math.round(totalWo * 0.401);
-      natStillOpen = Math.max(0, totalWo - (natC1d + natC2d + natC3d + natC5d));
-    }
-
-    const natTat1dPct = totalWo > 0 ? Math.round((natC1d / totalWo) * 1000) / 10 : 26.9;
-    const natTat2dPct = totalWo > 0 ? Math.round((natC2d / totalWo) * 1000) / 10 : 12.0;
-    const natTat3dPct = totalWo > 0 ? Math.round((natC3d / totalWo) * 1000) / 10 : 21.0;
-    const natTat5dPct = totalWo > 0 ? Math.round((natC5d / totalWo) * 1000) / 10 : 40.1;
+    // No hardcoded distribution fallback — see BUSM-level note above.
+    const natTat1dPct = totalWo > 0 ? Math.round((natC1d / totalWo) * 1000) / 10 : 0;
+    const natTat2dPct = totalWo > 0 ? Math.round((natC2d / totalWo) * 1000) / 10 : 0;
+    const natTat3dPct = totalWo > 0 ? Math.round((natC3d / totalWo) * 1000) / 10 : 0;
+    const natTat5dPct = totalWo > 0 ? Math.round((natC5d / totalWo) * 1000) / 10 : 0;
     const natStillOpenPct = totalWo > 0 ? Math.round((natStillOpen / totalWo) * 1000) / 10 : 0;
 
     const nationalSummary = {

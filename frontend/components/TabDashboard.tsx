@@ -758,7 +758,7 @@ export default function TabDashboard({
               ✓ Verified NPS Dataset (10,570 Surveys)
             </span>
             <span style={{ background: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', padding: '6px 14px', borderRadius: '8px', fontSize: '13px', fontWeight: 800 }}>
-              C-SAT Score: {fmtPct(currentKPI?.csat || 83.4)}
+              C-SAT Score: {hasSurveyData ? fmtPct(currentKPI?.csat ?? 0) : '— (no responses)'}
             </span>
           </div>
         </div>

@@ -5,3 +5,4 @@ dist/
 !.env.example
 *.js.map
 scratch_*.ts
+test_*.ts
