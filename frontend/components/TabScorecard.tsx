@@ -170,7 +170,6 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
                         <span style={{ background: '#294D89', color: '#fff', padding: '4px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: 800 }}>SKILL PILLAR</span>
                         <h3 style={{ margin: 0, fontSize: '15px', color: '#0f172a', fontWeight: 800 }}>Skill Pillar Performance Breakdown — {actorSel}</h3>
                       </div>
-                      <span style={{ fontSize: '12.5px', color: '#64748b', fontWeight: 600 }}>Pillar Score: <b style={{ color: '#294D89' }}>{fmt1(curRow?.skill ?? skillAvg)}</b> / 100</span>
                     </div>
                     <div className="tbl-wrap-mock">
                       <table>
@@ -244,7 +243,6 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
                         <span style={{ background: '#4E67EB', color: '#fff', padding: '4px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: 800 }}>PROCESS PILLAR</span>
                         <h3 style={{ margin: 0, fontSize: '15px', color: '#0f172a', fontWeight: 800 }}>Process Pillar Performance Breakdown — {actorSel}</h3>
                       </div>
-                      <span style={{ fontSize: '12.5px', color: '#64748b', fontWeight: 600 }}>Pillar Score: <b style={{ color: '#4E67EB' }}>{fmt1(curRow?.process ?? processAvg)}</b> / 100</span>
                     </div>
                     <div className="tbl-wrap-mock">
                       <table>
@@ -311,7 +309,6 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
                         <span style={{ background: '#C0392B', color: '#fff', padding: '4px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: 800 }}>AUDIT PILLAR</span>
                         <h3 style={{ margin: 0, fontSize: '15px', color: '#0f172a', fontWeight: 800 }}>Audit Pillar Performance Breakdown — {actorSel}</h3>
                       </div>
-                      <span style={{ fontSize: '12.5px', color: '#64748b', fontWeight: 600 }}>Pillar Score: <b style={{ color: '#C0392B' }}>{fmt1(curRow?.audit ?? auditAvg)}</b> / 100</span>
                     </div>
                     <div className="tbl-wrap-mock">
                       <table>
@@ -406,21 +403,17 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
                   </div>
                 </div>
 
-                {/* Score & Anomaly Trend Table (Full Width Below Chart) */}
+                {/* Anomalous Flag Counts by Month Table (Full Width Below Chart) */}
                 <div className="card-mock" style={{ marginTop: '20px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-                    <h3 style={{ margin: 0 }}>Score &amp; Anomaly Trend Table — {actorSel}</h3>
-                    <span style={{ fontSize: '11px', color: '#64748b' }}>Monthly Scores &amp; Anomaly Flag Breakdown</span>
+                    <h3 style={{ margin: 0 }}>Anomalous Flag Counts by Month — {actorSel}</h3>
+                    <span style={{ fontSize: '11px', color: '#64748b' }}>Monthly Risk Flag Breakdown</span>
                   </div>
                   <div className="tbl-wrap-mock">
                     <table>
                       <thead>
                         <tr>
                           <th>Month</th>
-                          <th>Overall</th>
-                          <th>Skill</th>
-                          <th>Process</th>
-                          <th>Audit</th>
                           <th>WO</th>
                           <th>Same-day Swap</th>
                           <th>Board@Home</th>
@@ -435,10 +428,6 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
                         {filteredRows.map((r: any, idx: number) => (
                           <tr key={idx}>
                             <td><b>{r.month}</b></td>
-                            <td><span className={`score-pill ${(r.overall ?? 0) >= 70 ? 's-good' : (r.overall ?? 0) >= 50 ? 's-warn' : 's-bad'}`}>{r.overall ? r.overall.toFixed(1) : '—'}</span></td>
-                            <td><span className="score-pill" style={{ color: '#294D89', fontWeight: 700 }}>{r.skill ? r.skill.toFixed(1) : '—'}</span></td>
-                            <td><span className="score-pill" style={{ color: '#4E67EB', fontWeight: 700 }}>{r.process ? r.process.toFixed(1) : '—'}</span></td>
-                            <td><span className="score-pill" style={{ color: '#C0392B', fontWeight: 700 }}>{r.audit ? r.audit.toFixed(1) : '—'}</span></td>
                             <td>{r.wo}</td>
                             <td>{r.ghost}</td>
                             <td>{r.home_board}</td>
