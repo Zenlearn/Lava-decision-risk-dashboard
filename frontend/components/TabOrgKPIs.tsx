@@ -2318,7 +2318,8 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   const isSelected = tatBusmRow === r.name;
                   // If 'overall' is selected, include out-of-warranty work order volume (+18% volume shift)
                   const baseWo = r.wo || 0;
-                  const woVal = tatWarrantyFilter === 'overall' ? Math.round(baseWo * 1.18) : baseWo;
+                  const scale = tatWarrantyFilter === 'overall' ? 1.18 : 1.0;
+                  const woVal = Math.round(baseWo * scale);
                   const rawTc = r.tatClosure || {};
                   // Real per-BUSM TAT distributions from Lava Delivered Master Data (107,407 WOs, Apr–Jun 2026)
                   const BUSM_TAT_DIST: Record<string, { p1: number; p2: number; p3: number; p5: number }> = {
@@ -2329,21 +2330,28 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                     'Rajesh Limbachia':         { p1: 44.3, p2: 10.3, p3: 27.1, p5: 18.3 },
                   };
                   const dist = BUSM_TAT_DIST[r.name] || { p1: 26.9, p2: 12.0, p3: 21.0, p5: 40.1 };
-                  const c1dFb = Math.round(woVal * dist.p1 / 100);
-                  const c2dFb = Math.round(woVal * dist.p2 / 100);
-                  const c3dFb = Math.round(woVal * dist.p3 / 100);
-                  const c5dFb = Math.round(woVal * dist.p5 / 100);
+                  const baseC1d = rawTc.c1d || Math.round(baseWo * dist.p1 / 100);
+                  const baseC2d = rawTc.c2d || Math.round(baseWo * dist.p2 / 100);
+                  const baseC3d = rawTc.c3d || Math.round(baseWo * dist.p3 / 100);
+                  const baseC5d = rawTc.c5d || Math.round(baseWo * dist.p5 / 100);
+
+                  const c1d = Math.round(baseC1d * scale);
+                  const c2d = Math.round(baseC2d * scale);
+                  const c3d = Math.round(baseC3d * scale);
+                  const c5d = Math.round(baseC5d * scale);
+                  const cStillOpen = Math.max(0, woVal - c1d - c2d - c3d - c5d);
+
                   const tc = {
-                    c1d: rawTc.c1d || c1dFb,
-                    tat1dPct: rawTc.tat1dPct || (woVal > 0 ? dist.p1 : 0),
-                    c2d: rawTc.c2d || c2dFb,
-                    tat2dPct: rawTc.tat2dPct || (woVal > 0 ? dist.p2 : 0),
-                    c3d: rawTc.c3d || c3dFb,
-                    tat3dPct: rawTc.tat3dPct || (woVal > 0 ? dist.p3 : 0),
-                    c5d: rawTc.c5d || c5dFb,
-                    tat5dPct: rawTc.tat5dPct || (woVal > 0 ? dist.p5 : 0),
-                    cStillOpen: rawTc.cStillOpen || Math.max(0, woVal - c1dFb - c2dFb - c3dFb - c5dFb),
-                    stillOpenPct: rawTc.stillOpenPct || (woVal > 0 ? Math.max(0, +(100 - dist.p1 - dist.p2 - dist.p3 - dist.p5).toFixed(1)) : 0),
+                    c1d,
+                    tat1dPct: woVal > 0 ? +((c1d / woVal) * 100).toFixed(1) : (woVal > 0 ? dist.p1 : 0),
+                    c2d,
+                    tat2dPct: woVal > 0 ? +((c2d / woVal) * 100).toFixed(1) : (woVal > 0 ? dist.p2 : 0),
+                    c3d,
+                    tat3dPct: woVal > 0 ? +((c3d / woVal) * 100).toFixed(1) : (woVal > 0 ? dist.p3 : 0),
+                    c5d,
+                    tat5dPct: woVal > 0 ? +((c5d / woVal) * 100).toFixed(1) : (woVal > 0 ? dist.p5 : 0),
+                    cStillOpen,
+                    stillOpenPct: woVal > 0 ? +((cStillOpen / woVal) * 100).toFixed(1) : 0,
                   };
                   return (
                     <tr
@@ -2398,15 +2406,21 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   let totStillOpen = 0;
 
                   busmList.forEach((r: any) => {
-                    const wo = r.wo || 0;
-                    totWo += wo;
+                    const baseWo = r.wo || 0;
+                    const scale = tatWarrantyFilter === 'overall' ? 1.18 : 1.0;
+                    const woVal = Math.round(baseWo * scale);
+                    totWo += woVal;
                     const rawTc = r.tatClosure || {};
                     const dist = BUSM_TAT_DIST[r.name] || { p1: 26.9, p2: 12.0, p3: 21.0, p5: 40.1 };
-                    const c1 = rawTc.c1d || Math.round(wo * dist.p1 / 100);
-                    const c2 = rawTc.c2d || Math.round(wo * dist.p2 / 100);
-                    const c3 = rawTc.c3d || Math.round(wo * dist.p3 / 100);
-                    const c5 = rawTc.c5d || Math.round(wo * dist.p5 / 100);
-                    const cSo = rawTc.cStillOpen || Math.max(0, wo - c1 - c2 - c3 - c5);
+                    const baseC1 = rawTc.c1d || Math.round(baseWo * dist.p1 / 100);
+                    const baseC2 = rawTc.c2d || Math.round(baseWo * dist.p2 / 100);
+                    const baseC3 = rawTc.c3d || Math.round(baseWo * dist.p3 / 100);
+                    const baseC5 = rawTc.c5d || Math.round(baseWo * dist.p5 / 100);
+                    const c1 = Math.round(baseC1 * scale);
+                    const c2 = Math.round(baseC2 * scale);
+                    const c3 = Math.round(baseC3 * scale);
+                    const c5 = Math.round(baseC5 * scale);
+                    const cSo = Math.max(0, woVal - c1 - c2 - c3 - c5);
                     totC1d += c1;
                     totC2d += c2;
                     totC3d += c3;
@@ -2525,7 +2539,8 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                     tatFilteredAsmList.map((r: any, i: number) => {
                       const isSelected = tatAsmRow === r.name;
                       const baseWo = r.wo || 0;
-                      const woVal = tatWarrantyFilter === 'overall' ? Math.round(baseWo * 1.18) : baseWo;
+                      const scale = tatWarrantyFilter === 'overall' ? 1.18 : 1.0;
+                      const woVal = Math.round(baseWo * scale);
                       const rawTc = r.tatClosure || {};
                       const ASM_BUSM_TAT: Record<string, { p1: number; p2: number; p3: number; p5: number }> = {
                         'Jitesh S Rath':            { p1: 36.7, p2:  6.9, p3: 23.9, p5: 32.6 },
@@ -2535,21 +2550,26 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                         'Rajesh Limbachia':         { p1: 44.3, p2: 10.3, p3: 27.1, p5: 18.3 },
                       };
                       const aDist = ASM_BUSM_TAT[r.busm] || { p1: 26.9, p2: 12.0, p3: 21.0, p5: 40.1 };
-                      const ac1dFb = Math.round(woVal * aDist.p1 / 100);
-                      const ac2dFb = Math.round(woVal * aDist.p2 / 100);
-                      const ac3dFb = Math.round(woVal * aDist.p3 / 100);
-                      const ac5dFb = Math.round(woVal * aDist.p5 / 100);
+                      const baseC1 = rawTc.c1d || Math.round(baseWo * aDist.p1 / 100);
+                      const baseC2 = rawTc.c2d || Math.round(baseWo * aDist.p2 / 100);
+                      const baseC3 = rawTc.c3d || Math.round(baseWo * aDist.p3 / 100);
+                      const baseC5 = rawTc.c5d || Math.round(baseWo * aDist.p5 / 100);
+                      const c1d = Math.round(baseC1 * scale);
+                      const c2d = Math.round(baseC2 * scale);
+                      const c3d = Math.round(baseC3 * scale);
+                      const c5d = Math.round(baseC5 * scale);
+                      const cStillOpen = Math.max(0, woVal - c1d - c2d - c3d - c5d);
                       const tc = {
-                        c1d: rawTc.c1d || ac1dFb,
-                        tat1dPct: rawTc.tat1dPct || (woVal > 0 ? aDist.p1 : 0),
-                        c2d: rawTc.c2d || ac2dFb,
-                        tat2dPct: rawTc.tat2dPct || (woVal > 0 ? aDist.p2 : 0),
-                        c3d: rawTc.c3d || ac3dFb,
-                        tat3dPct: rawTc.tat3dPct || (woVal > 0 ? aDist.p3 : 0),
-                        c5d: rawTc.c5d || ac5dFb,
-                        tat5dPct: rawTc.tat5dPct || (woVal > 0 ? aDist.p5 : 0),
-                        cStillOpen: rawTc.cStillOpen || Math.max(0, woVal - ac1dFb - ac2dFb - ac3dFb - ac5dFb),
-                        stillOpenPct: rawTc.stillOpenPct || (woVal > 0 ? Math.max(0, +(100 - aDist.p1 - aDist.p2 - aDist.p3 - aDist.p5).toFixed(1)) : 0),
+                        c1d,
+                        tat1dPct: woVal > 0 ? +((c1d / woVal) * 100).toFixed(1) : (woVal > 0 ? aDist.p1 : 0),
+                        c2d,
+                        tat2dPct: woVal > 0 ? +((c2d / woVal) * 100).toFixed(1) : (woVal > 0 ? aDist.p2 : 0),
+                        c3d,
+                        tat3dPct: woVal > 0 ? +((c3d / woVal) * 100).toFixed(1) : (woVal > 0 ? aDist.p3 : 0),
+                        c5d,
+                        tat5dPct: woVal > 0 ? +((c5d / woVal) * 100).toFixed(1) : (woVal > 0 ? aDist.p5 : 0),
+                        cStillOpen,
+                        stillOpenPct: woVal > 0 ? +((cStillOpen / woVal) * 100).toFixed(1) : 0,
                       };
                       return (
                         <tr
