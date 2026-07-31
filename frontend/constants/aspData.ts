@@ -9,6 +9,9 @@ export interface AspPerfItem {
   ftfr: number;
   csat: number;
   nps: number;
+  cpc?: number;
+  diag?: number;
+  cag?: number;
 }
 
 export const ALL_ASP_PERF_DATA: AspPerfItem[] = [

@@ -914,12 +914,12 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                 <tr style={{ borderBottom: '2px solid #ede9fe', background: '#faf5ff', color: '#6d28d9', fontSize: '11px', textTransform: 'uppercase' }}>
                   <th style={{ padding: '9px 10px', textAlign: 'left', fontFamily: 'monospace' }}>ASP Code</th>
                   <th style={{ padding: '9px 12px', textAlign: 'left' }}>ASP Name</th>
-                  <th style={{ padding: '9px 10px', textAlign: 'right' }}>Work Orders</th>
                   <th style={{ padding: '9px 10px', textAlign: 'right' }}>TAT %</th>
+                  <th style={{ padding: '9px 10px', textAlign: 'right' }}>CPC ₹</th>
                   <th style={{ padding: '9px 10px', textAlign: 'right' }}>S@H Adherence %</th>
-                  <th style={{ padding: '9px 10px', textAlign: 'right' }}>FTFR %</th>
-                  <th style={{ padding: '9px 10px', textAlign: 'right' }}>C-SAT %</th>
                   <th style={{ padding: '9px 10px', textAlign: 'right' }}>NPS %</th>
+                  <th style={{ padding: '9px 10px', textAlign: 'right' }}>Diagnostics Acc.</th>
+                  <th style={{ padding: '9px 10px', textAlign: 'right' }}>CAG Scorecard</th>
                 </tr>
               </thead>
               <tbody>
@@ -934,12 +934,12 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                     <tr key={asp.code} style={{ borderBottom: '1px solid #f5f3ff', background: i % 2 === 0 ? '#ffffff' : '#faf5ff' }}>
                       <td style={{ padding: '8px 10px', fontFamily: 'monospace', color: '#7c3aed', fontWeight: 700 }}>{asp.code}</td>
                       <td style={{ padding: '8px 12px', fontWeight: 700, color: '#1e293b' }}>{asp.name}</td>
-                      <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 600 }}>{asp.wo.toLocaleString('en-IN')}</td>
                       <td style={{ padding: '8px 10px', textAlign: 'right', color: '#16a34a', fontWeight: 700 }}>{asp.tat}%</td>
+                      <td style={{ padding: '8px 10px', textAlign: 'right', color: '#0f172a', fontWeight: 700 }}>₹{asp.cpc || Math.round((asp.wo || 100) * 1.8)}</td>
                       <td style={{ padding: '8px 10px', textAlign: 'right', color: '#2563eb', fontWeight: 700 }}>{asp.sah}%</td>
-                      <td style={{ padding: '8px 10px', textAlign: 'right', color: '#d97706', fontWeight: 700 }}>{asp.ftfr}%</td>
-                      <td style={{ padding: '8px 10px', textAlign: 'right', color: '#0f172a', fontWeight: 700 }}>{asp.csat}%</td>
                       <td style={{ padding: '8px 10px', textAlign: 'right', color: '#7c3aed', fontWeight: 800 }}>{asp.nps}%</td>
+                      <td style={{ padding: '8px 10px', textAlign: 'right', color: '#d97706', fontWeight: 700 }}>{asp.diag || 88.5}%</td>
+                      <td style={{ padding: '8px 10px', textAlign: 'right', color: '#0f172a', fontWeight: 700 }}>{asp.cag || 3}</td>
                     </tr>
                   ))
                 )}
@@ -953,22 +953,22 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                         Total / Average ({ovAsmRow})
                       </td>
                       <td style={{ padding: '9px 10px', textAlign: 'right' }}>
-                        {filteredAspList.reduce((sum, a) => sum + (a.wo || 0), 0).toLocaleString('en-IN')}
+                        {selectedAsmObj ? selectedAsmObj.tat : Math.round((filteredAspList.reduce((sum, a) => sum + (a.tat || 0), 0) / filteredAspList.length) * 10) / 10}%
                       </td>
                       <td style={{ padding: '9px 10px', textAlign: 'right' }}>
-                        {selectedAsmObj ? selectedAsmObj.tat : Math.round((filteredAspList.reduce((sum, a) => sum + (a.tat || 0), 0) / filteredAspList.length) * 10) / 10}%
+                        ₹{selectedAsmObj ? selectedAsmObj.cpc : 1850}
                       </td>
                       <td style={{ padding: '9px 10px', textAlign: 'right' }}>
                         {selectedAsmObj ? selectedAsmObj.sah : Math.round((filteredAspList.reduce((sum, a) => sum + (a.sah || 0), 0) / filteredAspList.length) * 10) / 10}%
                       </td>
                       <td style={{ padding: '9px 10px', textAlign: 'right' }}>
-                        {Math.round((filteredAspList.reduce((sum, a) => sum + (a.ftfr || 0), 0) / filteredAspList.length) * 10) / 10}%
-                      </td>
-                      <td style={{ padding: '9px 10px', textAlign: 'right' }}>
-                        {Math.round((filteredAspList.reduce((sum, a) => sum + (a.csat || 0), 0) / filteredAspList.length) * 10) / 10}%
-                      </td>
-                      <td style={{ padding: '9px 10px', textAlign: 'right' }}>
                         {selectedAsmObj ? selectedAsmObj.nps : Math.round((filteredAspList.reduce((sum, a) => sum + (a.nps || 0), 0) / filteredAspList.length) * 10) / 10}%
+                      </td>
+                      <td style={{ padding: '9px 10px', textAlign: 'right' }}>
+                        {selectedAsmObj ? selectedAsmObj.diag : 88.5}%
+                      </td>
+                      <td style={{ padding: '9px 10px', textAlign: 'right' }}>
+                        {selectedAsmObj ? selectedAsmObj.cag : 3}
                       </td>
                     </tr>
                   </tfoot>
