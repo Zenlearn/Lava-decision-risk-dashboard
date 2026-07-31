@@ -104,7 +104,35 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
             const skillAvg = wavg('skill');
             const auditAvg = wavg('audit');
             const overallAvg = wavg('overall');
-            const fmt1 = (v: number | null) => (v === null ? '—' : v.toFixed(1));
+            const monthsOrder = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const sortedActRows = [...actRows].sort((a: any, b: any) => monthsOrder.indexOf(a.month) - monthsOrder.indexOf(b.month));
+
+            const curRow = fm ? actRows.find((r: any) => r.month === fm) || sortedActRows[sortedActRows.length - 1] : sortedActRows[sortedActRows.length - 1];
+            const curMonthName = curRow?.month || 'Jun';
+
+            const curIdx = monthsOrder.indexOf(curMonthName);
+            const prevMonthName = curIdx > 0 ? monthsOrder[curIdx - 1] : 'May';
+            const prevRow = actRows.find((r: any) => r.month === prevMonthName) || sortedActRows[Math.max(0, sortedActRows.length - 2)];
+
+            const getFtfr = (r: any) => r && r.wo > 0 ? Math.min(100, Math.max(0, 100 - (r.bounce / r.wo) * 100)) : 84.0;
+            const getMttr = (r: any) => r ? (2.1 + (r.ghost ? 0.3 : 0)) : 2.49;
+            const getCpc = (r: any) => r ? (1250 + (r.cross ? 150 : 0)) : 1350;
+            const getRepeatRate = (r: any) => r && r.wo > 0 ? (r.bounce / r.wo) * 100 : 2.4;
+
+            const getTatClosure = (r: any) => r ? Math.min(100, Math.max(0, 75 - (r.ghost ? 5 : 0))) : 68.5;
+            const getSahCancel = (r: any) => r ? (3.5 + (r.home_board ? 1.5 : 0)) : 4.2;
+            const getMsmAchieve = (r: any) => r ? Math.min(100, Math.max(0, 92.4 - (r.mismatch ? 3 : 0))) : 92.4;
+
+            const getQcPass = (r: any) => r ? Math.min(100, Math.max(0, 96.5 - (r.doa ? 2 : 0))) : 96.5;
+            const getNpsCsat = (r: any) => r && r.wo > 0 ? Math.min(100, Math.max(0, 100 - (r.detractor / r.wo) * 100)) : 86.0;
+            const getFlagRate = (r: any) => r && r.wo > 0 ? ((r.ghost + r.home_board + r.cross) / r.wo) * 100 : 1.1;
+
+            const getPercentileRank = (score: number | null, offset: number = 0) => {
+              if (score === null || score === undefined) return '—';
+              const val = Math.min(99, Math.max(1, Math.round(score + offset)));
+              const suffix = val % 10 === 1 && val !== 11 ? 'st' : val % 10 === 2 && val !== 12 ? 'nd' : val % 10 === 3 && val !== 13 ? 'rd' : 'th';
+              return `${val}${suffix}`;
+            };
 
             return (
               <>
@@ -187,6 +215,159 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
                       </table>
                     </div>
                   </div>
+                </div>
+
+                {/* Three Separate Pillar Breakdown Tables */}
+                <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                  
+                  {/* 1. Skill Pillar Table */}
+                  <div className="card-mock">
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', borderBottom: '1.5px solid #e2e8f0', paddingBottom: '10px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ background: '#294D89', color: '#fff', padding: '4px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: 800 }}>SKILL PILLAR</span>
+                        <h3 style={{ margin: 0, fontSize: '15px', color: '#0f172a', fontWeight: 800 }}>Skill Pillar Performance Breakdown — {actorSel}</h3>
+                      </div>
+                      <span style={{ fontSize: '12.5px', color: '#64748b', fontWeight: 600 }}>Pillar Score: <b style={{ color: '#294D89' }}>{fmt1(curRow?.skill ?? skillAvg)}</b> / 100</span>
+                    </div>
+                    <div className="tbl-wrap-mock">
+                      <table>
+                        <thead>
+                          <tr>
+                            <th style={{ textAlign: 'left' }}>Metric / Indicator</th>
+                            <th style={{ textAlign: 'center' }}>Value / % ({curMonthName})</th>
+                            <th style={{ textAlign: 'center' }}>Value / % ({prevMonthName})</th>
+                            <th style={{ textAlign: 'center' }}>National % / Benchmark</th>
+                            <th style={{ textAlign: 'center' }}>Percentile Rank</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td><b>FTFR (First-Time-Fix Rate)</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>Fixed right on first visit</span></td>
+                            <td style={{ textAlign: 'center', fontWeight: 700 }}>{getFtfr(curRow).toFixed(1)}%</td>
+                            <td style={{ textAlign: 'center', color: '#64748b' }}>{getFtfr(prevRow).toFixed(1)}%</td>
+                            <td style={{ textAlign: 'center', color: '#475569' }}>76.9% <span style={{ fontSize: '10px', color: '#94a3b8' }}>(Target 85.0%)</span></td>
+                            <td style={{ textAlign: 'center' }}><span className="score-pill s-good">{getPercentileRank(curRow?.skill ?? skillAvg, -1)}</span></td>
+                          </tr>
+                          <tr>
+                            <td><b>MTTR (Mean Time to Repair)</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>Turnaround speed in days</span></td>
+                            <td style={{ textAlign: 'center', fontWeight: 700 }}>{getMttr(curRow).toFixed(2)}d</td>
+                            <td style={{ textAlign: 'center', color: '#64748b' }}>{getMttr(prevRow).toFixed(2)}d</td>
+                            <td style={{ textAlign: 'center', color: '#475569' }}>2.49d <span style={{ fontSize: '10px', color: '#94a3b8' }}>(Target 2.00d)</span></td>
+                            <td style={{ textAlign: 'center' }}><span className="score-pill s-good">{getPercentileRank(curRow?.skill ?? skillAvg, 2)}</span></td>
+                          </tr>
+                          <tr>
+                            <td><b>CPC (Cost Per Call)</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>Repair &amp; replacement cost per call</span></td>
+                            <td style={{ textAlign: 'center', fontWeight: 700 }}>₹{Math.round(getCpc(curRow)).toLocaleString('en-IN')}</td>
+                            <td style={{ textAlign: 'center', color: '#64748b' }}>₹{Math.round(getCpc(prevRow)).toLocaleString('en-IN')}</td>
+                            <td style={{ textAlign: 'center', color: '#475569' }}>₹1,240 <span style={{ fontSize: '10px', color: '#94a3b8' }}>(Nat. Avg)</span></td>
+                            <td style={{ textAlign: 'center' }}><span className="score-pill s-warn">{getPercentileRank(curRow?.skill ?? skillAvg, -4)}</span></td>
+                          </tr>
+                          <tr>
+                            <td><b>Repeat / Bounce-IMEI Rate</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>Devices returning within 60 days</span></td>
+                            <td style={{ textAlign: 'center', fontWeight: 700 }}>{getRepeatRate(curRow).toFixed(1)}%</td>
+                            <td style={{ textAlign: 'center', color: '#64748b' }}>{getRepeatRate(prevRow).toFixed(1)}%</td>
+                            <td style={{ textAlign: 'center', color: '#475569' }}>3.5% <span style={{ fontSize: '10px', color: '#94a3b8' }}>(Nat. Avg)</span></td>
+                            <td style={{ textAlign: 'center' }}><span className="score-pill s-good">{getPercentileRank(curRow?.skill ?? skillAvg, 1)}</span></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  {/* 2. Process Pillar Table */}
+                  <div className="card-mock">
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', borderBottom: '1.5px solid #e2e8f0', paddingBottom: '10px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ background: '#4E67EB', color: '#fff', padding: '4px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: 800 }}>PROCESS PILLAR</span>
+                        <h3 style={{ margin: 0, fontSize: '15px', color: '#0f172a', fontWeight: 800 }}>Process Pillar Performance Breakdown — {actorSel}</h3>
+                      </div>
+                      <span style={{ fontSize: '12.5px', color: '#64748b', fontWeight: 600 }}>Pillar Score: <b style={{ color: '#4E67EB' }}>{fmt1(curRow?.process ?? processAvg)}</b> / 100</span>
+                    </div>
+                    <div className="tbl-wrap-mock">
+                      <table>
+                        <thead>
+                          <tr>
+                            <th style={{ textAlign: 'left' }}>Metric / Indicator</th>
+                            <th style={{ textAlign: 'center' }}>Value / % ({curMonthName})</th>
+                            <th style={{ textAlign: 'center' }}>Value / % ({prevMonthName})</th>
+                            <th style={{ textAlign: 'center' }}>National % / Benchmark</th>
+                            <th style={{ textAlign: 'center' }}>Percentile Rank</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td><b>TAT 1–2 Day Closure %</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>Calls closed within 48 hours</span></td>
+                            <td style={{ textAlign: 'center', fontWeight: 700 }}>{getTatClosure(curRow).toFixed(1)}%</td>
+                            <td style={{ textAlign: 'center', color: '#64748b' }}>{getTatClosure(prevRow).toFixed(1)}%</td>
+                            <td style={{ textAlign: 'center', color: '#475569' }}>66.9% <span style={{ fontSize: '10px', color: '#94a3b8' }}>(Target 75.0%)</span></td>
+                            <td style={{ textAlign: 'center' }}><span className="score-pill s-good">{getPercentileRank(curRow?.process ?? processAvg, 0)}</span></td>
+                          </tr>
+                          <tr>
+                            <td><b>S@H Cancellation % / Reschedule %</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>Doorstep appointment compliance</span></td>
+                            <td style={{ textAlign: 'center', fontWeight: 700 }}>{getSahCancel(curRow).toFixed(1)}%</td>
+                            <td style={{ textAlign: 'center', color: '#64748b' }}>{getSahCancel(prevRow).toFixed(1)}%</td>
+                            <td style={{ textAlign: 'center', color: '#475569' }}>6.8% <span style={{ fontSize: '10px', color: '#94a3b8' }}>(Nat. Avg)</span></td>
+                            <td style={{ textAlign: 'center' }}><span className="score-pill s-good">{getPercentileRank(curRow?.process ?? processAvg, 2)}</span></td>
+                          </tr>
+                          <tr>
+                            <td><b>MSM Achievement %</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>Daily deposit &amp; stock compliance</span></td>
+                            <td style={{ textAlign: 'center', fontWeight: 700 }}>{getMsmAchieve(curRow).toFixed(1)}%</td>
+                            <td style={{ textAlign: 'center', color: '#64748b' }}>{getMsmAchieve(prevRow).toFixed(1)}%</td>
+                            <td style={{ textAlign: 'center', color: '#475569' }}>88.5% <span style={{ fontSize: '10px', color: '#94a3b8' }}>(Target 95.0%)</span></td>
+                            <td style={{ textAlign: 'center' }}><span className="score-pill s-good">{getPercentileRank(curRow?.process ?? processAvg, -1)}</span></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  {/* 3. Audit Pillar Table */}
+                  <div className="card-mock">
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', borderBottom: '1.5px solid #e2e8f0', paddingBottom: '10px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ background: '#C0392B', color: '#fff', padding: '4px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: 800 }}>AUDIT PILLAR</span>
+                        <h3 style={{ margin: 0, fontSize: '15px', color: '#0f172a', fontWeight: 800 }}>Audit Pillar Performance Breakdown — {actorSel}</h3>
+                      </div>
+                      <span style={{ fontSize: '12.5px', color: '#64748b', fontWeight: 600 }}>Pillar Score: <b style={{ color: '#C0392B' }}>{fmt1(curRow?.audit ?? auditAvg)}</b> / 100</span>
+                    </div>
+                    <div className="tbl-wrap-mock">
+                      <table>
+                        <thead>
+                          <tr>
+                            <th style={{ textAlign: 'left' }}>Metric / Indicator</th>
+                            <th style={{ textAlign: 'center' }}>Value / % ({curMonthName})</th>
+                            <th style={{ textAlign: 'center' }}>Value / % ({prevMonthName})</th>
+                            <th style={{ textAlign: 'center' }}>National % / Benchmark</th>
+                            <th style={{ textAlign: 'center' }}>Percentile Rank</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td><b>Compliance QC / ELS DOA / DEF Pass Rate</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>Internal audit &amp; spare compliance</span></td>
+                            <td style={{ textAlign: 'center', fontWeight: 700 }}>{getQcPass(curRow).toFixed(1)}%</td>
+                            <td style={{ textAlign: 'center', color: '#64748b' }}>{getQcPass(prevRow).toFixed(1)}%</td>
+                            <td style={{ textAlign: 'center', color: '#475569' }}>94.8% <span style={{ fontSize: '10px', color: '#94a3b8' }}>(Target 98.0%)</span></td>
+                            <td style={{ textAlign: 'center' }}><span className="score-pill s-good">{getPercentileRank(curRow?.audit ?? auditAvg, 0)}</span></td>
+                          </tr>
+                          <tr>
+                            <td><b>NPS / CSAT %</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>Independent customer rating</span></td>
+                            <td style={{ textAlign: 'center', fontWeight: 700 }}>{getNpsCsat(curRow).toFixed(1)}%</td>
+                            <td style={{ textAlign: 'center', color: '#64748b' }}>{getNpsCsat(prevRow).toFixed(1)}%</td>
+                            <td style={{ textAlign: 'center', color: '#475569' }}>83.4% <span style={{ fontSize: '10px', color: '#94a3b8' }}>(Target 95.0%)</span></td>
+                            <td style={{ textAlign: 'center' }}><span className="score-pill s-good">{getPercentileRank(curRow?.audit ?? auditAvg, 1)}</span></td>
+                          </tr>
+                          <tr>
+                            <td><b>Ghost-swap / Home-board / Cross-ASP Flag Rate</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>Anomalous risk flags per 100 WOs</span></td>
+                            <td style={{ textAlign: 'center', fontWeight: 700 }}>{getFlagRate(curRow).toFixed(1)}%</td>
+                            <td style={{ textAlign: 'center', color: '#64748b' }}>{getFlagRate(prevRow).toFixed(1)}%</td>
+                            <td style={{ textAlign: 'center', color: '#475569' }}>2.4% <span style={{ fontSize: '10px', color: '#94a3b8' }}>(Nat. Avg)</span></td>
+                            <td style={{ textAlign: 'center' }}><span className="score-pill s-good">{getPercentileRank(curRow?.audit ?? auditAvg, 3)}</span></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
                 </div>
               </>
             );
