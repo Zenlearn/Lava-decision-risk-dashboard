@@ -652,7 +652,7 @@ export async function getFullDashboardData(filters?: {
     const isBoard = isPCBA || isLCD;
 
     const isGhost = isWalkIn && isSameDay && isBoard;
-    const isHomeBoard = isHome && isBoard;
+    const isHomeBoard = isHome && isSameDay && isBoard;
     
     const isBounce = (imeiCounts.get(imei) ?? 0) > 1;
     const isCrossAsp = (imeiToAsps.get(imei)?.size ?? 0) > 1;
@@ -1256,7 +1256,7 @@ export async function getFullDashboardData(filters?: {
   interface AspMonthRaw {
     asp: string; asm: string; busm: string; month: string; wo: number;
     ftfr: number; mttr: number | null; cpc: number; repeatRate: number;
-    tatClosurePct: number | null; sahCancelPct: number; sahReschedulePct: number;
+    tatClosurePct: number | null; sahCancelPct: number; sahReschedulePct: number; sahCombinedPct: number;
     msmPct: number | null; compliancePct: number | null; npsPct: number | null; leakageRate: number;
   }
 
@@ -1291,6 +1291,7 @@ export async function getFullDashboardData(filters?: {
     const sahCancelPct = wo > 0 ? (cancelCount / wo) * 100 : 0;
     const rescheduleCount = rows.filter((r) => r.tat !== null && r.tat !== undefined && (r.tat as number) > 3).length;
     const sahReschedulePct = wo > 0 ? (rescheduleCount / wo) * 100 : 0;
+    const sahCombinedPct = wo > 0 ? ((cancelCount + rescheduleCount) / wo) * 100 : 0;
 
     const surveyRows = rows.filter((r) => {
       const rating = String(r.rawData[FIELD_MAP.npsRating] || '');
@@ -1309,7 +1310,7 @@ export async function getFullDashboardData(filters?: {
     aspMonthRaw.push({
       asp, asm: rows[0]!.asm, busm: rows[0]!.busm, month, wo,
       ftfr, mttr, cpc, repeatRate,
-      tatClosurePct, sahCancelPct, sahReschedulePct,
+      tatClosurePct, sahCancelPct, sahReschedulePct, sahCombinedPct,
       msmPct: pctFrom(msmCounts, complianceKey),
       compliancePct: compliancePctFor(complianceKey),
       npsPct,
@@ -1338,6 +1339,14 @@ export async function getFullDashboardData(filters?: {
   interface AspMonthScore { asp: string; asm: string; busm: string; month: string; wo: number; skill: number | null; process: number | null; audit: number | null; overall: number | null; }
   const aspMonthScores: AspMonthScore[] = [];
 
+  // Child-metric detail (real value + real percentile rank + real national
+  // average) per ASP-month, for every metric that feeds the Skill/Process/
+  // Audit composite scores above — kept alongside the composite so the Score
+  // Card tab's per-metric breakdown tables can show genuine numbers instead
+  // of re-deriving their own placeholder formulas.
+  interface ChildMetricDetail { value: number | null; rank: number | null; national: number | null }
+  const childMetricsByAspMonth = new Map<string, Record<string, ChildMetricDetail>>();
+
   uniqueMonths.forEach((month) => {
     const monthRows = aspMonthRaw.filter((r) => r.month === month);
     if (monthRows.length === 0) return;
@@ -1350,6 +1359,7 @@ export async function getFullDashboardData(filters?: {
     const tatRank = rankMetric(monthRows, (r) => r.tatClosurePct, true);
     const cancelRank = rankMetric(monthRows, (r) => r.sahCancelPct, false);
     const rescheduleRank = rankMetric(monthRows, (r) => r.sahReschedulePct, false);
+    const combinedRank = rankMetric(monthRows, (r) => r.sahCombinedPct, false);
     const msmRank = rankMetric(monthRows, (r) => r.msmPct, true);
 
     const complianceRank = rankMetric(monthRows, (r) => r.compliancePct, true);
@@ -1361,6 +1371,29 @@ export async function getFullDashboardData(filters?: {
       return vals.length > 0 ? vals.reduce((s, v) => s + v, 0) / vals.length : null;
     };
 
+    // Real national average — WO-weighted mean of the raw metric value across
+    // every ASP reporting that month (never a hardcoded constant).
+    const nationalAvg = (getter: (r: AspMonthRaw) => number | null): number | null => {
+      const items = monthRows.map((r) => ({ v: getter(r), w: r.wo }));
+      const valid = items.filter((x): x is { v: number; w: number } => x.v !== null);
+      const totalW = valid.reduce((s, x) => s + x.w, 0);
+      return totalW > 0 ? valid.reduce((s, x) => s + x.v * x.w, 0) / totalW : null;
+    };
+
+    const metricDefs: { key: string; getter: (r: AspMonthRaw) => number | null; rank: Map<string, number> }[] = [
+      { key: 'ftfr', getter: (r) => r.ftfr, rank: ftfrRank },
+      { key: 'mttr', getter: (r) => r.mttr, rank: mttrRank },
+      { key: 'cpc', getter: (r) => r.cpc, rank: cpcRank },
+      { key: 'repeatRate', getter: (r) => r.repeatRate, rank: repeatRank },
+      { key: 'tatClosurePct', getter: (r) => r.tatClosurePct, rank: tatRank },
+      { key: 'sahCombinedPct', getter: (r) => r.sahCombinedPct, rank: combinedRank },
+      { key: 'msmPct', getter: (r) => r.msmPct, rank: msmRank },
+      { key: 'compliancePct', getter: (r) => r.compliancePct, rank: complianceRank },
+      { key: 'npsPct', getter: (r) => r.npsPct, rank: npsRank },
+      { key: 'leakageRate', getter: (r) => r.leakageRate, rank: leakageRank },
+    ];
+    const nationalByKey = new Map(metricDefs.map((m) => [m.key, nationalAvg(m.getter)]));
+
     monthRows.forEach((r) => {
       const skill = avgOf(r.asp, [ftfrRank, mttrRank, cpcRank, repeatRank]);
       const process = avgOf(r.asp, [tatRank, cancelRank, rescheduleRank, msmRank]);
@@ -1368,6 +1401,16 @@ export async function getFullDashboardData(filters?: {
       const parts = [skill, process, audit].filter((v): v is number => v !== null);
       const overall = parts.length > 0 ? parts.reduce((s, v) => s + v, 0) / parts.length : null;
       aspMonthScores.push({ asp: r.asp, asm: r.asm, busm: r.busm, month: r.month, wo: r.wo, skill, process, audit, overall });
+
+      const detail: Record<string, ChildMetricDetail> = {};
+      metricDefs.forEach((m) => {
+        detail[m.key] = {
+          value: m.getter(r),
+          rank: m.rank.get(r.asp) ?? null,
+          national: nationalByKey.get(m.key) ?? null,
+        };
+      });
+      childMetricsByAspMonth.set(`${r.asp}:${r.month}`, detail);
     });
   });
 
@@ -1404,12 +1447,52 @@ export async function getFullDashboardData(filters?: {
 
   const round1 = (v: number | null) => (v === null ? null : Math.round(v * 10) / 10);
 
+  // Roll up child-metric detail (value + percentile rank) to ASM/BUSM as a
+  // WO-weighted average of their constituent ASPs' real numbers — same
+  // methodology as the composite skill/process/audit rollup above. The
+  // national average is a single figure per month, so it just passes through
+  // from any constituent ASP rather than being re-averaged.
+  const childMetricKeys = ['ftfr', 'mttr', 'cpc', 'repeatRate', 'tatClosurePct', 'sahCombinedPct', 'msmPct', 'compliancePct', 'npsPct', 'leakageRate'];
+
+  function rollupChildMetrics(groupKeyFn: (s: AspMonthScore) => string): Map<string, Record<string, ChildMetricDetail>> {
+    const groups = new Map<string, AspMonthScore[]>();
+    aspMonthScores.forEach((s) => {
+      const key = `${groupKeyFn(s)}:${s.month}`;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key)!.push(s);
+    });
+    const out = new Map<string, Record<string, ChildMetricDetail>>();
+    groups.forEach((items, key) => {
+      const detail: Record<string, ChildMetricDetail> = {};
+      childMetricKeys.forEach((mk) => {
+        const zipped = items.map((it) => ({ w: it.wo, cm: childMetricsByAspMonth.get(`${it.asp}:${it.month}`)?.[mk] }));
+        const valueValid = zipped.filter((z): z is { w: number; cm: ChildMetricDetail } => z.cm !== undefined && z.cm.value !== null);
+        const rankValid = zipped.filter((z): z is { w: number; cm: ChildMetricDetail } => z.cm !== undefined && z.cm.rank !== null);
+        const totalVW = valueValid.reduce((s2, z) => s2 + z.w, 0);
+        const totalRW = rankValid.reduce((s2, z) => s2 + z.w, 0);
+        const value = totalVW > 0 ? valueValid.reduce((s2, z) => s2 + (z.cm.value as number) * z.w, 0) / totalVW : null;
+        const rank = totalRW > 0 ? rankValid.reduce((s2, z) => s2 + (z.cm.rank as number) * z.w, 0) / totalRW : null;
+        const national = zipped.find((z) => z.cm && z.cm.national !== null)?.cm?.national ?? null;
+        detail[mk] = { value: round1(value), rank: round1(rank), national: round1(national) };
+      });
+      out.set(key, detail);
+    });
+    return out;
+  }
+
+  const asmChildMetricsByKey = rollupChildMetrics((s) => s.asm);
+  const busmChildMetricsByKey = rollupChildMetrics((s) => s.busm);
+
   aspStats.forEach((row: any) => {
     const s = aspScoreByKey.get(`${row.actor}:${row.month}`);
     row.skill = round1(s?.skill ?? null);
     row.process = round1(s?.process ?? null);
     row.audit = round1(s?.audit ?? null);
     row.overall = round1(s?.overall ?? null);
+    const cm = childMetricsByAspMonth.get(`${row.actor}:${row.month}`);
+    row.childMetrics = cm
+      ? Object.fromEntries(childMetricKeys.map((mk) => [mk, { value: round1(cm[mk]?.value ?? null), rank: round1(cm[mk]?.rank ?? null), national: round1(cm[mk]?.national ?? null) }]))
+      : {};
   });
   asmStats.forEach((row: any) => {
     const s = asmScoreByKey.get(`${row.actor}:${row.month}`);
@@ -1417,6 +1500,7 @@ export async function getFullDashboardData(filters?: {
     row.process = round1(s?.process ?? null);
     row.audit = round1(s?.audit ?? null);
     row.overall = round1(s?.overall ?? null);
+    row.childMetrics = asmChildMetricsByKey.get(`${row.actor}:${row.month}`) ?? {};
   });
   busmStats.forEach((row: any) => {
     const s = busmScoreByKey.get(`${row.actor}:${row.month}`);
@@ -1424,6 +1508,7 @@ export async function getFullDashboardData(filters?: {
     row.process = round1(s?.process ?? null);
     row.audit = round1(s?.audit ?? null);
     row.overall = round1(s?.overall ?? null);
+    row.childMetrics = busmChildMetricsByKey.get(`${row.actor}:${row.month}`) ?? {};
   });
 
   // 6. Evidence table: all flagged rows (limited to 5000 max to keep payload light)

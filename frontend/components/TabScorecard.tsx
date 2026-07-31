@@ -115,24 +115,46 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
             const prevMonthName = curIdx > 0 ? monthsOrder[curIdx - 1] : 'May';
             const prevRow = actRows.find((r: any) => r.month === prevMonthName) || sortedActRows[Math.max(0, sortedActRows.length - 2)];
 
-            const getFtfr = (r: any) => r && r.wo > 0 ? Math.min(100, Math.max(0, 100 - (r.bounce / r.wo) * 100)) : 84.0;
-            const getMttr = (r: any) => r ? (2.1 + (r.ghost ? 0.3 : 0)) : 2.49;
-            const getCpc = (r: any) => r ? (1250 + (r.cross ? 150 : 0)) : 1350;
-            const getRepeatRate = (r: any) => r && r.wo > 0 ? (r.bounce / r.wo) * 100 : 2.4;
+            // Real per-metric value/rank/national-average, computed backend-side
+            // in dashboard.service.ts (Score Card v2 section) from actual TAT,
+            // MSM, Compliance QC/ELS/DEF, NPS, and part-cost data — never a
+            // placeholder formula derived from a boolean flag.
+            const cm = (r: any, key: string): { value: number | null; rank: number | null; national: number | null } =>
+              (r?.childMetrics && r.childMetrics[key]) || { value: null, rank: null, national: null };
 
-            const getTatClosure = (r: any) => r ? Math.min(100, Math.max(0, 75 - (r.ghost ? 5 : 0))) : 68.5;
-            const getSahCancel = (r: any) => r ? (3.5 + (r.home_board ? 1.5 : 0)) : 4.2;
-            const getMsmAchieve = (r: any) => r ? Math.min(100, Math.max(0, 92.4 - (r.mismatch ? 3 : 0))) : 92.4;
-
-            const getQcPass = (r: any) => r ? Math.min(100, Math.max(0, 96.5 - (r.doa ? 2 : 0))) : 96.5;
-            const getNpsCsat = (r: any) => r && r.wo > 0 ? Math.min(100, Math.max(0, 100 - (r.detractor / r.wo) * 100)) : 86.0;
-            const getFlagRate = (r: any) => r && r.wo > 0 ? ((r.ghost + r.home_board + r.cross) / r.wo) * 100 : 1.1;
-
-            const getPercentileRank = (score: number | null, offset: number = 0) => {
-              if (score === null || score === undefined) return '—';
-              const val = Math.min(99, Math.max(1, Math.round(score + offset)));
+            const fmtPctVal = (v: number | null) => (v === null ? '—' : `${v.toFixed(1)}%`);
+            const fmtDaysVal = (v: number | null) => (v === null ? '—' : `${v.toFixed(2)}d`);
+            const fmtInrVal = (v: number | null) => (v === null ? '—' : `₹${Math.round(v).toLocaleString('en-IN')}`);
+            const fmtRank = (rank: number | null) => {
+              if (rank === null) return '—';
+              const val = Math.min(99, Math.max(1, Math.round(rank)));
               const suffix = val % 10 === 1 && val !== 11 ? 'st' : val % 10 === 2 && val !== 12 ? 'nd' : val % 10 === 3 && val !== 13 ? 'rd' : 'th';
               return `${val}${suffix}`;
+            };
+            // Declared business targets (not performance data) — paired with the
+            // real computed national average, which is never hardcoded.
+            const TARGETS: Record<string, string> = {
+              ftfr: 'Target 85.0%', tatClosurePct: 'Target 75.0%', msmPct: 'Target 95.0%',
+              compliancePct: 'Target 98.0%', npsPct: 'Target 95.0%', mttr: 'Target 2.00d',
+            };
+            const benchmarkLabel = (key: string) => TARGETS[key] || 'Nat. Avg';
+
+            // Real national average + real percentile rank for the composite
+            // pillar scores (Total rows), derived from every peer actor at
+            // this level for the same month — never a hardcoded constant.
+            const peerRowsThisMonth = data[scLevel].filter((r: any) => r.month === curMonthName);
+            const nationalAvgOf = (key: 'skill' | 'process' | 'audit' | 'overall'): number | null => {
+              const valid = peerRowsThisMonth.filter((r: any) => r[key] !== null && r[key] !== undefined);
+              const w = valid.reduce((s: number, r: any) => s + r.wo, 0);
+              return w > 0 ? valid.reduce((s: number, r: any) => s + r[key] * r.wo, 0) / w : null;
+            };
+            const rankAmongPeers = (key: 'skill' | 'process' | 'audit' | 'overall'): number | null => {
+              const target = peerRowsThisMonth.find((r: any) => r.actor === actorSel)?.[key];
+              if (target === null || target === undefined) return null;
+              const vals = peerRowsThisMonth.map((r: any) => r[key]).filter((v: any) => v !== null && v !== undefined);
+              if (vals.length === 0) return null;
+              const countNoBetter = vals.filter((v: number) => v <= target).length;
+              return (countNoBetter / vals.length) * 100;
             };
 
             return (
@@ -185,31 +207,31 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
                         <tbody>
                           <tr>
                             <td><b>FTFR (First-Time-Fix Rate)</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>Fixed right on first visit</span></td>
-                            <td style={{ textAlign: 'center', fontWeight: 700 }}>{getFtfr(curRow).toFixed(1)}%</td>
-                            <td style={{ textAlign: 'center', color: '#64748b' }}>{getFtfr(prevRow).toFixed(1)}%</td>
-                            <td style={{ textAlign: 'center', color: '#475569' }}>76.9% <span style={{ fontSize: '10px', color: '#94a3b8' }}>(Target 85.0%)</span></td>
-                            <td style={{ textAlign: 'center' }}><span className="score-pill s-good">{getPercentileRank(curRow?.skill ?? skillAvg, -1)}</span></td>
+                            <td style={{ textAlign: 'center', fontWeight: 700 }}>{fmtPctVal(cm(curRow, 'ftfr').value)}</td>
+                            <td style={{ textAlign: 'center', color: '#64748b' }}>{fmtPctVal(cm(prevRow, 'ftfr').value)}</td>
+                            <td style={{ textAlign: 'center', color: '#475569' }}>{fmtPctVal(cm(curRow, 'ftfr').national)} <span style={{ fontSize: '10px', color: '#94a3b8' }}>({benchmarkLabel('ftfr')})</span></td>
+                            <td style={{ textAlign: 'center' }}><span className="score-pill s-good">{fmtRank(cm(curRow, 'ftfr').rank)}</span></td>
                           </tr>
                           <tr>
                             <td><b>MTTR (Mean Time to Repair)</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>Turnaround speed in days</span></td>
-                            <td style={{ textAlign: 'center', fontWeight: 700 }}>{getMttr(curRow).toFixed(2)}d</td>
-                            <td style={{ textAlign: 'center', color: '#64748b' }}>{getMttr(prevRow).toFixed(2)}d</td>
-                            <td style={{ textAlign: 'center', color: '#475569' }}>2.49d <span style={{ fontSize: '10px', color: '#94a3b8' }}>(Target 2.00d)</span></td>
-                            <td style={{ textAlign: 'center' }}><span className="score-pill s-good">{getPercentileRank(curRow?.skill ?? skillAvg, 2)}</span></td>
+                            <td style={{ textAlign: 'center', fontWeight: 700 }}>{fmtDaysVal(cm(curRow, 'mttr').value)}</td>
+                            <td style={{ textAlign: 'center', color: '#64748b' }}>{fmtDaysVal(cm(prevRow, 'mttr').value)}</td>
+                            <td style={{ textAlign: 'center', color: '#475569' }}>{fmtDaysVal(cm(curRow, 'mttr').national)} <span style={{ fontSize: '10px', color: '#94a3b8' }}>({benchmarkLabel('mttr')})</span></td>
+                            <td style={{ textAlign: 'center' }}><span className="score-pill s-good">{fmtRank(cm(curRow, 'mttr').rank)}</span></td>
                           </tr>
                           <tr>
                             <td><b>CPC (Cost Per Call)</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>Repair &amp; replacement cost per call</span></td>
-                            <td style={{ textAlign: 'center', fontWeight: 700 }}>₹{Math.round(getCpc(curRow)).toLocaleString('en-IN')}</td>
-                            <td style={{ textAlign: 'center', color: '#64748b' }}>₹{Math.round(getCpc(prevRow)).toLocaleString('en-IN')}</td>
-                            <td style={{ textAlign: 'center', color: '#475569' }}>₹1,240 <span style={{ fontSize: '10px', color: '#94a3b8' }}>(Nat. Avg)</span></td>
-                            <td style={{ textAlign: 'center' }}><span className="score-pill s-warn">{getPercentileRank(curRow?.skill ?? skillAvg, -4)}</span></td>
+                            <td style={{ textAlign: 'center', fontWeight: 700 }}>{fmtInrVal(cm(curRow, 'cpc').value)}</td>
+                            <td style={{ textAlign: 'center', color: '#64748b' }}>{fmtInrVal(cm(prevRow, 'cpc').value)}</td>
+                            <td style={{ textAlign: 'center', color: '#475569' }}>{fmtInrVal(cm(curRow, 'cpc').national)} <span style={{ fontSize: '10px', color: '#94a3b8' }}>({benchmarkLabel('cpc')})</span></td>
+                            <td style={{ textAlign: 'center' }}><span className="score-pill s-warn">{fmtRank(cm(curRow, 'cpc').rank)}</span></td>
                           </tr>
                           <tr>
                             <td><b>Repeat / Bounce-IMEI Rate</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>Devices returning within 60 days</span></td>
-                            <td style={{ textAlign: 'center', fontWeight: 700 }}>{getRepeatRate(curRow).toFixed(1)}%</td>
-                            <td style={{ textAlign: 'center', color: '#64748b' }}>{getRepeatRate(prevRow).toFixed(1)}%</td>
-                            <td style={{ textAlign: 'center', color: '#475569' }}>3.5% <span style={{ fontSize: '10px', color: '#94a3b8' }}>(Nat. Avg)</span></td>
-                            <td style={{ textAlign: 'center' }}><span className="score-pill s-good">{getPercentileRank(curRow?.skill ?? skillAvg, 1)}</span></td>
+                            <td style={{ textAlign: 'center', fontWeight: 700 }}>{fmtPctVal(cm(curRow, 'repeatRate').value)}</td>
+                            <td style={{ textAlign: 'center', color: '#64748b' }}>{fmtPctVal(cm(prevRow, 'repeatRate').value)}</td>
+                            <td style={{ textAlign: 'center', color: '#475569' }}>{fmtPctVal(cm(curRow, 'repeatRate').national)} <span style={{ fontSize: '10px', color: '#94a3b8' }}>({benchmarkLabel('repeatRate')})</span></td>
+                            <td style={{ textAlign: 'center' }}><span className="score-pill s-good">{fmtRank(cm(curRow, 'repeatRate').rank)}</span></td>
                           </tr>
                           {/* Total Row */}
                           <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
@@ -225,10 +247,10 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
                               </span>
                             </td>
                             <td style={{ textAlign: 'center', color: '#0f172a', fontWeight: 800 }}>
-                              78.5 <span style={{ fontSize: '10px', color: '#94a3b8' }}>(Nat. Benchmark)</span>
+                              {fmt1(nationalAvgOf('skill'))} <span style={{ fontSize: '10px', color: '#94a3b8' }}>(Nat. Benchmark)</span>
                             </td>
                             <td style={{ textAlign: 'center' }}>
-                              <span className="score-pill s-good">{getPercentileRank(curRow?.skill ?? skillAvg)}</span>
+                              <span className="score-pill s-good">{fmtRank(rankAmongPeers('skill'))}</span>
                             </td>
                           </tr>
                         </tbody>
@@ -258,24 +280,24 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
                         <tbody>
                           <tr>
                             <td><b>TAT 1–2 Day Closure %</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>Calls closed within 48 hours</span></td>
-                            <td style={{ textAlign: 'center', fontWeight: 700 }}>{getTatClosure(curRow).toFixed(1)}%</td>
-                            <td style={{ textAlign: 'center', color: '#64748b' }}>{getTatClosure(prevRow).toFixed(1)}%</td>
-                            <td style={{ textAlign: 'center', color: '#475569' }}>66.9% <span style={{ fontSize: '10px', color: '#94a3b8' }}>(Target 75.0%)</span></td>
-                            <td style={{ textAlign: 'center' }}><span className="score-pill s-good">{getPercentileRank(curRow?.process ?? processAvg, 0)}</span></td>
+                            <td style={{ textAlign: 'center', fontWeight: 700 }}>{fmtPctVal(cm(curRow, 'tatClosurePct').value)}</td>
+                            <td style={{ textAlign: 'center', color: '#64748b' }}>{fmtPctVal(cm(prevRow, 'tatClosurePct').value)}</td>
+                            <td style={{ textAlign: 'center', color: '#475569' }}>{fmtPctVal(cm(curRow, 'tatClosurePct').national)} <span style={{ fontSize: '10px', color: '#94a3b8' }}>({benchmarkLabel('tatClosurePct')})</span></td>
+                            <td style={{ textAlign: 'center' }}><span className="score-pill s-good">{fmtRank(cm(curRow, 'tatClosurePct').rank)}</span></td>
                           </tr>
                           <tr>
                             <td><b>S@H Cancellation % / Reschedule %</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>Doorstep appointment compliance</span></td>
-                            <td style={{ textAlign: 'center', fontWeight: 700 }}>{getSahCancel(curRow).toFixed(1)}%</td>
-                            <td style={{ textAlign: 'center', color: '#64748b' }}>{getSahCancel(prevRow).toFixed(1)}%</td>
-                            <td style={{ textAlign: 'center', color: '#475569' }}>6.8% <span style={{ fontSize: '10px', color: '#94a3b8' }}>(Nat. Avg)</span></td>
-                            <td style={{ textAlign: 'center' }}><span className="score-pill s-good">{getPercentileRank(curRow?.process ?? processAvg, 2)}</span></td>
+                            <td style={{ textAlign: 'center', fontWeight: 700 }}>{fmtPctVal(cm(curRow, 'sahCombinedPct').value)}</td>
+                            <td style={{ textAlign: 'center', color: '#64748b' }}>{fmtPctVal(cm(prevRow, 'sahCombinedPct').value)}</td>
+                            <td style={{ textAlign: 'center', color: '#475569' }}>{fmtPctVal(cm(curRow, 'sahCombinedPct').national)} <span style={{ fontSize: '10px', color: '#94a3b8' }}>({benchmarkLabel('sahCombinedPct')})</span></td>
+                            <td style={{ textAlign: 'center' }}><span className="score-pill s-good">{fmtRank(cm(curRow, 'sahCombinedPct').rank)}</span></td>
                           </tr>
                           <tr>
                             <td><b>MSM Achievement %</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>Daily deposit &amp; stock compliance</span></td>
-                            <td style={{ textAlign: 'center', fontWeight: 700 }}>{getMsmAchieve(curRow).toFixed(1)}%</td>
-                            <td style={{ textAlign: 'center', color: '#64748b' }}>{getMsmAchieve(prevRow).toFixed(1)}%</td>
-                            <td style={{ textAlign: 'center', color: '#475569' }}>88.5% <span style={{ fontSize: '10px', color: '#94a3b8' }}>(Target 95.0%)</span></td>
-                            <td style={{ textAlign: 'center' }}><span className="score-pill s-good">{getPercentileRank(curRow?.process ?? processAvg, -1)}</span></td>
+                            <td style={{ textAlign: 'center', fontWeight: 700 }}>{fmtPctVal(cm(curRow, 'msmPct').value)}</td>
+                            <td style={{ textAlign: 'center', color: '#64748b' }}>{fmtPctVal(cm(prevRow, 'msmPct').value)}</td>
+                            <td style={{ textAlign: 'center', color: '#475569' }}>{fmtPctVal(cm(curRow, 'msmPct').national)} <span style={{ fontSize: '10px', color: '#94a3b8' }}>({benchmarkLabel('msmPct')})</span></td>
+                            <td style={{ textAlign: 'center' }}><span className="score-pill s-good">{fmtRank(cm(curRow, 'msmPct').rank)}</span></td>
                           </tr>
                           {/* Total Row */}
                           <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
@@ -291,10 +313,10 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
                               </span>
                             </td>
                             <td style={{ textAlign: 'center', color: '#0f172a', fontWeight: 800 }}>
-                              82.0 <span style={{ fontSize: '10px', color: '#94a3b8' }}>(Nat. Benchmark)</span>
+                              {fmt1(nationalAvgOf('process'))} <span style={{ fontSize: '10px', color: '#94a3b8' }}>(Nat. Benchmark)</span>
                             </td>
                             <td style={{ textAlign: 'center' }}>
-                              <span className="score-pill s-good">{getPercentileRank(curRow?.process ?? processAvg)}</span>
+                              <span className="score-pill s-good">{fmtRank(rankAmongPeers('process'))}</span>
                             </td>
                           </tr>
                         </tbody>
@@ -324,24 +346,24 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
                         <tbody>
                           <tr>
                             <td><b>Compliance QC / ELS DOA / DEF Pass Rate</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>Internal audit &amp; spare compliance</span></td>
-                            <td style={{ textAlign: 'center', fontWeight: 700 }}>{getQcPass(curRow).toFixed(1)}%</td>
-                            <td style={{ textAlign: 'center', color: '#64748b' }}>{getQcPass(prevRow).toFixed(1)}%</td>
-                            <td style={{ textAlign: 'center', color: '#475569' }}>94.8% <span style={{ fontSize: '10px', color: '#94a3b8' }}>(Target 98.0%)</span></td>
-                            <td style={{ textAlign: 'center' }}><span className="score-pill s-good">{getPercentileRank(curRow?.audit ?? auditAvg, 0)}</span></td>
+                            <td style={{ textAlign: 'center', fontWeight: 700 }}>{fmtPctVal(cm(curRow, 'compliancePct').value)}</td>
+                            <td style={{ textAlign: 'center', color: '#64748b' }}>{fmtPctVal(cm(prevRow, 'compliancePct').value)}</td>
+                            <td style={{ textAlign: 'center', color: '#475569' }}>{fmtPctVal(cm(curRow, 'compliancePct').national)} <span style={{ fontSize: '10px', color: '#94a3b8' }}>({benchmarkLabel('compliancePct')})</span></td>
+                            <td style={{ textAlign: 'center' }}><span className="score-pill s-good">{fmtRank(cm(curRow, 'compliancePct').rank)}</span></td>
                           </tr>
                           <tr>
                             <td><b>NPS / CSAT %</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>Independent customer rating</span></td>
-                            <td style={{ textAlign: 'center', fontWeight: 700 }}>{getNpsCsat(curRow).toFixed(1)}%</td>
-                            <td style={{ textAlign: 'center', color: '#64748b' }}>{getNpsCsat(prevRow).toFixed(1)}%</td>
-                            <td style={{ textAlign: 'center', color: '#475569' }}>83.4% <span style={{ fontSize: '10px', color: '#94a3b8' }}>(Target 95.0%)</span></td>
-                            <td style={{ textAlign: 'center' }}><span className="score-pill s-good">{getPercentileRank(curRow?.audit ?? auditAvg, 1)}</span></td>
+                            <td style={{ textAlign: 'center', fontWeight: 700 }}>{fmtPctVal(cm(curRow, 'npsPct').value)}</td>
+                            <td style={{ textAlign: 'center', color: '#64748b' }}>{fmtPctVal(cm(prevRow, 'npsPct').value)}</td>
+                            <td style={{ textAlign: 'center', color: '#475569' }}>{fmtPctVal(cm(curRow, 'npsPct').national)} <span style={{ fontSize: '10px', color: '#94a3b8' }}>({benchmarkLabel('npsPct')})</span></td>
+                            <td style={{ textAlign: 'center' }}><span className="score-pill s-good">{fmtRank(cm(curRow, 'npsPct').rank)}</span></td>
                           </tr>
                           <tr>
                             <td><b>Ghost-swap / Home-board / Cross-ASP Flag Rate</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>Anomalous risk flags per 100 WOs</span></td>
-                            <td style={{ textAlign: 'center', fontWeight: 700 }}>{getFlagRate(curRow).toFixed(1)}%</td>
-                            <td style={{ textAlign: 'center', color: '#64748b' }}>{getFlagRate(prevRow).toFixed(1)}%</td>
-                            <td style={{ textAlign: 'center', color: '#475569' }}>2.4% <span style={{ fontSize: '10px', color: '#94a3b8' }}>(Nat. Avg)</span></td>
-                            <td style={{ textAlign: 'center' }}><span className="score-pill s-good">{getPercentileRank(curRow?.audit ?? auditAvg, 3)}</span></td>
+                            <td style={{ textAlign: 'center', fontWeight: 700 }}>{fmtPctVal(cm(curRow, 'leakageRate').value)}</td>
+                            <td style={{ textAlign: 'center', color: '#64748b' }}>{fmtPctVal(cm(prevRow, 'leakageRate').value)}</td>
+                            <td style={{ textAlign: 'center', color: '#475569' }}>{fmtPctVal(cm(curRow, 'leakageRate').national)} <span style={{ fontSize: '10px', color: '#94a3b8' }}>({benchmarkLabel('leakageRate')})</span></td>
+                            <td style={{ textAlign: 'center' }}><span className="score-pill s-good">{fmtRank(cm(curRow, 'leakageRate').rank)}</span></td>
                           </tr>
                           {/* Total Row */}
                           <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
@@ -357,10 +379,10 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
                               </span>
                             </td>
                             <td style={{ textAlign: 'center', color: '#0f172a', fontWeight: 800 }}>
-                              84.5 <span style={{ fontSize: '10px', color: '#94a3b8' }}>(Nat. Benchmark)</span>
+                              {fmt1(nationalAvgOf('audit'))} <span style={{ fontSize: '10px', color: '#94a3b8' }}>(Nat. Benchmark)</span>
                             </td>
                             <td style={{ textAlign: 'center' }}>
-                              <span className="score-pill s-good">{getPercentileRank(curRow?.audit ?? auditAvg)}</span>
+                              <span className="score-pill s-good">{fmtRank(rankAmongPeers('audit'))}</span>
                             </td>
                           </tr>
                         </tbody>
@@ -416,7 +438,7 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
                           <th>Month</th>
                           <th>WO</th>
                           <th>Same-day Swap</th>
-                          <th>Board@Home</th>
+                          <th>Board@Home &gt;15km</th>
                           <th>Cross-ASP</th>
                           <th>Bounce</th>
                           <th>Mismatch</th>
@@ -598,7 +620,7 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
                           <th>Audit</th>
                           <th>WO Count</th>
                           <th>Same-day Swap</th>
-                          <th>Board@Home</th>
+                          <th>Board@Home &gt;15km</th>
                           <th>Cross-ASP</th>
                           <th>Bounce</th>
                           <th>Mismatch</th>
