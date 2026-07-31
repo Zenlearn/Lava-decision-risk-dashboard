@@ -907,16 +907,22 @@ export async function getFullDashboardData(filters?: {
 
     const totalSurvey = surveyRows.length;
 
+    // No hardcoded fallback: a month with zero survey responses gets zeros
+    // and hasSurveyData: false, not a fabricated distribution that looks
+    // like real data. The frontend must render an explicit "no data" state
+    // for hasSurveyData === false rather than displaying these zeros as if
+    // they were a real 0%-response month.
     const csatDistribution = [
-      { key: '5', label: 'Rating 5 (5-Star)', quantity: totalSurvey > 0 ? r5 : 2741, pct: totalSurvey > 0 ? (Math.round((r5 / totalSurvey) * 1000) / 10) : 73.9 },
-      { key: '4', label: 'Rating 4 (4-Star)', quantity: totalSurvey > 0 ? r4 : 349, pct: totalSurvey > 0 ? (Math.round((r4 / totalSurvey) * 1000) / 10) : 9.4 },
-      { key: '3', label: 'Rating 3 (3-Star)', quantity: totalSurvey > 0 ? r3 : 245, pct: totalSurvey > 0 ? (Math.round((r3 / totalSurvey) * 1000) / 10) : 6.6 },
-      { key: '2', label: 'Rating 2 (2-Star)', quantity: totalSurvey > 0 ? r2 : 81, pct: totalSurvey > 0 ? (Math.round((r2 / totalSurvey) * 1000) / 10) : 2.2 },
-      { key: '1', label: 'Rating 1 (1-Star)', quantity: totalSurvey > 0 ? r1 : 291, pct: totalSurvey > 0 ? (Math.round((r1 / totalSurvey) * 1000) / 10) : 7.9 },
+      { key: '5', label: 'Rating 5 (5-Star)', quantity: r5, pct: totalSurvey > 0 ? Math.round((r5 / totalSurvey) * 1000) / 10 : 0 },
+      { key: '4', label: 'Rating 4 (4-Star)', quantity: r4, pct: totalSurvey > 0 ? Math.round((r4 / totalSurvey) * 1000) / 10 : 0 },
+      { key: '3', label: 'Rating 3 (3-Star)', quantity: r3, pct: totalSurvey > 0 ? Math.round((r3 / totalSurvey) * 1000) / 10 : 0 },
+      { key: '2', label: 'Rating 2 (2-Star)', quantity: r2, pct: totalSurvey > 0 ? Math.round((r2 / totalSurvey) * 1000) / 10 : 0 },
+      { key: '1', label: 'Rating 1 (1-Star)', quantity: r1, pct: totalSurvey > 0 ? Math.round((r1 / totalSurvey) * 1000) / 10 : 0 },
     ];
+    const hasSurveyData = totalSurvey > 0;
 
     const satResponders45 = r4 + r5;
-    const csat = totalSurvey > 0 ? Math.round((satResponders45 / totalSurvey) * 1000) / 10 : 83.4;
+    const csat = totalSurvey > 0 ? Math.round((satResponders45 / totalSurvey) * 1000) / 10 : 0;
 
     const diag = woCount > 0 ? Math.round((1 - mismatchBouncedCount / woCount) * 1000) / 10 : 0;
 
@@ -926,18 +932,25 @@ export async function getFullDashboardData(filters?: {
       return str === 'yes' || str === 'y' || str === '1' || str === 'true';
     };
 
-    const sahRows = mRows.filter((r) => r.isHome);
-    const pcbaRows = mRows.filter((r) => r.leakageValue > 0 && isYesVal(r.rawData[FIELD_MAP.pcbaConsumption] || r.rawData['PCBA Consumption']));
-    const tpLcdRows = mRows.filter((r) => r.leakageValue > 0 && isYesVal(r.rawData[FIELD_MAP.tpLcdConsumption] || r.rawData['TP/LCD Consumption']));
+    const isSmartOrTablet = (r: any): boolean => {
+      const mt = String(r.rawData[FIELD_MAP.modelType] || r.rawData['Model type'] || r.rawData['Model Type'] || '').toLowerCase();
+      const m = String(r.rawData[FIELD_MAP.model] || '').toLowerCase();
+      return !mt.includes('feature') && !m.includes('feature') && !m.includes('hero') && !m.includes('captain');
+    };
 
-    const repeat60dRows = mRows.filter((r) => r.isBounce || r.isCrossAsp);
-    const rwrRows = mRows.filter((r) => {
+    const sahSmartRows = mRows.filter((r) => r.isHome && isSmartOrTablet(r));
+
+    const pcbaRows = sahSmartRows.filter((r) => r.leakageValue > 0 && isYesVal(r.rawData[FIELD_MAP.pcbaConsumption] || r.rawData['PCBA Consumption']));
+    const tpLcdRows = sahSmartRows.filter((r) => r.leakageValue > 0 && isYesVal(r.rawData[FIELD_MAP.tpLcdConsumption] || r.rawData['TP/LCD Consumption']));
+
+    const repeat60dRows = sahSmartRows.filter((r) => r.isBounce || r.isCrossAsp);
+    const rwrRows = sahSmartRows.filter((r) => {
       const act = String(r.rawData['Action Code Desc'] || r.rawData['Action Taken'] || '').toLowerCase();
       const sym = String(r.rawData[FIELD_MAP.symptomDesc] || '').toLowerCase();
       return act.includes('rwr') || act.includes('return without') || sym.includes('rwr');
     });
-    const sah15kmRows = sahRows.filter((r) => r.tat !== null && r.tat <= 1 && (r.isPCBA || r.isLCD));
-    const travelRows = mRows.filter((r) => r.leakageValue > 0 && r.travelVal > 0);
+    const sah15kmRows = sahSmartRows.filter((r) => r.tat !== null && r.tat <= 1 && (r.isPCBA || r.isLCD));
+    const travelRows = sahSmartRows.filter((r) => r.leakageValue > 0 && r.travelVal > 0);
 
     const parseNum = (val: any): number => {
       if (val === null || val === undefined) return 0;
@@ -960,7 +973,10 @@ export async function getFullDashboardData(filters?: {
     const tpLcdData = calcSumCost(tpLcdRows, FIELD_MAP.tpLcdValue, 1200);
 
     const repeat60dQty = repeat60dRows.length;
-    const repeat60dCost = Math.round(repeat60dRows.reduce((sum, r) => sum + (r.partLeakageVal || parseNum(r.rawData[FIELD_MAP.totalPartValue]) || 1500), 0));
+    const repeat60dCost = Math.round(repeat60dRows.reduce((sum, r) => {
+      const pCost = (r.partLeakageVal && r.partLeakageVal > 0) ? r.partLeakageVal : parseNum(r.rawData[FIELD_MAP.totalPartValue]);
+      return sum + pCost;
+    }, 0));
 
     const rwrQty = rwrRows.length;
     const rwrCost = rwrQty * 200;
@@ -1019,6 +1035,7 @@ export async function getFullDashboardData(filters?: {
       breakdown,
       tatDistribution,
       csatDistribution,
+      hasSurveyData,
       modelConsumption,
       _leakparts: { pcba: pcbaData.qty, lcd: tpLcdData.qty },
       _leaktravel: travelQty,

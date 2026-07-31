@@ -89,33 +89,14 @@ export default function TabDashboard({
   const activeLeakDelta = prevKPI ? (activeLeakCur - activeLeakPrev) : 0;
   const activeAnnualLeakRunRate = activeLeakCur * 12;
 
-  const currentBreakdown = currentKPI?.breakdown || [
-    { key: 'pcba', label: 'PCBA', quantity: 320, cost: 1092930 },
-    { key: 'lcd', label: 'TP/LCD', quantity: 163, cost: 240592 },
-    { key: 'sah_15km', label: 'Same-Day S@H Travel (>15km each side)', quantity: 245, cost: 73500 },
-    { key: 'repeat_60d_parts', label: '60-Day Repeat Repair Parts (Attributed 1st Repairer)', quantity: 184, cost: 298308 },
-    { key: 'rwr_fee', label: 'S@H Return Without Repair (RWR ₹200 Fee)', quantity: 404, cost: 80861 },
-    { key: 'travel', label: 'Technician Home Travel Fee', quantity: 748, cost: 374000 },
-  ];
-
+  // No fabricated defaults: if the backend hasn't provided this month's real
+  // breakdown/distribution, the array is empty and the table renders an
+  // explicit "no data" row — never a plausible-looking placeholder.
+  const currentBreakdown = currentKPI?.breakdown || [];
   const prevBreakdown = prevKPI?.breakdown || [];
-
-  // Real MTTR distribution — Lava Delivered Master Data (107,407 WOs, Apr–Jun 2026)
-  const currentTatDist = currentKPI?.tatDistribution || [
-    { key: '1d',   label: 'Repaired in 1 Day (24 Hours)', quantity: Math.round((currentKPI?.wo || 0) * 0.269), pct: 26.9 },
-    { key: '3d',   label: 'Repaired in 2 – 3 Days',       quantity: Math.round((currentKPI?.wo || 0) * 0.235), pct: 23.5 },
-    { key: 'gt3d', label: 'Repaired in > 3 Days',          quantity: Math.round((currentKPI?.wo || 0) * 0.497), pct: 49.7 },
-  ];
-
-  // Real CSAT distribution approximated from NPS survey data (Promoter 66% → 5★, Passive 17% → 4★, Detractors 17% → 1–3★)
-  const currentCsatDist = currentKPI?.csatDistribution || [
-    { key: '5', label: 'Rating 5 (5-Star — Promoters)', quantity: Math.round((currentKPI?.wo || 0) * 0.46), pct: 46.0 },
-    { key: '4', label: 'Rating 4 (4-Star — Passive high)', quantity: Math.round((currentKPI?.wo || 0) * 0.20), pct: 20.0 },
-    { key: '3', label: 'Rating 3 (3-Star — Passive low)', quantity: Math.round((currentKPI?.wo || 0) * 0.17), pct: 17.0 },
-    { key: '2', label: 'Rating 2 (2-Star — Detractor)', quantity: Math.round((currentKPI?.wo || 0) * 0.10), pct: 10.0 },
-    { key: '1', label: 'Rating 1 (1-Star — Detractor)', quantity: Math.round((currentKPI?.wo || 0) * 0.07), pct:  7.0 },
-  ];
-
+  const currentTatDist = currentKPI?.tatDistribution || [];
+  const currentCsatDist = currentKPI?.csatDistribution || [];
+  const hasSurveyData = currentKPI?.hasSurveyData !== false;
   const prevTatDist = prevKPI?.tatDistribution || [];
 
   return (
@@ -505,6 +486,13 @@ export default function TabDashboard({
                   </TableRow>
                 </TableHeader>
                 <TableBody>
+                  {currentBreakdown.length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={5} style={{ textAlign: 'center', color: '#94a3b8', padding: '20px' }}>
+                        No leakage breakdown data available for {currentKPI?.month || selectedMonth}.
+                      </TableCell>
+                    </TableRow>
+                  )}
                   {currentBreakdown.map((item: any, idx: number) => {
                     const prevItem = prevBreakdown.find((pb: any) => pb.key === item.key || pb.label === item.label);
                     const prevCost = prevItem?.cost || 0;
@@ -631,6 +619,11 @@ export default function TabDashboard({
         {expandedSections.mttr && (
           <div style={{ padding: '20px' }}>
             {/* Top Summary Badges Row */}
+            {currentTatDist.length === 0 && (
+              <div style={{ color: '#94a3b8', padding: '12px 0', fontSize: '13px' }}>
+                No TAT distribution data available for {currentKPI?.month || selectedMonth}.
+              </div>
+            )}
             <div style={{ display: 'flex', gap: '16px', marginBottom: '20px', flexWrap: 'wrap' }}>
               {currentTatDist.map((item: any, idx: number) => {
                 const badgeColor = item.key === '1d' ? '#10b981' : item.key === '3d' ? '#f59e0b' : '#ef4444';
@@ -772,30 +765,48 @@ export default function TabDashboard({
 
         {expandedSections.csat && (
           <div style={{ padding: '20px' }}>
-            {/* Top KPI Summary Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: '12px', marginBottom: '20px' }}>
-              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '14px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>C-SAT Satisfaction Index</span>
-                <span style={{ fontSize: '20px', fontWeight: 800, color: '#16a34a' }}>{fmtPct(currentKPI?.csat || 83.4)}</span>
-                <span style={{ fontSize: '11px', color: '#475569' }}>Target 95.0% (+1.2% MoM)</span>
-              </div>
-              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '14px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>Net Promoter Score (NPS)</span>
-                <span style={{ fontSize: '20px', fontWeight: 800, color: '#2563eb' }}>+63.9</span>
-                <span style={{ fontSize: '11px', color: '#475569' }}>Promoters % − Detractors %</span>
-              </div>
-              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '14px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>Detractor Rate (1-2 Stars)</span>
-                <span style={{ fontSize: '20px', fontWeight: 800, color: '#dc2626' }}>10.0%</span>
-                <span style={{ fontSize: '11px', color: '#dc2626' }}>372 Detractor Work Orders</span>
-              </div>
-              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '14px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>Survey Response Rate</span>
-                <span style={{ fontSize: '20px', fontWeight: 800, color: '#0f172a' }}>35.1%</span>
-                <span style={{ fontSize: '11px', color: '#64748b' }}>3,707 Responded / 10,570 Sent</span>
-              </div>
-            </div>
+            {/* Top KPI Summary Cards — all derived from real survey-response
+                data (currentCsatDist), computed here rather than fabricated.
+                Survey Response Rate needs "total surveys sent" — a figure
+                Master Data doesn't carry — so it's marked not-tracked rather
+                than invented. */}
+            {(() => {
+              const totalResp = currentCsatDist.reduce((s: number, i: any) => s + (i.quantity || 0), 0);
+              const promoters = currentCsatDist.find((i: any) => i.key === '5')?.quantity || 0;
+              const detractors = currentCsatDist.filter((i: any) => i.key === '1' || i.key === '2').reduce((s: number, i: any) => s + (i.quantity || 0), 0);
+              const npsScore = totalResp > 0 ? Math.round(((promoters - detractors) / totalResp) * 1000) / 10 : null;
+              const detractorPct = totalResp > 0 ? Math.round((detractors / totalResp) * 1000) / 10 : null;
+              return (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: '12px', marginBottom: '20px' }}>
+                  <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '14px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>C-SAT Satisfaction Index</span>
+                    <span style={{ fontSize: '20px', fontWeight: 800, color: '#16a34a' }}>{hasSurveyData ? fmtPct(currentKPI?.csat ?? 0) : '—'}</span>
+                    <span style={{ fontSize: '11px', color: '#475569' }}>{hasSurveyData ? 'Target 95.0%' : 'No survey responses this month'}</span>
+                  </div>
+                  <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '14px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>Net Promoter Score (NPS)</span>
+                    <span style={{ fontSize: '20px', fontWeight: 800, color: '#2563eb' }}>{npsScore !== null ? `${npsScore > 0 ? '+' : ''}${npsScore}` : '—'}</span>
+                    <span style={{ fontSize: '11px', color: '#475569' }}>Promoters % − Detractors %</span>
+                  </div>
+                  <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '14px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>Detractor Rate (1-2 Stars)</span>
+                    <span style={{ fontSize: '20px', fontWeight: 800, color: '#dc2626' }}>{detractorPct !== null ? `${detractorPct}%` : '—'}</span>
+                    <span style={{ fontSize: '11px', color: '#dc2626' }}>{detractors.toLocaleString('en-IN')} Detractor Work Orders</span>
+                  </div>
+                  <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '14px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>Survey Response Rate</span>
+                    <span style={{ fontSize: '20px', fontWeight: 800, color: '#94a3b8' }}>Not tracked</span>
+                    <span style={{ fontSize: '11px', color: '#64748b' }}>{totalResp.toLocaleString('en-IN')} responses — total surveys sent not in Master Data</span>
+                  </div>
+                </div>
+              );
+            })()}
 
+            {currentCsatDist.length === 0 && (
+              <div style={{ color: '#94a3b8', padding: '12px 0', fontSize: '13px' }}>
+                No survey responses recorded for {currentKPI?.month || selectedMonth}.
+              </div>
+            )}
             {/* Top Summary Badges Row for Rating 5 to 1 */}
             <div style={{ display: 'flex', gap: '12px', marginBottom: '20px', flexWrap: 'wrap' }}>
               {currentCsatDist.map((item: any, idx: number) => {
@@ -874,52 +885,15 @@ export default function TabDashboard({
                 Performance breakdown across automated customer feedback touchpoints
               </div>
 
-              <Table density="comfortable">
-                <TableHeader>
-                  <TableRow>
-                    <TableHead style={{ textAlign: 'left' }}>Survey Channel</TableHead>
-                    <TableHead style={{ textAlign: 'right' }}>Surveys Sent</TableHead>
-                    <TableHead style={{ textAlign: 'right' }}>Responded Count</TableHead>
-                    <TableHead style={{ textAlign: 'right' }}>Response Rate</TableHead>
-                    <TableHead style={{ textAlign: 'right' }}>Promoters &amp; Satisfied (4-5★)</TableHead>
-                    <TableHead style={{ textAlign: 'right' }}>Detractors (1-2★)</TableHead>
-                    <TableHead style={{ textAlign: 'right' }}>Net Promoter Score</TableHead>
-                    <TableHead style={{ textAlign: 'right' }}>Channel CSAT %</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  <TableRow>
-                    <TableCell style={{ textAlign: 'left', fontWeight: 700, color: '#4E67EB' }}>WhatsApp Channel</TableCell>
-                    <TableCell style={{ textAlign: 'right', fontWeight: 600 }}>6,339</TableCell>
-                    <TableCell style={{ textAlign: 'right', fontWeight: 600 }}>2,690</TableCell>
-                    <TableCell style={{ textAlign: 'right', fontWeight: 600, color: '#475569' }}>42.4%</TableCell>
-                    <TableCell style={{ textAlign: 'right', fontWeight: 700, color: '#047857' }}>2,208 (82.1%)</TableCell>
-                    <TableCell style={{ textAlign: 'right', fontWeight: 700, color: '#be123c' }}>292 (10.9%)</TableCell>
-                    <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#1d4ed8' }}>+61.3</TableCell>
-                    <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#047857' }}>82.1%</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell style={{ textAlign: 'left', fontWeight: 700, color: '#7e22ce' }}>IVR Call Channel</TableCell>
-                    <TableCell style={{ textAlign: 'right', fontWeight: 600 }}>4,231</TableCell>
-                    <TableCell style={{ textAlign: 'right', fontWeight: 600 }}>1,017</TableCell>
-                    <TableCell style={{ textAlign: 'right', fontWeight: 600, color: '#475569' }}>24.0%</TableCell>
-                    <TableCell style={{ textAlign: 'right', fontWeight: 700, color: '#047857' }}>882 (86.7%)</TableCell>
-                    <TableCell style={{ textAlign: 'right', fontWeight: 700, color: '#be123c' }}>80 (7.9%)</TableCell>
-                    <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#1d4ed8' }}>+71.3</TableCell>
-                    <TableCell style={{ textAlign: 'right', fontWeight: 800, color: '#047857' }}>86.7%</TableCell>
-                  </TableRow>
-                </TableBody>
-                <TableSummaryRow>
-                  <TableCell style={{ textAlign: 'left' }}>Total / National Overall</TableCell>
-                  <TableCell style={{ textAlign: 'right' }}>10,570</TableCell>
-                  <TableCell style={{ textAlign: 'right' }}>3,707</TableCell>
-                  <TableCell style={{ textAlign: 'right' }}>35.1%</TableCell>
-                  <TableCell style={{ textAlign: 'right', color: '#047857' }}>3,090 (83.4%)</TableCell>
-                  <TableCell style={{ textAlign: 'right', color: '#be123c' }}>372 (10.0%)</TableCell>
-                  <TableCell style={{ textAlign: 'right', color: '#1d4ed8' }}>+63.9</TableCell>
-                  <TableCell style={{ textAlign: 'right', color: '#047857', fontSize: '15px' }}>83.4%</TableCell>
-                </TableSummaryRow>
-              </Table>
+              {/* This table was previously entirely hardcoded (WhatsApp/IVR
+                  row values were static JSX, not derived from any variable).
+                  The raw NPS survey export does carry a "Type" (channel)
+                  column, but it isn't imported/persisted anywhere today, so
+                  there is no real per-channel data to show yet. Showing a
+                  fabricated table was worse than showing nothing. */}
+              <div style={{ padding: '24px', textAlign: 'center', color: '#94a3b8', fontSize: '13px', background: '#f8fafc', borderRadius: '8px', border: '1px dashed #cbd5e1' }}>
+                Channel-level survey breakdown (WhatsApp vs IVR) is not yet tracked — the NPS import doesn't persist survey channel today.
+              </div>
             </div>
           </div>
         )}

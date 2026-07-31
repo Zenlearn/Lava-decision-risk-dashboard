@@ -237,15 +237,6 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
   const asmNpsMap = new Map(asmNpsData.map(a => [normalizeKey(a.name), a]));
 
   // Calculate Combined CPC = (Combined Total Cost) / (Repair WO Count + Replacement WO Count)
-  // BUSM TAT distribution from Lava Master Data (Apr-Jun 2026) — same numbers as TAT table
-  const BUSM_TAT_DIST_MAP: Record<string, number> = {
-    'Jitesh S Rath': 36.7,
-    'Sukhbir Singh': 44.5,
-    'Tamilselvan Subramanian': 31.8,
-    'Shivaprasad P U': 38.0,
-    'Rajesh Limbachia': 44.3,
-  };
-
   const busmCpcMap = new Map<string, number>();
   (currentCpcDataset?.busm || []).forEach((b: any) => {
     const sumWo = (b.repair_count || 0) + (b.repl_count || 0);
@@ -289,8 +280,8 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
     // CPC: prefer cpcDataDynamic value (new formula), fall back to raw b.cpc
     const cpcFromMap = busmCpcMap.get(normalizeKey(b.name)) ?? busmCpcMap.get(normalizeKey(b.busm || ''));
     const cpcVal = cpcFromMap !== undefined ? cpcFromMap : (b.cpc || 0);
-    // TAT: use BUSM_TAT_DIST_MAP (same source as TAT table) to ensure consistency
-    const tatPct = BUSM_TAT_DIST_MAP[b.name] !== undefined ? BUSM_TAT_DIST_MAP[b.name] : (b.tat || 0);
+    // TAT: always the backend's real per-BUSM value — no hardcoded override.
+    const tatPct = b.tat || 0;
     const sahFromMap = busmSahMap.get(normalizeKey(b.name));
     const sahVal = sahFromMap !== undefined && !isNaN(sahFromMap) ? sahFromMap : (b.sah || 0);
     return {
@@ -2330,32 +2321,25 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                 {tatRawBusmList.map((r: any, i: number) => {
                   const isSelected = tatBusmRow === r.name;
                   const woVal = r.wo || 0;
+                  // Always the backend's real per-BUSM closure counts — no
+                  // hardcoded distribution fallback. Missing/zero data shows
+                  // as 0, not a plausible-looking synthetic split.
                   const rawTc = r.tatClosure || {};
-                  // Real per-BUSM TAT distributions from Lava Delivered Master Data (107,407 WOs, Apr–Jun 2026)
-                  // — fallback only, used if the backend's own tatClosure breakdown is unavailable.
-                  const BUSM_TAT_DIST: Record<string, { p1: number; p2: number; p3: number; p5: number }> = {
-                    'Jitesh S Rath':            { p1: 36.7, p2:  6.9, p3: 23.9, p5: 32.6 },
-                    'Sukhbir Singh':            { p1: 44.5, p2:  9.4, p3: 22.8, p5: 23.2 },
-                    'Tamilselvan Subramanian':  { p1: 31.8, p2: 11.2, p3: 27.7, p5: 29.3 },
-                    'Shivaprasad P U':          { p1: 38.0, p2: 10.7, p3: 29.0, p5: 22.3 },
-                    'Rajesh Limbachia':         { p1: 44.3, p2: 10.3, p3: 27.1, p5: 18.3 },
-                  };
-                  const dist = BUSM_TAT_DIST[r.name] || { p1: 26.9, p2: 12.0, p3: 21.0, p5: 40.1 };
-                  const c1d = rawTc.c1d ?? Math.round(woVal * dist.p1 / 100);
-                  const c2d = rawTc.c2d ?? Math.round(woVal * dist.p2 / 100);
-                  const c3d = rawTc.c3d ?? Math.round(woVal * dist.p3 / 100);
-                  const c5d = rawTc.c5d ?? Math.round(woVal * dist.p5 / 100);
+                  const c1d = rawTc.c1d || 0;
+                  const c2d = rawTc.c2d || 0;
+                  const c3d = rawTc.c3d || 0;
+                  const c5d = rawTc.c5d || 0;
                   const cStillOpen = Math.max(0, woVal - c1d - c2d - c3d - c5d);
 
                   const tc = {
                     c1d,
-                    tat1dPct: woVal > 0 ? +((c1d / woVal) * 100).toFixed(1) : (woVal > 0 ? dist.p1 : 0),
+                    tat1dPct: woVal > 0 ? +((c1d / woVal) * 100).toFixed(1) : 0,
                     c2d,
-                    tat2dPct: woVal > 0 ? +((c2d / woVal) * 100).toFixed(1) : (woVal > 0 ? dist.p2 : 0),
+                    tat2dPct: woVal > 0 ? +((c2d / woVal) * 100).toFixed(1) : 0,
                     c3d,
-                    tat3dPct: woVal > 0 ? +((c3d / woVal) * 100).toFixed(1) : (woVal > 0 ? dist.p3 : 0),
+                    tat3dPct: woVal > 0 ? +((c3d / woVal) * 100).toFixed(1) : 0,
                     c5d,
-                    tat5dPct: woVal > 0 ? +((c5d / woVal) * 100).toFixed(1) : (woVal > 0 ? dist.p5 : 0),
+                    tat5dPct: woVal > 0 ? +((c5d / woVal) * 100).toFixed(1) : 0,
                     cStillOpen,
                     stillOpenPct: woVal > 0 ? +((cStillOpen / woVal) * 100).toFixed(1) : 0,
                   };
@@ -2396,14 +2380,6 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
 
                 {/* National Total Summary Row (Aggregated strictly from BUSM rows) */}
                 {(() => {
-                  const BUSM_TAT_DIST: Record<string, { p1: number; p2: number; p3: number; p5: number }> = {
-                    'Jitesh S Rath':            { p1: 36.7, p2:  6.9, p3: 23.9, p5: 32.6 },
-                    'Sukhbir Singh':            { p1: 44.5, p2:  9.4, p3: 22.8, p5: 23.2 },
-                    'Tamilselvan Subramanian':  { p1: 31.8, p2: 11.2, p3: 27.7, p5: 29.3 },
-                    'Shivaprasad P U':          { p1: 38.0, p2: 10.7, p3: 29.0, p5: 22.3 },
-                    'Rajesh Limbachia':         { p1: 44.3, p2: 10.3, p3: 27.1, p5: 18.3 },
-                  };
-
                   let totWo = 0;
                   let totC1d = 0;
                   let totC2d = 0;
@@ -2415,11 +2391,10 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                     const woVal = r.wo || 0;
                     totWo += woVal;
                     const rawTc = r.tatClosure || {};
-                    const dist = BUSM_TAT_DIST[r.name] || { p1: 26.9, p2: 12.0, p3: 21.0, p5: 40.1 };
-                    const c1 = rawTc.c1d ?? Math.round(woVal * dist.p1 / 100);
-                    const c2 = rawTc.c2d ?? Math.round(woVal * dist.p2 / 100);
-                    const c3 = rawTc.c3d ?? Math.round(woVal * dist.p3 / 100);
-                    const c5 = rawTc.c5d ?? Math.round(woVal * dist.p5 / 100);
+                    const c1 = rawTc.c1d || 0;
+                    const c2 = rawTc.c2d || 0;
+                    const c3 = rawTc.c3d || 0;
+                    const c5 = rawTc.c5d || 0;
                     const cSo = Math.max(0, woVal - c1 - c2 - c3 - c5);
                     totC1d += c1;
                     totC2d += c2;
@@ -2539,29 +2514,23 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                     tatFilteredAsmList.map((r: any, i: number) => {
                       const isSelected = tatAsmRow === r.name;
                       const woVal = r.wo || 0;
+                      // Always the backend's real per-ASM closure counts —
+                      // no hardcoded distribution fallback.
                       const rawTc = r.tatClosure || {};
-                      const ASM_BUSM_TAT: Record<string, { p1: number; p2: number; p3: number; p5: number }> = {
-                        'Jitesh S Rath':            { p1: 36.7, p2:  6.9, p3: 23.9, p5: 32.6 },
-                        'Sukhbir Singh':            { p1: 44.5, p2:  9.4, p3: 22.8, p5: 23.2 },
-                        'Tamilselvan Subramanian':  { p1: 31.8, p2: 11.2, p3: 27.7, p5: 29.3 },
-                        'Shivaprasad P U':          { p1: 38.0, p2: 10.7, p3: 29.0, p5: 22.3 },
-                        'Rajesh Limbachia':         { p1: 44.3, p2: 10.3, p3: 27.1, p5: 18.3 },
-                      };
-                      const aDist = ASM_BUSM_TAT[r.busm] || { p1: 26.9, p2: 12.0, p3: 21.0, p5: 40.1 };
-                      const c1d = rawTc.c1d ?? Math.round(woVal * aDist.p1 / 100);
-                      const c2d = rawTc.c2d ?? Math.round(woVal * aDist.p2 / 100);
-                      const c3d = rawTc.c3d ?? Math.round(woVal * aDist.p3 / 100);
-                      const c5d = rawTc.c5d ?? Math.round(woVal * aDist.p5 / 100);
+                      const c1d = rawTc.c1d || 0;
+                      const c2d = rawTc.c2d || 0;
+                      const c3d = rawTc.c3d || 0;
+                      const c5d = rawTc.c5d || 0;
                       const cStillOpen = Math.max(0, woVal - c1d - c2d - c3d - c5d);
                       const tc = {
                         c1d,
-                        tat1dPct: woVal > 0 ? +((c1d / woVal) * 100).toFixed(1) : (woVal > 0 ? aDist.p1 : 0),
+                        tat1dPct: woVal > 0 ? +((c1d / woVal) * 100).toFixed(1) : 0,
                         c2d,
-                        tat2dPct: woVal > 0 ? +((c2d / woVal) * 100).toFixed(1) : (woVal > 0 ? aDist.p2 : 0),
+                        tat2dPct: woVal > 0 ? +((c2d / woVal) * 100).toFixed(1) : 0,
                         c3d,
-                        tat3dPct: woVal > 0 ? +((c3d / woVal) * 100).toFixed(1) : (woVal > 0 ? aDist.p3 : 0),
+                        tat3dPct: woVal > 0 ? +((c3d / woVal) * 100).toFixed(1) : 0,
                         c5d,
-                        tat5dPct: woVal > 0 ? +((c5d / woVal) * 100).toFixed(1) : (woVal > 0 ? aDist.p5 : 0),
+                        tat5dPct: woVal > 0 ? +((c5d / woVal) * 100).toFixed(1) : 0,
                         cStillOpen,
                         stillOpenPct: woVal > 0 ? +((cStillOpen / woVal) * 100).toFixed(1) : 0,
                       };
