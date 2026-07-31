@@ -260,6 +260,15 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
   const rawAllAsmList: any[] = (activeOrgKpi.asms || []).filter((a: any) => a.name && !a.name.toLowerCase().includes('unknown') && a.busm && !a.busm.toLowerCase().includes('unknown'));
   const rawNationalSummary: any = activeOrgKpi.national || {};
 
+  // S@H Adherence: lookup from the dedicated S@H appointment dataset (real
+  // appointment/cancellation tracking) — same source as Section 3's tables,
+  // keyed by "Same Day Attend %". Previously this table left b.sah as the
+  // backend's rough Master-Data proxy (isHome + TAT<=3), which disagreed
+  // with the real dataset shown a few sections down.
+  const busmSahMap = new Map<string, number>(
+    (currentSahDataset.busm || []).map((s: any): [string, number] => [normalizeKey(s.name), parseFloat(String(s.same_day).replace('%', ''))])
+  );
+
   const busmListWithCpc = rawBusmList.map((b: any) => {
     const npsInfo = busmNpsMap.get(normalizeKey(b.name));
     const npsVal = npsInfo ? parseFloat(npsInfo.nps) : (b.nps || 0);
@@ -269,10 +278,13 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
     const cpcVal = cpcFromMap !== undefined ? cpcFromMap : (b.cpc || 0);
     // TAT: use BUSM_TAT_DIST_MAP (same source as TAT table) to ensure consistency
     const tatPct = BUSM_TAT_DIST_MAP[b.name] !== undefined ? BUSM_TAT_DIST_MAP[b.name] : (b.tat || 0);
+    const sahFromMap = busmSahMap.get(normalizeKey(b.name));
+    const sahVal = sahFromMap !== undefined && !isNaN(sahFromMap) ? sahFromMap : (b.sah || 0);
     return {
       ...b,
       cpc: cpcVal,
       tat: tatPct,
+      sah: sahVal,
       nps: b.nps && b.nps > 0 ? b.nps : npsVal,
       ranks: {
         ...(b.ranks || {}),
@@ -331,9 +343,21 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
     }
   }));
 
+  // National TAT/S@H must be rolled up from the SAME corrected per-BUSM values
+  // shown in the table above, not the backend's independently-computed
+  // national figure — otherwise the two disagree (e.g. National TAT below
+  // every individual BUSM's TAT, which is impossible for a weighted average).
+  const busmTotalWoForNational = busmList.reduce((sum, b) => sum + (b.wo || 0), 0);
+  const weightedBusmAvg = (key: 'tat' | 'sah') => {
+    if (busmTotalWoForNational === 0) return busmList.length > 0 ? busmList.reduce((s, b) => s + (b[key] || 0), 0) / busmList.length : 0;
+    return Math.round((busmList.reduce((s, b) => s + (b[key] || 0) * (b.wo || 0), 0) / busmTotalWoForNational) * 10) / 10;
+  };
+
   const nationalSummary = {
     ...rawNationalSummary,
     cpc: natCpcVal,
+    tat: weightedBusmAvg('tat'),
+    sah: weightedBusmAvg('sah'),
     nps: rawNationalSummary.nps && rawNationalSummary.nps > 0 ? rawNationalSummary.nps : 65.4
   };
 
