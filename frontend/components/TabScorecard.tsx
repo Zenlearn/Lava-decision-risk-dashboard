@@ -160,64 +160,6 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
                   </div>
                 </div>
 
-                <div className="grid-mock k2" style={{ marginTop: '16px' }}>
-                  <div className="card-mock">
-                    <h3>Score Trend - {actorSel}</h3>
-                    <div className="chart-box-mock">
-                      {isMounted && (
-                        <ResponsiveContainer width="100%" height="100%">
-                          <LineChart data={actRows}>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--line)" />
-                            <XAxis dataKey="month" tickLine={false} />
-                            <YAxis domain={[0, 100]} tickLine={false} />
-                            <Tooltip />
-                            <Line type="monotone" dataKey="overall" name="Overall Score" stroke="#0f172a" strokeWidth={4} />
-                            <Line type="monotone" dataKey="process" name="Process Score" stroke="#4E67EB" strokeWidth={2} />
-                            <Line type="monotone" dataKey="skill" name="Skill Score" stroke="#294D89" strokeWidth={2} />
-                            <Line type="monotone" dataKey="audit" name="Audit Score" stroke="#C0392B" strokeWidth={2} />
-                          </LineChart>
-                        </ResponsiveContainer>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="card-mock">
-                    <h3>Anomalous Flag Counts by Month</h3>
-                    <div className="tbl-wrap-mock">
-                      <table>
-                        <thead>
-                          <tr>
-                            <th>Month</th>
-                            <th>WO</th>
-                            <th>Same-day Swap</th>
-                            <th>Board@Home</th>
-                            <th>Cross-ASP</th>
-                            <th>Bounce</th>
-                            <th>Mismatch</th>
-                            <th>Detractor</th>
-                            <th>DOA</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {filteredRows.map((r: any, idx: number) => (
-                            <tr key={idx}>
-                              <td><b>{r.month}</b></td>
-                              <td>{r.wo}</td>
-                              <td>{r.ghost}</td>
-                              <td>{r.home_board}</td>
-                              <td>{r.cross}</td>
-                              <td>{r.bounce}</td>
-                              <td>{r.mismatch}</td>
-                              <td>{r.detractor}</td>
-                              <td>{r.doa}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-
                 {/* Three Separate Pillar Breakdown Tables */}
                 <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
                   
@@ -369,6 +311,64 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
                     </div>
                   </div>
 
+                </div>
+
+                <div className="grid-mock k2" style={{ marginTop: '20px' }}>
+                  <div className="card-mock">
+                    <h3>Score Trend - {actorSel}</h3>
+                    <div className="chart-box-mock">
+                      {isMounted && (
+                        <ResponsiveContainer width="100%" height="100%">
+                          <LineChart data={actRows}>
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--line)" />
+                            <XAxis dataKey="month" tickLine={false} />
+                            <YAxis domain={[0, 100]} tickLine={false} />
+                            <Tooltip />
+                            <Line type="monotone" dataKey="overall" name="Overall Score" stroke="#0f172a" strokeWidth={4} />
+                            <Line type="monotone" dataKey="process" name="Process Score" stroke="#4E67EB" strokeWidth={2} />
+                            <Line type="monotone" dataKey="skill" name="Skill Score" stroke="#294D89" strokeWidth={2} />
+                            <Line type="monotone" dataKey="audit" name="Audit Score" stroke="#C0392B" strokeWidth={2} />
+                          </LineChart>
+                        </ResponsiveContainer>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="card-mock">
+                    <h3>Anomalous Flag Counts by Month</h3>
+                    <div className="tbl-wrap-mock">
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>Month</th>
+                            <th>WO</th>
+                            <th>Same-day Swap</th>
+                            <th>Board@Home</th>
+                            <th>Cross-ASP</th>
+                            <th>Bounce</th>
+                            <th>Mismatch</th>
+                            <th>Detractor</th>
+                            <th>DOA</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {filteredRows.map((r: any, idx: number) => (
+                            <tr key={idx}>
+                              <td><b>{r.month}</b></td>
+                              <td>{r.wo}</td>
+                              <td>{r.ghost}</td>
+                              <td>{r.home_board}</td>
+                              <td>{r.cross}</td>
+                              <td>{r.bounce}</td>
+                              <td>{r.mismatch}</td>
+                              <td>{r.detractor}</td>
+                              <td>{r.doa}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
                 </div>
               </>
             );
