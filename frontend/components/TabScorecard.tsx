@@ -398,13 +398,13 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
                     <h3 style={{ margin: 0 }}>Score Trend — {actorSel}</h3>
                     <span style={{ fontSize: '11px', color: '#64748b' }}>Monthly Pillar Progression</span>
                   </div>
-                  <div className="chart-box-mock" style={{ height: '320px' }}>
+                  <div className="chart-box-mock" style={{ height: '320px', maxWidth: '650px' }}>
                     {isMounted && (
                       <ResponsiveContainer width="100%" height="100%">
                         <LineChart data={actRows} margin={{ top: 18, right: 25, left: -5, bottom: 5 }}>
                           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--line)" />
                           <XAxis dataKey="month" tickLine={false} />
-                          <YAxis domain={['dataMin - 5', 'dataMax + 5']} tickLine={false} />
+                          <YAxis domain={[0, 100]} tickLine={false} />
                           <Tooltip />
                           <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: '12px', fontWeight: 700 }} />
                           <Line type="monotone" dataKey="overall" name="Overall Score" stroke="#0f172a" strokeWidth={4} dot={{ r: 6 }}>
