@@ -99,6 +99,38 @@ export default function TabDashboard({
   const hasSurveyData = currentKPI?.hasSurveyData !== false;
   const prevTatDist = prevKPI?.tatDistribution || [];
 
+  // Real leakage-driver derivation — sorted from the same breakdown table
+  // rendered below, never a hardcoded component name/percentage.
+  const sortedBreakdown = [...currentBreakdown].sort((a: any, b: any) => (b.cost || 0) - (a.cost || 0));
+  const topLeakItem = sortedBreakdown[0] || null;
+  const secondaryLeakItem = sortedBreakdown[1] || null;
+  const topLeakPctShare = topLeakItem && activeLeakCur > 0 ? ((topLeakItem.cost / activeLeakCur) * 100).toFixed(1) : null;
+  const secondaryLeakPctShare = secondaryLeakItem && activeLeakCur > 0 ? ((secondaryLeakItem.cost / activeLeakCur) * 100).toFixed(1) : null;
+
+  // Real composite Decision Quality score — average target-attainment across
+  // the KPIs that have real data this month (never a fabricated constant).
+  const kpiTargets = data?.kpi?.targets || { ftfr: 85, csat: 95, mttr: 2, diag: 98 };
+  const computeConfidence = (kpiObj: any, surveyOk: boolean) => {
+    if (!kpiObj) return null;
+    const candidates = [
+      { key: 'ftfr', label: 'First-Time Fix Rate', value: kpiObj.ftfr, target: kpiTargets.ftfr, higherBetter: true, hasData: true },
+      { key: 'csat', label: 'Customer Satisfaction', value: kpiObj.csat, target: kpiTargets.csat, higherBetter: true, hasData: surveyOk },
+      { key: 'mttr', label: 'Mean Time to Repair', value: kpiObj.mttr, target: kpiTargets.mttr, higherBetter: false, hasData: true },
+      { key: 'diag', label: 'Technician Diagnostic Accuracy', value: kpiObj.diag, target: kpiTargets.diag, higherBetter: true, hasData: true },
+    ].filter((c) => c.hasData && c.target > 0 && c.value != null);
+    if (candidates.length === 0) return null;
+    const withAttainment = candidates.map((c) => ({
+      ...c,
+      attainment: Math.min(100, c.higherBetter ? (c.value / c.target) * 100 : (c.target / Math.max(c.value, 0.01)) * 100),
+    }));
+    const score = withAttainment.reduce((sum, c) => sum + c.attainment, 0) / withAttainment.length;
+    const driver = withAttainment.reduce((best, c) => (c.attainment > best.attainment ? c : best), withAttainment[0]);
+    return { score: Math.round(score * 10) / 10, driverLabel: driver.label, driverAttainment: Math.round(driver.attainment * 10) / 10 };
+  };
+  const confidence = computeConfidence(currentKPI, hasSurveyData);
+  const prevConfidence = prevKPI ? computeConfidence(prevKPI, prevKPI?.hasSurveyData !== false) : null;
+  const confidenceDelta = confidence && prevConfidence ? Math.round((confidence.score - prevConfidence.score) * 10) / 10 : null;
+
   return (
     <div className="view-mock on" style={{ paddingBottom: '60px' }}>
 
@@ -182,11 +214,15 @@ export default function TabDashboard({
             <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
               <div style={{ background: 'rgba(255, 255, 255, 0.07)', padding: '8px 14px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }}>
                 <span style={{ fontSize: '11px', color: '#94a3b8', display: 'block', fontWeight: 600 }}>Top Leakage Component</span>
-                <span style={{ fontSize: '13.5px', fontWeight: 700, color: '#ffffff' }}>PCBA Motherboards (53.0%)</span>
+                <span style={{ fontSize: '13.5px', fontWeight: 700, color: '#ffffff' }}>
+                  {topLeakItem ? `${topLeakItem.label} (${topLeakPctShare}%)` : 'No data available'}
+                </span>
               </div>
               <div style={{ background: 'rgba(255, 255, 255, 0.07)', padding: '8px 14px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }}>
                 <span style={{ fontSize: '11px', color: '#94a3b8', display: 'block', fontWeight: 600 }}>Secondary Driver</span>
-                <span style={{ fontSize: '13.5px', fontWeight: 700, color: '#ffffff' }}>Display Screens (11.7%)</span>
+                <span style={{ fontSize: '13.5px', fontWeight: 700, color: '#ffffff' }}>
+                  {secondaryLeakItem ? `${secondaryLeakItem.label} (${secondaryLeakPctShare}%)` : 'No data available'}
+                </span>
               </div>
             </div>
           </div>
@@ -211,120 +247,149 @@ export default function TabDashboard({
                   Confidence Score
                 </h3>
               </div>
-              <span style={{ background: '#047857', color: '#ecfdf5', padding: '4px 10px', borderRadius: '12px', fontSize: '12px', fontWeight: 800 }}>
-                ↑ 2.4% vs May
-              </span>
-            </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-              <div style={{
-                position: 'relative',
-                width: '80px',
-                height: '80px',
-                borderRadius: '50%',
-                background: 'conic-gradient(#4E67EB 0% 94.2%, rgba(255,255,255,0.1) 94.2% 100%)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 0 16px rgba(78, 103, 235, 0.4)'
-              }}>
-                <div style={{
-                  width: '64px',
-                  height: '64px',
-                  borderRadius: '50%',
-                  background: '#101735',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '22px',
-                  fontWeight: 800,
-                  color: '#ffffff'
+              {confidenceDelta !== null && (
+                <span style={{
+                  background: confidenceDelta >= 0 ? '#047857' : '#9f1239',
+                  color: '#ecfdf5', padding: '4px 10px', borderRadius: '12px', fontSize: '12px', fontWeight: 800
                 }}>
-                  94.2
-                </div>
-              </div>
-
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: '12px', color: '#cbd5e1', marginBottom: '4px' }}>
-                  Primary Quality Driver:
-                </div>
-                <div style={{ fontSize: '14px', fontWeight: 700, color: '#ffffff', marginBottom: '8px' }}>
-                  Technician Diagnostic Accuracy
-                </div>
-                <div style={{ height: '6px', background: 'rgba(255,255,255,0.1)', borderRadius: '3px', overflow: 'hidden' }}>
-                  <div style={{ width: '94.2%', height: '100%', background: 'linear-gradient(90deg, #4E67EB 0%, #34d399 100%)' }}></div>
-                </div>
-              </div>
+                  {confidenceDelta >= 0 ? '↑' : '↓'} {Math.abs(confidenceDelta)}% vs {prevKPI?.month}
+                </span>
+              )}
             </div>
 
-            <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '12px', fontSize: '12px', color: '#94a3b8', display: 'flex', justifyContent: 'space-between' }}>
-              <span>Target Standard: <b>90.0 Score</b></span>
-              <span style={{ color: '#34d399', fontWeight: 700 }}>Optimal Range</span>
-            </div>
+            {confidence ? (
+              <>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                  <div style={{
+                    position: 'relative',
+                    width: '80px',
+                    height: '80px',
+                    borderRadius: '50%',
+                    background: `conic-gradient(#4E67EB 0% ${confidence.score}%, rgba(255,255,255,0.1) ${confidence.score}% 100%)`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 0 16px rgba(78, 103, 235, 0.4)'
+                  }}>
+                    <div style={{
+                      width: '64px',
+                      height: '64px',
+                      borderRadius: '50%',
+                      background: '#101735',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '22px',
+                      fontWeight: 800,
+                      color: '#ffffff'
+                    }}>
+                      {confidence.score}
+                    </div>
+                  </div>
+
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: '12px', color: '#cbd5e1', marginBottom: '4px' }}>
+                      Primary Quality Driver:
+                    </div>
+                    <div style={{ fontSize: '14px', fontWeight: 700, color: '#ffffff', marginBottom: '8px' }}>
+                      {confidence.driverLabel}
+                    </div>
+                    <div style={{ height: '6px', background: 'rgba(255,255,255,0.1)', borderRadius: '3px', overflow: 'hidden' }}>
+                      <div style={{ width: `${confidence.driverAttainment}%`, height: '100%', background: 'linear-gradient(90deg, #4E67EB 0%, #34d399 100%)' }}></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '12px', fontSize: '12px', color: '#94a3b8', display: 'flex', justifyContent: 'space-between' }}>
+                  <span>Target Standard: <b>90.0 Score</b></span>
+                  <span style={{ color: confidence.score >= 90 ? '#34d399' : '#fbbf24', fontWeight: 700 }}>
+                    {confidence.score >= 90 ? 'Optimal Range' : 'Below Target'}
+                  </span>
+                </div>
+              </>
+            ) : (
+              <div style={{ fontSize: '13px', color: '#94a3b8', padding: '8px 0' }}>
+                No data available for {currentKPI?.month || selectedMonth}.
+              </div>
+            )}
           </div>
         </div>
       </div>
 
       {/* RISK SIGNAL STRIP */}
-      <div className="risk-strip">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <span style={{ background: '#E50046', color: '#ffffff', padding: '4px 8px', borderRadius: '6px', fontSize: '11px', fontWeight: 800, textTransform: 'uppercase' }}>
-            Anomaly Alert
-          </span>
-          <span style={{ fontSize: '13.5px', fontWeight: 700, color: '#0f172a' }}>
-            Motherboard (PCBA) anomalies account for ₹10,92,930 (53.0% of total headline leakage) across 320 work orders in June.
-          </span>
+      {topLeakItem && (
+        <div className="risk-strip">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <span style={{ background: '#E50046', color: '#ffffff', padding: '4px 8px', borderRadius: '6px', fontSize: '11px', fontWeight: 800, textTransform: 'uppercase' }}>
+              Anomaly Alert
+            </span>
+            <span style={{ fontSize: '13.5px', fontWeight: 700, color: '#0f172a' }}>
+              {topLeakItem.label} anomalies account for {fmtINR(topLeakItem.cost || 0)} ({topLeakPctShare}% of total headline leakage) across {(topLeakItem.quantity || 0).toLocaleString('en-IN')} work orders in {currentKPI?.month || selectedMonth}.
+            </span>
+          </div>
+          <button
+            onClick={() => scrollToSection('sec-leakage')}
+            style={{ background: 'transparent', border: 'none', color: '#E50046', fontWeight: 800, fontSize: '13px', cursor: 'pointer' }}
+          >
+            View Leakage Deep Dive →
+          </button>
         </div>
-        <button 
-          onClick={() => scrollToSection('sec-leakage')}
-          style={{ background: 'transparent', border: 'none', color: '#E50046', fontWeight: 800, fontSize: '13px', cursor: 'pointer' }}
-        >
-          View Leakage Deep Dive →
-        </button>
-      </div>
+      )}
 
       {/* EXECUTIVE INSTRUMENT KPI CARDS GRID */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '18px', marginBottom: '24px' }}>
         {[
-          { 
-            label: 'First-Time Fix Rate', 
-            value: currentKPI?.ftfr || 0, 
-            target: data?.kpi?.targets?.ftfr || 85, 
-            delta: prevKPI ? Math.round((currentKPI.ftfr - prevKPI.ftfr) * 10) / 10 : null, 
-            higherBetter: true, 
+          {
+            label: 'First-Time Fix Rate',
+            value: currentKPI?.ftfr || 0,
+            target: data?.kpi?.targets?.ftfr || 85,
+            delta: prevKPI ? Math.round((currentKPI.ftfr - prevKPI.ftfr) * 10) / 10 : null,
+            higherBetter: true,
             driver: 'Fewer repeat bounces lift this',
-            badgeText: 'Optimal Benchmark'
+            noData: false
           },
-          { 
-            label: 'Customer Satisfaction (C-SAT)', 
-            value: currentKPI?.csat || 0, 
-            target: data?.kpi?.targets?.csat || 95, 
-            delta: prevKPI ? Math.round((currentKPI.csat - prevKPI.csat) * 10) / 10 : null, 
-            higherBetter: true, 
+          {
+            label: 'Customer Satisfaction (C-SAT)',
+            value: currentKPI?.csat || 0,
+            target: data?.kpi?.targets?.csat || 95,
+            delta: prevKPI ? Math.round((currentKPI.csat - prevKPI.csat) * 10) / 10 : null,
+            higherBetter: true,
             driver: 'Fewer detractor ratings lift this',
-            badgeText: 'Near Target'
+            noData: !hasSurveyData
           },
-          { 
-            label: 'Mean Time to Repair (MTTR)', 
-            value: currentKPI?.mttr || 0, 
-            target: data?.kpi?.targets?.mttr || 3.5, 
-            delta: prevKPI ? Math.round((currentKPI.mttr - prevKPI.mttr) * 100) / 100 : null, 
-            higherBetter: false, 
+          {
+            label: 'Mean Time to Repair (MTTR)',
+            value: currentKPI?.mttr || 0,
+            target: data?.kpi?.targets?.mttr || 3.5,
+            delta: prevKPI ? Math.round((currentKPI.mttr - prevKPI.mttr) * 100) / 100 : null,
+            higherBetter: false,
             format: (v: number) => `${v.toFixed(2)}d`,
             driver: 'Faster turnaround lowers this',
-            badgeText: 'Best in 12 Months'
+            noData: false
           },
-          { 
-            label: 'Diagnostic Accuracy', 
-            value: currentKPI?.diag || 0, 
-            target: data?.kpi?.targets?.diag || 90, 
-            delta: prevKPI ? Math.round((currentKPI.diag - prevKPI.diag) * 10) / 10 : null, 
-            higherBetter: true, 
+          {
+            label: 'Diagnostic Accuracy',
+            value: currentKPI?.diag || 0,
+            target: data?.kpi?.targets?.diag || 90,
+            delta: prevKPI ? Math.round((currentKPI.diag - prevKPI.diag) * 10) / 10 : null,
+            higherBetter: true,
             driver: 'Fewer part mismatches lift this',
-            badgeText: 'Exceeding Standard'
+            noData: false
           },
         ].map((k, i) => {
           const isGood = k.higherBetter ? k.value >= k.target : k.value <= k.target;
+          // Real momentum badge derived from the actual MoM delta — never a
+          // static per-card label unrelated to whether the metric improved.
+          const badgeText = k.noData
+            ? 'No Data'
+            : k.delta === null
+              ? 'Baseline'
+              : k.delta === 0
+                ? 'Flat'
+                : (k.delta > 0) === k.higherBetter
+                  ? 'Improving'
+                  : 'Declining';
+          const badgeGood = k.noData ? null : k.delta === null || k.delta === 0 ? null : (k.delta > 0) === k.higherBetter;
 
           return (
             <div className="decision-kpi-card" key={i}>
@@ -336,13 +401,13 @@ export default function TabDashboard({
                   <span style={{
                     fontSize: '10.5px',
                     fontWeight: 700,
-                    background: isGood ? 'var(--badge-emerald-bg)' : 'var(--badge-amber-bg)',
-                    color: isGood ? 'var(--badge-emerald-text)' : 'var(--badge-amber-text)',
-                    border: `1px solid ${isGood ? 'var(--badge-emerald-border)' : 'var(--badge-amber-border)'}`,
+                    background: badgeGood === null ? 'var(--badge-slate-bg, #e2e8f0)' : badgeGood ? 'var(--badge-emerald-bg)' : 'var(--badge-amber-bg)',
+                    color: badgeGood === null ? 'var(--badge-slate-text, #475569)' : badgeGood ? 'var(--badge-emerald-text)' : 'var(--badge-amber-text)',
+                    border: `1px solid ${badgeGood === null ? 'var(--badge-slate-border, #cbd5e1)' : badgeGood ? 'var(--badge-emerald-border)' : 'var(--badge-amber-border)'}`,
                     padding: '2px 6px',
                     borderRadius: '4px'
                   }}>
-                    {k.badgeText}
+                    {badgeText}
                   </span>
                 </div>
 
@@ -350,7 +415,7 @@ export default function TabDashboard({
                   <span style={{ fontSize: '32px', fontWeight: 800, color: '#0f172a', letterSpacing: '-0.5px' }}>
                     {k.format ? k.format(k.value) : fmtPct(k.value)}
                   </span>
-                  {k.delta !== null && (
+                  {k.delta !== null && !k.noData && (
                     <span style={{
                       fontSize: '13px',
                       fontWeight: 700,
@@ -368,7 +433,7 @@ export default function TabDashboard({
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11.5px', color: '#64748b', marginBottom: '8px' }}>
                   <span>Target: <b>{k.format ? k.format(k.target) : fmtPct(k.target)}</b></span>
-                  <span>Variance: <b style={{ color: isGood ? '#047857' : '#b45309' }}>{isGood ? 'Optimal' : 'Needs Focus'}</b></span>
+                  <span>Variance: <b style={{ color: k.noData ? '#64748b' : isGood ? '#047857' : '#b45309' }}>{k.noData ? 'No Data' : isGood ? 'Optimal' : 'Needs Focus'}</b></span>
                 </div>
                 <div style={{ height: '4px', background: '#f1f5f9', borderRadius: '2px', overflow: 'hidden', marginBottom: '10px' }}>
                   <div style={{
