@@ -111,6 +111,16 @@ export async function processImport(
 
   // 2. Map column names and apply month filter if configured
   let mappedRows = rawRows.map((r) => mapRow(r, FIELD_MAP));
+
+  // Apply Universal Filter Scope: exclude Feature Phones, keeping strictly Smart & Tablet models
+  mappedRows = mappedRows.filter((r) => {
+    const modelType = String(
+      r[FIELD_MAP.modelType] || r['Model type'] || r['Model Type'] || ''
+    ).trim().toLowerCase();
+    return modelType.includes('smart') || modelType.includes('tablet');
+  });
+  logger.info('Universal scope filter applied (Smart & Tablet only)', { rowsAfterModelFilter: mappedRows.length });
+
   const targetMonths = TARGET_MONTHS;
   if (targetMonths && targetMonths.length > 0) {
     mappedRows = mappedRows.filter((r) => {

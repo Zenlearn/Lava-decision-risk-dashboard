@@ -159,19 +159,27 @@ export async function getExecutiveDashboard(filters?: {
   };
 
   // totalWorkOrders / totalAnomalies still come from WorkOrder — they're
-  // per-workorder counts, not ASP-month aggregates.
-  const woAggregations = await prisma.workOrder.aggregate({
+  // per-workorder counts, not ASP-month aggregates. Filtered for Smart/Tablet.
+  const allWorkOrdersForAgg = await prisma.workOrder.findMany({
     where: workOrderFilter,
-    _sum: { totalAnomalies: true },
-    _count: { id: true },
+    select: { id: true, totalAnomalies: true, rawData: true }
   });
+  const filteredAggWos = allWorkOrdersForAgg.filter((wo) => {
+    const raw = wo.rawData as any;
+    const modelType = String(
+      raw[FIELD_MAP.modelType] || raw['Model type'] || raw['Model Type'] || ''
+    ).trim().toLowerCase();
+    return modelType.includes('smart') || modelType.includes('tablet');
+  });
+  const totalAnomalies = filteredAggWos.reduce((sum, w) => sum + (w.totalAnomalies || 0), 0);
+  const totalWorkOrders = filteredAggWos.length;
 
   const metrics: DashboardMetrics = {
     avgProcessScore: avg(rollupRows.map((r) => r.processScore)),
     avgSkillScore:   avg(rollupRows.map((r) => r.skillScore)),
     avgAuditScore:   avg(rollupRows.map((r) => r.auditScore)),
-    totalWorkOrders: woAggregations._count.id,
-    totalAnomalies:  woAggregations._sum.totalAnomalies ?? 0,
+    totalWorkOrders,
+    totalAnomalies,
   };
 
   // 2. Monthly trend data — group AspMetricRollup by month
@@ -193,7 +201,7 @@ export async function getExecutiveDashboard(filters?: {
   // 3. Fetch Action Center Hit List (Total Anomalies >= 2) — still row-level,
   // sourced from WorkOrder/RiskFlag (Skill-only flags: Repeat IMEI, DOA, plus
   // the standalone Suspicious Phone signal — see rules/engine.ts).
-  const hitListRaw = await prisma.workOrder.findMany({
+  const rawHitList = await prisma.workOrder.findMany({
     where: {
       ...workOrderFilter,
       totalAnomalies: { gte: 2 },
@@ -201,14 +209,21 @@ export async function getExecutiveDashboard(filters?: {
     orderBy: {
       totalAnomalies: 'desc',
     },
-    take: 100, // retrieve top 100 high-risk orders for executive view
     include: {
       serviceCentre: true,
       riskFlags:     true,
     },
   });
 
-  const hitList: HitListPreviewItem[] = hitListRaw.map((wo) => {
+  const hitListRaw = rawHitList.filter((wo) => {
+    const raw = wo.rawData as any;
+    const modelType = String(
+      raw[FIELD_MAP.modelType] || raw['Model type'] || raw['Model Type'] || ''
+    ).trim().toLowerCase();
+    return modelType.includes('smart') || modelType.includes('tablet');
+  });
+
+  const hitList: HitListPreviewItem[] = hitListRaw.slice(0, 100).map((wo) => {
     const rawData = wo.rawData as Record<string, unknown>;
     return {
       id:             wo.id,
@@ -243,12 +258,7 @@ export async function getExecutiveDashboard(filters?: {
   }).then((res) => res.map((s) => s.name));
 
   // Count total items on hit list matching query criteria
-  const hitListCount = await prisma.workOrder.count({
-    where: {
-      ...workOrderFilter,
-      totalAnomalies: { gte: 2 },
-    },
-  });
+  const hitListCount = hitListRaw.length;
 
   return {
     importId,
@@ -301,50 +311,43 @@ export async function getDealerDashboard(aspName: string): Promise<DealerDashboa
     return nonNull.length > 0 ? Math.round((nonNull.reduce((a, b) => a + b, 0) / nonNull.length) * 10) / 10 : 0;
   };
 
-  const woAggregations = await prisma.workOrder.aggregate({
+  const allScorecardWos = await prisma.workOrder.findMany({
     where: filterClause,
-    _sum: { totalAnomalies: true },
-    _count: { id: true },
+    include: {
+      riskFlags: true,
+      serviceCentre: true,
+    }
   });
+
+  const filteredScorecardWos = allScorecardWos.filter((wo) => {
+    const raw = wo.rawData as any;
+    const modelType = String(
+      raw[FIELD_MAP.modelType] || raw['Model type'] || raw['Model Type'] || ''
+    ).trim().toLowerCase();
+    return modelType.includes('smart') || modelType.includes('tablet');
+  });
+
+  const totalWorkOrders = filteredScorecardWos.length;
+  const totalAnomalies = filteredScorecardWos.reduce((sum, w) => sum + (w.totalAnomalies || 0), 0);
 
   const metrics: DashboardMetrics = {
     avgProcessScore: avg(rollupRows.map((r) => r.processScore)),
     avgSkillScore:   avg(rollupRows.map((r) => r.skillScore)),
     avgAuditScore:   avg(rollupRows.map((r) => r.auditScore)),
-    totalWorkOrders: woAggregations._count.id,
-    totalAnomalies:  woAggregations._sum.totalAnomalies ?? 0,
+    totalWorkOrders,
+    totalAnomalies,
   };
 
-  // 2. Incident Summary Count — row-level Skill flags (Repeat IMEI, DOA) plus
-  // the standalone Suspicious Phone signal.
-  const repeatImeiCount = await prisma.riskFlag.count({
-    where: { workOrder: filterClause, ruleKey: 'repeatImei' },
-  });
-
-  const doaCount = await prisma.riskFlag.count({
-    where: { workOrder: filterClause, ruleKey: 'doa' },
-  });
-
-  const suspiciousPhoneCount = await prisma.riskFlag.count({
-    where: { workOrder: filterClause, ruleKey: 'suspiciousPhone' },
-  });
+  // 2. Incident Summary Count
+  const repeatImeiCount = filteredScorecardWos.filter((w) => w.riskFlags.some((rf) => rf.ruleKey === 'repeatImei')).length;
+  const doaCount = filteredScorecardWos.filter((w) => w.riskFlags.some((rf) => rf.ruleKey === 'doa')).length;
+  const suspiciousPhoneCount = filteredScorecardWos.filter((w) => w.riskFlags.some((rf) => rf.ruleKey === 'suspiciousPhone')).length;
 
   // 3. Flagged Workorders (anomalies > 0)
-  const flaggedRaw = await prisma.workOrder.findMany({
-    where: {
-      ...filterClause,
-      totalAnomalies: { gt: 0 },
-    },
-    orderBy: {
-      totalAnomalies: 'desc',
-    },
-    include: {
-      serviceCentre: true,
-      riskFlags:     true,
-    },
-  });
+  const flaggedWosRaw = filteredScorecardWos.filter((w) => (w.totalAnomalies || 0) > 0);
+  flaggedWosRaw.sort((a, b) => (b.totalAnomalies || 0) - (a.totalAnomalies || 0));
 
-  const flaggedWorkOrders: HitListPreviewItem[] = flaggedRaw.map((wo) => {
+  const flaggedWorkOrders: HitListPreviewItem[] = flaggedWosRaw.map((wo) => {
     const rawData = wo.rawData as Record<string, unknown>;
     return {
       id:             wo.id,
@@ -524,7 +527,7 @@ export async function getFullDashboardData(filters?: {
     };
   }
 
-  const workOrders = await prisma.workOrder.findMany({
+  const rawWorkOrders = await prisma.workOrder.findMany({
     where: whereClause,
     select: {
       id: true,
@@ -555,6 +558,15 @@ export async function getFullDashboardData(filters?: {
     orderBy: {
       id: 'asc'
     }
+  });
+
+  // Keep strictly Smart and Tablet models (Feature Phones excluded)
+  const workOrders = rawWorkOrders.filter((wo) => {
+    const raw = wo.rawData as any;
+    const modelType = String(
+      raw[FIELD_MAP.modelType] || raw['Model type'] || raw['Model Type'] || ''
+    ).trim().toLowerCase();
+    return modelType.includes('smart') || modelType.includes('tablet');
   });
 
   // Frequency mapping caches
