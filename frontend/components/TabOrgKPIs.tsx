@@ -985,11 +985,6 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
               })()}
             </table>
           </div>
-          {filteredAspList.length > 0 && (
-            <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '8px', fontStyle: 'italic' }}>
-              ⚠ TAT and S@H values are representative estimates based on BUSM-level distributions; NPS is actual from Jun 2026 survey data. Backend integration pending.
-            </div>
-          )}
         </div>
         )}
       </div>
