@@ -4,7 +4,7 @@ async function main() {
   const data = await getFullDashboardData();
   const months = Object.keys(data.orgKpis.by_month || {});
   console.log('months:', months);
-  const m = 'Jun';
+  const m = 'May';
   const monthData = data.orgKpis.by_month[m];
   console.log(`\n--- Month: ${m} ---`);
   console.log('Overall national:', JSON.stringify(monthData.overall.national, null, 2).slice(0, 400));
