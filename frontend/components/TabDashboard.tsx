@@ -480,14 +480,12 @@ export default function TabDashboard({
             <span style={{ fontSize: '16px', fontWeight: 800, color: '#E50046' }}>
               {expandedSections.leakage ? '▼' : '▶'}
             </span>
-            <div>
               <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: '#0f172a' }}>
                 Estimated Monthly Leakage Exposure Deep Dive
               </h3>
               <span style={{ fontSize: '12px', color: '#64748b' }}>
-                Service at Home (S@H) component-level line items summing to total headline leakage of {fmtINR(activeLeakCur)} (excluding walk-in calls) for {currentKPI?.month || selectedMonth}
+                Component &amp; risk breakdown of total headline leakage logged for anomalous work orders (incorporating repeat repairs, same-day board swaps, doorstep board repairs, and travel fees) for {currentKPI?.month || selectedMonth}
               </span>
-            </div>
           </div>
           <span style={{ background: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', padding: '6px 14px', borderRadius: '8px', fontSize: '13px', fontWeight: 800 }}>
             Total Exposure: {fmtINR(activeLeakCur)}
@@ -561,7 +559,7 @@ export default function TabDashboard({
                         color: activeLeakDelta < 0 ? '#047857' : activeLeakDelta > 0 ? '#be123c' : '#475569',
                         background: activeLeakDelta < 0 ? '#d1fae5' : activeLeakDelta > 0 ? '#ffe4e6' : '#e2e8f0',
                         border: `1px solid ${activeLeakDelta < 0 ? '#34d399' : activeLeakDelta > 0 ? '#f87171' : '#cbd5e1'}`,
-                        padding: '3px 10px', borderRadius: '4px', fontSize: '12px', fontWeight: 700
+                        padding: '3px 10px', borderRadius: '4px', fontSize: '12px', fontWeight 700
                       }}>
                         {activeLeakDelta > 0 ? `↑ +${fmtINR(activeLeakDelta)}` : activeLeakDelta < 0 ? `↓ -${fmtINR(Math.abs(activeLeakDelta))}` : '• Stable'}
                       </span>
@@ -571,6 +569,31 @@ export default function TabDashboard({
                   </TableCell>
                 </TableSummaryRow>
               </Table>
+            </div>
+
+            {/* Underlying Risk Signals & Leakage Criteria Explanation */}
+            <div style={{ marginTop: '16px', padding: '14px 18px', background: '#f8fafc', borderRadius: '10px', border: '1px solid #e2e8f0', fontSize: '12.5px', color: '#475569', lineHeight: '1.6' }}>
+              <div style={{ fontWeight: 800, color: '#0f172a', marginBottom: '6px', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span>🛡️ Underlying Decision-Risk Signals Included in Headline Leakage:</span>
+              </div>
+              Total monthly leakage measures financial exposure across all flagged anomalous work orders, incorporating:
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '10px', marginTop: '10px' }}>
+                <div style={{ background: '#ffffff', padding: '10px 12px', borderRadius: '6px', border: '1px solid #cbd5e1' }}>
+                  <strong style={{ color: '#0f172a', display: 'block' }}>1. Repeat Repairs &amp; Repeat Bounces</strong>
+                  Part and travel costs logged on devices returning for repeat service calls (matched by IMEI in Master Data).
+                </div>
+                <div style={{ background: '#ffffff', padding: '10px 12px', borderRadius: '6px', border: '1px solid #cbd5e1' }}>
+                  <strong style={{ color: '#0f172a', display: 'block' }}>2. Same-Day Board Swaps (Walk-In)</strong>
+                  Major PCBA motherboards &amp; TP/LCD display replacements completed on the same day as creation.
+                </div>
+                <div style={{ background: '#ffffff', padding: '10px 12px', borderRadius: '6px', border: '1px solid #cbd5e1' }}>
+                  <strong style={{ color: '#0f172a', display: 'block' }}>3. Doorstep Board Repairs (S@H)</strong>
+                  Board-level repairs logged as completed at customer doorstep in violation of workshop policy.
+                </div>
+                <div style={{ background: '#ffffff', padding: '10px 12px', borderRadius: '6px', border: '1px solid #cbd5e1' }}>
+                  <strong style={{ color: '#0f172a', display: 'block' }}>4. Diagnostic Mismatches &amp; Cross-ASP Calls</strong>
+                  Hardware symptoms closed with software actions that subsequently bounced, or served across multiple ASPs.
+              </div>
             </div>
           </div>
         )}
