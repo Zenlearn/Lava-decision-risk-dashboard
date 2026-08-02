@@ -28,7 +28,10 @@ export default function UnifiedMockupDashboard() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [user, setUser] = useState<{ name: string; email: string } | undefined>(undefined);
+  const [user, setUser] = useState<{ name: string; email: string; is_admin?: boolean; is_super_admin?: boolean } | undefined>(undefined);
+  // Data uploads are admin-only — matches AuthMiddleware.isAdmin()'s
+  // definition on the backend (is_admin or is_super_admin).
+  const isAdmin = user?.is_admin === true || user?.is_super_admin === true;
 
   // Active navigation tab — default is 'exec' (Executive Dashboard)
   const [activeTab, setActiveTab] = useState('exec');
@@ -495,7 +498,14 @@ export default function UnifiedMockupDashboard() {
           />
         )}
 
-        {activeTab === 'upload' && (
+        {activeTab === 'upload' && !isAdmin && (
+          <div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>
+            <h2 style={{ fontSize: '18px', fontWeight: 700, color: '#0f172a', marginBottom: '8px' }}>Admin access required</h2>
+            <p>Data uploads are restricted to admin users.</p>
+          </div>
+        )}
+
+        {activeTab === 'upload' && isAdmin && (
           <TabIngest
             uploadFile={uploadFile}
             setUploadFile={setUploadFile}

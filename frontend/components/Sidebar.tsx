@@ -13,24 +13,30 @@ interface SidebarProps {
   user?: {
     name: string;
     email: string;
+    is_admin?: boolean;
+    is_super_admin?: boolean;
   };
 }
 
 export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handleSignOut, user }: SidebarProps) {
+  // Data uploads are admin-only — regular users never see the Ingest Data
+  // tab at all (matches AuthMiddleware.isAdmin()'s definition on the backend).
+  const isAdmin = user?.is_admin === true || user?.is_super_admin === true;
+
   const menuItems = [
     { id: 'exec', label: 'Executive KPIs', icon: LayoutDashboard },
     { id: 'org_kpi', label: 'Org KPIs', icon: Activity },
     { id: 'deep', label: 'Score Card', icon: CheckCircle },
-    { 
-      id: 'coach', 
-      label: 'Coaching Card', 
+    {
+      id: 'coach',
+      label: 'Coaching Card',
       icon: BookOpen,
-      badge: nominatedCount > 0 ? nominatedCount : undefined 
+      badge: nominatedCount > 0 ? nominatedCount : undefined
     },
     { id: 'ins', label: 'Insights', icon: TrendingUp },
     { id: 'eved', label: 'Evidence & Hit-List', icon: ShieldAlert },
     { id: 'cost', label: 'Part Exposure', icon: Settings },
-    { id: 'upload', label: 'Ingest Data', icon: UploadCloud },
+    ...(isAdmin ? [{ id: 'upload', label: 'Ingest Data', icon: UploadCloud }] : []),
   ];
 
   // Default fallback user details — empty string so sidebar shows nothing if user not yet loaded
