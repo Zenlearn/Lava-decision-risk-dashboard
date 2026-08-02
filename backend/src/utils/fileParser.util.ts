@@ -104,6 +104,19 @@ export async function parseFile(
 }
 
 /**
+ * Lists all worksheet names in an XLSX workbook — for files where the sheet
+ * holding the actual data changes name every month (e.g. the NPS survey
+ * workbooks name their raw sheet "Jun'26 RAW", "May'26 RAW", "Apr'26 RAW", ...)
+ * and so can't be looked up by a hardcoded name like the Compliance/MSM
+ * workbooks' stable sheet names.
+ */
+export async function listSheetNames(buffer: Buffer): Promise<string[]> {
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.load(buffer as any);
+  return workbook.worksheets.map((ws) => ws.name);
+}
+
+/**
  * Loads an XLSX workbook ONCE and extracts rows from multiple named sheets.
  * Used by the combined Compliance importer so the same 6MB workbook isn't
  * re-parsed once per sheet (3× the work). Returns a map keyed by sheet name.

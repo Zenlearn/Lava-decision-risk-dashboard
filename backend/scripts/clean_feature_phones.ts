@@ -1,8 +1,8 @@
-import prisma from './configs/prisma.config';
-import logger from './configs/logger.config';
-import { recomputeAspMonthRollups } from './services/rollup.service';
-import { invalidateDashboardCache } from './services/cache.service';
-import { FIELD_MAP } from './configs/fieldMap.config';
+import prisma from '../src/configs/prisma.config';
+import logger from '../src/configs/logger.config';
+import { recomputeAspMonthRollups } from '../src/services/rollup.service';
+import { invalidateDashboardCache } from '../src/services/cache.service';
+import { FIELD_MAP } from '../src/configs/fieldMap.config';
 
 async function main() {
   logger.info('Clean Feature Phones migration starting...');

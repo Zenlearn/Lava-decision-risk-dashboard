@@ -63,6 +63,21 @@ export const SahRowSchema = z.object({
 });
 export type SahRow = z.infer<typeof SahRowSchema>;
 
+export const NpsRowSchema = z.object({
+  workOrderNumber: z.union([z.number(), z.string()]).nullable().optional(),
+  aspCode:         numOrStr,
+  aspName:         z.string().nullable().optional(),
+  asmName:         z.string().nullable().optional(),
+  busmName:        z.string().nullable().optional(),
+  callType:        z.string().nullable().optional(),
+  callCategory:    z.string().nullable().optional(),
+  deviceCategory:  z.string().nullable().optional(),
+  response:        z.union([z.number(), z.string()]).nullable().optional(),
+  detractorReason: z.string().nullable().optional(),
+  deliveryDate:    z.union([z.date(), z.string()]).nullable().optional(),
+});
+export type NpsRow = z.infer<typeof NpsRowSchema>;
+
 export const ZprpRowSchema = z.object({
   materialCode:        z.union([z.number(), z.string()]),
   materialDescription: z.string().nullable().optional(),

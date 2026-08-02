@@ -1,8 +1,8 @@
 import { PrismaClient } from '@prisma/client';
 import * as fs from 'fs';
 import * as path from 'path';
-import logger from './configs/logger.config';
-import { invalidateDashboardCache } from './services/cache.service';
+import logger from '../src/configs/logger.config';
+import { invalidateDashboardCache } from '../src/services/cache.service';
 
 const prisma = new PrismaClient();
 

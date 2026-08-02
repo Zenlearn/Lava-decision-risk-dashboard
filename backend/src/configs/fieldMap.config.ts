@@ -125,6 +125,26 @@ export const SAH_FIELD_MAP = {
   cancelReason:      'Cancel Remarks',
 } as const;
 
+// ─── NPS Survey — per-call customer satisfaction survey (IVR/WhatsApp) ────────
+// Source column names are NOT stable across months ("Detractor Calling" in Jun,
+// "Dectractor Calling" [sic] in May/Apr; "SMT/FP" in Jun, "SP / FP" in May,
+// absent entirely in Apr) — the importer normalizes these header variants to
+// the canonical names below before mapping. There is no dedicated ASP-code
+// column; "Service Centre ID" is the join key, same as Master Data.
+export const NPS_FIELD_MAP = {
+  workOrderNumber: 'Workorder',
+  aspCode:         'Service Centre ID',
+  aspName:         'ASP Name',
+  asmName:         'ASM Name',
+  busmName:        'BUSM Name',
+  callType:        'Type',           // "IVR" | "WhatsApp"
+  callCategory:    'Call Category',  // "Customer Walk-In" | "Trade Walk-In: Customer Handset" | "Service at Home"
+  deviceCategory:  'SMT/FP',         // "SP" | "FP" — canonical name after header normalization; absent in some months
+  response:        'Response',       // "No Response" | "LS" | "1".."5"
+  detractorReason: 'Detractor Calling', // canonical name after header normalization
+  deliveryDate:    'Delivery Date',  // used to derive month — no dedicated Month column in this sheet
+} as const;
+
 // ─── MSM Achievement — daily ASP deposit/stock compliance (financial exposure) ─
 // Source sheets are PIVOTS: one column per calendar day, header = the date itself.
 // Static (non-date) columns are mapped here; date columns are discovered at parse

@@ -1,6 +1,6 @@
-import prisma from './configs/prisma.config';
-import logger from './configs/logger.config';
-import { FIELD_MAP } from './configs/fieldMap.config';
+import prisma from '../src/configs/prisma.config';
+import logger from '../src/configs/logger.config';
+import { FIELD_MAP } from '../src/configs/fieldMap.config';
 import * as fs from 'fs';
 import * as path from 'path';
 

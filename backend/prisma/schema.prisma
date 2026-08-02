@@ -105,6 +105,7 @@ model ServiceCentre {
   sahAppointments    ServiceAtHomeAppointment[]
   msmDailyRecords    MsmDailyRecord[]
   metricRollups      AspMetricRollup[]
+  npsSurveyRecords   NpsSurveyRecord[]
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -150,6 +151,7 @@ model MonthlyImport {
   defectiveSpares    ComplianceDefectiveSpareRecord[]
   sahAppointments    ServiceAtHomeAppointment[]
   msmDailyRecords    MsmDailyRecord[]
+  npsSurveyRecords   NpsSurveyRecord[]
 
   importedAt     DateTime @default(now())
   completedAt    DateTime?
@@ -168,6 +170,7 @@ enum DatasetType {
   SERVICE_AT_HOME
   MSM_ACHIEVEMENT
   SPARE_PRICE_CATALOG
+  NPS_SURVEY
 }
 
 enum ImportStatus {
@@ -350,6 +353,35 @@ model ServiceAtHomeAppointment {
   @@index([importId])
   @@index([serviceCentreId])
   @@index([workOrderNumber])
+  @@index([month])
+}
+
+// ─────────────────────────────────────────────────────────────
+// NPS Survey — per-call customer satisfaction survey (IVR/WhatsApp), the real
+// source for Customer Satisfaction / NPS everywhere in the app. Distinct from
+// Master Data's "Final NPS Rating" column, which was dropped from the source
+// file and stays dormant (see fieldMap.config.ts).
+model NpsSurveyRecord {
+  id              String    @id @default(cuid())
+  importId        String
+  serviceCentreId String
+  workOrderNumber String?
+  callType        String?   // "IVR" | "WhatsApp"
+  callCategory    String?   // "Customer Walk-In" | "Trade Walk-In: Customer Handset" | "Service at Home"
+  deviceCategory  String?   // "SP" | "FP" — absent in some months' source files
+  response        String?   // raw survey response: "No Response" | "LS" | "1".."5"
+  rating          Int?      // parsed 1-5, null if no valid response ("No Response"/"LS")
+  detractorReason String?   // populated for detractor follow-up calls, e.g. "Delay in Service"; null for "None"/not applicable
+  month           String?
+  rawData         Json
+
+  import          MonthlyImport @relation(fields: [importId], references: [id])
+  serviceCentre   ServiceCentre @relation(fields: [serviceCentreId], references: [id])
+
+  createdAt       DateTime @default(now())
+
+  @@index([importId])
+  @@index([serviceCentreId])
   @@index([month])
 }
 

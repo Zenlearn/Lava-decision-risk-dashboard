@@ -55,6 +55,11 @@ export default function UnifiedMockupDashboard() {
 
   // Ingestion File Uploader state
   const [uploadFile, setUploadFile] = useState<File | null>(null);
+  // Must match a key the backend's DATASET_IMPORTERS map recognizes — the
+  // server rejects the upload with 400 if this doesn't match a known type
+  // (dataset type is an explicit client choice, never auto-detected from
+  // headers, since column names have already changed once and will again).
+  const [datasetType, setDatasetType] = useState<string>('MASTER_DATA');
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadResult, setUploadResult] = useState<any>(null);
@@ -194,6 +199,7 @@ export default function UnifiedMockupDashboard() {
 
     const formData = new FormData();
     formData.append('file', uploadFile);
+    formData.append('datasetType', datasetType);
 
     try {
       setUploadProgress(50);
@@ -493,6 +499,8 @@ export default function UnifiedMockupDashboard() {
           <TabIngest
             uploadFile={uploadFile}
             setUploadFile={setUploadFile}
+            datasetType={datasetType}
+            setDatasetType={setDatasetType}
             uploading={uploading}
             uploadProgress={uploadProgress}
             uploadResult={uploadResult}

@@ -4,6 +4,8 @@ import { UploadCloud, FileSpreadsheet, ChevronRight, RefreshCw } from 'lucide-re
 interface TabIngestProps {
   uploadFile: File | null;
   setUploadFile: (file: File | null) => void;
+  datasetType: string;
+  setDatasetType: (type: string) => void;
   uploading: boolean;
   uploadProgress: number;
   uploadResult: any;
@@ -15,9 +17,24 @@ interface TabIngestProps {
   setActiveTab: (tab: string) => void;
 }
 
+// Must match the keys of DATASET_IMPORTERS in backend/src/controllers/import.controller.ts.
+const DATASET_TYPE_OPTIONS: { value: string; label: string }[] = [
+  { value: 'MASTER_DATA', label: 'Master Data (Delivered Work Orders)' },
+  { value: 'COMPLIANCE_COMBINED', label: 'Compliance (Combined: IMEI QC + ELS DOA + DEF(S+D))' },
+  { value: 'COMPLIANCE_QC', label: 'Compliance — IMEI QC only' },
+  { value: 'COMPLIANCE_ELS_DOA', label: 'Compliance — ELS DOA only' },
+  { value: 'COMPLIANCE_DEFECTIVE_SPARE', label: 'Compliance — DEF(S+D) only' },
+  { value: 'SERVICE_AT_HOME', label: 'Service at Home (S@H) Appointments' },
+  { value: 'MSM_ACHIEVEMENT', label: 'MSM Achievement' },
+  { value: 'SPARE_PRICE_CATALOG', label: 'ZPRP Spare Price Catalog' },
+  { value: 'NPS_SURVEY', label: 'NPS Survey (IVR / WhatsApp)' },
+];
+
 export default function TabIngest({
   uploadFile,
   setUploadFile,
+  datasetType,
+  setDatasetType,
   uploading,
   uploadProgress,
   uploadResult,
@@ -38,7 +55,22 @@ export default function TabIngest({
       <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', width: '100%', alignItems: 'center' }}>
         {!uploadResult && !uploading && (
           <div className="upload-card" style={{ marginTop: '1rem', width: '100%' }}>
-            <div 
+            <div style={{ width: '100%', textAlign: 'left', marginBottom: '1rem' }}>
+              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text-main)', marginBottom: '0.4rem' }}>
+                Dataset Type
+              </label>
+              <select
+                value={datasetType}
+                onChange={(e) => setDatasetType(e.target.value)}
+                style={{ width: '100%', padding: '0.6rem', borderRadius: '8px', border: '1px solid var(--color-border)', fontSize: '0.9rem' }}
+              >
+                {DATASET_TYPE_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+            </div>
+
+            <div
               className={`dropzone ${dragActive ? 'active' : ''}`}
               onDragEnter={handleDrag}
               onDragOver={handleDrag}
@@ -48,15 +80,15 @@ export default function TabIngest({
               <UploadCloud className="upload-icon" />
               <h3 className="upload-title">Drag and drop raw Excel/CSV file</h3>
               <p className="upload-subtitle">Upload spreadsheet file to update calculations.</p>
-              
+
               <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', width: '100%', justifyContent: 'center', marginTop: '0.5rem' }}>
                 <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>or</span>
                 <label className="btn-primary" style={{ cursor: 'pointer', margin: 0, backgroundColor: 'var(--cobalt)' }}>
                   Browse Files
-                  <input 
-                    type="file" 
-                    accept=".csv,.xlsx,.xls" 
-                    style={{ display: 'none' }} 
+                  <input
+                    type="file"
+                    accept=".csv,.xlsx,.xls"
+                    style={{ display: 'none' }}
                     onChange={(e) => { if (e.target.files && e.target.files[0]) setUploadFile(e.target.files[0]); }}
                   />
                 </label>

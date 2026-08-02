@@ -42,7 +42,9 @@ export default function TabProfile({ user }: TabProfileProps) {
         last_name: user.name?.split(' ').slice(1).join(' ') || '',
         email: user.email,
         job_title: user.role || 'Administrator',
-        phone: '+91 XXXXX XXXXX', // Placeholder or fetch from real API
+        // No phone number is available from the auth session today — an
+        // honest "Not available" beats a fake-looking placeholder digit string.
+        phone: null,
       });
     }
     // Simulate loading for the nice UI effect
@@ -125,7 +127,7 @@ export default function TabProfile({ user }: TabProfileProps) {
                 </div>
                 <div>
                   <div className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: T.slateBreeze }}>Phone Number</div>
-                  <div className="text-sm font-medium" style={{ color: T.deepSpace }}>{userDetails?.phone}</div>
+                  <div className="text-sm font-medium" style={{ color: userDetails?.phone ? T.deepSpace : T.slateBreeze }}>{userDetails?.phone || 'Not available'}</div>
                 </div>
               </div>
 

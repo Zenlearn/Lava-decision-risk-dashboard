@@ -1,6 +1,7 @@
 import prisma from '../configs/prisma.config';
 import logger from '../configs/logger.config';
 import { FIELD_MAP, TARGET_MONTHS } from '../configs/fieldMap.config';
+import { fetchNpsRows, groupNpsBy, summarizeNps, computeDsatBreakdown, rankByNps, NpsRawRow } from './npsAggregation.service';
 
 export interface DashboardMetrics {
   avgProcessScore: number;
@@ -491,7 +492,7 @@ export async function getFullDashboardData(filters?: {
     return {
       summary: { total_wo: 0, cross_rows: 0, importId: '', filename: '' },
       org: [],
-      kpi: { months: [], overall: { ftfr: 0, mttr: 0, csat: 0, diag: 0, leak: 0, _leakparts: { pcba: 0, lcd: 0 }, _leaktravel: 0, bounce: 0, detractor: 0 }, targets: { csat: 95, ftfr: 85, mttr: 2, diag: 98 } },
+      kpi: { months: [], overall: { ftfr: 0, mttr: 0, nps: 0, diag: 0, leak: 0, _leakparts: { pcba: 0, lcd: 0 }, _leaktravel: 0, bounce: 0, detractor: 0 }, targets: { ftfr: 85, mttr: 2, diag: 98 } },
       busm: [],
       asm: [],
       asp: [],
@@ -855,6 +856,13 @@ export async function getFullDashboardData(filters?: {
   const MONTH_ORDER: Record<string, number> = { Jan: 1, Feb: 2, Mar: 3, Apr: 4, May: 5, Jun: 6, Jul: 7, Aug: 8, Sep: 9, Oct: 10, Nov: 11, Dec: 12 };
   uniqueMonths.sort((a, b) => (MONTH_ORDER[a] ?? 99) - (MONTH_ORDER[b] ?? 99));
 
+  // Real NPS survey data (IVR/WhatsApp per-call surveys) — fetched once and
+  // grouped per usage site below. This is the only source of Customer
+  // Satisfaction/NPS anywhere in the app; Master Data's own "Final NPS
+  // Rating" column was dropped from the source file and stays dormant.
+  const npsRows = await fetchNpsRows();
+  const npsByMonth = groupNpsBy(npsRows, (r) => r.month);
+
   // 3. DATA.org monthly aggregates
   const org = uniqueMonths.map((m) => {
     const mRows = processedRows.filter((r) => r.month === m);
@@ -874,17 +882,10 @@ export async function getFullDashboardData(filters?: {
     const bounce = mRows.filter((r) => r.isBounce).length;
     const mismatch = mRows.filter((r) => r.isMismatch).length;
     const mismatch_bounced = mRows.filter((r) => r.isMismatchBounced).length;
-    const detractor = mRows.filter((r) => r.isDetractor).length;
+    // Real detractor count from actual NPS survey responses this month
+    // (rating 1-2) — Master Data's own npsRating column is dropped/dormant.
+    const detractor = npsRows.filter((r) => r.month === m && r.rating !== null && r.rating <= 2).length;
     const doa = mRows.filter((r) => r.isDOA).length;
-
-    // Satisfaction score
-    const surveyRows = mRows.filter((r) => {
-      const rating = String(r.rawData[FIELD_MAP.npsRating] || '');
-      return rating !== '' && rating !== 'No Response';
-    });
-    const promoters = surveyRows.filter((r) => parseInt(String(r.rawData[FIELD_MAP.npsRating]), 10) === 5).length;
-    const detractors = surveyRows.filter((r) => parseInt(String(r.rawData[FIELD_MAP.npsRating]), 10) <= 3).length;
-    const sat = surveyRows.length > 0 ? Math.round(((promoters - detractors) / surveyRows.length) * 1000) / 10 : 0;
 
     return {
       month: m,
@@ -902,7 +903,6 @@ export async function getFullDashboardData(filters?: {
       detractor,
       doa,
       wo_month: woCount,
-      sat,
     };
   });
 
@@ -912,7 +912,8 @@ export async function getFullDashboardData(filters?: {
     const woCount = mRows.length;
 
     const bounceCount = mRows.filter((r) => r.isBounce).length;
-    const detractorCount = mRows.filter((r) => r.isDetractor).length;
+    // Real detractor count from actual NPS survey responses this month.
+    const detractorCount = npsRows.filter((r) => r.month === m && r.rating !== null && r.rating <= 2).length;
     const mismatchBouncedCount = mRows.filter((r) => r.isMismatchBounced).length;
 
     const ftfr = woCount > 0 ? Math.round((1 - bounceCount / woCount) * 1000) / 10 : 0;
@@ -930,34 +931,30 @@ export async function getFullDashboardData(filters?: {
       { key: 'gt3d', label: 'Repaired in > 3 Days', quantity: tatGt3d, pct: tatRows.length > 0 ? Math.round((tatGt3d / tatRows.length) * 1000) / 10 : 0 },
     ];
 
-    const surveyRows = mRows.filter((r) => {
-      const rating = String(r.rawData[FIELD_MAP.npsRating] || '');
-      return rating !== '' && rating !== 'No Response';
-    });
-    const r5 = surveyRows.filter((r) => parseInt(String(r.rawData[FIELD_MAP.npsRating]), 10) === 5).length;
-    const r4 = surveyRows.filter((r) => parseInt(String(r.rawData[FIELD_MAP.npsRating]), 10) === 4).length;
-    const r3 = surveyRows.filter((r) => parseInt(String(r.rawData[FIELD_MAP.npsRating]), 10) === 3).length;
-    const r2 = surveyRows.filter((r) => parseInt(String(r.rawData[FIELD_MAP.npsRating]), 10) === 2).length;
-    const r1 = surveyRows.filter((r) => parseInt(String(r.rawData[FIELD_MAP.npsRating]), 10) === 1).length;
+    // Real NPS survey data for this month (all device categories combined —
+    // matches the Executive tile's national-headline intent). No fallback:
+    // a month with zero survey responses gets hasNpsData: false, not a
+    // fabricated distribution that looks like real data.
+    const monthNpsSummary = npsByMonth.get(m) ?? null;
+    const monthNpsRows = npsRows.filter((r) => r.month === m);
+    const monthNpsResponded = monthNpsRows.filter((r) => r.rating !== null);
+    const ratingCount = (rating: number) => monthNpsResponded.filter((r) => r.rating === rating).length;
+    const totalSurvey = monthNpsResponded.length;
 
-    const totalSurvey = surveyRows.length;
-
-    // No hardcoded fallback: a month with zero survey responses gets zeros
-    // and hasSurveyData: false, not a fabricated distribution that looks
-    // like real data. The frontend must render an explicit "no data" state
-    // for hasSurveyData === false rather than displaying these zeros as if
-    // they were a real 0%-response month.
-    const csatDistribution = [
-      { key: '5', label: 'Rating 5 (5-Star)', quantity: r5, pct: totalSurvey > 0 ? Math.round((r5 / totalSurvey) * 1000) / 10 : 0 },
-      { key: '4', label: 'Rating 4 (4-Star)', quantity: r4, pct: totalSurvey > 0 ? Math.round((r4 / totalSurvey) * 1000) / 10 : 0 },
-      { key: '3', label: 'Rating 3 (3-Star)', quantity: r3, pct: totalSurvey > 0 ? Math.round((r3 / totalSurvey) * 1000) / 10 : 0 },
-      { key: '2', label: 'Rating 2 (2-Star)', quantity: r2, pct: totalSurvey > 0 ? Math.round((r2 / totalSurvey) * 1000) / 10 : 0 },
-      { key: '1', label: 'Rating 1 (1-Star)', quantity: r1, pct: totalSurvey > 0 ? Math.round((r1 / totalSurvey) * 1000) / 10 : 0 },
+    const npsDistribution = [
+      { key: '5', label: 'Rating 5 (5-Star)', quantity: ratingCount(5), pct: totalSurvey > 0 ? Math.round((ratingCount(5) / totalSurvey) * 1000) / 10 : 0 },
+      { key: '4', label: 'Rating 4 (4-Star)', quantity: ratingCount(4), pct: totalSurvey > 0 ? Math.round((ratingCount(4) / totalSurvey) * 1000) / 10 : 0 },
+      { key: '3', label: 'Rating 3 (3-Star)', quantity: ratingCount(3), pct: totalSurvey > 0 ? Math.round((ratingCount(3) / totalSurvey) * 1000) / 10 : 0 },
+      { key: '2', label: 'Rating 2 (2-Star)', quantity: ratingCount(2), pct: totalSurvey > 0 ? Math.round((ratingCount(2) / totalSurvey) * 1000) / 10 : 0 },
+      { key: '1', label: 'Rating 1 (1-Star)', quantity: ratingCount(1), pct: totalSurvey > 0 ? Math.round((ratingCount(1) / totalSurvey) * 1000) / 10 : 0 },
     ];
-    const hasSurveyData = totalSurvey > 0;
+    const hasNpsData = totalSurvey > 0;
+    const nps = monthNpsSummary?.npsScore ?? 0;
 
-    const satResponders45 = r4 + r5;
-    const csat = totalSurvey > 0 ? Math.round((satResponders45 / totalSurvey) * 1000) / 10 : 0;
+    // Real per-channel (IVR vs WhatsApp) survey performance — genuinely
+    // trackable now that the NPS importer persists callType per response.
+    const npsByChannelMap = groupNpsBy(monthNpsRows, (r) => r.callType || 'Unknown');
+    const npsByChannel = Array.from(npsByChannelMap.entries()).map(([channel, summary]) => ({ channel, ...summary }));
 
     const diag = woCount > 0 ? Math.round((1 - mismatchBouncedCount / woCount) * 1000) / 10 : 0;
 
@@ -1077,32 +1074,35 @@ export async function getFullDashboardData(filters?: {
       wo: woCount,
       ftfr,
       mttr,
-      csat,
+      nps,
+      npsSent: monthNpsSummary?.sent ?? 0,
+      npsResponseRate: monthNpsSummary?.responseRate ?? 0,
+      npsByChannel,
       diag,
       leak,
       breakdown,
       tatDistribution,
-      csatDistribution,
-      hasSurveyData,
+      npsDistribution,
+      hasNpsData,
       modelConsumption,
       _leakparts: { pcba: pcbaData.qty, lcd: tpLcdData.qty },
       _leaktravel: travelQty,
       bounce: bounceCount,
       detractor: detractorCount,
-      d: { ftfr: 0, mttr: 0, csat: 0, diag: 0, leak: 0 } as any, // populated below
+      d: { ftfr: 0, mttr: 0, nps: 0, diag: 0, leak: 0 } as any, // populated below
     };
   });
 
   // Calculate monthly KPI delta changes
   kpiMonths.forEach((cur, index) => {
     if (index === 0) {
-      cur.d = { ftfr: null, mttr: null, csat: null, diag: null, leak: null };
+      cur.d = { ftfr: null, mttr: null, nps: null, diag: null, leak: null };
     } else {
       const prev = kpiMonths[index - 1]!;
       cur.d = {
         ftfr: Math.round((cur.ftfr - prev.ftfr) * 10) / 10,
         mttr: Math.round((cur.mttr - prev.mttr) * 100) / 100,
-        csat: Math.round((cur.csat - prev.csat) * 10) / 10,
+        nps: Math.round((cur.nps - prev.nps) * 10) / 10,
         diag: Math.round((cur.diag - prev.diag) * 10) / 10,
         leak: cur.leak - prev.leak,
       };
@@ -1112,23 +1112,17 @@ export async function getFullDashboardData(filters?: {
   // Overall KPI averages
   const overallWo = processedRows.length;
   const overallBounce = processedRows.filter((r) => r.isBounce).length;
-  const overallDetractor = processedRows.filter((r) => r.isDetractor).length;
   const overallMismatchBounced = processedRows.filter((r) => r.isMismatchBounced).length;
 
+  // Real detractor count and NPS score across every survey response on file
+  // (all months, all devices combined).
+  const overallNpsSummary = summarizeNps(npsRows);
+  const overallDetractor = npsRows.filter((r) => r.rating !== null && r.rating <= 2).length;
+
   const overallFtfr = overallWo > 0 ? Math.round((1 - overallBounce / overallWo) * 1000) / 10 : 0;
-  
+
   const overallTatRows = processedRows.filter((r) => r.tat !== null);
   const overallMttr = overallTatRows.length > 0 ? Math.round((overallTatRows.reduce((sum, r) => sum + r.tat!, 0) / overallTatRows.length) * 100) / 100 : 0;
-
-  const overallSurveyRows = processedRows.filter((r) => {
-    const rating = String(r.rawData[FIELD_MAP.npsRating] || '');
-    return rating !== '' && rating !== 'No Response';
-  });
-  const overallSatResponders45 = overallSurveyRows.filter((r) => {
-    const score = parseInt(String(r.rawData[FIELD_MAP.npsRating]), 10);
-    return score === 4 || score === 5;
-  }).length;
-  const overallCsat = overallSurveyRows.length > 0 ? Math.round((overallSatResponders45 / overallSurveyRows.length) * 1000) / 10 : 0;
 
   const overallDiag = overallWo > 0 ? Math.round((1 - overallMismatchBounced / overallWo) * 1000) / 10 : 0;
 
@@ -1142,7 +1136,7 @@ export async function getFullDashboardData(filters?: {
     overall: {
       ftfr: overallFtfr,
       mttr: overallMttr,
-      csat: overallCsat,
+      nps: overallNpsSummary?.npsScore ?? 0,
       diag: overallDiag,
       leak: overallLeak,
       _leakparts: { pcba: overallPcbaParts, lcd: overallLcdParts },
@@ -1150,7 +1144,9 @@ export async function getFullDashboardData(filters?: {
       bounce: overallBounce,
       detractor: overallDetractor,
     },
-    targets: { csat: 95, ftfr: 85, mttr: 2.0, diag: 98 },
+    // No NPS target: no business-approved benchmark exists for this metric
+    // yet (unlike ftfr/mttr/diag, which are established process targets).
+    targets: { ftfr: 85, mttr: 2.0, diag: 98 },
   };
 
   // 5. Hierarchy build (BUSM -> ASM -> ASPs)
@@ -1213,6 +1209,12 @@ export async function getFullDashboardData(filters?: {
         actor,
         month,
         wo: woCount,
+        // Real hierarchy context — needed by the frontend to filter ASPs by
+        // their parent ASM/BUSM (e.g. the Org KPI "ASP Centre Performance"
+        // table). code is only meaningful at the 'asp' level.
+        code: levelKey === 'asp' ? (rows[0]?.aspCode || '') : undefined,
+        busm: rows[0]?.busm,
+        asm: rows[0]?.asm,
         process: safeDivide(totalProcess, woCount),
         skill:   safeDivide(totalSkill,   woCount),
         audit:   safeDivide(totalAudit,   woCount),
@@ -1305,7 +1307,7 @@ export async function getFullDashboardData(filters?: {
     asp: string; asm: string; busm: string; month: string; wo: number;
     ftfr: number; mttr: number | null; cpc: number; repeatRate: number;
     tatClosurePct: number | null; sahCancelPct: number; sahReschedulePct: number; sahCombinedPct: number;
-    msmPct: number | null; compliancePct: number | null; npsPct: number | null; leakageRate: number;
+    msmPct: number | null; compliancePct: number | null; npsPct: number | null; leakageRate: number; diagPct: number;
   }
 
   const aspMonthGroups = new Map<string, typeof processedRows>();
@@ -1314,6 +1316,10 @@ export async function getFullDashboardData(filters?: {
     if (!aspMonthGroups.has(key)) aspMonthGroups.set(key, []);
     aspMonthGroups.get(key)!.push(r);
   });
+
+  // Real per-ASP-month NPS score, from the actual survey dataset (not
+  // Master Data's dormant npsRating column).
+  const npsByAspMonth = groupNpsBy(npsRows, (r) => `${r.aspName}|||${r.month}`);
 
   const aspMonthRaw: AspMonthRaw[] = [];
   aspMonthGroups.forEach((rows) => {
@@ -1341,19 +1347,13 @@ export async function getFullDashboardData(filters?: {
     const sahReschedulePct = wo > 0 ? (rescheduleCount / wo) * 100 : 0;
     const sahCombinedPct = wo > 0 ? ((cancelCount + rescheduleCount) / wo) * 100 : 0;
 
-    const surveyRows = rows.filter((r) => {
-      const rating = String(r.rawData[FIELD_MAP.npsRating] || '');
-      return rating !== '' && rating !== 'No Response' && rating !== 'LS' && !isNaN(parseInt(rating, 10));
-    });
-    let npsPct: number | null = null;
-    if (surveyRows.length > 0) {
-      const promoters = surveyRows.filter((r) => parseInt(String(r.rawData[FIELD_MAP.npsRating]), 10) === 5).length;
-      const detractors = surveyRows.filter((r) => parseInt(String(r.rawData[FIELD_MAP.npsRating]), 10) <= 2).length;
-      npsPct = ((promoters - detractors) / surveyRows.length) * 100;
-    }
+    const npsPct = npsByAspMonth.get(`${asp}|||${month}`)?.npsScore ?? null;
 
     const leakageCount = rows.filter((r) => r.isGhost || r.isHomeBoard || r.isCrossAsp).length;
     const leakageRate = wo > 0 ? (leakageCount / wo) * 100 : 0;
+
+    const mismatchBouncedCount = rows.filter((r) => r.isMismatchBounced).length;
+    const diagPct = wo > 0 ? (1 - mismatchBouncedCount / wo) * 100 : 0;
 
     aspMonthRaw.push({
       asp, asm: rows[0]!.asm, busm: rows[0]!.busm, month, wo,
@@ -1363,6 +1363,7 @@ export async function getFullDashboardData(filters?: {
       compliancePct: compliancePctFor(complianceKey),
       npsPct,
       leakageRate,
+      diagPct,
     });
   });
 
@@ -1413,6 +1414,10 @@ export async function getFullDashboardData(filters?: {
     const complianceRank = rankMetric(monthRows, (r) => r.compliancePct, true);
     const npsRank = rankMetric(monthRows, (r) => r.npsPct, true);
     const leakageRank = rankMetric(monthRows, (r) => r.leakageRate, false);
+    // Diagnostic Accuracy — exposed as a child metric for the Org KPI ASP
+    // table, not part of the Skill/Process/Audit composite (that composite's
+    // methodology is fixed; this is tracked as its own Executive KPI).
+    const diagRank = rankMetric(monthRows, (r) => r.diagPct, true);
 
     const avgOf = (asp: string, maps: Map<string, number>[]): number | null => {
       const vals = maps.map((m) => m.get(asp)).filter((v): v is number => v !== undefined);
@@ -1439,6 +1444,7 @@ export async function getFullDashboardData(filters?: {
       { key: 'compliancePct', getter: (r) => r.compliancePct, rank: complianceRank },
       { key: 'npsPct', getter: (r) => r.npsPct, rank: npsRank },
       { key: 'leakageRate', getter: (r) => r.leakageRate, rank: leakageRank },
+      { key: 'diagPct', getter: (r) => r.diagPct, rank: diagRank },
     ];
     const nationalByKey = new Map(metricDefs.map((m) => [m.key, nationalAvg(m.getter)]));
 
@@ -1500,7 +1506,7 @@ export async function getFullDashboardData(filters?: {
   // methodology as the composite skill/process/audit rollup above. The
   // national average is a single figure per month, so it just passes through
   // from any constituent ASP rather than being re-averaged.
-  const childMetricKeys = ['ftfr', 'mttr', 'cpc', 'repeatRate', 'tatClosurePct', 'sahCombinedPct', 'msmPct', 'compliancePct', 'npsPct', 'leakageRate'];
+  const childMetricKeys = ['ftfr', 'mttr', 'cpc', 'repeatRate', 'tatClosurePct', 'sahCombinedPct', 'msmPct', 'compliancePct', 'npsPct', 'leakageRate', 'diagPct'];
 
   function rollupChildMetrics(groupKeyFn: (s: AspMonthScore) => string): Map<string, Record<string, ChildMetricDetail>> {
     const groups = new Map<string, AspMonthScore[]>();
@@ -1884,6 +1890,15 @@ export async function getFullDashboardData(filters?: {
 
   // 8. Organization KPIs — BUSM and ASM Performance & Ranking Matrix
   function computeOrgKpiTable(rows: any[]) {
+    // rows may be a single month's slice or every month combined (see call
+    // sites below) — scope the real NPS data to whichever months are
+    // actually present so per-BUSM/ASM/national NPS stays consistent with
+    // whatever period this call is summarizing.
+    const rowMonths = new Set(rows.map((r) => r.month));
+    const scopedNpsRows = npsRows.filter((r) => rowMonths.has(r.month));
+    const npsByBusmScoped = groupNpsBy(scopedNpsRows, (r) => r.busmName);
+    const npsByAsmScoped = groupNpsBy(scopedNpsRows, (r) => r.asmName);
+    const npsNationalScoped = summarizeNps(scopedNpsRows);
     // 1. Group by BUSM
     const busmMap = new Map<string, any[]>();
     rows.forEach((r) => {
@@ -1913,12 +1928,7 @@ export async function getFullDashboardData(filters?: {
       const homeAdherence = homeRows.filter((r) => r.tat !== null && r.tat <= 3).length;
       const sahPct = homeRows.length > 0 ? Math.round((homeAdherence / homeRows.length) * 1000) / 10 : 0;
 
-      const surveyRows = busmRows.filter((r) => {
-        const rating = String(r.rawData[FIELD_MAP.npsRating] || '');
-        return rating !== '' && rating !== 'No Response';
-      });
-      const promoters = surveyRows.filter((r) => parseInt(String(r.rawData[FIELD_MAP.npsRating]), 10) >= 4).length;
-      const npsPct = surveyRows.length > 0 ? Math.round((promoters / surveyRows.length) * 1000) / 10 : 0;
+      const npsPct = npsByBusmScoped.get(busmName)?.npsScore ?? 0;
 
       const diagPct = wo > 0 ? Math.round((1 - mismatchBouncedCount / wo) * 1000) / 10 : 0;
 
@@ -2039,12 +2049,7 @@ export async function getFullDashboardData(filters?: {
       const homeAdherence = homeRows.filter((r) => r.tat !== null && r.tat <= 3).length;
       const sahPct = homeRows.length > 0 ? Math.round((homeAdherence / homeRows.length) * 1000) / 10 : 0;
 
-      const surveyRows = asmRows.filter((r) => {
-        const rating = String(r.rawData[FIELD_MAP.npsRating] || '');
-        return rating !== '' && rating !== 'No Response';
-      });
-      const promoters = surveyRows.filter((r) => parseInt(String(r.rawData[FIELD_MAP.npsRating]), 10) >= 4).length;
-      const npsPct = surveyRows.length > 0 ? Math.round((promoters / surveyRows.length) * 1000) / 10 : 0;
+      const npsPct = npsByAsmScoped.get(asmName)?.npsScore ?? 0;
 
       const diagPct = wo > 0 ? Math.round((1 - mismatchBouncedCount / wo) * 1000) / 10 : 0;
 
@@ -2195,12 +2200,7 @@ export async function getFullDashboardData(filters?: {
     const totalHomeAdherence = totalHomeRows.filter((r) => r.tat !== null && r.tat <= 3).length;
     const nationalSah = totalHomeRows.length > 0 ? Math.round((totalHomeAdherence / totalHomeRows.length) * 1000) / 10 : 0;
 
-    const totalSurveyRows = rows.filter((r) => {
-      const rating = String(r.rawData[FIELD_MAP.npsRating] || '');
-      return rating !== '' && rating !== 'No Response';
-    });
-    const totalPromoters = totalSurveyRows.filter((r) => parseInt(String(r.rawData[FIELD_MAP.npsRating]), 10) >= 4).length;
-    const nationalNps = totalSurveyRows.length > 0 ? Math.round((totalPromoters / totalSurveyRows.length) * 1000) / 10 : 0;
+    const nationalNps = npsNationalScoped?.npsScore ?? 0;
 
     const nationalDiag = totalWo > 0 ? Math.round((1 - totalMismatchBounced / totalWo) * 1000) / 10 : 0;
 
@@ -2287,6 +2287,57 @@ export async function getFullDashboardData(filters?: {
     by_month: orgKpisByMonth,
   };
 
+  // NPS insights — real per-BUSM/ASM breakdowns (All Devices / Smartphone
+  // Only / Feature Phone Only), device-category summary, and DSAT reason
+  // breakdown, all sourced from the real NpsSurveyRecord dataset. Replaces
+  // the frozen-on-June static arrays previously hardcoded in the frontend
+  // (spBusmData, spAsmData, busmNpsData, asmNpsData, dsatBusmData,
+  // deviceCategoryNps, fpBusmData).
+  const npsMonths = [...new Set(npsRows.map((r) => r.month))].filter((m) => m !== 'Unknown');
+  const buildNpsBreakdown = (rows: NpsRawRow[], keyFn: (r: NpsRawRow) => string) => {
+    const summaries = groupNpsBy(rows, keyFn);
+    const entries = Array.from(summaries.entries()).map(([name, s]) => ({ name, ...s }));
+    return rankByNps(entries);
+  };
+  const npsInsightsByMonth: Record<string, any> = {};
+  npsMonths.forEach((m) => {
+    const monthRows = npsRows.filter((r) => r.month === m);
+    const spRows = monthRows.filter((r) => r.deviceCategory === 'SP');
+    const fpRows = monthRows.filter((r) => r.deviceCategory === 'FP');
+
+    // ASM/ASP -> parent BUSM/ASM name — a stable mapping (each ASM/ASP
+    // belongs to exactly one parent), used so the ASM/ASP breakdown rows
+    // below can carry their real parent name for filtering/drill-down.
+    const busmByAsm = new Map<string, string>();
+    const asmByAsp = new Map<string, string>();
+    monthRows.forEach((r) => {
+      if (!busmByAsm.has(r.asmName)) busmByAsm.set(r.asmName, r.busmName);
+      if (!asmByAsp.has(r.aspName)) asmByAsp.set(r.aspName, r.asmName);
+    });
+    const withBusm = (rows: any[]) => rows.map((r) => ({ ...r, busm: busmByAsm.get(r.name) || 'Unknown' }));
+    const withAsm = (rows: any[]) => rows.map((r) => ({ ...r, asm: asmByAsp.get(r.name) || 'Unknown' }));
+
+    npsInsightsByMonth[m] = {
+      busmAll: buildNpsBreakdown(monthRows, (r) => r.busmName),
+      busmSmartphone: buildNpsBreakdown(spRows, (r) => r.busmName),
+      busmFeaturePhone: buildNpsBreakdown(fpRows, (r) => r.busmName),
+      asmAll: withBusm(buildNpsBreakdown(monthRows, (r) => r.asmName)),
+      asmSmartphone: withBusm(buildNpsBreakdown(spRows, (r) => r.asmName)),
+      aspAll: withAsm(buildNpsBreakdown(monthRows, (r) => r.aspName)),
+      aspSmartphone: withAsm(buildNpsBreakdown(spRows, (r) => r.aspName)),
+      dsatByBusm: computeDsatBreakdown(monthRows, (r) => r.busmName),
+      deviceCategorySummary: [
+        { cat: 'Feature Phone', ...summarizeNps(fpRows) },
+        { cat: 'Smart Phone', ...summarizeNps(spRows) },
+        { cat: 'Overall Combined', ...summarizeNps(monthRows) },
+      ].filter((c) => c.sent !== undefined),
+    };
+  });
+  const npsInsights = {
+    months: npsMonths,
+    by_month: npsInsightsByMonth,
+  };
+
   return {
     summary: {
       total_wo: processedRows.length,
@@ -2304,5 +2355,6 @@ export async function getFullDashboardData(filters?: {
     coaching,
     home,
     orgKpis,
+    npsInsights,
   };
 }

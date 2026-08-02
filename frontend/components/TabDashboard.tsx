@@ -38,7 +38,7 @@ export default function TabDashboard({
   const [expandedSections, setExpandedSections] = useState({
     leakage: true,
     mttr: true,
-    csat: true,
+    nps: true,
     trends: true,
     calc: true,
   });
@@ -54,7 +54,7 @@ export default function TabDashboard({
     setExpandedSections({
       leakage: nextState,
       mttr: nextState,
-      csat: nextState,
+      nps: nextState,
       trends: nextState,
       calc: nextState,
     });
@@ -95,8 +95,8 @@ export default function TabDashboard({
   const currentBreakdown = currentKPI?.breakdown || [];
   const prevBreakdown = prevKPI?.breakdown || [];
   const currentTatDist = currentKPI?.tatDistribution || [];
-  const currentCsatDist = currentKPI?.csatDistribution || [];
-  const hasSurveyData = currentKPI?.hasSurveyData !== false;
+  const currentNpsDist = currentKPI?.npsDistribution || [];
+  const hasNpsData = currentKPI?.hasNpsData !== false;
   const prevTatDist = prevKPI?.tatDistribution || [];
 
   // Real leakage-driver derivation — sorted from the same breakdown table
@@ -109,12 +109,15 @@ export default function TabDashboard({
 
   // Real composite Decision Quality score — average target-attainment across
   // the KPIs that have real data this month (never a fabricated constant).
-  const kpiTargets = data?.kpi?.targets || { ftfr: 85, csat: 95, mttr: 2, diag: 98 };
-  const computeConfidence = (kpiObj: any, surveyOk: boolean) => {
+  // NPS is deliberately excluded here: it has no business-approved target
+  // (unlike ftfr/mttr/diag), and a target-attainment ratio can't be computed
+  // without one — fabricating a target just to include it would defeat the
+  // purpose of this score.
+  const kpiTargets = data?.kpi?.targets || { ftfr: 85, mttr: 2, diag: 98 };
+  const computeConfidence = (kpiObj: any) => {
     if (!kpiObj) return null;
     const candidates = [
       { key: 'ftfr', label: 'First-Time Fix Rate', value: kpiObj.ftfr, target: kpiTargets.ftfr, higherBetter: true, hasData: true },
-      { key: 'csat', label: 'Customer Satisfaction', value: kpiObj.csat, target: kpiTargets.csat, higherBetter: true, hasData: surveyOk },
       { key: 'mttr', label: 'Mean Time to Repair', value: kpiObj.mttr, target: kpiTargets.mttr, higherBetter: false, hasData: true },
       { key: 'diag', label: 'Technician Diagnostic Accuracy', value: kpiObj.diag, target: kpiTargets.diag, higherBetter: true, hasData: true },
     ].filter((c) => c.hasData && c.target > 0 && c.value != null);
@@ -127,8 +130,8 @@ export default function TabDashboard({
     const driver = withAttainment.reduce((best, c) => (c.attainment > best.attainment ? c : best), withAttainment[0]);
     return { score: Math.round(score * 10) / 10, driverLabel: driver.label, driverAttainment: Math.round(driver.attainment * 10) / 10 };
   };
-  const confidence = computeConfidence(currentKPI, hasSurveyData);
-  const prevConfidence = prevKPI ? computeConfidence(prevKPI, prevKPI?.hasSurveyData !== false) : null;
+  const confidence = computeConfidence(currentKPI);
+  const prevConfidence = prevKPI ? computeConfidence(prevKPI) : null;
   const confidenceDelta = confidence && prevConfidence ? Math.round((confidence.score - prevConfidence.score) * 10) / 10 : null;
 
   return (
@@ -350,12 +353,16 @@ export default function TabDashboard({
           },
           {
             label: 'NPS Score',
-            value: currentKPI?.csat || 0,
-            target: data?.kpi?.targets?.csat || 95,
-            delta: prevKPI ? Math.round((currentKPI.csat - prevKPI.csat) * 10) / 10 : null,
+            value: currentKPI?.nps || 0,
+            target: 0,
+            delta: prevKPI ? Math.round((currentKPI.nps - prevKPI.nps) * 10) / 10 : null,
             higherBetter: true,
+            format: (v: number) => `${v > 0 ? '+' : ''}${v.toFixed(1)}`,
             driver: 'Fewer detractor ratings lift this',
-            noData: !hasSurveyData
+            noData: !hasNpsData,
+            // No business-approved NPS target exists yet — show the score
+            // and trend only, not a fabricated target/variance comparison.
+            noTarget: true
           },
           {
             label: 'Mean Time to Repair (MTTR)',
@@ -376,8 +383,8 @@ export default function TabDashboard({
             driver: 'Fewer part mismatches lift this',
             noData: false
           },
-        ].map((k, i) => {
-          const isGood = k.higherBetter ? k.value >= k.target : k.value <= k.target;
+        ].map((k: any, i) => {
+          const isGood = k.noTarget ? null : (k.higherBetter ? k.value >= k.target : k.value <= k.target);
           // Real momentum badge derived from the actual MoM delta — never a
           // static per-card label unrelated to whether the metric improved.
           const badgeText = k.noData
@@ -431,17 +438,21 @@ export default function TabDashboard({
               </div>
 
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11.5px', color: '#64748b', marginBottom: '8px' }}>
-                  <span>Target: <b>{k.format ? k.format(k.target) : fmtPct(k.target)}</b></span>
-                  <span>Variance: <b style={{ color: k.noData ? '#64748b' : isGood ? '#047857' : '#b45309' }}>{k.noData ? 'No Data' : isGood ? 'Optimal' : 'Needs Focus'}</b></span>
-                </div>
-                <div style={{ height: '4px', background: '#f1f5f9', borderRadius: '2px', overflow: 'hidden', marginBottom: '10px' }}>
-                  <div style={{
-                    width: `${Math.min(100, Math.max(0, (k.value / k.target) * 100))}%`,
-                    height: '100%',
-                    background: isGood ? 'linear-gradient(90deg, #4E67EB, #10b981)' : 'linear-gradient(90deg, #f59e0b, #ef4444)'
-                  }}></div>
-                </div>
+                {!k.noTarget && (
+                  <>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11.5px', color: '#64748b', marginBottom: '8px' }}>
+                      <span>Target: <b>{k.format ? k.format(k.target) : fmtPct(k.target)}</b></span>
+                      <span>Variance: <b style={{ color: k.noData ? '#64748b' : isGood ? '#047857' : '#b45309' }}>{k.noData ? 'No Data' : isGood ? 'Optimal' : 'Needs Focus'}</b></span>
+                    </div>
+                    <div style={{ height: '4px', background: '#f1f5f9', borderRadius: '2px', overflow: 'hidden', marginBottom: '10px' }}>
+                      <div style={{
+                        width: `${Math.min(100, Math.max(0, (k.value / k.target) * 100))}%`,
+                        height: '100%',
+                        background: isGood ? 'linear-gradient(90deg, #4E67EB, #10b981)' : 'linear-gradient(90deg, #f59e0b, #ef4444)'
+                      }}></div>
+                    </div>
+                  </>
+                )}
                 <div style={{ fontSize: '11.5px', color: '#475569', fontWeight: 500 }}>
                   {k.driver}
                 </div>
@@ -478,7 +489,7 @@ export default function TabDashboard({
           <button onClick={() => scrollToSection('sec-mttr')} style={{ background: '#f8fafc', border: '1px solid #cbd5e1', color: '#0f172a', padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 700, cursor: 'pointer' }}>
             MTTR Deep Dive
           </button>
-          <button onClick={() => scrollToSection('sec-csat')} style={{ background: '#f8fafc', border: '1px solid #cbd5e1', color: '#0f172a', padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 700, cursor: 'pointer' }}>
+          <button onClick={() => scrollToSection('sec-nps')} style={{ background: '#f8fafc', border: '1px solid #cbd5e1', color: '#0f172a', padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 700, cursor: 'pointer' }}>
             NPS Deep Dive
           </button>
           <button onClick={() => scrollToSection('sec-trends')} style={{ background: '#f8fafc', border: '1px solid #cbd5e1', color: '#0f172a', padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 700, cursor: 'pointer' }}>
@@ -790,91 +801,82 @@ export default function TabDashboard({
         )}
       </div>
 
-      {/* SECTION 3: CUSTOMER SATISFACTION (C-SAT) DEEP DIVE ACCORDION */}
-      <div id="sec-csat" className="panel" style={{ marginBottom: '24px', padding: '0', overflow: 'hidden' }}>
+      {/* SECTION 3: NPS DEEP DIVE ACCORDION */}
+      <div id="sec-nps" className="panel" style={{ marginBottom: '24px', padding: '0', overflow: 'hidden' }}>
         <div
-          onClick={() => toggleSection('csat')}
+          onClick={() => toggleSection('nps')}
           style={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
             padding: '16px 20px',
             background: '#f8fafc',
-            borderBottom: expandedSections.csat ? '1px solid #e2e8f0' : 'none',
+            borderBottom: expandedSections.nps ? '1px solid #e2e8f0' : 'none',
             cursor: 'pointer',
             userSelect: 'none'
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <span style={{ fontSize: '16px', fontWeight: 800, color: '#E50046' }}>
-              {expandedSections.csat ? '▼' : '▶'}
+              {expandedSections.nps ? '▼' : '▶'}
             </span>
             <div>
               <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: '#0f172a' }}>
                 NPS Score Deep Dive
               </h3>
               <span style={{ fontSize: '12px', color: '#64748b' }}>
-                Empirical NPS survey distribution, feedback channel breakdown (WhatsApp vs IVR), and rating frequencies for {currentKPI?.month || selectedMonth}
+                Real IVR/WhatsApp survey rating distribution for {currentKPI?.month || selectedMonth}
               </span>
             </div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <span style={{ background: '#ecfdf5', color: '#047857', border: '1px solid #a7f3d0', padding: '4px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: 700 }}>
-              ✓ Verified NPS Dataset (10,570 Surveys)
+              ✓ {(currentKPI?.npsSent || 0).toLocaleString('en-IN')} Surveys Sent
             </span>
             <span style={{ background: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', padding: '6px 14px', borderRadius: '8px', fontSize: '13px', fontWeight: 800 }}>
-              NPS Score: {hasSurveyData ? fmtPct(currentKPI?.csat ?? 0) : '— (no responses)'}
+              NPS Score: {hasNpsData ? `${currentKPI.nps > 0 ? '+' : ''}${currentKPI.nps}` : '— (no responses)'}
             </span>
           </div>
         </div>
 
-        {expandedSections.csat && (
+        {expandedSections.nps && (
           <div style={{ padding: '20px' }}>
             {/* Top KPI Summary Cards — all derived from real survey-response
-                data (currentCsatDist), computed here rather than fabricated.
-                Survey Response Rate needs "total surveys sent" — a figure
-                Master Data doesn't carry — so it's marked not-tracked rather
-                than invented. */}
+                data, including Response Rate (now genuinely trackable via the
+                real NPS survey dataset — total surveys sent vs. responded). */}
             {(() => {
-              const totalResp = currentCsatDist.reduce((s: number, i: any) => s + (i.quantity || 0), 0);
-              const promoters = currentCsatDist.find((i: any) => i.key === '5')?.quantity || 0;
-              const detractors = currentCsatDist.filter((i: any) => i.key === '1' || i.key === '2').reduce((s: number, i: any) => s + (i.quantity || 0), 0);
-              const npsScore = totalResp > 0 ? Math.round(((promoters - detractors) / totalResp) * 1000) / 10 : null;
+              const totalResp = currentNpsDist.reduce((s: number, i: any) => s + (i.quantity || 0), 0);
+              const detractors = currentNpsDist.filter((i: any) => i.key === '1' || i.key === '2').reduce((s: number, i: any) => s + (i.quantity || 0), 0);
               const detractorPct = totalResp > 0 ? Math.round((detractors / totalResp) * 1000) / 10 : null;
               return (
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: '12px', marginBottom: '20px' }}>
                   <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '14px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>NPS Satisfaction Index</span>
-                    <span style={{ fontSize: '20px', fontWeight: 800, color: '#16a34a' }}>{hasSurveyData ? fmtPct(currentKPI?.csat ?? 0) : '—'}</span>
-                    <span style={{ fontSize: '11px', color: '#475569' }}>{hasSurveyData ? 'Target 95.0%' : 'No survey responses this month'}</span>
-                  </div>
-                  <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '14px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
                     <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>Net Promoter Score (NPS)</span>
-                    <span style={{ fontSize: '20px', fontWeight: 800, color: '#2563eb' }}>{npsScore !== null ? `${npsScore > 0 ? '+' : ''}${npsScore}` : '—'}</span>
+                    <span style={{ fontSize: '20px', fontWeight: 800, color: '#2563eb' }}>{hasNpsData ? `${currentKPI.nps > 0 ? '+' : ''}${currentKPI.nps}` : '—'}</span>
                     <span style={{ fontSize: '11px', color: '#475569' }}>Promoters % − Detractors %</span>
                   </div>
                   <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '14px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
                     <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>Detractor Rate (1-2 Stars)</span>
                     <span style={{ fontSize: '20px', fontWeight: 800, color: '#dc2626' }}>{detractorPct !== null ? `${detractorPct}%` : '—'}</span>
-                    <span style={{ fontSize: '11px', color: '#dc2626' }}>{detractors.toLocaleString('en-IN')} Detractor Work Orders</span>
+                    <span style={{ fontSize: '11px', color: '#dc2626' }}>{detractors.toLocaleString('en-IN')} Detractor Responses</span>
                   </div>
                   <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '14px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
                     <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>Survey Response Rate</span>
-                    <span style={{ fontSize: '20px', fontWeight: 800, color: '#94a3b8' }}>Not tracked</span>
-                    <span style={{ fontSize: '11px', color: '#64748b' }}>{totalResp.toLocaleString('en-IN')} responses — total surveys sent not in Master Data</span>
+                    <span style={{ fontSize: '20px', fontWeight: 800, color: '#0f172a' }}>{fmtPct(currentKPI?.npsResponseRate ?? 0)}</span>
+                    <span style={{ fontSize: '11px', color: '#64748b' }}>{totalResp.toLocaleString('en-IN')} of {(currentKPI?.npsSent || 0).toLocaleString('en-IN')} surveys sent</span>
                   </div>
                 </div>
               );
             })()}
 
-            {currentCsatDist.length === 0 && (
+            {currentNpsDist.length === 0 && (
               <div style={{ color: '#94a3b8', padding: '12px 0', fontSize: '13px' }}>
                 No survey responses recorded for {currentKPI?.month || selectedMonth}.
               </div>
             )}
             {/* Top Summary Badges Row for Rating 5 to 1 */}
             <div style={{ display: 'flex', gap: '12px', marginBottom: '20px', flexWrap: 'wrap' }}>
-              {currentCsatDist.map((item: any, idx: number) => {
+              {currentNpsDist.map((item: any, idx: number) => {
                 const badgeColor = item.key === '5' ? '#10b981' : item.key === '4' ? '#34d399' : item.key === '3' ? '#f59e0b' : item.key === '2' ? '#f97316' : '#ef4444';
                 const bgTint = item.key === '5' || item.key === '4' ? '#ecfdf5' : item.key === '3' ? '#fffbeb' : '#fef2f2';
                 return (
@@ -908,21 +910,21 @@ export default function TabDashboard({
               </div>
               {isMounted && (
                 <ResponsiveContainer width="100%" height="82%">
-                  <BarChart data={currentCsatDist} margin={{ top: 25, right: 30, left: 10, bottom: 5 }}>
+                  <BarChart data={currentNpsDist} margin={{ top: 25, right: 30, left: 10, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                     <XAxis dataKey="label" tickLine={false} style={{ fontSize: '12px', fontWeight: 700, fill: '#1e293b' }} />
                     <YAxis tickLine={false} style={{ fontSize: '11px', fill: '#64748b' }} />
                     <Tooltip formatter={(val: any) => [`${val.toLocaleString('en-IN')} survey responses`, 'Quantity']} />
                     <Bar dataKey="quantity" name="Responses" radius={[6, 6, 0, 0]}>
-                      {currentCsatDist.map((entry: any, index: number) => {
+                      {currentNpsDist.map((entry: any, index: number) => {
                         const colors = ['#10b981', '#34d399', '#f59e0b', '#f97316', '#ef4444'];
-                        return <Cell key={`cell-csat-${index}`} fill={colors[index % colors.length]} />;
+                        return <Cell key={`cell-nps-${index}`} fill={colors[index % colors.length]} />;
                       })}
                       <LabelList
                         dataKey="quantity"
                         position="top"
                         content={({ x, y, width, index }: any) => {
-                          const item = currentCsatDist[index];
+                          const item = currentNpsDist[index];
                           if (!item) return null;
                           return (
                             <text
@@ -950,15 +952,38 @@ export default function TabDashboard({
                 Performance breakdown across automated customer feedback touchpoints
               </div>
 
-              {/* This table was previously entirely hardcoded (WhatsApp/IVR
-                  row values were static JSX, not derived from any variable).
-                  The raw NPS survey export does carry a "Type" (channel)
-                  column, but it isn't imported/persisted anywhere today, so
-                  there is no real per-channel data to show yet. Showing a
-                  fabricated table was worse than showing nothing. */}
-              <div style={{ padding: '24px', textAlign: 'center', color: '#94a3b8', fontSize: '13px', background: '#f8fafc', borderRadius: '8px', border: '1px dashed #cbd5e1' }}>
-                Channel-level survey breakdown (WhatsApp vs IVR) is not yet tracked — the NPS import doesn't persist survey channel today.
-              </div>
+              {(currentKPI?.npsByChannel || []).length === 0 ? (
+                <div style={{ padding: '24px', textAlign: 'center', color: '#94a3b8', fontSize: '13px', background: '#f8fafc', borderRadius: '8px', border: '1px dashed #cbd5e1' }}>
+                  No channel-level survey responses recorded for {currentKPI?.month || selectedMonth}.
+                </div>
+              ) : (
+                <div style={{ overflowX: 'auto' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
+                    <thead>
+                      <tr style={{ borderBottom: '2px solid #e2e8f0' }}>
+                        <th style={{ textAlign: 'left', padding: '8px', color: '#64748b', fontWeight: 700 }}>Channel</th>
+                        <th style={{ textAlign: 'center', padding: '8px', color: '#64748b', fontWeight: 700 }}>Sent</th>
+                        <th style={{ textAlign: 'center', padding: '8px', color: '#64748b', fontWeight: 700 }}>Response Rate</th>
+                        <th style={{ textAlign: 'center', padding: '8px', color: '#64748b', fontWeight: 700 }}>Detractor %</th>
+                        <th style={{ textAlign: 'center', padding: '8px', color: '#64748b', fontWeight: 700 }}>Promoter %</th>
+                        <th style={{ textAlign: 'center', padding: '8px', color: '#64748b', fontWeight: 700 }}>NPS Score</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {currentKPI.npsByChannel.map((ch: any, i: number) => (
+                        <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                          <td style={{ padding: '8px', fontWeight: 700, color: '#0f172a' }}>{ch.channel}</td>
+                          <td style={{ padding: '8px', textAlign: 'center' }}>{ch.sent.toLocaleString('en-IN')}</td>
+                          <td style={{ padding: '8px', textAlign: 'center' }}>{fmtPct(ch.responseRate)}</td>
+                          <td style={{ padding: '8px', textAlign: 'center', color: '#dc2626' }}>{fmtPct(ch.detractorPct)}</td>
+                          <td style={{ padding: '8px', textAlign: 'center', color: '#047857' }}>{fmtPct(ch.promoterPct)}</td>
+                          <td style={{ padding: '8px', textAlign: 'center', fontWeight: 700 }}>{ch.npsScore > 0 ? '+' : ''}{ch.npsScore}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -988,7 +1013,7 @@ export default function TabDashboard({
                 Organizational KPI Trends &amp; Monthly Shifts ({currentKPI?.month || selectedMonth})
               </h3>
               <span style={{ fontSize: '12px', color: '#64748b' }}>
-                Multi-month trajectory lines for FTFR, C-SAT, MTTR, Diagnostic Accuracy and MoM operational changes
+                Multi-month trajectory lines for FTFR, NPS, MTTR, Diagnostic Accuracy and MoM operational changes
               </span>
             </div>
           </div>
@@ -1013,7 +1038,7 @@ export default function TabDashboard({
                         <Tooltip />
                         <Legend verticalAlign="bottom" height={36} iconType="circle" />
                         <Line yAxisId="left" type="monotone" dataKey="ftfr" name="First-time fix rate (%)" stroke="#2E4D8E" strokeWidth={3} />
-                        <Line yAxisId="left" type="monotone" dataKey="csat" name="NPS Score (%)" stroke="#4E67EB" strokeWidth={3} />
+                        <Line yAxisId="left" type="monotone" dataKey="nps" name="NPS Score" stroke="#4E67EB" strokeWidth={3} />
                         <Line yAxisId="left" type="monotone" dataKey="diag" name="Diagnostic accuracy (%)" stroke="#C0392B" strokeWidth={3} />
                         <Line yAxisId="right" type="monotone" dataKey="mttr" name="MTTR (days)" stroke="#D98A1F" strokeWidth={3} strokeDasharray="5 5" />
                       </LineChart>

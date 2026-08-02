@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TableSummaryRow } from './ui/Table';
 import { DASHBOARD_DEFINITIONS } from '../constants/definitions';
-import { REPAIR_CPC_DATA, REPLACEMENT_CPC_DATA } from '../constants/cpcData';
-import { ALL_ASP_PERF_DATA } from '../constants/aspData';
 import { DYNAMIC_CPC_DATA_BY_MONTH } from '../constants/cpcDataDynamic';
 import { DYNAMIC_SAH_DATA_BY_MONTH } from '../constants/sahDataDynamic';
 import { MODEL_SEGMENT_DATA_BY_MONTH } from '../constants/modelSegmentDataDynamic';
@@ -52,52 +50,26 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
     setOvAsmRow(null);
   };
 
-  // Smartphone-only BUSM NPS breakdown (Jun 2026 NPS survey dataset: 6,801 Smartphone surveys)
-  const spBusmData = [
-    { name: 'Rajesh Limbachia', total: 1440, rr: '44.8%', d: '9.5%', p: '9.3%', pr: '81.2%', nps: '71.8%', rank: 1 },
-    { name: 'Tamilselvan Subramanian', total: 868, rr: '57.3%', d: '7.0%', p: '18.5%', pr: '74.4%', nps: '67.4%', rank: 2 },
-    { name: 'Shivaprasad P U', total: 1161, rr: '44.5%', d: '9.7%', p: '14.7%', pr: '75.6%', nps: '66.0%', rank: 3 },
-    { name: 'Sukhbir Singh', total: 2236, rr: '45.3%', d: '11.7%', p: '15.1%', pr: '73.2%', nps: '61.6%', rank: 4 },
-    { name: 'Jitesh S Rath', total: 1096, rr: '47.7%', d: '13.2%', p: '15.9%', pr: '70.9%', nps: '57.7%', rank: 5 },
-  ];
+  // Real per-BUSM/ASM NPS breakdown from the NPS survey dataset — replaces
+  // the previous static arrays that were frozen on June 2026 forever (they
+  // wouldn't have updated even after new months' data was imported).
+  // toDisplayNps reshapes the backend's numeric fields into the display
+  // format (percentage strings) the tables below already render.
+  const toDisplayNps = (entries: any[], includeRr: boolean) => (entries || []).map((e: any) => ({
+    name: e.name,
+    busm: e.busm,
+    total: e.sent,
+    ...(includeRr ? { rr: `${e.responseRate}%` } : {}),
+    d: `${e.detractorPct}%`,
+    p: `${e.passivePct}%`,
+    pr: `${e.promoterPct}%`,
+    nps: `${e.npsScore}%`,
+    rank: e.rank,
+  }));
 
-  // Smartphone-only ASM NPS breakdown (Jun 2026 NPS survey dataset)
-  const spAsmData = [
-    { name: 'Soukeen Khan', busm: 'Rajesh Limbachia', total: 219, d: '8.4%', p: '0.9%', pr: '90.7%', nps: '82.2%', rank: 1 },
-    { name: 'Arjun Singh', busm: 'Tamilselvan Subramanian', total: 191, d: '2.7%', p: '13.7%', pr: '83.6%', nps: '80.8%', rank: 2 },
-    { name: 'Pushpendra Singh', busm: 'Rajesh Limbachia', total: 277, d: '6.1%', p: '7.4%', pr: '86.5%', nps: '80.4%', rank: 3 },
-    { name: 'Prasanta Barik', busm: 'Tamilselvan Subramanian', total: 165, d: '7.1%', p: '9.2%', pr: '83.7%', nps: '76.5%', rank: 4 },
-    { name: 'Hem Chandra Joshi', busm: 'Sukhbir Singh', total: 264, d: '5.5%', p: '14.7%', pr: '79.8%', nps: '74.3%', rank: 5 },
-    { name: 'D C Manikantha', busm: 'Shivaprasad P U', total: 220, d: '7.8%', p: '11.1%', pr: '81.1%', nps: '73.3%', rank: 6 },
-    { name: 'Firoj Alam', busm: 'Jitesh S Rath', total: 203, d: '7.8%', p: '11.8%', pr: '80.4%', nps: '72.5%', rank: 7 },
-    { name: 'Gulam Moula Laskar', busm: 'Jitesh S Rath', total: 202, d: '7.3%', p: '13.4%', pr: '79.3%', nps: '72.0%', rank: 8 },
-    { name: 'Sushil R. Turkar', busm: 'Shivaprasad P U', total: 237, d: '4.2%', p: '19.8%', pr: '76.0%', nps: '71.9%', rank: 9 },
-    { name: 'Raja R', busm: 'Tamilselvan Subramanian', total: 66, d: '2.5%', p: '25.0%', pr: '72.5%', nps: '70.0%', rank: 10 },
-    { name: 'Alpesh Rabari', busm: 'Rajesh Limbachia', total: 273, d: '7.8%', p: '15.5%', pr: '76.7%', nps: '69.0%', rank: 11 },
-    { name: 'Gajender Chandel', busm: 'Sukhbir Singh', total: 195, d: '9.6%', p: '12.3%', pr: '78.1%', nps: '68.5%', rank: 12 },
-    { name: 'Shyam Sunder Dixit', busm: 'Rajesh Limbachia', total: 212, d: '12.2%', p: '9.5%', pr: '78.4%', nps: '66.2%', rank: 13 },
-    { name: 'Koshi Jain', busm: 'Rajesh Limbachia', total: 322, d: '11.1%', p: '12.7%', pr: '76.2%', nps: '65.1%', rank: 14 },
-    { name: 'K.Venkateswarlu', busm: 'Tamilselvan Subramanian', total: 87, d: '6.9%', p: '22.4%', pr: '70.7%', nps: '63.8%', rank: 15 },
-    { name: 'Vikram Singh Rajput', busm: 'Shivaprasad P U', total: 148, d: '12.2%', p: '12.2%', pr: '75.7%', nps: '63.5%', rank: 16 },
-    { name: 'Abhishek Kumar', busm: 'Shivaprasad P U', total: 172, d: '12.0%', p: '13.3%', pr: '74.7%', nps: '62.7%', rank: 17 },
-    { name: 'Sathish Kumar B', busm: 'Tamilselvan Subramanian', total: 90, d: '10.4%', p: '16.7%', pr: '72.9%', nps: '62.5%', rank: 18 },
-    { name: 'Dnyaneshwar R Shelar', busm: 'Shivaprasad P U', total: 250, d: '10.2%', p: '17.8%', pr: '72.0%', nps: '61.9%', rank: 19 },
-    { name: 'Mohd. Shadan Aaqil', busm: 'Sukhbir Singh', total: 177, d: '7.9%', p: '22.4%', pr: '69.7%', nps: '61.8%', rank: 20 },
-    { name: 'Madhukesh Sharma', busm: 'Sukhbir Singh', total: 391, d: '13.1%', p: '12.1%', pr: '74.9%', nps: '61.8%', rank: 21 },
-    { name: 'Sathya S', busm: 'Shivaprasad P U', total: 134, d: '14.1%', p: '10.9%', pr: '75.0%', nps: '60.9%', rank: 22 },
-    { name: 'AniketKumar Pandey', busm: 'Rajesh Limbachia', total: 137, d: '14.9%', p: '9.5%', pr: '75.7%', nps: '60.8%', rank: 23 },
-    { name: 'Nafis Ahmed', busm: 'Sukhbir Singh', total: 206, d: '14.1%', p: '11.8%', pr: '74.1%', nps: '60.0%', rank: 24 },
-    { name: 'Deepan S', busm: 'Tamilselvan Subramanian', total: 76, d: '7.7%', p: '25.0%', pr: '67.3%', nps: '59.6%', rank: 25 },
-    { name: 'Kamal kant', busm: 'Sukhbir Singh', total: 211, d: '12.1%', p: '16.2%', pr: '71.7%', nps: '59.6%', rank: 26 },
-    { name: 'Prashanth Kumar', busm: 'Tamilselvan Subramanian', total: 100, d: '7.8%', p: '25.0%', pr: '67.2%', nps: '59.4%', rank: 27 },
-    { name: 'Praveendas K', busm: 'Tamilselvan Subramanian', total: 93, d: '10.9%', p: '20.3%', pr: '68.8%', nps: '57.8%', rank: 28 },
-    { name: 'Arun Bhatia', busm: 'Sukhbir Singh', total: 512, d: '12.7%', p: '17.5%', pr: '69.8%', nps: '57.1%', rank: 29 },
-    { name: 'Ashwani kumar', busm: 'Sukhbir Singh', total: 280, d: '14.3%', p: '14.3%', pr: '71.4%', nps: '57.1%', rank: 30 },
-    { name: 'Md Tanweer Alam', busm: 'Jitesh S Rath', total: 172, d: '15.1%', p: '17.4%', pr: '67.4%', nps: '52.3%', rank: 31 },
-    { name: 'Anisur Rehman Mullick', busm: 'Jitesh S Rath', total: 209, d: '17.1%', p: '14.4%', pr: '68.5%', nps: '51.4%', rank: 32 },
-    { name: 'Awadhesh Kumar Singh', busm: 'Jitesh S Rath', total: 184, d: '18.1%', p: '15.7%', pr: '66.3%', nps: '48.2%', rank: 33 },
-    { name: 'Rahul Kumar', busm: 'Jitesh S Rath', total: 126, d: '13.6%', p: '27.1%', pr: '59.3%', nps: '45.8%', rank: 34 },
-  ];
+  const npsMonthData = data?.npsInsights?.by_month?.[selectedMonth] || {};
+  const spBusmData = toDisplayNps(npsMonthData.busmSmartphone, true);
+  const spAsmData = toDisplayNps(npsMonthData.asmSmartphone, false);
 
   const getRankBadgeStyle = (rank: any, maxRank = 35) => {
     const parsedRank = typeof rank === 'string' ? parseInt(rank.replace(/[^0-9]/g, ''), 10) : Number(rank);
@@ -185,51 +157,9 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
   const currentCpcDataset = DYNAMIC_CPC_DATA_BY_MONTH[selectedMonth] || DYNAMIC_CPC_DATA_BY_MONTH['Jun'];
   const currentSahDataset = DYNAMIC_SAH_DATA_BY_MONTH[selectedMonth] || DYNAMIC_SAH_DATA_BY_MONTH['All'];
 
-  // NPS data — Jun 2026 NPS survey snapshot (sourced from Jun26 NPS Data.xlsx)
-  const busmNpsData = [
-    { name: 'Jitesh S Rath', total: 2336, rr: '33.6%', d: '12.6%', p: '15.3%', pr: '72.1%', nps: '59.5%', rank: 5 },
-    { name: 'Rajesh Limbachia', total: 2154, rr: '36.0%', d: '10.3%', p: '9.0%', pr: '80.7%', nps: '70.4%', rank: 1 },
-    { name: 'Shivaprasad P U', total: 2521, rr: '32.6%', d: '8.5%', p: '13.6%', pr: '77.9%', nps: '69.4%', rank: 2 },
-    { name: 'Sukhbir Singh', total: 3093, rr: '38.3%', d: '11.1%', p: '14.1%', pr: '74.8%', nps: '63.7%', rank: 4 },
-    { name: 'Tamilselvan Subramanian', total: 2047, rr: '43.0%', d: '9.8%', p: '15.3%', pr: '74.9%', nps: '65.1%', rank: 3 },
-  ];
-
-  const asmNpsData = [
-    { name: 'Abhishek Kumar', busm: 'Shivaprasad P U', total: 402, d: '10.8%', p: '11.7%', pr: '77.5%', nps: '66.7%', rank: 12 },
-    { name: 'Alpesh Rabari', busm: 'Rajesh Limbachia', total: 481, d: '8.8%', p: '14.9%', pr: '76.4%', nps: '67.6%', rank: 11 },
-    { name: 'AniketKumar Pandey', busm: 'Jitesh S Rath', total: 177, d: '17.3%', p: '9.9%', pr: '72.8%', nps: '55.6%', rank: 31 },
-    { name: 'Anisur Rehman Mullick', busm: 'Jitesh S Rath', total: 662, d: '14.6%', p: '13.2%', pr: '72.1%', nps: '57.5%', rank: 29 },
-    { name: 'Arjun Singh', busm: 'Tamilselvan Subramanian', total: 244, d: '4.8%', p: '12.0%', pr: '83.1%', nps: '78.3%', rank: 3 },
-    { name: 'Arun Bhatia', busm: 'Sukhbir Singh', total: 612, d: '12.0%', p: '15.9%', pr: '72.1%', nps: '60.1%', rank: 27 },
-    { name: 'Ashwani kumar', busm: 'Rajesh Limbachia', total: 436, d: '13.1%', p: '14.4%', pr: '72.5%', nps: '59.5%', rank: 28 },
-    { name: 'Awadhesh Kumar Singh', busm: 'Jitesh S Rath', total: 300, d: '15.7%', p: '13.9%', pr: '70.4%', nps: '54.6%', rank: 32 },
-    { name: 'D C Manikantha', busm: 'Shivaprasad P U', total: 634, d: '6.1%', p: '12.1%', pr: '81.8%', nps: '75.8%', rank: 4 },
-    { name: 'Deepan S', busm: 'Tamilselvan Subramanian', total: 289, d: '10.1%', p: '15.1%', pr: '74.8%', nps: '64.7%', rank: 17 },
-    { name: 'Dnyaneshwar R Shelar', busm: 'Shivaprasad P U', total: 373, d: '10.4%', p: '16.7%', pr: '72.9%', nps: '62.5%', rank: 23 },
-    { name: 'Firoj Alam', busm: 'Jitesh S Rath', total: 492, d: '6.5%', p: '13.7%', pr: '79.7%', nps: '73.2%', rank: 7 },
-    { name: 'Gajender Chandel', busm: 'Sukhbir Singh', total: 221, d: '10.1%', p: '11.4%', pr: '78.5%', nps: '68.4%', rank: 9 },
-    { name: 'Gulam Moula Laskar', busm: 'Jitesh S Rath', total: 326, d: '7.5%', p: '15.1%', pr: '77.4%', nps: '69.8%', rank: 8 },
-    { name: 'Hem Chandra Joshi', busm: 'Sukhbir Singh', total: 398, d: '6.3%', p: '11.9%', pr: '81.8%', nps: '75.5%', rank: 5 },
-    { name: 'K.Venkateswarlu', busm: 'Tamilselvan Subramanian', total: 169, d: '9.6%', p: '17.0%', pr: '73.4%', nps: '63.8%', rank: 20 },
-    { name: 'Kamal kant', busm: 'Sukhbir Singh', total: 330, d: '12.6%', p: '14.2%', pr: '73.2%', nps: '60.6%', rank: 25 },
-    { name: 'Koshi Jain', busm: 'Rajesh Limbachia', total: 419, d: '12.5%', p: '11.8%', pr: '75.7%', nps: '63.2%', rank: 22 },
-    { name: 'Madhukesh Sharma', busm: 'Sukhbir Singh', total: 499, d: '11.7%', p: '12.2%', pr: '76.1%', nps: '64.4%', rank: 19 },
-    { name: 'Md Tanweer Alam', busm: 'Jitesh S Rath', total: 342, d: '16.7%', p: '16.7%', pr: '66.7%', nps: '50.0%', rank: 33 },
-    { name: 'Mohd. Shadan Aaqil', busm: 'Sukhbir Singh', total: 231, d: '8.2%', p: '22.4%', pr: '69.4%', nps: '61.2%', rank: 24 },
-    { name: 'Nafis Ahmed', busm: 'Sukhbir Singh', total: 366, d: '12.9%', p: '10.9%', pr: '76.2%', nps: '63.4%', rank: 21 },
-    { name: 'Prasanta Barik', busm: 'Tamilselvan Subramanian', total: 363, d: '11.5%', p: '8.6%', pr: '79.9%', nps: '68.3%', rank: 10 },
-    { name: 'Prashanth Kumar', busm: 'Tamilselvan Subramanian', total: 238, d: '6.8%', p: '20.4%', pr: '72.8%', nps: '66.0%', rank: 14 },
-    { name: 'Praveendas K', busm: 'Tamilselvan Subramanian', total: 272, d: '12.7%', p: '18.6%', pr: '68.6%', nps: '55.9%', rank: 30 },
-    { name: 'Pushpendra Singh', busm: 'Rajesh Limbachia', total: 435, d: '7.0%', p: '7.0%', pr: '86.0%', nps: '79.1%', rank: 2 },
-    { name: 'Rahul Kumar', busm: 'Jitesh S Rath', total: 214, d: '15.1%', p: '23.3%', pr: '61.6%', nps: '46.5%', rank: 34 },
-    { name: 'Raja R', busm: 'Tamilselvan Subramanian', total: 140, d: '8.5%', p: '22.5%', pr: '69.0%', nps: '60.6%', rank: 26 },
-    { name: 'Sathish Kumar B', busm: 'Tamilselvan Subramanian', total: 332, d: '11.3%', p: '12.8%', pr: '75.9%', nps: '64.7%', rank: 18 },
-    { name: 'Sathya S', busm: 'Shivaprasad P U', total: 232, d: '12.8%', p: '9.3%', pr: '77.9%', nps: '65.1%', rank: 16 },
-    { name: 'Shyam Sunder Dixit', busm: 'Sukhbir Singh', total: 322, d: '12.7%', p: '8.8%', pr: '78.4%', nps: '65.7%', rank: 15 },
-    { name: 'Soukeen Khan', busm: 'Rajesh Limbachia', total: 320, d: '7.8%', p: '1.6%', pr: '90.7%', nps: '82.9%', rank: 1 },
-    { name: 'Sushil R. Turkar', busm: 'Shivaprasad P U', total: 547, d: '4.9%', p: '16.0%', pr: '79.1%', nps: '74.2%', rank: 6 },
-    { name: 'Vikram Singh Rajput', busm: 'Shivaprasad P U', total: 333, d: '9.8%', p: '14.3%', pr: '75.9%', nps: '66.1%', rank: 13 },
-  ];
+  // Real per-BUSM/ASM NPS breakdown, All Devices Combined.
+  const busmNpsData = toDisplayNps(npsMonthData.busmAll, true);
+  const asmNpsData = toDisplayNps(npsMonthData.asmAll, false);
 
   // Helper map for normalizing name comparisons
   const normalizeKey = (s: string) => (s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -387,53 +317,77 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
   // coverage, not just a curated top-10 sample. See npsAspDataDynamic.ts.
   const topAspNpsData = ALL_ASP_NPS_DATA;
 
-  // Combined ASP performance dataset (NPS actuals + TAT/SAH/FTFR/CSAT from Lava Delivered Master Data)
-  // TODO: Replace with API-driven data when ASP-level performance data is exposed from the backend
-  const aspPerfData = [
-    { code: 'ASP-1102652', name: 'CELL CARE SERVICES', asm: 'Abhishek Kumar', busm: 'Shivaprasad P U', wo: 127, tat: 38.0, sah: 94.5, ftfr: 82.3, csat: 91.0, nps: 60.0, p1: 38.0, p2: 11.0, p3: 29.0, p5: 22.0, cancel: 28.4, reschedule: 9.2, sda: 33.1, pending: 5.8 },
-    { code: 'ASP-1102700', name: 'SAI SHOPEE', asm: 'Sushil R. Turkar', busm: 'Shivaprasad P U', wo: 183, tat: 40.5, sah: 96.2, ftfr: 85.1, csat: 93.5, nps: 78.9, p1: 40.0, p2: 12.0, p3: 27.0, p5: 21.0, cancel: 26.7, reschedule: 8.8, sda: 34.5, pending: 4.9 },
-    { code: 'ASP-1103754', name: 'EXCELLENT SERVICES', asm: 'Abhishek Kumar', busm: 'Shivaprasad P U', wo: 148, tat: 36.2, sah: 95.0, ftfr: 81.0, csat: 92.0, nps: 80.0, p1: 36.0, p2: 10.0, p3: 30.0, p5: 24.0, cancel: 27.9, reschedule: 9.5, sda: 32.8, pending: 6.1 },
-    { code: 'ASP-1102679', name: 'DRISHTI TECHNOLOGY', asm: 'Alpesh Rabari', busm: 'Rajesh Limbachia', wo: 212, tat: 45.3, sah: 97.1, ftfr: 87.2, csat: 94.2, nps: 63.6, p1: 44.0, p2: 11.0, p3: 27.0, p5: 18.0, cancel: 25.1, reschedule: 8.1, sda: 36.2, pending: 4.2 },
-    { code: 'ASP-1103613', name: 'SMART SOLUTION', asm: 'Anisur Rehman Mullick', busm: 'Jitesh S Rath', wo: 267, tat: 35.4, sah: 93.8, ftfr: 80.5, csat: 89.5, nps: 52.5, p1: 36.0, p2: 7.0, p3: 24.0, p5: 33.0, cancel: 31.2, reschedule: 10.5, sda: 29.8, pending: 7.2 },
-    { code: 'ASP-1103679', name: 'M/S NEW NOVELTY', asm: 'Firoj Alam', busm: 'Jitesh S Rath', wo: 195, tat: 37.8, sah: 94.2, ftfr: 83.0, csat: 91.8, nps: 69.4, p1: 37.0, p2: 7.0, p3: 24.0, p5: 32.0, cancel: 30.5, reschedule: 9.8, sda: 30.6, pending: 6.8 },
-    { code: 'ASP-1102761', name: 'TECH SOLUTION', asm: 'Gajender Chandel', busm: 'Sukhbir Singh', wo: 221, tat: 43.2, sah: 96.5, ftfr: 86.0, csat: 93.0, nps: 68.2, p1: 45.0, p2: 9.0, p3: 23.0, p5: 23.0, cancel: 27.3, reschedule: 9.1, sda: 35.0, pending: 5.0 },
-    { code: 'ASP-1102682', name: 'RAINBOW COMMUNICATION', asm: 'Hem Chandra Joshi', busm: 'Sukhbir Singh', wo: 178, tat: 44.8, sah: 97.3, ftfr: 88.5, csat: 94.8, nps: 77.1, p1: 44.0, p2: 10.0, p3: 23.0, p5: 23.0, cancel: 26.1, reschedule: 8.4, sda: 36.8, pending: 4.5 },
-    { code: 'ASP-1101746', name: 'ABHISHEK SALES', asm: 'Nafis Ahmed', busm: 'Sukhbir Singh', wo: 308, tat: 45.1, sah: 96.0, ftfr: 86.8, csat: 93.2, nps: 68.2, p1: 45.0, p2: 9.0, p3: 23.0, p5: 23.0, cancel: 27.8, reschedule: 9.6, sda: 35.2, pending: 5.2 },
-    { code: 'ASP-1102180', name: 'Q COM', asm: 'Pushpendra Singh', busm: 'Rajesh Limbachia', wo: 241, tat: 45.8, sah: 97.8, ftfr: 88.9, csat: 95.0, nps: 78.6, p1: 44.0, p2: 10.0, p3: 27.0, p5: 19.0, cancel: 24.5, reschedule: 7.9, sda: 37.0, pending: 4.1 },
-  ];
+  // Real per-ASP performance, sourced from the backend's aspStats/childMetrics
+  // (Score Card v2 pipeline) — replaces the previous 610-entry fabricated
+  // constants/aspData.ts. "All Months" is a WO-weighted average across every
+  // month an ASP has data for, matching the methodology used elsewhere in
+  // this file rather than picking one arbitrary snapshot month.
+  const allAspRows: any[] = data?.asp || [];
+  const aspRowsForSelectedMonth: any[] = selectedMonth === 'All'
+    ? (() => {
+      const byActor = new Map<string, any[]>();
+      allAspRows.forEach((r) => {
+        if (!byActor.has(r.actor)) byActor.set(r.actor, []);
+        byActor.get(r.actor)!.push(r);
+      });
+      const wavg = (rows: any[], getter: (r: any) => number | null | undefined): number => {
+        const valid = rows.filter((r) => getter(r) !== null && getter(r) !== undefined);
+        const w = valid.reduce((s, r) => s + (r.wo || 0), 0);
+        return w > 0 ? valid.reduce((s, r) => s + (getter(r) as number) * (r.wo || 0), 0) / w : 0;
+      };
+      return Array.from(byActor.entries()).map(([actor, rows]) => ({
+        actor,
+        code: rows[0]?.code,
+        busm: rows[0]?.busm,
+        asm: rows[0]?.asm,
+        wo: rows.reduce((s, r) => s + (r.wo || 0), 0),
+        overall: wavg(rows, (r) => r.overall),
+        childMetrics: {
+          tatClosurePct: { value: wavg(rows, (r) => r.childMetrics?.tatClosurePct?.value) },
+          cpc: { value: wavg(rows, (r) => r.childMetrics?.cpc?.value) },
+          sahCombinedPct: { value: wavg(rows, (r) => r.childMetrics?.sahCombinedPct?.value) },
+          npsPct: { value: wavg(rows, (r) => r.childMetrics?.npsPct?.value) },
+          diagPct: { value: wavg(rows, (r) => r.childMetrics?.diagPct?.value) },
+        },
+      }));
+    })()
+    : allAspRows.filter((r) => r.month === selectedMonth);
 
-  // Filter ASPs by selected ASM (sourced from ALL_ASP_PERF_DATA covering all 610 ASP centres across the nation)
   const filteredAspList = ovAsmRow
-    ? ALL_ASP_PERF_DATA.filter(a => a.asm === ovAsmRow)
+    ? aspRowsForSelectedMonth
+      .filter((a) => a.asm === ovAsmRow)
+      .map((a) => ({
+        code: a.code,
+        name: a.actor,
+        asm: a.asm,
+        busm: a.busm,
+        wo: a.wo,
+        tat: Math.round((a.childMetrics?.tatClosurePct?.value ?? 0) * 10) / 10,
+        cpc: Math.round(a.childMetrics?.cpc?.value ?? 0),
+        sah: Math.round((100 - (a.childMetrics?.sahCombinedPct?.value ?? 0)) * 10) / 10,
+        nps: Math.round((a.childMetrics?.npsPct?.value ?? 0) * 10) / 10,
+        diag: Math.round((a.childMetrics?.diagPct?.value ?? 0) * 10) / 10,
+        cag: Math.round((a.overall ?? 0) * 10) / 10,
+      }))
     : [];
 
-  // DSAT reason breakdown — Jun 2026 NPS survey snapshot (static; sourced from Jun26 NPS Data.xlsx)
-  // TODO: Replace with API-driven data when DSAT survey data is ingested into the database
-  const dsatBusmData = [
-    { name: 'Sukhbir Singh', delay: 34, repair: 45, aspBehav: 5, replace: 9, cost: 4, deny: 1, total: 121 },
-    { name: 'Jitesh S Rath', delay: 30, repair: 19, aspBehav: 11, replace: 1, cost: 4, deny: 0, total: 78 },
-    { name: 'Rajesh Limbachia', delay: 26, repair: 15, aspBehav: 11, replace: 4, cost: 2, deny: 5, total: 61 },
-    { name: 'Tamilselvan Subramanian', delay: 19, repair: 8, aspBehav: 3, replace: 3, cost: 5, deny: 1, total: 46 },
-    { name: 'Shivaprasad P U', delay: 22, repair: 8, aspBehav: 8, replace: 3, cost: 1, deny: 1, total: 44 },
-  ];
+  // Real DSAT (detractor callback reason) breakdown by BUSM, from the NPS
+  // survey dataset's "Detractor Calling" reason column.
+  const dsatBusmData = npsMonthData.dsatByBusm || [];
 
-  // Device category NPS breakdown — Jun 2026 NPS survey snapshot (static; sourced from Jun26 NPS Data.xlsx)
-  // TODO: Replace with API-driven data when NPS survey data is ingested into the database
-  const deviceCategoryNps = [
-    { cat: 'Feature Phone', surveys: 5350, d: '10.7%', p: '11.1%', pr: '78.2%', nps: '67.5%' },
-    { cat: 'Smart Phone', surveys: 6801, d: '10.3%', p: '21.2%', pr: '68.5%', nps: '58.2%' },
-    { cat: 'Overall Combined', surveys: 12151, d: '10.5%', p: '13.6%', pr: '75.9%', nps: '65.4%' },
-  ];
+  // Real device-category NPS summary (Feature Phone / Smart Phone / Overall
+  // Combined), from the same dataset's device-category field.
+  const deviceCategoryNps = (npsMonthData.deviceCategorySummary || []).map((c: any) => ({
+    cat: c.cat,
+    surveys: c.sent,
+    d: `${c.detractorPct}%`,
+    p: `${c.passivePct}%`,
+    pr: `${c.promoterPct}%`,
+    nps: `${c.npsScore}%`,
+  }));
 
-  // Feature Phone BUSM NPS breakdown — Jun 2026 NPS survey snapshot (static; sourced from Jun26 NPS Data.xlsx)
-  // TODO: Replace with API-driven data when NPS survey data is ingested into the database
-  const fpBusmData = [
-    { name: 'Jitesh S Rath', total: 1240, d: '11.4%', p: '14.1%', pr: '74.5%', nps: '63.1%' },
-    { name: 'Rajesh Limbachia', total: 714, d: '14.5%', p: '7.6%', pr: '77.9%', nps: '63.4%' },
-    { name: 'Shivaprasad P U', total: 1360, d: '6.5%', p: '11.8%', pr: '81.7%', nps: '75.2%' },
-    { name: 'Sukhbir Singh', total: 857, d: '8.0%', p: '8.0%', pr: '83.9%', nps: '75.9%' },
-    { name: 'Tamilselvan Subramanian', total: 1179, d: '13.3%', p: '11.2%', pr: '75.5%', nps: '62.1%' },
-  ];
+  // Real Feature-Phone-only BUSM NPS breakdown.
+  const fpBusmData = toDisplayNps(npsMonthData.busmFeaturePhone, false);
 
 
 
@@ -935,7 +889,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   ASP Centre Performance Breakdown
                 </h3>
                 <span style={{ fontSize: '12px', color: '#64748b' }}>
-                  {filteredAspList.length > 0 ? `${filteredAspList.length} ASP centre(s) under ${ovAsmRow}` : `No ASP data available yet for ${ovAsmRow} — will populate when backend is connected`}
+                  {filteredAspList.length > 0 ? `${filteredAspList.length} ASP centre(s) under ${ovAsmRow}` : `No ASP data available for ${ovAsmRow} in ${selectedMonth === 'All' ? 'any month' : selectedMonth}`}
                 </span>
               </div>
               <button
@@ -964,7 +918,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                 {filteredAspList.length === 0 ? (
                   <tr>
                     <td colSpan={8} style={{ padding: '24px', textAlign: 'center', color: '#94a3b8', fontSize: '13px' }}>
-                      ASP-level performance data for <strong>{ovAsmRow}</strong> is not yet available in the static dataset.
+                      No ASP centres with data under <strong>{ovAsmRow}</strong> for this period.
                     </td>
                   </tr>
                 ) : (
@@ -2068,8 +2022,8 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   </thead>
                   <tbody>
                     {dsatBusmData
-                      .filter(r => r.name === npsBusmRow)
-                      .map((r, i) => (
+                      .filter((r: any) => r.name === npsBusmRow)
+                      .map((r: any, i: number) => (
                         <tr key={i} style={{ borderBottom: '1px solid #f1f5f9', background: '#eff6ff' }}>
                           <td style={{ padding: '9px 12px', fontWeight: 700, color: '#1e293b' }}>{r.name}</td>
                           <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 700, color: '#d97706' }}>{r.delay}</td>

@@ -7,6 +7,7 @@ import { importComplianceCombined } from '../services/importers/compliance.impor
 import { importServiceAtHome } from '../services/importers/sah.importer';
 import { importMsmAchievement } from '../services/importers/msm.importer';
 import { importSparePriceCatalog } from '../services/importers/zprp.importer';
+import { importNpsSurvey } from '../services/importers/nps.importer';
 import { createAuditLog } from './audit.controller';
 import prisma from '../configs/prisma.config';
 import { sortMonths } from '../services/monthReplace.util';
@@ -33,6 +34,7 @@ const DATASET_IMPORTERS: Record<string, (buffer: Buffer, filename: string, userI
   SERVICE_AT_HOME: importServiceAtHome,
   MSM_ACHIEVEMENT: importMsmAchievement,
   SPARE_PRICE_CATALOG: importSparePriceCatalog,
+  NPS_SURVEY: importNpsSurvey,
 };
 
 export async function uploadImportHandler(req: Request, res: Response): Promise<void> {

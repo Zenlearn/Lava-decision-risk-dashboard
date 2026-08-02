@@ -15,6 +15,7 @@ import logger from './src/configs/logger.config';
 import { responseMiddleware } from './src/middlewares/response.middleware';
 import { errorHandler } from './src/middlewares/errorHandler.middleware';
 import { AuthMiddleware } from './src/middlewares/auth.middleware';
+import { invalidateDashboardCache } from './src/services/cache.service';
 
 import healthRouter from './src/routes/health.routes';
 import importRouter from './src/routes/import.routes';
@@ -128,6 +129,16 @@ const server = app.listen(port, () => {
 		port,
 		env: process.env.NODE_ENV ?? 'development',
 		phase: 0,
+	});
+
+	// DashboardCache is a Postgres-backed table with a 24h TTL — it is NOT
+	// tied to process lifetime, so a code deploy (which only restarts the
+	// process) would otherwise keep serving pre-deploy computed payloads for
+	// up to 24h. Every server start is a safe point to assume the scoring
+	// logic may have changed, so clear it here rather than relying on a
+	// human to remember a manual cache-bust step after each deploy.
+	invalidateDashboardCache().catch((error) => {
+		logger.error('Failed to invalidate dashboard cache on startup', { error });
 	});
 });
 
