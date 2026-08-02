@@ -13,7 +13,6 @@ import TabCoaching from '../components/TabCoaching';
 import TabInsights from '../components/TabInsights';
 import TabEvidence from '../components/TabEvidence';
 import TabPartCosts from '../components/TabPartCosts';
-import TabIngest from '../components/TabIngest';
 import TabProfile from '../components/TabProfile';
 import TabActivities from '../components/TabActivities';
 import { DASHBOARD_DEFINITIONS } from '../constants/definitions';
@@ -28,10 +27,7 @@ export default function UnifiedMockupDashboard() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [user, setUser] = useState<{ name: string; email: string; is_admin?: boolean; is_super_admin?: boolean } | undefined>(undefined);
-  // Data uploads are admin-only — matches AuthMiddleware.isAdmin()'s
-  // definition on the backend (is_admin or is_super_admin).
-  const isAdmin = user?.is_admin === true || user?.is_super_admin === true;
+  const [user, setUser] = useState<{ name: string; email: string } | undefined>(undefined);
 
   // Active navigation tab — default is 'exec' (Executive Dashboard)
   const [activeTab, setActiveTab] = useState('exec');
@@ -55,18 +51,6 @@ export default function UnifiedMockupDashboard() {
 
   // Slack Mock web hook notification mock state
   const [webhookStatus, setWebhookStatus] = useState<'idle' | 'sending' | 'success'>('idle');
-
-  // Ingestion File Uploader state
-  const [uploadFile, setUploadFile] = useState<File | null>(null);
-  // Must match a key the backend's DATASET_IMPORTERS map recognizes — the
-  // server rejects the upload with 400 if this doesn't match a known type
-  // (dataset type is an explicit client choice, never auto-detected from
-  // headers, since column names have already changed once and will again).
-  const [datasetType, setDatasetType] = useState<string>('MASTER_DATA');
-  const [uploading, setUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [uploadResult, setUploadResult] = useState<any>(null);
-  const [dragActive, setDragActive] = useState(false);
 
   // Custom assumed parts/travel costs configurations state
   const [costs, setCosts] = useState({
@@ -171,61 +155,6 @@ export default function UnifiedMockupDashboard() {
     }
     localStorage.removeItem('lava_user');
     router.push('/signin');
-  };
-
-  // Ingestion File drag/drop
-  const handleDrag = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true);
-    } else if (e.type === "dragleave") {
-      setDragActive(false);
-    }
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      setUploadFile(e.dataTransfer.files[0]);
-    }
-  };
-
-  const triggerUpload = async () => {
-    if (!uploadFile) return;
-    setUploading(true);
-    setUploadProgress(20);
-    setUploadResult(null);
-
-    const formData = new FormData();
-    formData.append('file', uploadFile);
-    formData.append('datasetType', datasetType);
-
-    try {
-      setUploadProgress(50);
-      const res = await fetch('/api/v1/imports', {
-        method: 'POST',
-        body: formData,
-      });
-
-      setUploadProgress(90);
-      const payload = await res.json();
-
-      if (res.ok && payload.result) {
-        setUploadResult(payload.result);
-        setUploadProgress(100);
-        fetchDashboardPayload();
-      } else {
-        setError(payload.message || 'File Ingestion failed.');
-      }
-    } catch (err) {
-      setError('Network request timeout during upload.');
-    } finally {
-      setUploading(false);
-    }
   };
 
   const handleSlackPush = () => {
@@ -497,32 +426,6 @@ export default function UnifiedMockupDashboard() {
             fmtINR={fmtINR}
           />
         )}
-
-        {activeTab === 'upload' && !isAdmin && (
-          <div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>
-            <h2 style={{ fontSize: '18px', fontWeight: 700, color: '#0f172a', marginBottom: '8px' }}>Admin access required</h2>
-            <p>Data uploads are restricted to admin users.</p>
-          </div>
-        )}
-
-        {activeTab === 'upload' && isAdmin && (
-          <TabIngest
-            uploadFile={uploadFile}
-            setUploadFile={setUploadFile}
-            datasetType={datasetType}
-            setDatasetType={setDatasetType}
-            uploading={uploading}
-            uploadProgress={uploadProgress}
-            uploadResult={uploadResult}
-            setUploadResult={setUploadResult}
-            dragActive={dragActive}
-            handleDrag={handleDrag}
-            handleDrop={handleDrop}
-            triggerUpload={triggerUpload}
-            setActiveTab={setActiveTab}
-          />
-        )}
-
 
         {activeTab === 'profile' && (
           <TabProfile user={user} />

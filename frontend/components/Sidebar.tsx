@@ -1,6 +1,6 @@
 import React from 'react';
-import { 
-  LayoutDashboard, ShieldAlert, UploadCloud,
+import {
+  LayoutDashboard, ShieldAlert,
   CheckCircle, LogOut, FileSpreadsheet,
   Settings, BookOpen, AlertCircle, TrendingUp, User, Activity, Clock
 } from 'lucide-react';
@@ -13,16 +13,12 @@ interface SidebarProps {
   user?: {
     name: string;
     email: string;
-    is_admin?: boolean;
-    is_super_admin?: boolean;
   };
 }
 
+// Data uploads happen only through the admin panel (PathwaysFrontend's
+// /lava/upload page) — this app has no upload UI at all, for any user.
 export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handleSignOut, user }: SidebarProps) {
-  // Data uploads are admin-only — regular users never see the Ingest Data
-  // tab at all (matches AuthMiddleware.isAdmin()'s definition on the backend).
-  const isAdmin = user?.is_admin === true || user?.is_super_admin === true;
-
   const menuItems = [
     { id: 'exec', label: 'Executive KPIs', icon: LayoutDashboard },
     { id: 'org_kpi', label: 'Org KPIs', icon: Activity },
@@ -36,7 +32,6 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
     { id: 'ins', label: 'Insights', icon: TrendingUp },
     { id: 'eved', label: 'Evidence & Hit-List', icon: ShieldAlert },
     { id: 'cost', label: 'Part Exposure', icon: Settings },
-    ...(isAdmin ? [{ id: 'upload', label: 'Ingest Data', icon: UploadCloud }] : []),
   ];
 
   // Default fallback user details — empty string so sidebar shows nothing if user not yet loaded

@@ -126,6 +126,7 @@ export async function importStatusHandler(_req: Request, res: Response): Promise
     sahMonths, sahCount,
     msmMonths, msmCount,
     zprpCount,
+    npsMonths, npsCount,
   ] = await Promise.all([
     distinctMonths(prisma.workOrder.findMany({ select: { month: true }, distinct: ['month'] })),
     prisma.workOrder.count(),
@@ -140,6 +141,8 @@ export async function importStatusHandler(_req: Request, res: Response): Promise
     distinctMonths(prisma.msmDailyRecord.findMany({ select: { month: true }, distinct: ['month'] })),
     prisma.msmDailyRecord.count(),
     prisma.sparePriceCatalog.count(),
+    distinctMonths(prisma.npsSurveyRecord.findMany({ select: { month: true }, distinct: ['month'] })),
+    prisma.npsSurveyRecord.count(),
   ]);
 
   const complianceMonths = sortMonths([...qcMonths, ...elsMonths, ...defMonths]);
@@ -152,6 +155,7 @@ export async function importStatusHandler(_req: Request, res: Response): Promise
       SERVICE_AT_HOME:     { months: sahMonths, rowCount: sahCount },
       MSM_ACHIEVEMENT:     { months: msmMonths, rowCount: msmCount },
       SPARE_PRICE_CATALOG: { months: null, rowCount: zprpCount },
+      NPS_SURVEY:          { months: npsMonths, rowCount: npsCount },
     },
   });
 }

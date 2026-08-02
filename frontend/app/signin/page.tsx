@@ -55,15 +55,7 @@ function SignInForm() {
         const u = payload.result?.user;
         if (u) {
           const name = [u.first_name, u.last_name].filter(Boolean).join(' ').trim() || u.email || '';
-          // is_admin/is_super_admin drive the Ingest Data tab's visibility —
-          // data uploads are admin-only, matching AuthMiddleware.isAdmin()'s
-          // definition on the backend (see project CLAUDE.md).
-          localStorage.setItem('lava_user', JSON.stringify({
-            name,
-            email: u.email || '',
-            is_admin: u.is_admin === true,
-            is_super_admin: u.is_super_admin === true,
-          }));
+          localStorage.setItem('lava_user', JSON.stringify({ name, email: u.email || '' }));
         }
 
         router.push(redirectPath);
