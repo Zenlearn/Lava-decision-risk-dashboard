@@ -1,9 +1,9 @@
 import prisma from '../configs/prisma.config';
 
 /**
- * Real NPS aggregation — the single source of truth for Customer
- * Satisfaction / NPS everywhere in the app (Executive C-SAT tile, Score
- * Card's Audit pillar, Org KPI NPS breakdowns). Replaces both the dormant
+ * Real NPS aggregation — the single source of truth for NPS everywhere in
+ * the app (Executive NPS tile, Score Card's Audit pillar, Org KPI NPS
+ * breakdowns). Replaces both the dormant
  * Master Data "Final NPS Rating" column (dropped from the source file) and
  * the static, frozen-on-June literals that previously lived in the frontend.
  *

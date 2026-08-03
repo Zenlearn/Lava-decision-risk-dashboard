@@ -363,7 +363,7 @@ export default function TabScorecard({ data, isMounted, uniqueMonths }: TabScore
                             <td style={{ textAlign: 'center' }}><span className="score-pill s-good">{fmtRank(cm(curRow, 'compliancePct').rank)}</span></td>
                           </tr>
                           <tr>
-                            <td><b>NPS / CSAT %</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>Independent customer rating</span></td>
+                            <td><b>NPS %</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>Independent customer rating</span></td>
                             <td style={{ textAlign: 'center', fontWeight: 700 }}>{fmtPctVal(cm(curRow, 'npsPct').value)}</td>
                             <td style={{ textAlign: 'center', color: '#64748b' }}>{fmtPctVal(cm(prevRow, 'npsPct').value)}</td>
                             <td style={{ textAlign: 'center', color: '#475569' }}>{fmtPctVal(cm(curRow, 'npsPct').national)} <span style={{ fontSize: '10px', color: '#94a3b8' }}>({benchmarkLabel('npsPct')})</span></td>

@@ -77,7 +77,7 @@ async function writeRollupBatch(rollups: AspMonthRollupResult[]): Promise<void> 
   const rows = rollups.map((r) =>
     Prisma.sql`(
       gen_random_uuid(), ${r.serviceCentreId}, ${r.month},
-      ${r.ftfr}, ${r.csat}, ${r.mttr}, ${r.diag}, ${r.leak},
+      ${r.ftfr}, ${r.mttr}, ${r.diag}, ${r.leak},
       ${r.skillScore}, ${r.auditScore}, ${r.processScore},
       ${JSON.stringify(r.childMetrics)}::jsonb, now()
     )`
@@ -85,12 +85,11 @@ async function writeRollupBatch(rollups: AspMonthRollupResult[]): Promise<void> 
 
   await prisma.$executeRaw`
     INSERT INTO "AspMetricRollup"
-      (id, "serviceCentreId", month, ftfr, csat, mttr, diag, leak,
+      (id, "serviceCentreId", month, ftfr, mttr, diag, leak,
        "skillScore", "auditScore", "processScore", "childMetrics", "computedAt")
     VALUES ${Prisma.join(rows)}
     ON CONFLICT ("serviceCentreId", month) DO UPDATE SET
       ftfr = EXCLUDED.ftfr,
-      csat = EXCLUDED.csat,
       mttr = EXCLUDED.mttr,
       diag = EXCLUDED.diag,
       leak = EXCLUDED.leak,

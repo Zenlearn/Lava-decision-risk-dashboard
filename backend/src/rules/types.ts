@@ -108,9 +108,9 @@ export interface AspMonthRollupResult {
   serviceCentreId: string;
   month: string;
 
-  // 5 Executive Dashboard tiles
+  // Executive Dashboard tiles — NPS is computed separately, live, from
+  // NpsSurveyRecord (see npsAggregation.service.ts), not persisted here.
   ftfr: number | null;
-  csat: number | null; // always null until VOC/NPS data returns
   mttr: number | null;
   diag: number | null;
   leak: number | null;

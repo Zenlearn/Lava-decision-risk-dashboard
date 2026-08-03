@@ -442,9 +442,9 @@ model AspMetricRollup {
   serviceCentreId String
   month           String
 
-  // 5 fixed Executive Dashboard tiles — definitions unchanged from the current UI
+  // Executive Dashboard tiles — NPS is computed live from NpsSurveyRecord
+  // (see npsAggregation.service.ts), not persisted here.
   ftfr            Float?   // First-time fix rate (%)
-  csat            Float?   // Customer satisfaction (%) — nullable: dormant, no NPS/VOC data in this drop
   mttr            Float?   // Mean time to repair (days)
   diag            Float?   // Diagnostic accuracy (%)
   leak            Float?   // Estimated monthly leakage exposure (₹)

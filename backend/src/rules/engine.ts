@@ -90,7 +90,6 @@ export function computeAspMonthRollup(input: AspMonthRuleInput): AspMonthRollupR
     month: input.month,
 
     ftfr: exec.ftfr,
-    csat: null, // dormant — no NPS/VOC data in this drop
     mttr: process.avgTat,
     diag: exec.diag,
     leak: exec.leak,

@@ -9,10 +9,6 @@ export const DASHBOARD_DEFINITIONS = {
       definition: '1 − (work orders with a repeat visit on the same device ÷ total work orders that month) × 100. A "repeat" is the same valid IMEI returning for service (accessories excluded). The inverse of the repeat-bounce signal.'
     },
     {
-      title: 'Customer satisfaction (C-SAT)',
-      definition: 'Share of responding customers who rated 4 or 5, on Lava\'s 1–5 post-service scale: (ratings of 4 or 5 ÷ all ratings of 1–5) × 100. "No Response" rows are excluded from both numerator and denominator. Roughly half of customers do not respond.'
-    },
-    {
       title: 'Net Promoter Score (NPS)',
       definition: 'Calculated on Lava\'s 1–5 post-service survey scale as: % Promoters (Rating 5) − % Detractors (Ratings 1 & 2). Ratings 3 & 4 are classified as Passives and excluded from the net score calculation. NPS Score = % Promoters − % Detractors. Expressed as a net score from −100% to +100%. Default view shows Smart Phone surveys only — toggle "All Devices" to include Feature Phones.'
     },

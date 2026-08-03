@@ -4,7 +4,8 @@ import { MasterDataRuleRow } from './types';
 /**
  * Computes 3 of the 5 fixed Executive Dashboard tiles that are Master-Data-only:
  * First-time fix rate (ftfr), Diagnostic accuracy (diag), Leakage exposure (leak).
- * (mttr comes from processAggregate.rule.ts; csat stays dormant — no NPS/VOC data.)
+ * (mttr comes from processAggregate.rule.ts; NPS is computed separately, live,
+ * from NpsSurveyRecord — see npsAggregation.service.ts.)
  *
  * Leakage Exposure is a composite of 4 documented subcategories (see
  * `LeakageBreakdown` below) — each with its own formula so the ₹ total is
