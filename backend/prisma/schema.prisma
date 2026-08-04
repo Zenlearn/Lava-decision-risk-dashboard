@@ -507,3 +507,17 @@ model AuditLog {
   @@index([importId])
   @@index([createdAt])
 }
+
+// ─────────────────────────────────────────────────────────────
+// Configuration — API keys and system settings stored in DB
+// ─────────────────────────────────────────────────────────────
+
+model SystemConfig {
+  id        String   @id @default(cuid())
+  key       String   @unique // CLAUDE_API_KEY, etc.
+  value     String   // encrypted in transit, stored plaintext in DB (assume DB-level encryption)
+  updatedBy String?  // zenlearnUserId of who last updated this
+  updatedAt DateTime @updatedAt
+
+  @@index([key])
+}

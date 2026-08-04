@@ -1,5 +1,6 @@
 import { Anthropic } from '@anthropic-ai/sdk';
 import logger from '../configs/logger.config';
+import { getSystemConfig } from './systemConfig.service';
 
 export interface CoachingCardData {
   actor: string;
@@ -117,9 +118,10 @@ export async function generateCoachingNarrative(card: CoachingCardData): Promise
     return { narrative: null };
   }
 
-  const apiKey = process.env.CLAUDE_API_KEY;
+  // Read from DB first, fall back to env var
+  const apiKey = await getSystemConfig('CLAUDE_API_KEY', 'CLAUDE_API_KEY');
   if (!apiKey) {
-    logger.error('CLAUDE_API_KEY not set — coaching narratives disabled');
+    logger.error('CLAUDE_API_KEY not found in SystemConfig or environment — coaching narratives disabled');
     return { narrative: null, error: 'API key not configured' };
   }
 
