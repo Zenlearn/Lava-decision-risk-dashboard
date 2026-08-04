@@ -1,10 +1,13 @@
+import crypto from 'crypto';
 import { Anthropic } from '@anthropic-ai/sdk';
 import logger from '../configs/logger.config';
+import prisma from '../configs/prisma.config';
 import { getSystemConfig } from './systemConfig.service';
 
 export interface CoachingCardData {
   actor: string;
   level: 'busm' | 'asm' | 'asp';
+  month: string; // "Jun", "May", etc. — cache key, matches AspMetricRollup.month convention
   qualifies: boolean;
   wo: number;
   flags: {
@@ -80,6 +83,17 @@ YOUR JOB:
 Take the input data below and write a single grounded paragraph connecting the flags and scores without inventing anything.
 `;
 
+/** Stable hash of the inputs that drive the narrative — used to detect when a re-import changed the numbers. */
+function hashCardInputs(card: CoachingCardData): string {
+  const stable = {
+    wo: card.wo,
+    flags: card.flags,
+    pct: card.pct,
+    cohort_mean: card.cohort_mean,
+  };
+  return crypto.createHash('sha256').update(JSON.stringify(stable)).digest('hex');
+}
+
 function extractNumbers(text: string): number[] {
   const matches = text.match(/\d+\.?\d*/g) || [];
   return matches.map(m => parseFloat(m));
@@ -112,10 +126,29 @@ function validateGrounding(narrative: string, input: CoachingCardData): boolean 
   return true;
 }
 
+/**
+ * Generates (or returns the cached) narrative for one coaching card.
+ *
+ * Caching: keyed by (level, actor, month). The card's numbers only change when
+ * new data is imported for that month (recomputeAspMonthRollups), so this looks
+ * up any existing row first and only calls the LLM if there's no cached row OR
+ * the input numbers have changed since the cached row was generated (inputHash
+ * mismatch — e.g. a corrected re-upload for the same month). This is what keeps
+ * generation to "once per month, not once per dashboard view."
+ */
 export async function generateCoachingNarrative(card: CoachingCardData): Promise<NarrativeResult> {
   if (!card.qualifies) {
     // Low volume — skip synthesis
     return { narrative: null };
+  }
+
+  const inputHash = hashCardInputs(card);
+
+  const cached = await prisma.coachingNarrative.findUnique({
+    where: { level_actor_month: { level: card.level, actor: card.actor, month: card.month } },
+  });
+  if (cached && cached.inputHash === inputHash) {
+    return { narrative: cached.narrative };
   }
 
   // Read from DB first, fall back to env var
@@ -153,6 +186,12 @@ Remember: every number must be from the input, no inferences, no recommendations
       logger.warn('Coaching narrative failed grounding check', { actor: card.actor, level: card.level });
       return { narrative: null, groundingCheckFailed: true };
     }
+
+    await prisma.coachingNarrative.upsert({
+      where: { level_actor_month: { level: card.level, actor: card.actor, month: card.month } },
+      create: { level: card.level, actor: card.actor, month: card.month, inputHash, narrative },
+      update: { inputHash, narrative, generatedAt: new Date() },
+    });
 
     return { narrative };
   } catch (err) {

@@ -15,6 +15,7 @@ const SAMPLE_CARDS: CoachingCardData[] = [
   {
     actor: 'Jitesh S Rath',
     level: 'busm',
+    month: 'Jun',
     qualifies: true,
     wo: 247,
     flags: { ghost: 12, home: 3, cross: 2, bounce: 31, mmb: 8, det: 19, doa: 0 },
@@ -24,6 +25,7 @@ const SAMPLE_CARDS: CoachingCardData[] = [
   {
     actor: 'Rajesh Limbachiya',
     level: 'busm',
+    month: 'Jun',
     qualifies: true,
     wo: 156,
     flags: { ghost: 5, home: 0, cross: 1, bounce: 18, mmb: 4, det: 8, doa: 1 },
@@ -33,6 +35,7 @@ const SAMPLE_CARDS: CoachingCardData[] = [
   {
     actor: 'Shivrprasad P U',
     level: 'busm',
+    month: 'Jun',
     qualifies: true,
     wo: 189,
     flags: { ghost: 28, home: 11, cross: 3, bounce: 42, mmb: 15, det: 31, doa: 2 },
@@ -42,6 +45,7 @@ const SAMPLE_CARDS: CoachingCardData[] = [
   {
     actor: 'Low-Volume ASM',
     level: 'asm',
+    month: 'Jun',
     qualifies: false, // Should return null narrative
     wo: 12,
     flags: { ghost: 0, home: 0, cross: 0, bounce: 2, mmb: 1, det: 1, doa: 0 },
@@ -87,6 +91,16 @@ async function runTests() {
   }
 
   console.log(`\n📊 Results: ${passed} passed, ${failed} failed`);
+
+  // Second pass — same inputs should hit the DB cache instead of calling the LLM again.
+  console.log('\n🔁 Re-running same cards to confirm cache hit (should be near-instant, no LLM call)...\n');
+  const cacheStart = Date.now();
+  for (const card of SAMPLE_CARDS.filter((c) => c.qualifies)) {
+    await generateCoachingNarrative(card);
+  }
+  const cacheElapsedMs = Date.now() - cacheStart;
+  console.log(`Cache-hit pass took ${cacheElapsedMs}ms for ${SAMPLE_CARDS.filter((c) => c.qualifies).length} cards (should be well under 1s if caching works — an LLM round trip alone is typically 1-3s per card).`);
+
   process.exit(failed > 0 ? 1 : 0);
 }
 
