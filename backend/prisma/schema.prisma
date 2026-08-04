@@ -523,20 +523,25 @@ model SystemConfig {
 }
 
 // ─────────────────────────────────────────────────────────────
-// Coaching narrative cache — generated once per (level, actor, month),
-// regenerated only when the underlying card numbers actually change.
+// Coaching narrative cache — generated once per (level, actor), regenerated
+// only when the underlying card numbers actually change (inputHash mismatch).
+//
+// NOTE: coaching cards aggregate flags/scores across the ENTIRE currently
+// loaded period (e.g. Apr-Jun combined), not a single month — dashboard.service.ts's
+// coaching-card builder sums `actRows` (all months an actor has data for), it
+// does not filter to one month. So there is no per-month cache key here; the
+// inputHash alone (computed from wo/flags/pct/cohort_mean) is what detects
+// "the underlying numbers changed, regenerate" vs "unchanged, reuse."
 // ─────────────────────────────────────────────────────────────
 
 model CoachingNarrative {
-  id         String   @id @default(cuid())
-  level      String   // busm | asm | asp
-  actor      String   // actor name, matches coaching card key
-  month      String   // "Jun", "May", etc. — matches AspMetricRollup.month convention
-  inputHash  String   // hash of the CoachingCardData that produced this narrative
-  narrative  String
+  id          String   @id @default(cuid())
+  level       String   // busm | asm | asp
+  actor       String   // actor name, matches coaching card key
+  inputHash   String   // hash of the CoachingCardData that produced this narrative
+  narrative   String
   generatedAt DateTime @default(now())
 
-  @@unique([level, actor, month])
+  @@unique([level, actor])
   @@index([level, actor])
-  @@index([month])
 }

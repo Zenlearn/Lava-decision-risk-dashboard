@@ -7,7 +7,6 @@ import { getSystemConfig } from './systemConfig.service';
 export interface CoachingCardData {
   actor: string;
   level: 'busm' | 'asm' | 'asp';
-  month: string; // "Jun", "May", etc. — cache key, matches AspMetricRollup.month convention
   qualifies: boolean;
   wo: number;
   flags: {
@@ -46,9 +45,18 @@ interface NarrativeResult {
  * - Prompt explicitly forbids inference, causation, or outcomes not in the data.
  * - Post-generation regex extracts every number and rejects if any don't appear in input.
  * - Falls back gracefully to null (frontend just hides this block) on any failure.
+ *
+ * Two ways a narrative gets written:
+ * 1. generateCoachingNarrative() — calls the Anthropic API directly (needs CLAUDE_API_KEY
+ *    in SystemConfig). Used once this is wired into the live recompute pipeline.
+ * 2. storeChatBridgeNarrative() — for now, narratives are drafted in a chat session
+ *    (following the exact same grounding contract below) and written straight to the
+ *    cache table via this function. No API key needed on the server at all for this path.
+ *    Same grounding validation runs either way — a chat-drafted narrative that references
+ *    a number not in the input is rejected exactly like an API-drafted one.
  */
 
-const GROUNDING_SYSTEM_PROMPT = `You are a coaching narrative generator for service centre performance data.
+export const GROUNDING_SYSTEM_PROMPT = `You are a coaching narrative generator for service centre performance data.
 
 YOUR CONSTRAINTS:
 1. Write ONE short paragraph (3-4 sentences) synthesizing the flag counts and scores provided.
@@ -83,8 +91,12 @@ YOUR JOB:
 Take the input data below and write a single grounded paragraph connecting the flags and scores without inventing anything.
 `;
 
-/** Stable hash of the inputs that drive the narrative — used to detect when a re-import changed the numbers. */
-function hashCardInputs(card: CoachingCardData): string {
+/**
+ * Stable hash of the inputs that drive the narrative — used to detect when a
+ * re-import changed the numbers (cache key is (level, actor); this hash is what
+ * decides "reuse the cached narrative" vs "the underlying numbers moved, regenerate").
+ */
+export function hashCardInputs(card: Pick<CoachingCardData, 'wo' | 'flags' | 'pct' | 'cohort_mean'>): string {
   const stable = {
     wo: card.wo,
     flags: card.flags,
@@ -96,25 +108,23 @@ function hashCardInputs(card: CoachingCardData): string {
 
 function extractNumbers(text: string): number[] {
   const matches = text.match(/\d+\.?\d*/g) || [];
-  return matches.map(m => parseFloat(m));
+  return matches.map((m) => parseFloat(m));
 }
 
-function validateGrounding(narrative: string, input: CoachingCardData): boolean {
+export function validateGrounding(narrative: string, input: Pick<CoachingCardData, 'wo' | 'flags' | 'pct' | 'cohort_mean'>): boolean {
   const narrativeNumbers = extractNumbers(narrative);
   const validNumbers = new Set<number>();
 
-  // Collect all numbers from the input
   validNumbers.add(input.wo);
-  Object.values(input.flags).forEach(v => validNumbers.add(v));
-  Object.values(input.pct).forEach(v => {
+  Object.values(input.flags).forEach((v) => validNumbers.add(v));
+  Object.values(input.pct).forEach((v) => {
     // Round to 1 decimal place for comparison (LLM may output 89.2 vs 89.20)
     validNumbers.add(Math.round(v * 10) / 10);
   });
-  Object.values(input.cohort_mean).forEach(v => {
+  Object.values(input.cohort_mean).forEach((v) => {
     validNumbers.add(Math.round(v * 10) / 10);
   });
 
-  // Check each number in the narrative
   for (const num of narrativeNumbers) {
     const rounded = Math.round(num * 10) / 10;
     if (!validNumbers.has(num) && !validNumbers.has(rounded)) {
@@ -127,14 +137,40 @@ function validateGrounding(narrative: string, input: CoachingCardData): boolean 
 }
 
 /**
- * Generates (or returns the cached) narrative for one coaching card.
+ * Writes a narrative that was drafted elsewhere (a chat session, following the
+ * grounding contract above) into the cache — after re-running the same grounding
+ * check the API path uses. Rejects (does not store) if the narrative references
+ * any number not present in the card's own data.
+ */
+export async function storeChatBridgeNarrative(
+  card: CoachingCardData,
+  narrative: string
+): Promise<NarrativeResult> {
+  if (!validateGrounding(narrative, card)) {
+    logger.warn('Chat-bridge narrative failed grounding check', { actor: card.actor, level: card.level });
+    return { narrative: null, groundingCheckFailed: true };
+  }
+
+  const inputHash = hashCardInputs(card);
+
+  await prisma.coachingNarrative.upsert({
+    where: { level_actor: { level: card.level, actor: card.actor } },
+    create: { level: card.level, actor: card.actor, inputHash, narrative },
+    update: { inputHash, narrative, generatedAt: new Date() },
+  });
+
+  return { narrative };
+}
+
+/**
+ * Generates (or returns the cached) narrative for one coaching card via the
+ * Anthropic API directly. Not currently wired into the live recompute pipeline —
+ * for now narratives are drafted via storeChatBridgeNarrative() instead, so this
+ * function's API-key dependency is dormant until that changes.
  *
- * Caching: keyed by (level, actor, month). The card's numbers only change when
- * new data is imported for that month (recomputeAspMonthRollups), so this looks
- * up any existing row first and only calls the LLM if there's no cached row OR
- * the input numbers have changed since the cached row was generated (inputHash
- * mismatch — e.g. a corrected re-upload for the same month). This is what keeps
- * generation to "once per month, not once per dashboard view."
+ * Caching: keyed by (level, actor). Coaching cards aggregate flags/scores across
+ * the entire currently-loaded period, not a single month, so there is no monthly
+ * cache dimension — the inputHash is what detects "numbers changed, regenerate."
  */
 export async function generateCoachingNarrative(card: CoachingCardData): Promise<NarrativeResult> {
   if (!card.qualifies) {
@@ -145,13 +181,12 @@ export async function generateCoachingNarrative(card: CoachingCardData): Promise
   const inputHash = hashCardInputs(card);
 
   const cached = await prisma.coachingNarrative.findUnique({
-    where: { level_actor_month: { level: card.level, actor: card.actor, month: card.month } },
+    where: { level_actor: { level: card.level, actor: card.actor } },
   });
   if (cached && cached.inputHash === inputHash) {
     return { narrative: cached.narrative };
   }
 
-  // Read from DB first, fall back to env var
   const apiKey = await getSystemConfig('CLAUDE_API_KEY', 'CLAUDE_API_KEY');
   if (!apiKey) {
     logger.error('CLAUDE_API_KEY not found in SystemConfig or environment — coaching narratives disabled');
@@ -181,15 +216,14 @@ Remember: every number must be from the input, no inferences, no recommendations
 
     const narrative = (response.content[0] as any).text || '';
 
-    // Validate grounding
     if (!validateGrounding(narrative, card)) {
       logger.warn('Coaching narrative failed grounding check', { actor: card.actor, level: card.level });
       return { narrative: null, groundingCheckFailed: true };
     }
 
     await prisma.coachingNarrative.upsert({
-      where: { level_actor_month: { level: card.level, actor: card.actor, month: card.month } },
-      create: { level: card.level, actor: card.actor, month: card.month, inputHash, narrative },
+      where: { level_actor: { level: card.level, actor: card.actor } },
+      create: { level: card.level, actor: card.actor, inputHash, narrative },
       update: { inputHash, narrative, generatedAt: new Date() },
     });
 
