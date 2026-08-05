@@ -54,7 +54,7 @@ export function computeScorecardMetrics(rows: any[]): ScorecardMetrics {
   const repairRows = rows.filter((r) => (r.cpcPartVal || 0) > 0);
   const replRows = rows.filter((r) => r.isReplacement || String(r.rawData?.[FIELD_MAP.callType] || '').trim().toUpperCase() === 'Z9');
   
-  const replTotal = Math.round(replRows.reduce((sum, r) => sum + (r.handsetVal || 12000), 0));
+  const replTotal = Math.round(replRows.reduce((sum, r) => sum + (r.handsetVal || 0), 0));
   const combinedCost = totalPartVal + replTotal;
   const partsAndReplWos = repairRows.length + replRows.length;
   const cpc = partsAndReplWos > 0 ? Math.round(combinedCost / partsAndReplWos) : 0;

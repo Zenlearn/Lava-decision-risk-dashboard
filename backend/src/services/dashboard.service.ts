@@ -1942,7 +1942,7 @@ export async function getFullDashboardData(filters?: {
       const totalPartVal = busmRows.reduce((sum, r) => sum + (r.cpcPartVal || 0), 0);
       const busmRepairRows = busmRows.filter((r) => (r.cpcPartVal || 0) > 0);
       const busmReplRows = busmRows.filter((r) => r.isReplacement || String(r.rawData?.[FIELD_MAP.callType] || '').trim().toUpperCase() === 'Z9');
-      const busmCombinedCost = totalPartVal + busmReplRows.reduce((sum, r) => sum + (r.handsetVal || 12000), 0);
+      const busmCombinedCost = totalPartVal + busmReplRows.reduce((sum, r) => sum + (r.handsetVal || 0), 0);
       const busmCpcWos = busmRepairRows.length + busmReplRows.length;
       const cpc = busmCpcWos > 0 ? Math.round(busmCombinedCost / busmCpcWos) : 0;
 
@@ -2094,7 +2094,7 @@ export async function getFullDashboardData(filters?: {
       const totalPartVal = asmRows.reduce((sum, r) => sum + (r.cpcPartVal || 0), 0);
       const asmRepairRows = asmRows.filter((r) => (r.cpcPartVal || 0) > 0);
       const asmReplRows = asmRows.filter((r) => r.isReplacement || String(r.rawData?.[FIELD_MAP.callType] || '').trim().toUpperCase() === 'Z9');
-      const asmCombinedCost = totalPartVal + asmReplRows.reduce((sum, r) => sum + (r.handsetVal || 12000), 0);
+      const asmCombinedCost = totalPartVal + asmReplRows.reduce((sum, r) => sum + (r.handsetVal || 0), 0);
       const asmCpcWos = asmRepairRows.length + asmReplRows.length;
       const cpc = asmCpcWos > 0 ? Math.round(asmCombinedCost / asmCpcWos) : 0;
 
@@ -2304,7 +2304,7 @@ export async function getFullDashboardData(filters?: {
     const totalPartVal = rows.reduce((sum, r) => sum + (r.cpcPartVal || 0), 0);
     const natRepairRows = rows.filter((r) => (r.cpcPartVal || 0) > 0);
     const natReplRows = rows.filter((r) => r.isReplacement || String(r.rawData?.[FIELD_MAP.callType] || '').trim().toUpperCase() === 'Z9');
-    const natCombinedCost = totalPartVal + natReplRows.reduce((sum, r) => sum + (r.handsetVal || 12000), 0);
+    const natCombinedCost = totalPartVal + natReplRows.reduce((sum, r) => sum + (r.handsetVal || 0), 0);
     const natCpcWos = natRepairRows.length + natReplRows.length;
     const nationalCpc = natCpcWos > 0 ? Math.round(natCombinedCost / natCpcWos) : 0;
 
