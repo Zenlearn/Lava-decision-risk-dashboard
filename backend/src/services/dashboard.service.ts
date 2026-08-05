@@ -1272,12 +1272,18 @@ export async function getFullDashboardData(filters?: {
   // rewarding absence of data.
   const scIdsWithData = [...new Set(processedRows.map((r) => r.serviceCentreId).filter(Boolean))];
 
-  const [msmRowsRaw, qcRowsRaw, elsRowsRaw, defRowsRaw] = await Promise.all([
+  const [msmRowsRaw, qcRowsRaw, elsRowsRaw, defRowsRaw, aspMetricRollupRows] = await Promise.all([
     prisma.msmDailyRecord.findMany({ where: { serviceCentreId: { in: scIdsWithData } }, select: { serviceCentreId: true, month: true, complianceStatus: true } }),
     prisma.complianceQcRecord.findMany({ where: { serviceCentreId: { in: scIdsWithData } }, select: { serviceCentreId: true, month: true, complianceStatus: true } }),
     prisma.complianceElsDoaRecord.findMany({ where: { serviceCentreId: { in: scIdsWithData } }, select: { serviceCentreId: true, month: true, complianceStatus: true } }),
     prisma.complianceDefectiveSpareRecord.findMany({ where: { serviceCentreId: { in: scIdsWithData } }, select: { serviceCentreId: true, month: true, complianceStatus: true } }),
+    prisma.aspMetricRollup.findMany({ where: { serviceCentreId: { in: scIdsWithData } }, select: { serviceCentreId: true, month: true, skillScore: true, auditScore: true, processScore: true } }),
   ]);
+
+  const aspRollupMap = new Map<string, { skillScore: number | null, auditScore: number | null, processScore: number | null }>();
+  aspMetricRollupRows.forEach((r) => {
+    aspRollupMap.set(`${r.serviceCentreId}:${r.month}`, r);
+  });
 
   const isCompliant = (status: string | null) => (status || '').trim().toLowerCase() === 'compliance';
 
@@ -1958,9 +1964,9 @@ export async function getFullDashboardData(filters?: {
 
       const diagPct = wo > 0 ? Math.round((1 - mismatchBouncedCount / wo) * 1000) / 10 : 0;
 
-      const avgProcess = wo > 0 ? busmRows.reduce((sum, r) => sum + r.processScore, 0) / wo : 0;
-      const avgSkill = wo > 0 ? busmRows.reduce((sum, r) => sum + r.skillScore, 0) / wo : 0;
-      const avgAudit = wo > 0 ? busmRows.reduce((sum, r) => sum + r.auditScore, 0) / wo : 0;
+      const avgProcess = wo > 0 ? busmRows.reduce((sum, r) => sum + (aspRollupMap.get(`${r.serviceCentreId}:${r.month}`)?.processScore ?? 0), 0) / wo : 0;
+      const avgSkill = wo > 0 ? busmRows.reduce((sum, r) => sum + (aspRollupMap.get(`${r.serviceCentreId}:${r.month}`)?.skillScore ?? 0), 0) / wo : 0;
+      const avgAudit = wo > 0 ? busmRows.reduce((sum, r) => sum + (aspRollupMap.get(`${r.serviceCentreId}:${r.month}`)?.auditScore ?? 0), 0) / wo : 0;
       const cagPct = Math.round(((avgProcess + avgSkill + avgAudit) / 3) * 10) / 10;
 
       const cancelCount = busmRows.filter((r) => r.isBounce || r.isDetractor || (r.flag && r.flag.includes('cancel'))).length;
@@ -2110,9 +2116,9 @@ export async function getFullDashboardData(filters?: {
 
       const diagPct = wo > 0 ? Math.round((1 - mismatchBouncedCount / wo) * 1000) / 10 : 0;
 
-      const avgProcess = wo > 0 ? asmRows.reduce((sum, r) => sum + r.processScore, 0) / wo : 0;
-      const avgSkill = wo > 0 ? asmRows.reduce((sum, r) => sum + r.skillScore, 0) / wo : 0;
-      const avgAudit = wo > 0 ? asmRows.reduce((sum, r) => sum + r.auditScore, 0) / wo : 0;
+      const avgProcess = wo > 0 ? asmRows.reduce((sum, r) => sum + (aspRollupMap.get(`${r.serviceCentreId}:${r.month}`)?.processScore ?? 0), 0) / wo : 0;
+      const avgSkill = wo > 0 ? asmRows.reduce((sum, r) => sum + (aspRollupMap.get(`${r.serviceCentreId}:${r.month}`)?.skillScore ?? 0), 0) / wo : 0;
+      const avgAudit = wo > 0 ? asmRows.reduce((sum, r) => sum + (aspRollupMap.get(`${r.serviceCentreId}:${r.month}`)?.auditScore ?? 0), 0) / wo : 0;
       const cagPct = Math.round(((avgProcess + avgSkill + avgAudit) / 3) * 10) / 10;
 
       const cancelCount = asmRows.filter((r) => r.isBounce || r.isDetractor || (r.flag && r.flag.includes('cancel'))).length;
@@ -2320,10 +2326,10 @@ export async function getFullDashboardData(filters?: {
 
     const nationalDiag = totalWo > 0 ? Math.round((1 - totalMismatchBounced / totalWo) * 1000) / 10 : 0;
 
-    const totalAvgProcess = totalWo > 0 ? rows.reduce((sum, r) => sum + r.processScore, 0) / totalWo : 0;
-    const totalAvgSkill = totalWo > 0 ? rows.reduce((sum, r) => sum + r.skillScore, 0) / totalWo : 0;
-    const totalAvgAudit = totalWo > 0 ? rows.reduce((sum, r) => sum + r.auditScore, 0) / totalWo : 0;
-    const nationalCag = Math.round(((totalAvgProcess + totalAvgSkill + totalAvgAudit) / 3) * 10) / 10;
+    const nationalAvgProcess = totalWo > 0 ? rows.reduce((sum, r) => sum + (aspRollupMap.get(`${r.serviceCentreId}:${r.month}`)?.processScore ?? 0), 0) / totalWo : 0;
+    const nationalAvgSkill = totalWo > 0 ? rows.reduce((sum, r) => sum + (aspRollupMap.get(`${r.serviceCentreId}:${r.month}`)?.skillScore ?? 0), 0) / totalWo : 0;
+    const nationalAvgAudit = totalWo > 0 ? rows.reduce((sum, r) => sum + (aspRollupMap.get(`${r.serviceCentreId}:${r.month}`)?.auditScore ?? 0), 0) / totalWo : 0;
+    const nationalCag = Math.round(((nationalAvgProcess + nationalAvgSkill + nationalAvgAudit) / 3) * 10) / 10;
 
     const natTatValidRows = rows.filter((r) => r.tat !== null && r.tat !== undefined);
     let natC1d = natTatValidRows.filter((r) => r.tat <= 1).length;
