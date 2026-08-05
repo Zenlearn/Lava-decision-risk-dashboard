@@ -22,24 +22,45 @@ async function main() {
   const aspCards: Record<string, any> = data.coaching.asp.cards;
 
   const picks: { busm: string; asm: string; asp: string; card: any }[] = [];
+  const usedAspNames = new Set<string>(); // an ASP name can appear under >1 ASM in `hier` (data quirk) — don't pick it twice
+  const usedBusms = new Set<string>();
 
-  outer: for (const busm of Object.keys(hier)) {
-    const asmMap = hier[busm];
-    if (!asmMap) continue;
+  // Round-robin across BUSMs first (one ASM's ASP per BUSM before repeating a BUSM),
+  // so a small sample spreads across the org instead of clustering under one BUSM.
+  const busmList = Object.keys(hier);
+  const asmCursor: Record<string, number> = {}; // per-BUSM index into that BUSM's ASM list, so repeated passes advance
 
-    for (const asm of Object.keys(asmMap)) {
-      if (picks.some((p) => p.asm === asm)) continue; // guard dup ASM names across BUSMs
+  let progressedThisPass = true;
+  while (picks.length < count && progressedThisPass) {
+    progressedThisPass = false;
 
-      const asps = (asmMap[asm] || []).filter((a) => aspCards[a]?.qualifies);
-      if (asps.length === 0) continue;
+    for (const busm of busmList) {
+      if (picks.length >= count) break;
 
-      let bestName = asps[0]!;
-      for (const name of asps) {
-        if (aspCards[name].wo > aspCards[bestName].wo) bestName = name;
+      const asmMap = hier[busm];
+      if (!asmMap) continue;
+      const asmNames = Object.keys(asmMap);
+
+      let idx = asmCursor[busm] ?? 0;
+      while (idx < asmNames.length) {
+        const asm = asmNames[idx]!;
+        idx += 1;
+
+        const asps = (asmMap[asm] || []).filter((a) => aspCards[a]?.qualifies && !usedAspNames.has(a));
+        if (asps.length === 0) continue;
+
+        let bestName = asps[0]!;
+        for (const name of asps) {
+          if (aspCards[name].wo > aspCards[bestName].wo) bestName = name;
+        }
+
+        picks.push({ busm, asm, asp: bestName, card: aspCards[bestName] });
+        usedAspNames.add(bestName);
+        usedBusms.add(busm);
+        progressedThisPass = true;
+        break; // move to the next BUSM in this pass, come back to this BUSM's remaining ASMs next pass if still needed
       }
-
-      picks.push({ busm, asm, asp: bestName, card: aspCards[bestName] });
-      if (picks.length >= count) break outer;
+      asmCursor[busm] = idx;
     }
   }
 
