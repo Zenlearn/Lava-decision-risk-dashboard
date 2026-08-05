@@ -2217,9 +2217,9 @@ export async function getFullDashboardData(filters?: {
 
     const nationalDiag = totalWo > 0 ? Math.round((1 - totalMismatchBounced / totalWo) * 1000) / 10 : 0;
 
-    const totalAvgProcess = totalWo > 0 ? rows.reduce((sum, r) => sum + r.processScore, 0) / totalWo : 100;
-    const totalAvgSkill = totalWo > 0 ? rows.reduce((sum, r) => sum + r.skillScore, 0) / totalWo : 100;
-    const totalAvgAudit = totalWo > 0 ? rows.reduce((sum, r) => sum + r.auditScore, 0) / totalWo : 100;
+    const totalAvgProcess = totalWo > 0 ? rows.reduce((sum, r) => sum + r.processScore, 0) / totalWo : 0;
+    const totalAvgSkill = totalWo > 0 ? rows.reduce((sum, r) => sum + r.skillScore, 0) / totalWo : 0;
+    const totalAvgAudit = totalWo > 0 ? rows.reduce((sum, r) => sum + r.auditScore, 0) / totalWo : 0;
     const nationalCag = Math.round(((totalAvgProcess + totalAvgSkill + totalAvgAudit) / 3) * 10) / 10;
 
     const natTatValidRows = rows.filter((r) => r.tat !== null && r.tat !== undefined);

@@ -223,7 +223,10 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
       cpc: cpcVal,
       tat: tatPct,
       sah: sahVal,
-      nps: b.nps && b.nps > 0 ? b.nps : npsVal,
+      // npsVal already prefers the real survey-derived pipeline (npsInfo) and
+      // only falls back to the backend's raw b.nps when that's missing —
+      // don't re-invert that priority here.
+      nps: npsVal,
       ranks: {
         ...(b.ranks || {}),
         nps: npsRank
@@ -256,7 +259,10 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
     return {
       ...a,
       cpc: cpcVal,
-      nps: a.nps && a.nps > 0 ? a.nps : npsVal,
+      // npsVal already prefers the real survey-derived pipeline (npsInfo) and
+      // only falls back to the backend's raw a.nps when that's missing —
+      // don't re-invert that priority here.
+      nps: npsVal,
       ranks: {
         ...(a.ranks || {}),
         nps: npsRank
