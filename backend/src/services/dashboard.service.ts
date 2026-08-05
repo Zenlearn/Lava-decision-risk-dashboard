@@ -1942,7 +1942,7 @@ export async function getFullDashboardData(filters?: {
       const totalPartVal = busmRows.reduce((sum, r) => sum + (r.cpcPartVal || 0), 0);
       const busmRepairRows = busmRows.filter((r) => (r.cpcPartVal || 0) > 0);
       const busmReplRows = busmRows.filter((r) => r.isReplacement || String(r.rawData?.[FIELD_MAP.callType] || '').trim().toUpperCase() === 'Z9');
-      const busmCombinedCost = busmRows.reduce((sum, r) => sum + (r.cpcPartVal || 0) + (r.handsetVal || 0), 0);
+      const busmCombinedCost = totalPartVal + busmReplRows.reduce((sum, r) => sum + (r.handsetVal || 0), 0);
       const cpc = wo > 0 ? Math.round(busmCombinedCost / wo) : 0;
 
       const homeRows = busmRows.filter((r) => r.isHome);
@@ -2093,7 +2093,7 @@ export async function getFullDashboardData(filters?: {
       const totalPartVal = asmRows.reduce((sum, r) => sum + (r.cpcPartVal || 0), 0);
       const asmRepairRows = asmRows.filter((r) => (r.cpcPartVal || 0) > 0);
       const asmReplRows = asmRows.filter((r) => r.isReplacement || String(r.rawData?.[FIELD_MAP.callType] || '').trim().toUpperCase() === 'Z9');
-      const asmCombinedCost = asmRows.reduce((sum, r) => sum + (r.cpcPartVal || 0) + (r.handsetVal || 0), 0);
+      const asmCombinedCost = totalPartVal + asmReplRows.reduce((sum, r) => sum + (r.handsetVal || 0), 0);
       const cpc = wo > 0 ? Math.round(asmCombinedCost / wo) : 0;
 
       const homeRows = asmRows.filter((r) => r.isHome);
@@ -2249,7 +2249,7 @@ export async function getFullDashboardData(filters?: {
       const aspRepairAvg = aspRepairRows.length > 0 ? Math.round(aspRepairTotal / aspRepairRows.length) : 0;
       const aspReplTotal = Math.round(aspReplRows.reduce((s, r) => s + (r.handsetVal || 0), 0));
       const aspReplAvg = aspReplRows.length > 0 ? Math.round(aspReplTotal / aspReplRows.length) : 0;
-      const aspCombinedCost = aspRows.reduce((s, r) => s + (r.cpcPartVal || 0) + (r.handsetVal || 0), 0);
+      const aspCombinedCost = aspRows.reduce((s, r) => s + (r.cpcPartVal || 0), 0) + aspReplTotal;
 
       // S@H breakdown for ASP (for Section 3 ASP drilldown)
       const aspHomeRows = aspRows.filter((r) => r.isHome);
@@ -2302,7 +2302,7 @@ export async function getFullDashboardData(filters?: {
     const totalPartVal = rows.reduce((sum, r) => sum + (r.cpcPartVal || 0), 0);
     const natRepairRows = rows.filter((r) => (r.cpcPartVal || 0) > 0);
     const natReplRows = rows.filter((r) => r.isReplacement || String(r.rawData?.[FIELD_MAP.callType] || '').trim().toUpperCase() === 'Z9');
-    const natCombinedCost = rows.reduce((sum, r) => sum + (r.cpcPartVal || 0) + (r.handsetVal || 0), 0);
+    const natCombinedCost = totalPartVal + natReplRows.reduce((sum, r) => sum + (r.handsetVal || 0), 0);
     const nationalCpc = totalWo > 0 ? Math.round(natCombinedCost / totalWo) : 0;
 
     const totalHomeRows = rows.filter((r) => r.isHome);
