@@ -2426,7 +2426,7 @@ export async function getFullDashboardData(filters?: {
     by_month: orgKpisByMonth,
   };
 
-  // NPS insights — real per-BUSM/ASM breakdowns (All Devices / Smartphone
+  // NPS insights — real per-BUSM/ASM breakdowns (All Devices / Smart & Tablet
   // Only / Feature Phone Only), device-category summary, and DSAT reason
   // breakdown, all sourced from the real NpsSurveyRecord dataset. Replaces
   // the frozen-on-June static arrays previously hardcoded in the frontend
@@ -2441,7 +2441,7 @@ export async function getFullDashboardData(filters?: {
   const npsInsightsByMonth: Record<string, any> = {};
   npsMonths.forEach((m) => {
     const monthRows = npsRows.filter((r) => r.month === m);
-    const spRows = monthRows.filter((r) => r.deviceCategory === 'SP');
+    const stRows = monthRows.filter((r) => r.deviceCategory === 'SP');
     const fpRows = monthRows.filter((r) => r.deviceCategory === 'FP');
 
     // ASM/ASP -> parent BUSM/ASM name — a stable mapping (each ASM/ASP
@@ -2458,16 +2458,16 @@ export async function getFullDashboardData(filters?: {
 
     npsInsightsByMonth[m] = {
       busmAll: buildNpsBreakdown(monthRows, (r) => r.busmName),
-      busmSmartphone: buildNpsBreakdown(spRows, (r) => r.busmName),
+      busmSmartTablet: buildNpsBreakdown(stRows, (r) => r.busmName),
       busmFeaturePhone: buildNpsBreakdown(fpRows, (r) => r.busmName),
       asmAll: withBusm(buildNpsBreakdown(monthRows, (r) => r.asmName)),
-      asmSmartphone: withBusm(buildNpsBreakdown(spRows, (r) => r.asmName)),
+      asmSmartTablet: withBusm(buildNpsBreakdown(stRows, (r) => r.asmName)),
       aspAll: withAsm(buildNpsBreakdown(monthRows, (r) => r.aspName)),
-      aspSmartphone: withAsm(buildNpsBreakdown(spRows, (r) => r.aspName)),
+      aspSmartTablet: withAsm(buildNpsBreakdown(stRows, (r) => r.aspName)),
       dsatByBusm: computeDsatBreakdown(monthRows, (r) => r.busmName),
       deviceCategorySummary: [
         { cat: 'Feature Phone', ...summarizeNps(fpRows) },
-        { cat: 'Smart & Tablet', ...summarizeNps(spRows) },
+        { cat: 'Smart & Tablet', ...summarizeNps(stRows) },
         { cat: 'Overall Combined', ...summarizeNps(monthRows) },
       ].filter((c) => c.sent !== undefined),
     };

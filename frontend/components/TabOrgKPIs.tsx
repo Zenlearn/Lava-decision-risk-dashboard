@@ -33,7 +33,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
   const [msTatAsmRow, setMsTatAsmRow] = useState<string | null>(null);
   const [collapsedTables, setCollapsedTables] = useState<Record<string, boolean>>({});
   const [segmentFilter, setSegmentFilter] = useState<string>('All');
-  const modelTypeFilter: string = 'Smart & Tablet';  // Section 1 NPS uses busmSmartphone — informational label, not a selectable filter
+  const modelTypeFilter: string = 'Smart & Tablet';  // Section 1 NPS uses busmSmartTablet — informational label, not a selectable filter
   const [tatWarrantyFilter, setTatWarrantyFilter] = useState<'inWarranty' | 'overall'>('inWarranty');
 
   // CPC Drilldown State
@@ -66,8 +66,8 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
   }));
 
   const npsMonthData = data?.npsInsights?.by_month?.[selectedMonth] || {};
-  const spBusmData = toDisplayNps(npsMonthData.busmSmartphone, true);
-  const spAsmData = toDisplayNps(npsMonthData.asmSmartphone, false);
+  const stBusmData = toDisplayNps(npsMonthData.busmSmartTablet, true);
+  const stAsmData = toDisplayNps(npsMonthData.asmSmartTablet, false);
 
   const getRankBadgeStyle = (rank: any, maxRank = 35) => {
     const parsedRank = typeof rank === 'string' ? parseInt(rank.replace(/[^0-9]/g, ''), 10) : Number(rank);
@@ -157,8 +157,8 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
   // are now returned by computeOrgKpiTable() on every BUSM/ASM/national row.
 
   // Real per-BUSM/ASM NPS breakdown — Smart device only (matches the Section 1 scorecard scope)
-  const busmNpsData = toDisplayNps(npsMonthData.busmSmartphone, true);
-  const asmNpsData = toDisplayNps(npsMonthData.asmSmartphone, false);
+  const busmNpsData = toDisplayNps(npsMonthData.busmSmartTablet, true);
+  const asmNpsData = toDisplayNps(npsMonthData.asmSmartTablet, false);
 
   // Helper map for normalizing name comparisons
   const normalizeKey = (s: string) => (s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
