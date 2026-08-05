@@ -709,6 +709,9 @@ export async function getFullDashboardData(filters?: {
     const isMismatch = isHwSymptom && isSwAction;
     const isMismatchBounced = isMismatch && isBounce;
 
+    const callTypeUpper = String(raw[FIELD_MAP.callType] || '').trim().toUpperCase();
+    const isReplacement = callTypeUpper === 'Z9';
+
     const nps = String(raw[FIELD_MAP.npsRating] || '');
     const npsVal = parseInt(nps, 10);
     const isDetractor = !isNaN(npsVal) && npsVal >= 1 && npsVal <= 3;
@@ -837,6 +840,7 @@ export async function getFullDashboardData(filters?: {
       isCrossAsp,
       isMismatch,
       isMismatchBounced,
+      isReplacement,
       isDetractor,
       isDOA,
       isPCBA,
@@ -1937,7 +1941,7 @@ export async function getFullDashboardData(filters?: {
 
       const tatRows = busmRows.filter((r) => r.tat !== null);
       const tat1d = tatRows.filter((r) => r.tat! <= 1).length;
-      const tatPct = tatRows.length > 0 ? Math.round((tat1d / tatRows.length) * 1000) / 10 : (wo > 0 ? Math.round((1 - bounceCount / wo) * 1000) / 10 : 0);
+      const tatPct = tatRows.length > 0 ? Math.round((tat1d / tatRows.length) * 1000) / 10 : 0;
 
       const totalPartVal = busmRows.reduce((sum, r) => sum + (r.cpcPartVal || 0), 0);
       const busmRepairRows = busmRows.filter((r) => (r.cpcPartVal || 0) > 0);
@@ -2089,7 +2093,7 @@ export async function getFullDashboardData(filters?: {
 
       const tatRows = asmRows.filter((r) => r.tat !== null);
       const tat1d = tatRows.filter((r) => r.tat! <= 1).length;
-      const tatPct = tatRows.length > 0 ? Math.round((tat1d / tatRows.length) * 1000) / 10 : (wo > 0 ? Math.round((1 - bounceCount / wo) * 1000) / 10 : 0);
+      const tatPct = tatRows.length > 0 ? Math.round((tat1d / tatRows.length) * 1000) / 10 : 0;
 
       const totalPartVal = asmRows.reduce((sum, r) => sum + (r.cpcPartVal || 0), 0);
       const asmRepairRows = asmRows.filter((r) => (r.cpcPartVal || 0) > 0);
