@@ -2143,11 +2143,11 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                             Total / Average ({npsAsmRow || npsBusmRow})
                           </td>
                           <td style={{ padding: '9px 10px', textAlign: 'right' }}>{totSurveys.toLocaleString('en-IN')}</td>
-                          <td style={{ padding: '9px 10px', textAlign: 'right' }}>{(parentObj as any)?.rr || '35.0%'}</td>
-                          <td style={{ padding: '9px 10px', textAlign: 'right', color: '#dc2626' }}>{parentObj ? parentObj.d : '11.0%'}</td>
-                          <td style={{ padding: '9px 10px', textAlign: 'right', color: '#d97706' }}>{parentObj ? parentObj.p : '14.0%'}</td>
-                          <td style={{ padding: '9px 10px', textAlign: 'right', color: '#16a34a' }}>{parentObj ? parentObj.pr : '75.0%'}</td>
-                          <td style={{ padding: '9px 10px', textAlign: 'right', color: '#2563eb' }}>{parentObj ? `+${parentObj.nps}` : '+65.0%'}</td>
+                          <td style={{ padding: '9px 10px', textAlign: 'right' }}>{parentObj ? parentObj.rr : '—'}</td>
+                          <td style={{ padding: '9px 10px', textAlign: 'right', color: '#dc2626' }}>{parentObj ? parentObj.d : '—'}</td>
+                          <td style={{ padding: '9px 10px', textAlign: 'right', color: '#d97706' }}>{parentObj ? parentObj.p : '—'}</td>
+                          <td style={{ padding: '9px 10px', textAlign: 'right', color: '#16a34a' }}>{parentObj ? parentObj.pr : '—'}</td>
+                          <td style={{ padding: '9px 10px', textAlign: 'right', color: '#2563eb' }}>{parentObj ? `+${parentObj.nps}` : '—'}</td>
                         </tr>
                       </tfoot>
                     );
