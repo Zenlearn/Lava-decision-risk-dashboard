@@ -775,6 +775,7 @@ export async function getFullDashboardData(filters?: {
     const subPcbaVal = parseNumber(raw[FIELD_MAP.subPcbaValue] || raw['Sub PCBA Value']);
     const accessoriesVal = parseNumber(raw[FIELD_MAP.accessoriesValue] || raw['Accessories value']);
     const othersVal = parseNumber(raw[FIELD_MAP.othersValue] || raw['Others Value']);
+    const handsetVal = parseNumber(raw[FIELD_MAP.handsetValue] || raw['Handset Value']);
 
     let actualPartVal = totalPartVal;
     if (actualPartVal === 0) {
@@ -841,6 +842,8 @@ export async function getFullDashboardData(filters?: {
       isCharger,
       leakageValue,
       partLeakageVal,
+      actualPartVal,
+      handsetVal,
       travelVal,
       partCategory,
       processScore,
@@ -1049,7 +1052,7 @@ export async function getFullDashboardData(filters?: {
     mRows.forEach((r) => {
       const rawModel = r.model || String(r.rawData[FIELD_MAP.model] || '').trim();
       const modelName = rawModel && rawModel !== '' ? rawModel : 'Unspecified Model';
-      const partCost = (r as any).partLeakageVal || r.leakageValue || 0;
+      const partCost = (r as any).actualPartVal || 0;
 
       const existing = modelMap.get(modelName) || { model: modelName, count: 0, totalPartCost: 0 };
       existing.count += 1;
@@ -1338,7 +1341,7 @@ export async function getFullDashboardData(filters?: {
     const c1d2d = tatRows.filter((r) => (r.tat as number) <= 2).length;
     const tatClosurePct = tatRows.length > 0 ? (c1d2d / tatRows.length) * 100 : null;
 
-    const totalPartVal = rows.reduce((s, r) => s + (r.partLeakageVal || 0), 0);
+    const totalPartVal = rows.reduce((s, r) => s + (r.actualPartVal || 0), 0);
     const cpc = wo > 0 ? totalPartVal / wo : 0;
 
     const cancelCount = rows.filter((r) => r.isBounce || r.isDetractor || (r.flag && r.flag.includes('cancel'))).length;
@@ -1930,10 +1933,10 @@ export async function getFullDashboardData(filters?: {
       const tat1d = tatRows.filter((r) => r.tat! <= 1).length;
       const tatPct = tatRows.length > 0 ? Math.round((tat1d / tatRows.length) * 1000) / 10 : (wo > 0 ? Math.round((1 - bounceCount / wo) * 1000) / 10 : 0);
 
-      const totalPartVal = busmRows.reduce((sum, r) => sum + (r.partLeakageVal || 0), 0);
-      const busmRepairRows = busmRows.filter((r) => (r.partLeakageVal || 0) > 0);
+      const totalPartVal = busmRows.reduce((sum, r) => sum + (r.actualPartVal || 0), 0);
+      const busmRepairRows = busmRows.filter((r) => (r.actualPartVal || 0) > 0);
       const busmReplRows = busmRows.filter((r) => r.isReplacement || String(r.rawData?.[FIELD_MAP.callType] || '').trim().toUpperCase() === 'Z9');
-      const busmCombinedCost = busmRows.reduce((sum, r) => sum + (r.partLeakageVal || 0) + (r.handsetVal || 0), 0);
+      const busmCombinedCost = busmRows.reduce((sum, r) => sum + (r.actualPartVal || 0) + (r.handsetVal || 0), 0);
       const busmCombinedWos = busmRepairRows.length + busmReplRows.length;
       const cpc = busmCombinedWos > 0 ? Math.round(busmCombinedCost / busmCombinedWos) : (wo > 0 ? Math.round(totalPartVal / wo) : 0);
 
@@ -1983,7 +1986,7 @@ export async function getFullDashboardData(filters?: {
       const stillOpenPct = wo > 0 ? Math.round((cStillOpen / wo) * 1000) / 10 : 0;
 
       // CPC breakdown (for Section 2 drilldown — same rows as the `cpc` value above)
-      const busmRepairTotal = Math.round(busmRepairRows.reduce((s, r) => s + (r.partLeakageVal || 0), 0));
+      const busmRepairTotal = Math.round(busmRepairRows.reduce((s, r) => s + (r.actualPartVal || 0), 0));
       const busmRepairAvg = busmRepairRows.length > 0 ? Math.round(busmRepairTotal / busmRepairRows.length) : 0;
       const busmReplTotal = Math.round(busmReplRows.reduce((s, r) => s + (r.handsetVal || 0), 0));
       const busmReplAvg = busmReplRows.length > 0 ? Math.round(busmReplTotal / busmReplRows.length) : 0;
@@ -2082,10 +2085,10 @@ export async function getFullDashboardData(filters?: {
       const tat1d = tatRows.filter((r) => r.tat! <= 1).length;
       const tatPct = tatRows.length > 0 ? Math.round((tat1d / tatRows.length) * 1000) / 10 : (wo > 0 ? Math.round((1 - bounceCount / wo) * 1000) / 10 : 0);
 
-      const totalPartVal = asmRows.reduce((sum, r) => sum + (r.partLeakageVal || 0), 0);
-      const asmRepairRows = asmRows.filter((r) => (r.partLeakageVal || 0) > 0);
+      const totalPartVal = asmRows.reduce((sum, r) => sum + (r.actualPartVal || 0), 0);
+      const asmRepairRows = asmRows.filter((r) => (r.actualPartVal || 0) > 0);
       const asmReplRows = asmRows.filter((r) => r.isReplacement || String(r.rawData?.[FIELD_MAP.callType] || '').trim().toUpperCase() === 'Z9');
-      const asmCombinedCost = asmRows.reduce((sum, r) => sum + (r.partLeakageVal || 0) + (r.handsetVal || 0), 0);
+      const asmCombinedCost = asmRows.reduce((sum, r) => sum + (r.actualPartVal || 0) + (r.handsetVal || 0), 0);
       const asmCombinedWos = asmRepairRows.length + asmReplRows.length;
       const cpc = asmCombinedWos > 0 ? Math.round(asmCombinedCost / asmCombinedWos) : (wo > 0 ? Math.round(totalPartVal / wo) : 0);
 
@@ -2132,7 +2135,7 @@ export async function getFullDashboardData(filters?: {
       const stillOpenPct = wo > 0 ? Math.round((cStillOpen / wo) * 1000) / 10 : 0;
 
       // CPC breakdown (for Section 2 ASM drilldown)
-      const asmRepairTotal = Math.round(asmRepairRows.reduce((s, r) => s + (r.partLeakageVal || 0), 0));
+      const asmRepairTotal = Math.round(asmRepairRows.reduce((s, r) => s + (r.actualPartVal || 0), 0));
       const asmRepairAvg = asmRepairRows.length > 0 ? Math.round(asmRepairTotal / asmRepairRows.length) : 0;
       const asmReplTotal = Math.round(asmReplRows.reduce((s, r) => s + (r.handsetVal || 0), 0));
       const asmReplAvg = asmReplRows.length > 0 ? Math.round(asmReplTotal / asmReplRows.length) : 0;
@@ -2236,13 +2239,13 @@ export async function getFullDashboardData(filters?: {
       const stillOpenPct = wo > 0 ? Math.round((cStillOpen / wo) * 1000) / 10 : 0;
 
       // CPC breakdown (for Section 2 ASP drilldown)
-      const aspRepairRows = aspRows.filter((r) => (r.partLeakageVal || 0) > 0);
+      const aspRepairRows = aspRows.filter((r) => (r.actualPartVal || 0) > 0);
       const aspReplRows = aspRows.filter((r) => r.isReplacement || String(r.rawData?.[FIELD_MAP.callType] || '').trim().toUpperCase() === 'Z9');
-      const aspRepairTotal = Math.round(aspRepairRows.reduce((s, r) => s + (r.partLeakageVal || 0), 0));
+      const aspRepairTotal = Math.round(aspRepairRows.reduce((s, r) => s + (r.actualPartVal || 0), 0));
       const aspRepairAvg = aspRepairRows.length > 0 ? Math.round(aspRepairTotal / aspRepairRows.length) : 0;
       const aspReplTotal = Math.round(aspReplRows.reduce((s, r) => s + (r.handsetVal || 0), 0));
       const aspReplAvg = aspReplRows.length > 0 ? Math.round(aspReplTotal / aspReplRows.length) : 0;
-      const aspCombinedCost = aspRows.reduce((s, r) => s + (r.partLeakageVal || 0) + (r.handsetVal || 0), 0);
+      const aspCombinedCost = aspRows.reduce((s, r) => s + (r.actualPartVal || 0) + (r.handsetVal || 0), 0);
 
       // S@H breakdown for ASP (for Section 3 ASP drilldown)
       const aspHomeRows = aspRows.filter((r) => r.isHome);
@@ -2292,10 +2295,10 @@ export async function getFullDashboardData(filters?: {
     const totalTat1d = totalTatRows.filter((r) => r.tat! <= 1).length;
     const nationalTat = totalTatRows.length > 0 ? Math.round((totalTat1d / totalTatRows.length) * 1000) / 10 : 0;
 
-    const totalPartVal = rows.reduce((sum, r) => sum + (r.partLeakageVal || 0), 0);
-    const natRepairRows = rows.filter((r) => (r.partLeakageVal || 0) > 0);
+    const totalPartVal = rows.reduce((sum, r) => sum + (r.actualPartVal || 0), 0);
+    const natRepairRows = rows.filter((r) => (r.actualPartVal || 0) > 0);
     const natReplRows = rows.filter((r) => r.isReplacement || String(r.rawData?.[FIELD_MAP.callType] || '').trim().toUpperCase() === 'Z9');
-    const natCombinedCost = rows.reduce((sum, r) => sum + (r.partLeakageVal || 0) + (r.handsetVal || 0), 0);
+    const natCombinedCost = rows.reduce((sum, r) => sum + (r.actualPartVal || 0) + (r.handsetVal || 0), 0);
     const natCombinedWos = natRepairRows.length + natReplRows.length;
     const nationalCpc = natCombinedWos > 0 ? Math.round(natCombinedCost / natCombinedWos) : (totalWo > 0 ? Math.round(totalPartVal / totalWo) : 0);
 
@@ -2327,7 +2330,7 @@ export async function getFullDashboardData(filters?: {
     const natStillOpenPct = totalWo > 0 ? Math.round((natStillOpen / totalWo) * 1000) / 10 : 0;
 
     // National CPC breakdown
-    const natRepairTotal = Math.round(natRepairRows.reduce((s, r) => s + (r.partLeakageVal || 0), 0));
+    const natRepairTotal = Math.round(natRepairRows.reduce((s, r) => s + (r.actualPartVal || 0), 0));
     const natRepairAvg = natRepairRows.length > 0 ? Math.round(natRepairTotal / natRepairRows.length) : 0;
     const natReplTotal = Math.round(natReplRows.reduce((s, r) => s + (r.handsetVal || 0), 0));
     const natReplAvg = natReplRows.length > 0 ? Math.round(natReplTotal / natReplRows.length) : 0;
