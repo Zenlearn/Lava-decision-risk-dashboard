@@ -232,6 +232,22 @@ export default function TabCoaching({
         {/* Talk tracks */}
         <div className="card-mock" style={{ marginTop: '16px' }}>
           <h3>Target Talking Points for 1:1 Review Sessions</h3>
+          {card.narrative && (
+            <p
+              style={{
+                fontStyle: 'italic',
+                fontSize: '13px',
+                lineHeight: 1.6,
+                color: 'var(--muted)',
+                borderLeft: '3px solid var(--deep)',
+                paddingLeft: '12px',
+                margin: '4px 0 14px',
+              }}
+              title="AI-synthesized summary of the figures below — every number in it is drawn directly from this card's own data."
+            >
+              {card.narrative}
+            </p>
+          )}
           <ul style={{ listStyle: 'none', padding: 0 }}>
             {card.talking_points.map((tp: any, idx: number) => {
               const borderCol = tp.sev === 'high' ? 'var(--bad)' : (tp.sev === 'mid' ? 'var(--warn)' : 'var(--good)');

@@ -1769,6 +1769,19 @@ export async function getFullDashboardData(filters?: {
     };
   });
 
+  // Attach any cached coaching narratives (see coachingNarrative.service.ts) — an
+  // optional synthesized paragraph shown above the rule-based talking points.
+  // One batch query across all levels/actors rather than N+1 per card.
+  const cachedNarratives = await prisma.coachingNarrative.findMany({
+    select: { level: true, actor: true, narrative: true },
+  });
+  const narrativeByKey = new Map(cachedNarratives.map((n) => [`${n.level}:${n.actor}`, n.narrative]));
+  coachingLevels.forEach((lvl) => {
+    Object.entries(coaching[lvl].cards).forEach(([actorName, card]: [string, any]) => {
+      card.narrative = narrativeByKey.get(`${lvl}:${actorName}`) ?? null;
+    });
+  });
+
   // Calculate home integrity panel stats for Insights tab
   const homeBoardTotal = processedRows.filter((r) => r.isHomeBoard).length;
   const homeVisitsTotal = processedRows.filter((r) => {
