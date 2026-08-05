@@ -1943,8 +1943,7 @@ export async function getFullDashboardData(filters?: {
       const busmRepairRows = busmRows.filter((r) => (r.cpcPartVal || 0) > 0);
       const busmReplRows = busmRows.filter((r) => r.isReplacement || String(r.rawData?.[FIELD_MAP.callType] || '').trim().toUpperCase() === 'Z9');
       const busmCombinedCost = busmRows.reduce((sum, r) => sum + (r.cpcPartVal || 0) + (r.handsetVal || 0), 0);
-      const busmCombinedWos = busmRepairRows.length + busmReplRows.length;
-      const cpc = busmCombinedWos > 0 ? Math.round(busmCombinedCost / busmCombinedWos) : (wo > 0 ? Math.round(totalPartVal / wo) : 0);
+      const cpc = wo > 0 ? Math.round(busmCombinedCost / wo) : 0;
 
       const homeRows = busmRows.filter((r) => r.isHome);
       const homeAdherence = homeRows.filter((r) => r.tat !== null && r.tat <= 3).length;
@@ -2095,8 +2094,7 @@ export async function getFullDashboardData(filters?: {
       const asmRepairRows = asmRows.filter((r) => (r.cpcPartVal || 0) > 0);
       const asmReplRows = asmRows.filter((r) => r.isReplacement || String(r.rawData?.[FIELD_MAP.callType] || '').trim().toUpperCase() === 'Z9');
       const asmCombinedCost = asmRows.reduce((sum, r) => sum + (r.cpcPartVal || 0) + (r.handsetVal || 0), 0);
-      const asmCombinedWos = asmRepairRows.length + asmReplRows.length;
-      const cpc = asmCombinedWos > 0 ? Math.round(asmCombinedCost / asmCombinedWos) : (wo > 0 ? Math.round(totalPartVal / wo) : 0);
+      const cpc = wo > 0 ? Math.round(asmCombinedCost / wo) : 0;
 
       const homeRows = asmRows.filter((r) => r.isHome);
       const homeAdherence = homeRows.filter((r) => r.tat !== null && r.tat <= 3).length;
@@ -2305,8 +2303,7 @@ export async function getFullDashboardData(filters?: {
     const natRepairRows = rows.filter((r) => (r.cpcPartVal || 0) > 0);
     const natReplRows = rows.filter((r) => r.isReplacement || String(r.rawData?.[FIELD_MAP.callType] || '').trim().toUpperCase() === 'Z9');
     const natCombinedCost = rows.reduce((sum, r) => sum + (r.cpcPartVal || 0) + (r.handsetVal || 0), 0);
-    const natCombinedWos = natRepairRows.length + natReplRows.length;
-    const nationalCpc = natCombinedWos > 0 ? Math.round(natCombinedCost / natCombinedWos) : (totalWo > 0 ? Math.round(totalPartVal / totalWo) : 0);
+    const nationalCpc = totalWo > 0 ? Math.round(natCombinedCost / totalWo) : 0;
 
     const totalHomeRows = rows.filter((r) => r.isHome);
     const totalHomeAdherence = totalHomeRows.filter((r) => r.tat !== null && r.tat <= 3).length;
