@@ -1338,7 +1338,7 @@ export async function getFullDashboardData(filters?: {
 
     const tatRows = rows.filter((r) => r.tat !== null && r.tat !== undefined);
     const mttr = tatRows.length > 0 ? tatRows.reduce((s, r) => s + (r.tat as number), 0) / tatRows.length : null;
-    const c1d2d = tatRows.filter((r) => (r.tat as number) <= 2).length;
+    const c1d2d = tatRows.filter((r) => (r.tat as number) <= 1).length;
     const tatClosurePct = tatRows.length > 0 ? (c1d2d / tatRows.length) * 100 : null;
 
     const totalPartVal = rows.reduce((s, r) => s + (r.actualPartVal || 0), 0);
