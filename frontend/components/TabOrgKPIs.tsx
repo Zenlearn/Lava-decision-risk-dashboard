@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TableSummaryRow } from './ui/Table';
 import { DASHBOARD_DEFINITIONS } from '../constants/definitions';
-import { DYNAMIC_CPC_DATA_BY_MONTH } from '../constants/cpcDataDynamic';
-import { DYNAMIC_SAH_DATA_BY_MONTH } from '../constants/sahDataDynamic';
 import { MODEL_SEGMENT_DATA_BY_MONTH } from '../constants/modelSegmentDataDynamic';
 import { ALL_ASP_NPS_DATA } from '../constants/npsAspDataDynamic';
 
@@ -35,7 +33,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
   const [msTatAsmRow, setMsTatAsmRow] = useState<string | null>(null);
   const [collapsedTables, setCollapsedTables] = useState<Record<string, boolean>>({});
   const [segmentFilter, setSegmentFilter] = useState<string>('All');
-  const [modelTypeFilter, setModelTypeFilter] = useState<string>('Smart & Tablet');
+  const modelTypeFilter: string = 'Smart';  // Section 1 NPS uses busmSmartphone — informational label, not a selectable filter
   const [tatWarrantyFilter, setTatWarrantyFilter] = useState<'inWarranty' | 'overall'>('inWarranty');
 
   // CPC Drilldown State
@@ -154,12 +152,13 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
   // proportionally, with no basis in that ASP's own actual work orders.
   const tatRawAspList: any[] = (tatOrgKpi.asps || []).filter((a: any) => a.name && !a.name.toLowerCase().includes('unknown') && a.asm && !a.asm.toLowerCase().includes('unknown'));
   const tatRawNational: any = tatOrgKpi.national || {};
-  const currentCpcDataset = DYNAMIC_CPC_DATA_BY_MONTH[selectedMonth] || DYNAMIC_CPC_DATA_BY_MONTH['Jun'];
-  const currentSahDataset = DYNAMIC_SAH_DATA_BY_MONTH[selectedMonth] || DYNAMIC_SAH_DATA_BY_MONTH['All'];
+  // Live CPC/SAH datasets derived from backend (replaces frozen static files)
+  // Fields: repair_count/avg/total, repl_count/avg/total, combined_total, sahBreakdown
+  // are now returned by computeOrgKpiTable() on every BUSM/ASM/national row.
 
-  // Real per-BUSM/ASM NPS breakdown, All Devices Combined.
-  const busmNpsData = toDisplayNps(npsMonthData.busmAll, true);
-  const asmNpsData = toDisplayNps(npsMonthData.asmAll, false);
+  // Real per-BUSM/ASM NPS breakdown — Smart device only (matches the Section 1 scorecard scope)
+  const busmNpsData = toDisplayNps(npsMonthData.busmSmartphone, true);
+  const asmNpsData = toDisplayNps(npsMonthData.asmSmartphone, false);
 
   // Helper map for normalizing name comparisons
   const normalizeKey = (s: string) => (s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -170,120 +169,86 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
   const busmNpsMap = new Map(busmNpsData.map(b => [normalizeKey(b.name), b]));
   const asmNpsMap = new Map(asmNpsData.map(a => [normalizeKey(a.name), a]));
 
-  // Calculate Combined CPC = (Combined Total Cost) / (Repair WO Count + Replacement WO Count)
-  const busmCpcMap = new Map<string, number>();
-  (currentCpcDataset?.busm || []).forEach((b: any) => {
-    const sumWo = (b.repair_count || 0) + (b.repl_count || 0);
-    const cost = b.combined_total || ((b.repair_total || 0) + (b.repl_total || 0));
-    const cpcVal = sumWo > 0 ? Math.round(cost / sumWo) : 0;
-    // Index by both name and busm field to handle possible key variations
-    busmCpcMap.set(normalizeKey(b.name || b.busm), cpcVal);
-    if (b.busm) busmCpcMap.set(normalizeKey(b.busm), cpcVal);
-  });
-
-  const asmCpcMap = new Map<string, number>();
-  (currentCpcDataset?.asm || []).forEach((a: any) => {
-    const sumWo = (a.repair_count || 0) + (a.repl_count || 0);
-    const cost = a.combined_total || ((a.repair_total || 0) + (a.repl_total || 0));
-    const cpcVal = sumWo > 0 ? Math.round(cost / sumWo) : 0;
-    asmCpcMap.set(normalizeKey(a.name), cpcVal);
-  });
-
-  const summaryObj = currentCpcDataset?.summary || {};
-  const natSumWo = (summaryObj.repair_count || 0) + (summaryObj.repl_count || 0);
-  const natCost = summaryObj.combined_total || ((summaryObj.repair_total || 0) + (summaryObj.repl_total || 0));
-  const natCpcVal = natSumWo > 0 ? Math.round(natCost / natSumWo) : (activeOrgKpi.national?.cpc || 0);
-
   const rawBusmList: any[] = (activeOrgKpi.busms || []).filter((b: any) => b.name && !b.name.toLowerCase().includes('unknown'));
   const rawAllAsmList: any[] = (activeOrgKpi.asms || []).filter((a: any) => a.name && !a.name.toLowerCase().includes('unknown') && a.busm && !a.busm.toLowerCase().includes('unknown'));
   const rawNationalSummary: any = activeOrgKpi.national || {};
+  const rawAspList: any[] = (activeOrgKpi.asps || []).filter((a: any) => a.name && !a.name.toLowerCase().includes('unknown'));
 
-  // S@H Adherence: lookup from the dedicated S@H appointment dataset (real
-  // appointment/cancellation tracking) — same source as Section 3's tables,
-  // keyed by "Same Day Attend %". Previously this table left b.sah as the
-  // backend's rough Master-Data proxy (isHome + TAT<=3), which disagreed
-  // with the real dataset shown a few sections down.
-  const busmSahMap = new Map<string, number>(
-    (currentSahDataset.busm || []).map((s: any): [string, number] => [normalizeKey(s.name), parseFloat(String(s.same_day).replace('%', ''))])
-  );
+  // Live CPC/SAH datasets shaped to match the old static-file structure so Sections 2+3 can use them with minimal template changes
+  const currentCpcDataset = {
+    busm: rawBusmList,
+    asm: rawAllAsmList,
+    asp: rawAspList,
+    summary: rawNationalSummary,
+  };
+  const emptySah = { total: 0, cancel: '0.0%', resched: '0.0%', same_day: '0.0%', same_day_cancel: '0.0%', pending: '0.0%' };
+  const currentSahDataset = {
+    busm: rawBusmList.map((b: any) => ({ name: b.name, ...(b.sahBreakdown || emptySah) })),
+    asm: rawAllAsmList.map((a: any) => ({ name: a.name, busm: a.busm, ...(a.sahBreakdown || emptySah) })),
+    asp: rawAspList.map((a: any) => ({ name: a.name, asm: a.asm, busm: a.busm, ...(a.sahBreakdown || emptySah) })),
+    summary: rawNationalSummary.sahBreakdown || emptySah,
+  };
 
   const busmListWithCpc = rawBusmList.map((b: any) => {
     const npsInfo = busmNpsMap.get(normalizeKey(b.name));
+    // Prefer real survey-pipeline NPS; fall back to backend's b.nps
     const npsVal = npsInfo ? parseFloat(npsInfo.nps) : (b.nps || 0);
-    const npsRank = npsInfo ? npsInfo.rank : (b.ranks?.nps || 1);
-    // CPC: prefer cpcDataDynamic value (new formula), fall back to raw b.cpc
-    const cpcFromMap = busmCpcMap.get(normalizeKey(b.name)) ?? busmCpcMap.get(normalizeKey(b.busm || ''));
-    const cpcVal = cpcFromMap !== undefined ? cpcFromMap : (b.cpc || 0);
-    // TAT: always the backend's real per-BUSM value — no hardcoded override.
-    const tatPct = b.tat || 0;
-    const sahFromMap = busmSahMap.get(normalizeKey(b.name));
-    const sahVal = sahFromMap !== undefined && !isNaN(sahFromMap) ? sahFromMap : (b.sah || 0);
     return {
       ...b,
-      cpc: cpcVal,
-      tat: tatPct,
-      sah: sahVal,
-      // npsVal already prefers the real survey-derived pipeline (npsInfo) and
-      // only falls back to the backend's raw b.nps when that's missing —
-      // don't re-invert that priority here.
       nps: npsVal,
-      ranks: {
-        ...(b.ranks || {}),
-        nps: npsRank
-      }
     };
   });
 
-  // Rank BUSMs by CPC (ascending order: lowest CPC = rank #1)
-  const sortedBusmsByCpc = [...busmListWithCpc].sort((x, y) => x.cpc - y.cpc);
-  const busmCpcRankMap = new Map(sortedBusmsByCpc.map((x, idx) => [normalizeKey(x.name), idx + 1]));
-
-  // Rank BUSMs by TAT % (descending: highest 1-day TAT % = rank #1)
-  const sortedBusmsByTat = [...busmListWithCpc].sort((x, y) => y.tat - x.tat);
-  const busmTatRankMap = new Map(sortedBusmsByTat.map((x, idx) => [normalizeKey(x.name), idx + 1]));
+  // Compute ALL 6 BUSM ranks locally against the displayed set — avoids backend hybrid mismatch
+  const localRankBy = (arr: any[], key: string, ascending = false) => {
+    const sorted = [...arr].sort((a, b) => ascending ? (a[key] || 0) - (b[key] || 0) : (b[key] || 0) - (a[key] || 0));
+    const m = new Map<string, number>();
+    sorted.forEach((x, i) => m.set(normalizeKey(x.name), i + 1));
+    return m;
+  };
+  const busmCpcRankMap  = localRankBy(busmListWithCpc, 'cpc', true);   // lower CPC = better
+  const busmTatRankMap  = localRankBy(busmListWithCpc, 'tat');
+  const busmSahRankMap  = localRankBy(busmListWithCpc, 'sah');
+  const busmNpsRankMap  = localRankBy(busmListWithCpc, 'nps');
+  const busmDiagRankMap = localRankBy(busmListWithCpc, 'diag');
+  const busmCagRankMap  = localRankBy(busmListWithCpc, 'cag');
 
   const busmList = busmListWithCpc.map((b: any) => ({
     ...b,
     ranks: {
-      ...b.ranks,
-      cpc: busmCpcRankMap.get(normalizeKey(b.name)) || b.ranks?.cpc || 1,
-      tat: busmTatRankMap.get(normalizeKey(b.name)) || b.ranks?.tat || 1
+      cpc:  busmCpcRankMap.get(normalizeKey(b.name))  ?? null,
+      tat:  busmTatRankMap.get(normalizeKey(b.name))  ?? null,
+      sah:  busmSahRankMap.get(normalizeKey(b.name))  ?? null,
+      nps:  busmNpsRankMap.get(normalizeKey(b.name))  ?? null,
+      diag: busmDiagRankMap.get(normalizeKey(b.name)) ?? null,
+      cag:  busmCagRankMap.get(normalizeKey(b.name))  ?? null,
     }
   }));
 
-  const allAsmListWithCpc = rawAllAsmList.map((a: any) => {
+  const allAsmListWithNps = rawAllAsmList.map((a: any) => {
     const npsInfo = asmNpsMap.get(normalizeKey(a.name));
+    // Prefer real survey-pipeline NPS; fall back to backend's a.nps
     const npsVal = npsInfo ? parseFloat(npsInfo.nps) : (a.nps || 0);
-    const npsRank = npsInfo ? npsInfo.rank : (a.ranks?.nps || 1);
-    const cpcVal = asmCpcMap.has(normalizeKey(a.name)) ? asmCpcMap.get(normalizeKey(a.name))! : (a.cpc || 0);
-    return {
-      ...a,
-      cpc: cpcVal,
-      // npsVal already prefers the real survey-derived pipeline (npsInfo) and
-      // only falls back to the backend's raw a.nps when that's missing —
-      // don't re-invert that priority here.
-      nps: npsVal,
-      ranks: {
-        ...(a.ranks || {}),
-        nps: npsRank
-      }
-    };
+    return { ...a, nps: npsVal };
   });
 
-  // Rank ASMs by CPC (ascending order: lowest CPC = rank #1)
-  const sortedAsmsByCpc = [...allAsmListWithCpc].sort((x, y) => x.cpc - y.cpc);
-  const asmCpcRankMap = new Map(sortedAsmsByCpc.map((x, idx) => [normalizeKey(x.name), idx + 1]));
+  // Compute ALL 6 ASM ranks locally against the displayed set
+  const asmCpcRankMap  = localRankBy(allAsmListWithNps, 'cpc', true);
+  const asmTatRankMap  = localRankBy(allAsmListWithNps, 'tat');
+  const asmSahRankMap  = localRankBy(allAsmListWithNps, 'sah');
+  const asmNpsRankMap  = localRankBy(allAsmListWithNps, 'nps');
+  const asmDiagRankMap = localRankBy(allAsmListWithNps, 'diag');
+  const asmCagRankMap  = localRankBy(allAsmListWithNps, 'cag');
 
-  // Rank ASMs by In-Warranty TAT % (descending: highest In-Warranty TAT % = rank #1)
-  const sortedAsmsByTat = [...allAsmListWithCpc].sort((x, y) => (y.tat || 0) - (x.tat || 0));
-  const asmTatRankMap = new Map(sortedAsmsByTat.map((x, idx) => [normalizeKey(x.name), idx + 1]));
-
-  const allAsmList = allAsmListWithCpc.map((a: any) => ({
+  const allAsmList = allAsmListWithNps.map((a: any) => ({
     ...a,
     ranks: {
-      ...a.ranks,
-      cpc: asmCpcRankMap.get(normalizeKey(a.name)) || a.ranks?.cpc || 1,
-      tat: asmTatRankMap.get(normalizeKey(a.name)) || a.ranks?.tat || 1
+      cpc:  asmCpcRankMap.get(normalizeKey(a.name))  ?? null,
+      tat:  asmTatRankMap.get(normalizeKey(a.name))  ?? null,
+      sah:  asmSahRankMap.get(normalizeKey(a.name))  ?? null,
+      nps:  asmNpsRankMap.get(normalizeKey(a.name))  ?? null,
+      diag: asmDiagRankMap.get(normalizeKey(a.name)) ?? null,
+      cag:  asmCagRankMap.get(normalizeKey(a.name))  ?? null,
     }
   }));
 
@@ -297,12 +262,17 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
     return Math.round((busmList.reduce((s, b) => s + (b[key] || 0) * (b.wo || 0), 0) / busmTotalWoForNational) * 10) / 10;
   };
 
+  // National NPS: WO-weighted average across displayed BUSMs (same methodology as TAT/SAH)
+  const weightedNationalNps = busmTotalWoForNational > 0
+    ? Math.round((busmList.reduce((s, b) => s + (b.nps || 0) * (b.wo || 0), 0) / busmTotalWoForNational) * 10) / 10
+    : (busmList.length > 0 ? Math.round((busmList.reduce((s, b) => s + (b.nps || 0), 0) / busmList.length) * 10) / 10 : 0);
+
   const nationalSummary = {
     ...rawNationalSummary,
-    cpc: natCpcVal,
+    cpc: rawNationalSummary.cpc || 0,
     tat: weightedBusmAvg('tat'),
     sah: weightedBusmAvg('sah'),
-    nps: rawNationalSummary.nps && rawNationalSummary.nps > 0 ? rawNationalSummary.nps : 65.4
+    nps: weightedNationalNps || 0,
   };
 
   // Filter ASMs by clicked BUSM row (or show all if no row is clicked)
@@ -531,20 +501,16 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
           <span style={{ fontSize: '17px', fontWeight: 800, color: '#0f172a' }}>
             1. Overall Regional Performance Scorecards
           </span>
-          {(segmentFilter !== 'All' || modelTypeFilter !== 'All') && (
-            <div style={{ display: 'flex', gap: '6px', marginLeft: '8px', flexWrap: 'wrap' }}>
-              {segmentFilter !== 'All' && (
-                <span style={{ padding: '2px 10px', borderRadius: '12px', background: '#fee2e2', color: '#dc2626', fontSize: '11.5px', fontWeight: 700, border: '1px solid #fca5a5' }}>
-                  Segment: {segmentFilter}
-                </span>
-              )}
-              {modelTypeFilter !== 'All' && (
-                <span style={{ padding: '2px 10px', borderRadius: '12px', background: '#dbeafe', color: '#1d4ed8', fontSize: '11.5px', fontWeight: 700, border: '1px solid #93c5fd' }}>
-                  Model: {modelTypeFilter}
-                </span>
-              )}
-            </div>
-          )}
+          <div style={{ display: 'flex', gap: '6px', marginLeft: '8px', flexWrap: 'wrap' }}>
+            {segmentFilter !== 'All' && (
+              <span style={{ padding: '2px 10px', borderRadius: '12px', background: '#fee2e2', color: '#dc2626', fontSize: '11.5px', fontWeight: 700, border: '1px solid #fca5a5' }}>
+                Segment: {segmentFilter}
+              </span>
+            )}
+            <span style={{ padding: '2px 10px', borderRadius: '12px', background: '#dbeafe', color: '#1d4ed8', fontSize: '11.5px', fontWeight: 700, border: '1px solid #93c5fd' }}>
+              NPS: {modelTypeFilter} devices
+            </span>
+          </div>
         </div>
 
         {/* TABLE 1: BUSM PERFORMANCE & RANKING MATRIX */}

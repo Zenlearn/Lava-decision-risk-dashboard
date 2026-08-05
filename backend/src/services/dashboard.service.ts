@@ -1982,6 +1982,29 @@ export async function getFullDashboardData(filters?: {
       const tat5dPct = wo > 0 ? Math.round((c5d / wo) * 1000) / 10 : 0;
       const stillOpenPct = wo > 0 ? Math.round((cStillOpen / wo) * 1000) / 10 : 0;
 
+      // CPC breakdown (for Section 2 drilldown — same rows as the `cpc` value above)
+      const busmRepairTotal = Math.round(busmRepairRows.reduce((s, r) => s + (r.partLeakageVal || 0), 0));
+      const busmRepairAvg = busmRepairRows.length > 0 ? Math.round(busmRepairTotal / busmRepairRows.length) : 0;
+      const busmReplTotal = Math.round(busmReplRows.reduce((s, r) => s + (r.handsetVal || 0), 0));
+      const busmReplAvg = busmReplRows.length > 0 ? Math.round(busmReplTotal / busmReplRows.length) : 0;
+
+      // S@H home-visit breakdown (for Section 3 drilldown — from Master Data isHome rows)
+      const sahTotalCount = homeRows.length;
+      const sahSameDayCount = homeRows.filter((r) => r.tat !== null && r.tat <= 1).length;
+      const sahCancelCount = homeRows.filter((r) => r.isBounce).length;
+      const sahReschedCount = homeRows.filter((r) => r.tat !== null && r.tat > 3 && !r.isBounce).length;
+      const sahSameDayCancelCount = homeRows.filter((r) => r.tat !== null && r.tat <= 1 && r.isBounce).length;
+      const sahPendingCount = homeRows.filter((r) => r.tat === null).length;
+      const fp = (n: number, d: number) => d > 0 ? `${(n / d * 100).toFixed(1)}%` : '0.0%';
+      const sahBreakdown = {
+        total: sahTotalCount,
+        cancel: fp(sahCancelCount, sahTotalCount),
+        resched: fp(sahReschedCount, sahTotalCount),
+        same_day: fp(sahSameDayCount, sahTotalCount),
+        same_day_cancel: fp(sahSameDayCancelCount, sahSameDayCount),
+        pending: fp(sahPendingCount, sahTotalCount),
+      };
+
       return {
         name: busmName,
         wo,
@@ -1991,6 +2014,14 @@ export async function getFullDashboardData(filters?: {
         nps: npsPct,
         diag: diagPct,
         cag: cagPct,
+        repair_count: busmRepairRows.length,
+        repair_total: busmRepairTotal,
+        repair_avg: busmRepairAvg,
+        repl_count: busmReplRows.length,
+        repl_total: busmReplTotal,
+        repl_avg: busmReplAvg,
+        combined_total: Math.round(busmCombinedCost),
+        sahBreakdown,
         cancelPct,
         reschedulePct,
         sameDayAttendPct,
@@ -2100,6 +2131,25 @@ export async function getFullDashboardData(filters?: {
       const tat5dPct = wo > 0 ? Math.round((c5d / wo) * 1000) / 10 : 0;
       const stillOpenPct = wo > 0 ? Math.round((cStillOpen / wo) * 1000) / 10 : 0;
 
+      // CPC breakdown (for Section 2 ASM drilldown)
+      const asmRepairTotal = Math.round(asmRepairRows.reduce((s, r) => s + (r.partLeakageVal || 0), 0));
+      const asmRepairAvg = asmRepairRows.length > 0 ? Math.round(asmRepairTotal / asmRepairRows.length) : 0;
+      const asmReplTotal = Math.round(asmReplRows.reduce((s, r) => s + (r.handsetVal || 0), 0));
+      const asmReplAvg = asmReplRows.length > 0 ? Math.round(asmReplTotal / asmReplRows.length) : 0;
+
+      // S@H home-visit breakdown (for Section 3 ASM drilldown)
+      const asmSahTotalCount = homeRows.length;
+      const asmSahSdCount = homeRows.filter((r) => r.tat !== null && r.tat <= 1).length;
+      const asmFp = (n: number, d: number) => d > 0 ? `${(n / d * 100).toFixed(1)}%` : '0.0%';
+      const asmSahBreakdown = {
+        total: asmSahTotalCount,
+        cancel: asmFp(homeRows.filter((r) => r.isBounce).length, asmSahTotalCount),
+        resched: asmFp(homeRows.filter((r) => r.tat !== null && r.tat > 3 && !r.isBounce).length, asmSahTotalCount),
+        same_day: asmFp(asmSahSdCount, asmSahTotalCount),
+        same_day_cancel: asmFp(homeRows.filter((r) => r.tat !== null && r.tat <= 1 && r.isBounce).length, asmSahSdCount),
+        pending: asmFp(homeRows.filter((r) => r.tat === null).length, asmSahTotalCount),
+      };
+
       return {
         name: asmName,
         busm: obj.busm,
@@ -2110,6 +2160,14 @@ export async function getFullDashboardData(filters?: {
         nps: npsPct,
         diag: diagPct,
         cag: cagPct,
+        repair_count: asmRepairRows.length,
+        repair_total: asmRepairTotal,
+        repair_avg: asmRepairAvg,
+        repl_count: asmReplRows.length,
+        repl_total: asmReplTotal,
+        repl_avg: asmReplAvg,
+        combined_total: Math.round(asmCombinedCost),
+        sahBreakdown: asmSahBreakdown,
         cancelPct,
         reschedulePct,
         sameDayAttendPct,
@@ -2177,12 +2235,44 @@ export async function getFullDashboardData(filters?: {
       const tat5dPct = wo > 0 ? Math.round((c5d / wo) * 1000) / 10 : 0;
       const stillOpenPct = wo > 0 ? Math.round((cStillOpen / wo) * 1000) / 10 : 0;
 
+      // CPC breakdown (for Section 2 ASP drilldown)
+      const aspRepairRows = aspRows.filter((r) => (r.partLeakageVal || 0) > 0);
+      const aspReplRows = aspRows.filter((r) => r.isReplacement || String(r.rawData?.[FIELD_MAP.callType] || '').trim().toUpperCase() === 'Z9');
+      const aspRepairTotal = Math.round(aspRepairRows.reduce((s, r) => s + (r.partLeakageVal || 0), 0));
+      const aspRepairAvg = aspRepairRows.length > 0 ? Math.round(aspRepairTotal / aspRepairRows.length) : 0;
+      const aspReplTotal = Math.round(aspReplRows.reduce((s, r) => s + (r.handsetVal || 0), 0));
+      const aspReplAvg = aspReplRows.length > 0 ? Math.round(aspReplTotal / aspReplRows.length) : 0;
+      const aspCombinedCost = aspRows.reduce((s, r) => s + (r.partLeakageVal || 0) + (r.handsetVal || 0), 0);
+
+      // S@H breakdown for ASP (for Section 3 ASP drilldown)
+      const aspHomeRows = aspRows.filter((r) => r.isHome);
+      const aspSahTotal = aspHomeRows.length;
+      const aspSahSdCount = aspHomeRows.filter((r) => r.tat !== null && r.tat <= 1).length;
+      const aspFp = (n: number, d: number) => d > 0 ? `${(n / d * 100).toFixed(1)}%` : '0.0%';
+      const aspSahBreakdown = {
+        total: aspSahTotal,
+        cancel: aspFp(aspHomeRows.filter((r) => r.isBounce).length, aspSahTotal),
+        resched: aspFp(aspHomeRows.filter((r) => r.tat !== null && r.tat > 3 && !r.isBounce).length, aspSahTotal),
+        same_day: aspFp(aspSahSdCount, aspSahTotal),
+        same_day_cancel: aspFp(aspHomeRows.filter((r) => r.tat !== null && r.tat <= 1 && r.isBounce).length, aspSahSdCount),
+        pending: aspFp(aspHomeRows.filter((r) => r.tat === null).length, aspSahTotal),
+      };
+
       return {
         code: obj.code,
         name: aspName,
+        asp: aspName,
         asm: obj.asm,
         busm: obj.busm,
         wo,
+        repair_count: aspRepairRows.length,
+        repair_total: aspRepairTotal,
+        repair_avg: aspRepairAvg,
+        repl_count: aspReplRows.length,
+        repl_total: aspReplTotal,
+        repl_avg: aspReplAvg,
+        combined_total: Math.round(aspCombinedCost),
+        sahBreakdown: aspSahBreakdown,
         tatClosure: {
           c1d, tat1dPct,
           c2d, tat2dPct,
@@ -2236,6 +2326,25 @@ export async function getFullDashboardData(filters?: {
     const natTat5dPct = totalWo > 0 ? Math.round((natC5d / totalWo) * 1000) / 10 : 0;
     const natStillOpenPct = totalWo > 0 ? Math.round((natStillOpen / totalWo) * 1000) / 10 : 0;
 
+    // National CPC breakdown
+    const natRepairTotal = Math.round(natRepairRows.reduce((s, r) => s + (r.partLeakageVal || 0), 0));
+    const natRepairAvg = natRepairRows.length > 0 ? Math.round(natRepairTotal / natRepairRows.length) : 0;
+    const natReplTotal = Math.round(natReplRows.reduce((s, r) => s + (r.handsetVal || 0), 0));
+    const natReplAvg = natReplRows.length > 0 ? Math.round(natReplTotal / natReplRows.length) : 0;
+
+    // National S@H breakdown
+    const natSahTotalCount = totalHomeRows.length;
+    const natSahSdCount = totalHomeRows.filter((r) => r.tat !== null && r.tat <= 1).length;
+    const natFp = (n: number, d: number) => d > 0 ? `${(n / d * 100).toFixed(1)}%` : '0.0%';
+    const natSahBreakdown = {
+      total: natSahTotalCount,
+      cancel: natFp(totalHomeRows.filter((r) => r.isBounce).length, natSahTotalCount),
+      resched: natFp(totalHomeRows.filter((r) => r.tat !== null && r.tat > 3 && !r.isBounce).length, natSahTotalCount),
+      same_day: natFp(natSahSdCount, natSahTotalCount),
+      same_day_cancel: natFp(totalHomeRows.filter((r) => r.tat !== null && r.tat <= 1 && r.isBounce).length, natSahSdCount),
+      pending: natFp(totalHomeRows.filter((r) => r.tat === null).length, natSahTotalCount),
+    };
+
     const nationalSummary = {
       name: 'National %',
       wo: totalWo,
@@ -2245,6 +2354,14 @@ export async function getFullDashboardData(filters?: {
       nps: nationalNps,
       diag: nationalDiag,
       cag: nationalCag,
+      repair_count: natRepairRows.length,
+      repair_total: natRepairTotal,
+      repair_avg: natRepairAvg,
+      repl_count: natReplRows.length,
+      repl_total: natReplTotal,
+      repl_avg: natReplAvg,
+      combined_total: Math.round(natCombinedCost),
+      sahBreakdown: natSahBreakdown,
       // Aggregate operational metrics from BUSM list (computed from real data, not hardcoded)
       cancelPct: busmList.length > 0 ? Math.round(busmList.reduce((s, b) => s + (b.cancelPct || 0), 0) / busmList.length * 10) / 10 : 0,
       reschedulePct: busmList.length > 0 ? Math.round(busmList.reduce((s, b) => s + (b.reschedulePct || 0), 0) / busmList.length * 10) / 10 : 0,
