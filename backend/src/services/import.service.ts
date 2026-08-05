@@ -233,7 +233,6 @@ export async function processImport(
               serviceCentreId: scId,
               month:           row.month,
               rawData:         rawData as object,
-              skillScore:      Math.max(0, 100 - result.skillPenalty),
               totalAnomalies:  result.totalAnomalies,
               riskFlags: {
                 create: Object.entries(result.flags)

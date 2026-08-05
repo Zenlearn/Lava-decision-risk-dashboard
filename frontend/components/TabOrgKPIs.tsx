@@ -363,7 +363,8 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
   }));
 
   // Real Feature-Phone-only BUSM NPS breakdown.
-  const fpBusmData = toDisplayNps(npsMonthData.busmFeaturePhone, false);
+  const fpBusmData = toDisplayNps(npsMonthData.busmFeaturePhone, true);
+  const fpAsmData = toDisplayNps(npsMonthData.asmFeaturePhone, false);
 
 
 
@@ -1783,7 +1784,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {(deviceFilter === 'smart' ? spBusmData : busmNpsData)
+                {(deviceFilter === 'smart' ? stBusmData : fpBusmData)
                   .slice()
                   .sort((a, b) => a.name.localeCompare(b.name))
                   .map((r, i) => {
@@ -1817,7 +1818,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
               </TableBody>
               {/* National total row — computed dynamically from BUSM data */}
               {(() => {
-                const src = deviceFilter === 'smart' ? spBusmData : busmNpsData;
+                const src = deviceFilter === 'smart' ? stBusmData : fpBusmData;
                 const totSurveys = src.reduce((s: number, r: any) => s + (r.total || 0), 0);
                 const wavg = (key: string) => {
                   if (totSurveys === 0) return '0.0%';
@@ -1886,7 +1887,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                 </h3>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <span style={{ fontSize: '12px', color: '#64748b' }}>
-                    Showing {(deviceFilter === 'smart' ? spAsmData : asmNpsData).filter(r => r.busm === npsBusmRow).length} Supervisors
+                    Showing {(deviceFilter === 'smart' ? stAsmData : fpAsmData).filter(r => r.busm === npsBusmRow).length} Supervisors
                   </span>
                   <button
                     onClick={(e) => { e.stopPropagation(); setNpsBusmRow(null); }}
@@ -1912,7 +1913,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                     </tr>
                   </thead>
                   <tbody>
-                    {(deviceFilter === 'smart' ? spAsmData : asmNpsData)
+                    {(deviceFilter === 'smart' ? stAsmData : fpAsmData)
                       .filter(r => r.busm === npsBusmRow)
                       .map((r, i) => {
                         const isSelected = npsAsmRow === r.name;
@@ -2676,80 +2677,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
       </div>
 
 
-      {/* Org KPI Abbreviations & Definitions Footnote */}
-      <div style={{ marginTop: '16px', padding: '16px 20px', background: '#f8fafc', borderRadius: '10px', border: '1px solid #e2e8f0', fontSize: '11.5px', color: '#475569', lineHeight: '1.7', boxShadow: 'var(--shadow-sm)' }}>
-        <div style={{ fontWeight: 800, color: '#1e293b', marginBottom: '6px', fontSize: '12px', letterSpacing: '0.02em', textTransform: 'uppercase' }}>
-          Abbreviations &amp; Definitions — Org KPI Page
-        </div>
-        {DASHBOARD_DEFINITIONS.orgKpiFootnote}
-        
-        {/* Visual Rank Badge Color Scale Legend */}
-        <div style={{ marginTop: '12px', paddingTop: '10px', borderTop: '1px solid #cbd5e1', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-          <span style={{ fontWeight: 800, color: '#0f172a', fontSize: '11.5px', textTransform: 'uppercase' }}>Rank Badge Percentile Scale:</span>
-          <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#f0fdf4', color: '#15803d', border: '1px solid #bbf7d0', padding: '2px 8px', borderRadius: '4px' }}>Top 20% (Best Performers)</span>
-          <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', padding: '2px 8px', borderRadius: '4px' }}>20% – 50% (Above Average)</span>
-          <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#fffbeb', color: '#b45309', border: '1px solid #fde68a', padding: '2px 8px', borderRadius: '4px' }}>50% – 70% (Watch-list / Mid-tier)</span>
-          <span style={{ fontSize: '10.5px', fontWeight: 800, background: '#fef2f2', color: '#dc2626', border: '1px solid #fca5a5', padding: '2px 8px', borderRadius: '4px' }}>Below 70% (Bottom 30% / Attention Required)</span>
-        </div>
 
-        {/* CPC Repair & Replacement Calculation Formula Footnote */}
-        <div style={{ marginTop: '14px', paddingTop: '12px', borderTop: '1px solid #cbd5e1', fontSize: '11px', color: '#334155', lineHeight: '1.7' }}>
-          <div style={{ fontWeight: 800, color: '#0f172a', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.03em', fontSize: '11.5px' }}>
-            CPC Repair &amp; Replacement Cost Calculation Formulas &amp; Master Data Filters:
-          </div>
-          <div>
-            • <strong>Master Data Scope &amp; Filters Applied:</strong> Sourced from master file <code>Replacement cost Repair cost.xlsx</code> (24,939 total work orders). Filtered strictly for <code>Warranty == "Yes"</code> (in-warranty work orders only; 9,819 non-warranty rows excluded) and <code>ELS Status ≠ "No"</code> (retains "Yes" and "Pass" records). Evaluated dynamically by month (June 2026, May 2026, April 2026, or All Months).
-          </div>
-          <div style={{ marginTop: '4px' }}>
-            • <strong>Repair Cost Breakdown:</strong> Filtered for WOs where <em>Total Part Value &gt; 0</em> (excludes zero part cost orders). <br />
-            &nbsp;&nbsp;<code>Avg Repair Cost (₹)</code> = ∑ (Total Part Value where Total Part Value &gt; 0) ÷ Repair WO Count <br />
-            &nbsp;&nbsp;<code>Total Repair Cost (₹)</code> = Repair WO Count × Avg Repair Cost (₹)
-          </div>
-          <div style={{ marginTop: '4px' }}>
-            • <strong>Replacement Cost Breakdown:</strong> Filtered strictly for <em>Call Type = "Z9"</em> (handset replacement / exchange work orders).<br />
-            &nbsp;&nbsp;<code>Avg Replacement Cost (₹)</code> = ∑ (Handset Value where Call Type = "Z9") ÷ Replacement WO Count <br />
-            &nbsp;&nbsp;<code>Total Replacement Cost (₹)</code> = Replacement WO Count × Avg Replacement Cost (₹)
-          </div>
-          <div style={{ marginTop: '4px' }}>
-            • <strong>Combined Total Exposure (₹):</strong> <code>Total Repair Cost (₹) + Total Replacement Cost (₹)</code> across BUSM, ASM, and ASP tiers.
-          </div>
-          <div style={{ marginTop: '4px' }}>
-            • <strong>Scorecard Column CPC (₹) Formula:</strong> <code>Combined Total Cost (₹) ÷ (Repair WO Count + Replacement WO Count)</code> <br />
-            &nbsp;&nbsp;where <em>Combined Total Cost (₹)</em> = Total Repair Cost (₹) + Total Replacement Cost (₹), and denominator is sum of Repair WOs (Total Part Value &gt; 0) + Replacement WOs (Call Type = "Z9").
-          </div>
-          <div style={{ marginTop: '4px' }}>
-            • <strong>Model Segment View — CPC Breakdown &amp; CPC % Breakdown Filters:</strong> Records filtered for <code>Warranty = "Yes"</code>, <code>ELS Status = "Yes"</code>, and <code>Total Part Value &gt; 0</code>. WO counts and cost totals exclude any zero-part-value records from denominator and totals.
-            <br />&nbsp;&nbsp;<code>CPC % = Sum of Part Value ÷ Sum of Handset Value × 100</code> computed within each Price Bracket per BUSM / ASM / ASP.
-          </div>
-        </div>
-
-        {/* S@H Cancellation %, Reschedule %, and Same Day Attend % Calculation Formula Footnote */}
-        <div style={{ marginTop: '12px', paddingTop: '10px', borderTop: '1px solid #cbd5e1', fontSize: '11px', color: '#334155', lineHeight: '1.7' }}>
-          <div style={{ fontWeight: 800, color: '#0f172a', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.03em', fontSize: '11.5px' }}>
-            Service at Home (S@H) Calculation Formulas &amp; Master Data Filters:
-          </div>
-          <div>
-            • <strong>S@H Cancellation % Formula:</strong> Calculated strictly by filtering column <code>Final Remarks == "Canceled"</code> in <code>S@H Raw Detail 28 Jul 2026.xlsx</code>. <br />
-            &nbsp;&nbsp;<code>Cancellation %</code> = [ Count of Appointments where <em>Final Remarks == "Canceled"</em> ] ÷ [ Total Appointments for BUSM / ASM / Month ] × 100
-          </div>
-          <div style={{ marginTop: '4px' }}>
-            • <strong>S@H Reschedule % Formula:</strong> Calculated strictly by filtering column <code>Final Remarks</code> for <code>"Reshedule"</code>, <code>"Outside TAT-Reshedule"</code>, and <code>"Within TAT-Reshedule"</code>. <br />
-            &nbsp;&nbsp;<code>Reschedule %</code> = [ Count of Appointments where <em>Final Remarks in Reschedule Statuses</em> ] ÷ [ Total Appointments for BUSM / ASM / Month ] × 100
-          </div>
-          <div style={{ marginTop: '4px' }}>
-            • <strong>S@H Same Day Attend % Formula:</strong> Calculated by filtering <code>Final Remarks</code> for <code>"Within TAT"</code> and <code>"Within TAT-Reshedule"</code> in the numerator. <br />
-            &nbsp;&nbsp;<code>Same Day Attend %</code> = [ Count of <em>Final Remarks in ("Within TAT", "Within TAT-Reshedule")</em> ] ÷ [ Total Appointments for BUSM / ASM / Month ] × 100
-          </div>
-          <div style={{ marginTop: '4px' }}>
-            • <strong>S@H Same Day Attend without Cancellation % Formula:</strong> Calculated by filtering <code>Final Remarks</code> for <code>"Within TAT"</code> and <code>"Within TAT-Reshedule"</code> over net non-canceled cases. <br />
-            &nbsp;&nbsp;<code>Same Day Attend without Cancellation %</code> = [ Count of <em>Final Remarks in ("Within TAT", "Within TAT-Reshedule")</em> ] ÷ [ Total Appointments − Count of <em>Final Remarks == "Canceled"</em> ] × 100
-          </div>
-          <div style={{ marginTop: '4px' }}>
-            • <strong>S@H Pending to Attend % Formula:</strong> Calculated strictly by filtering column <code>Final Remarks == "Appointment Created No Action"</code>. <br />
-            &nbsp;&nbsp;<code>Pending to Attend %</code> = [ Count of <em>Final Remarks == "Appointment Created No Action"</em> ] ÷ [ Total Appointments for BUSM / ASM / Month ] × 100
-          </div>
-        </div>
-      </div>
       </div>
       )}
 

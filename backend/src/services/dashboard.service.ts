@@ -534,9 +534,6 @@ export async function getFullDashboardData(filters?: {
       id: true,
       month: true,
       rawData: true,
-      skillScore: true,
-      auditScore: true,
-      processScore: true,
       totalAnomalies: true,
       serviceCentre: {
         select: {
@@ -746,23 +743,6 @@ export async function getFullDashboardData(filters?: {
       }
     }
 
-    // Dynamic scores calculation based on mockup rules
-    let auditScore = 100;
-    if (isGhost) auditScore -= 35;
-    if (isCrossAsp) auditScore -= 35;
-    if (isHomeBoard) auditScore -= 30;
-    auditScore = Math.max(0, auditScore);
-
-    let skillScore = 100;
-    if (isBounce) skillScore -= 20;
-    if (isMismatchBounced) skillScore -= 25;
-    skillScore = Math.max(0, skillScore);
-
-    let processScore = 100;
-    if (tat !== null && tat > 7) processScore -= 15;
-    if (isDetractor) processScore -= 20;
-    processScore = Math.max(0, processScore);
-
     const parseNumber = (val: any): number => {
       if (val === null || val === undefined) return 0;
       if (typeof val === 'number') return isNaN(val) ? 0 : val;
@@ -856,9 +836,6 @@ export async function getFullDashboardData(filters?: {
       handsetVal,
       travelVal,
       partCategory,
-      processScore,
-      skillScore,
-      auditScore,
       rawData: raw,
     };
   });
@@ -881,10 +858,6 @@ export async function getFullDashboardData(filters?: {
     const mRows = processedRows.filter((r) => r.month === m);
     const woCount = mRows.length;
 
-    const totalProcess = mRows.reduce((sum, r) => sum + r.processScore, 0);
-    const totalSkill = mRows.reduce((sum, r) => sum + r.skillScore, 0);
-    const totalAudit = mRows.reduce((sum, r) => sum + r.auditScore, 0);
-
     const ghost = mRows.filter((r) => r.isGhost).length;
     const home_board = mRows.filter((r) => r.isHomeBoard).length;
     const crossRows = mRows.filter((r) => r.isCrossAsp).length;
@@ -903,9 +876,9 @@ export async function getFullDashboardData(filters?: {
     return {
       month: m,
       wo: woCount,
-      process: safeDivide(totalProcess, woCount),
-      skill:   safeDivide(totalSkill,   woCount),
-      audit:   safeDivide(totalAudit,   woCount),
+      process: 0,
+      skill:   0,
+      audit:   0,
       ghost,
       home_board,
       cross_dev: crossDevIMEIs.size,
@@ -1360,7 +1333,7 @@ export async function getFullDashboardData(filters?: {
     const totalPartVal = rows.reduce((s, r) => s + (r.cpcPartVal || 0), 0);
     const cpc = wo > 0 ? totalPartVal / wo : 0;
 
-    const cancelCount = rows.filter((r) => r.isBounce || r.isDetractor || (r.flag && r.flag.includes('cancel'))).length;
+    const cancelCount = rows.filter((r) => r.flag && r.flag.includes('cancel')).length;
     const sahCancelPct = wo > 0 ? (cancelCount / wo) * 100 : 0;
     const rescheduleCount = rows.filter((r) => r.tat !== null && r.tat !== undefined && (r.tat as number) > 3).length;
     const sahReschedulePct = wo > 0 ? (rescheduleCount / wo) * 100 : 0;
