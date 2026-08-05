@@ -1943,7 +1943,8 @@ export async function getFullDashboardData(filters?: {
       const busmRepairRows = busmRows.filter((r) => (r.cpcPartVal || 0) > 0);
       const busmReplRows = busmRows.filter((r) => r.isReplacement || String(r.rawData?.[FIELD_MAP.callType] || '').trim().toUpperCase() === 'Z9');
       const busmCombinedCost = totalPartVal + busmReplRows.reduce((sum, r) => sum + (r.handsetVal || 0), 0);
-      const cpc = wo > 0 ? Math.round(busmCombinedCost / wo) : 0;
+      const busmCpcWos = busmRepairRows.length + busmReplRows.length;
+      const cpc = busmCpcWos > 0 ? Math.round(busmCombinedCost / busmCpcWos) : 0;
 
       const homeRows = busmRows.filter((r) => r.isHome);
       const homeAdherence = homeRows.filter((r) => r.tat !== null && r.tat <= 3).length;
@@ -2094,7 +2095,8 @@ export async function getFullDashboardData(filters?: {
       const asmRepairRows = asmRows.filter((r) => (r.cpcPartVal || 0) > 0);
       const asmReplRows = asmRows.filter((r) => r.isReplacement || String(r.rawData?.[FIELD_MAP.callType] || '').trim().toUpperCase() === 'Z9');
       const asmCombinedCost = totalPartVal + asmReplRows.reduce((sum, r) => sum + (r.handsetVal || 0), 0);
-      const cpc = wo > 0 ? Math.round(asmCombinedCost / wo) : 0;
+      const asmCpcWos = asmRepairRows.length + asmReplRows.length;
+      const cpc = asmCpcWos > 0 ? Math.round(asmCombinedCost / asmCpcWos) : 0;
 
       const homeRows = asmRows.filter((r) => r.isHome);
       const homeAdherence = homeRows.filter((r) => r.tat !== null && r.tat <= 3).length;
@@ -2303,7 +2305,8 @@ export async function getFullDashboardData(filters?: {
     const natRepairRows = rows.filter((r) => (r.cpcPartVal || 0) > 0);
     const natReplRows = rows.filter((r) => r.isReplacement || String(r.rawData?.[FIELD_MAP.callType] || '').trim().toUpperCase() === 'Z9');
     const natCombinedCost = totalPartVal + natReplRows.reduce((sum, r) => sum + (r.handsetVal || 0), 0);
-    const nationalCpc = totalWo > 0 ? Math.round(natCombinedCost / totalWo) : 0;
+    const natCpcWos = natRepairRows.length + natReplRows.length;
+    const nationalCpc = natCpcWos > 0 ? Math.round(natCombinedCost / natCpcWos) : 0;
 
     const totalHomeRows = rows.filter((r) => r.isHome);
     const totalHomeAdherence = totalHomeRows.filter((r) => r.tat !== null && r.tat <= 3).length;
