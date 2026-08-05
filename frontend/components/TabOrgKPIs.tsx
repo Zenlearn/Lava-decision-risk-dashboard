@@ -33,7 +33,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
   const [msTatAsmRow, setMsTatAsmRow] = useState<string | null>(null);
   const [collapsedTables, setCollapsedTables] = useState<Record<string, boolean>>({});
   const [segmentFilter, setSegmentFilter] = useState<string>('All');
-  const modelTypeFilter: string = 'Smart';  // Section 1 NPS uses busmSmartphone — informational label, not a selectable filter
+  const modelTypeFilter: string = 'Smart & Tablet';  // Section 1 NPS uses busmSmartphone — informational label, not a selectable filter
   const [tatWarrantyFilter, setTatWarrantyFilter] = useState<'inWarranty' | 'overall'>('inWarranty');
 
   // CPC Drilldown State
@@ -351,7 +351,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
   // survey dataset's "Detractor Calling" reason column.
   const dsatBusmData = npsMonthData.dsatByBusm || [];
 
-  // Real device-category NPS summary (Feature Phone / Smart Phone / Overall
+  // Real device-category NPS summary (Feature Phone / Smart & Tablet / Overall
   // Combined), from the same dataset's device-category field.
   const deviceCategoryNps = (npsMonthData.deviceCategorySummary || []).map((c: any) => ({
     cat: c.cat,
@@ -1692,7 +1692,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   transition: 'all 0.15s ease'
                 }}
               >
-                📱 Smart Phone Only (Default)
+                📱 Smart Phone & Tablet (Default)
               </button>
               <button
                 onClick={() => setDeviceFilter('all')}
@@ -1742,7 +1742,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
             <div>
               <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                Table 1: BUSM Wise NPS Performance Breakdown ({deviceFilter === 'smart' ? 'Smart Phone Only' : 'All Devices Combined'})
+                Table 1: BUSM Wise NPS Performance Breakdown ({deviceFilter === 'smart' ? 'Smart Phone & Tablet' : 'All Devices Combined'})
               </h3>
               <span style={{ fontSize: '12px', color: '#64748b' }}>
                 Click any BUSM row below to filter Supervisors (ASMs), ASP Centers, and DSAT root causes below

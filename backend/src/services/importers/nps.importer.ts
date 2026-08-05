@@ -96,7 +96,9 @@ function normalizeDetractorReason(v: unknown): string | null {
 function normalizeDeviceCategory(v: unknown): string | null {
   if (v === null || v === undefined) return null;
   const s = String(v).trim().toUpperCase();
-  return s === 'SP' || s === 'FP' ? s : null;
+  if (s === 'SP' || s === 'TAB' || s === 'TABLET' || s.includes('SMART') || s.includes('TABLET')) return 'SP';
+  if (s === 'FP' || s.includes('FEATURE')) return 'FP';
+  return null;
 }
 
 export async function importNpsSurvey(

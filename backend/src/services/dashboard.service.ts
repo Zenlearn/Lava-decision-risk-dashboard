@@ -2467,7 +2467,7 @@ export async function getFullDashboardData(filters?: {
       dsatByBusm: computeDsatBreakdown(monthRows, (r) => r.busmName),
       deviceCategorySummary: [
         { cat: 'Feature Phone', ...summarizeNps(fpRows) },
-        { cat: 'Smart Phone', ...summarizeNps(spRows) },
+        { cat: 'Smart & Tablet', ...summarizeNps(spRows) },
         { cat: 'Overall Combined', ...summarizeNps(monthRows) },
       ].filter((c) => c.sent !== undefined),
     };
