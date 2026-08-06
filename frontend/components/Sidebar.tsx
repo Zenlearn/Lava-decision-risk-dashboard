@@ -5,6 +5,15 @@ import {
   Settings, BookOpen, AlertCircle, TrendingUp, User, Activity, Clock
 } from 'lucide-react';
 
+interface NavItem {
+  id: string;
+  label: string;
+  icon: any;
+  badge?: number;
+  /** If present, only these roles (and admin tiers) can see this item. */
+  roles?: string[];
+}
+
 interface SidebarProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
@@ -14,25 +23,52 @@ interface SidebarProps {
     name: string;
     email: string;
   };
+  /** Lava role from /auth/me — used for UX-only sidebar gating. */
+  role?: string;
 }
+
+// Roles that always see every nav item (super-set of all viewers).
+const ADMIN_TIERS = ['Admin', 'MD', 'ServiceHead', 'RegionalHead'];
 
 // Data uploads happen only through the admin panel (PathwaysFrontend's
 // /lava/upload page) — this app has no upload UI at all, for any user.
-export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handleSignOut, user }: SidebarProps) {
-  const menuItems = [
-    { id: 'exec', label: 'Executive KPIs', icon: LayoutDashboard },
+export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handleSignOut, user, role }: SidebarProps) {
+  const menuItems: NavItem[] = [
+    // Executive KPIs and Part Exposure show financial/leakage data that only
+    // managers and above need; BUSM is included because they manage ASMs.
+    {
+      id: 'exec',
+      label: 'Executive KPIs',
+      icon: LayoutDashboard,
+      roles: ['Admin', 'MD', 'ServiceHead', 'RegionalHead', 'BUSM'],
+    },
     { id: 'org_kpi', label: 'Org KPIs', icon: Activity },
     { id: 'deep', label: 'Score Card', icon: CheckCircle },
     {
       id: 'coach',
       label: 'Coaching Card',
       icon: BookOpen,
-      badge: nominatedCount > 0 ? nominatedCount : undefined
+      badge: nominatedCount > 0 ? nominatedCount : undefined,
     },
     { id: 'ins', label: 'Insights', icon: TrendingUp },
     { id: 'eved', label: 'Evidence & Hit-List', icon: ShieldAlert },
-    { id: 'cost', label: 'Part Exposure', icon: Settings },
+    {
+      id: 'cost',
+      label: 'Part Exposure',
+      icon: Settings,
+      roles: ['Admin', 'MD', 'ServiceHead', 'RegionalHead', 'BUSM'],
+    },
   ];
+
+  // Filter nav items by role. When role is undefined (not yet loaded) show all
+  // items so the sidebar doesn't flicker as the fetch resolves.
+  const visibleItems = menuItems.filter(
+    (item) =>
+      !item.roles ||
+      !role ||
+      ADMIN_TIERS.includes(role) ||
+      item.roles.includes(role)
+  );
 
   // Default fallback user details — empty string so sidebar shows nothing if user not yet loaded
   const userName = user?.name || '';
@@ -111,7 +147,7 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
 
       {/* Nav Menu Items */}
       <nav style={{ flex: 1, padding: '16px 10px', display: 'flex', flexDirection: 'column', gap: '2px', overflowY: 'auto' }}>
-        {menuItems.map((item) => {
+        {visibleItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
 

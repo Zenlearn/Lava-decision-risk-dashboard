@@ -29,6 +29,9 @@ export default function UnifiedMockupDashboard() {
   const [error, setError] = useState('');
   const [user, setUser] = useState<{ name: string; email: string } | undefined>(undefined);
 
+  // Lava RBAC role fetched from /auth/me — used for UX-only sidebar gating.
+  const [role, setRole] = useState<string | undefined>(undefined);
+
   // Active navigation tab — default is 'exec' (Executive Dashboard)
   const [activeTab, setActiveTab] = useState('exec');
 
@@ -86,6 +89,13 @@ export default function UnifiedMockupDashboard() {
     } catch (e) {
       console.error('Error reading user profile from localStorage:', e);
     }
+
+    // Fetch the authenticated user's Lava role so the sidebar can gate items.
+    // Failure is non-fatal — the sidebar falls back to showing all items.
+    fetch('/api/v1/auth/me')
+      .then((r) => r.json())
+      .then((d) => setRole(d?.result?.lava_role))
+      .catch(() => setRole(undefined));
 
     fetchDashboardPayload();
   }, []);
@@ -273,12 +283,13 @@ export default function UnifiedMockupDashboard() {
   if (data.summary.total_wo === 0) {
     return (
       <div className="mockup-dashboard" style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg, #f8fafc)' }}>
-        <Sidebar 
-          activeTab={activeTab} 
-          setActiveTab={setActiveTab} 
-          nominatedCount={nominated.size} 
-          handleSignOut={handleSignOut} 
+        <Sidebar
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          nominatedCount={nominated.size}
+          handleSignOut={handleSignOut}
           user={user}
+          role={role}
         />
         <div style={{ flex: 1, marginLeft: '260px', padding: '40px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box' }}>
           <div className="card-mock" style={{ maxWidth: '600px', textAlign: 'center', padding: '40px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
@@ -328,12 +339,13 @@ export default function UnifiedMockupDashboard() {
   return (
     <div className="mockup-dashboard" style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg, #f8fafc)' }}>
       {/* Sidebar navigation */}
-      <Sidebar 
-        activeTab={activeTab} 
-        setActiveTab={setActiveTab} 
-        nominatedCount={nominated.size} 
-        handleSignOut={handleSignOut} 
+      <Sidebar
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        nominatedCount={nominated.size}
+        handleSignOut={handleSignOut}
         user={user}
+        role={role}
       />
 
       {/* Main panel content area offset by sidebar width (260px) */}

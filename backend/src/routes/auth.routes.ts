@@ -203,4 +203,27 @@ authRouter.post(
 	}
 );
 
+/**
+ * GET /api/v1/auth/me
+ *
+ * Returns the authenticated caller's identity and Lava RBAC fields.
+ * The frontend uses this to gate sidebar items by role (UX-only boundary;
+ * the real security boundary is server-side RBAC on each API route).
+ */
+authRouter.get('/me', AuthMiddleware.authMiddleware, (req: Request, res: Response): void => {
+	const u = req.user!;
+	res.success({
+		message: 'Current user',
+		result: {
+			id: u.id,
+			name: u.name,
+			email: u.email,
+			lava_role: u.lava_role,
+			lava_scope: u.lava_scope,
+			is_admin: u.is_admin,
+			is_super_admin: u.is_super_admin,
+		},
+	});
+});
+
 export default authRouter;
