@@ -3,6 +3,7 @@ import { getExecutiveDashboard, getDealerDashboard, getFullDashboardData } from 
 import { getCachedDashboard, setCachedDashboard } from '../services/cache.service';
 import { createAuditLog } from './audit.controller';
 import logger from '../configs/logger.config';
+import { deriveScopeFilter } from '../helpers/scope';
 
 
 /**
@@ -12,8 +13,13 @@ import logger from '../configs/logger.config';
  * Query params: busmName (string), asmName (string)
  */
 export async function getExecutiveDashboardHandler(req: Request, res: Response): Promise<void> {
-  const busmName = (req.query.busmName as string) || 'All';
-  const asmName = (req.query.asmName as string) || 'All';
+  const requested = {
+    busmName: (req.query.busmName as string) || 'All',
+    asmName: (req.query.asmName as string) || 'All',
+  };
+  const scoped = deriveScopeFilter(req.user, requested);
+  const busmName = scoped.busmName;
+  const asmName = scoped.asmName;
 
   // Construct cache key based on selected filters
   const cacheKey = `dashboard:executive:busm_${busmName.replace(/\s+/g, '_')}:asm_${asmName.replace(/\s+/g, '_')}`;
@@ -120,8 +126,13 @@ export async function getDealerDashboardHandler(req: Request, res: Response): Pr
  * GET /api/v1/dashboard/full-data
  */
 export async function getFullDashboardDataHandler(req: Request, res: Response): Promise<void> {
-  const busmName = (req.query.busmName as string) || 'All';
-  const asmName = (req.query.asmName as string) || 'All';
+  const requested = {
+    busmName: (req.query.busmName as string) || 'All',
+    asmName: (req.query.asmName as string) || 'All',
+  };
+  const scoped = deriveScopeFilter(req.user, requested);
+  const busmName = scoped.busmName;
+  const asmName = scoped.asmName;
 
   const cacheKey = `dashboard:full_data:busm_${busmName.replace(/\s+/g, '_')}:asm_${asmName.replace(/\s+/g, '_')}`;
 
