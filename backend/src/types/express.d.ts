@@ -26,6 +26,13 @@ interface LavaAuthenticatedUser {
 	organization_id?: string;
 	/** Lava-specific role override (Phase 3) — if present, used for Lava RBAC instead of `role` */
 	lava_role?: string;
+	/** Lava scope claims — identifies the organisational scope a Lava user operates in */
+	lava_scope?: {
+		busmName?: string;
+		asmName?: string;
+		serviceCentreId?: string;
+		aspName?: string;
+	};
 	/** JWT standard claims */
 	iat?: number;
 	exp?: number;

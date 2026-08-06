@@ -68,6 +68,12 @@ export class AuthMiddleware {
 				is_department_manager: payload['is_department_manager'] as boolean | undefined,
 				organization_id: payload['organization_id'] as string | undefined,
 				lava_role: payload['lava_role'] as string | undefined,
+				lava_scope: payload['lava_scope'] as {
+					busmName?: string;
+					asmName?: string;
+					serviceCentreId?: string;
+					aspName?: string;
+				} | undefined,
 				iat: payload.iat,
 				exp: payload.exp,
 			};
