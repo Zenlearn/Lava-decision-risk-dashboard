@@ -89,3 +89,21 @@ export async function manualAssignTraining(
     return false;
   }
 }
+
+export async function fetchMyProgrammes(userId: string, token: string): Promise<any[]> {
+  const data = await zlFetch(`/program-assignments/user/${userId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return data?.result?.assignments ?? [];
+}
+
+export async function fetchProgrammeProgress(
+  userId: string,
+  programmeId: string,
+  token: string,
+): Promise<any[]> {
+  const data = await zlFetch(`/user-module-results/${userId}/programme/${programmeId}/status`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return data?.result ?? [];
+}

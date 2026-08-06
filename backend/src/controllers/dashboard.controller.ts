@@ -10,6 +10,8 @@ import {
   createTrainingRule,
   deleteTrainingRule,
   manualAssignTraining,
+  fetchMyProgrammes,
+  fetchProgrammeProgress,
 } from '../services/lavaTraining.service';
 
 
@@ -254,4 +256,37 @@ export async function manualAssignHandler(req: Request, res: Response): Promise<
   const ok = await manualAssignTraining(req.body, token);
   if (!ok) { res.status(502).json({ message: 'Failed to create assignment upstream' }); return; }
   res.success({ code: 201, message: 'Assignment created' });
+}
+
+/**
+ * My Programmes Handler
+ *
+ * GET /api/v1/dashboard/my-programmes
+ * Returns the current user's assigned ZenLearn programmes.
+ */
+export async function getMyProgrammesHandler(req: Request, res: Response): Promise<void> {
+  const userId = req.user?.id;
+  if (!userId) { res.status(401).json({ message: 'Unauthenticated' }); return; }
+  const token: string =
+    req.cookies?.token ??
+    (req.headers.authorization?.startsWith('Bearer ') ? req.headers.authorization.slice(7) : '');
+  const assignments = await fetchMyProgrammes(userId, token);
+  res.success({ code: 200, message: '', result: { assignments } });
+}
+
+/**
+ * Programme Progress Handler
+ *
+ * GET /api/v1/dashboard/my-programmes/:programmeId/progress
+ * Returns per-module progress for the current user in a specific programme.
+ */
+export async function getProgrammeProgressHandler(req: Request, res: Response): Promise<void> {
+  const userId = req.user?.id;
+  const { programmeId } = req.params;
+  if (!userId) { res.status(401).json({ message: 'Unauthenticated' }); return; }
+  const token: string =
+    req.cookies?.token ??
+    (req.headers.authorization?.startsWith('Bearer ') ? req.headers.authorization.slice(7) : '');
+  const modules = await fetchProgrammeProgress(userId, programmeId as string, token);
+  res.success({ code: 200, message: '', result: { modules } });
 }

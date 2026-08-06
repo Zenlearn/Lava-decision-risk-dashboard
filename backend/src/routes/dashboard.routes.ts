@@ -8,6 +8,8 @@ import {
   createTrainingRuleHandler,
   deleteTrainingRuleHandler,
   manualAssignHandler,
+  getMyProgrammesHandler,
+  getProgrammeProgressHandler,
 } from '../controllers/dashboard.controller';
 import { asyncHandler } from '../configs/async.config';
 import { requireAnyLavaRole } from '../middlewares/rbac.middleware';
@@ -128,6 +130,26 @@ dashboardRouter.post(
   '/training-assign',
   requireAnyLavaRole(adminRoles),
   asyncHandler(manualAssignHandler),
+);
+
+/**
+ * GET /api/v1/dashboard/my-programmes
+ * Current user's assigned ZenLearn programmes. Available to all Lava roles.
+ */
+dashboardRouter.get(
+  '/my-programmes',
+  requireAnyLavaRole([...executiveRoles, 'Dealer', 'ASP', 'Trainer'] as any[]),
+  asyncHandler(getMyProgrammesHandler),
+);
+
+/**
+ * GET /api/v1/dashboard/my-programmes/:programmeId/progress
+ * Per-module progress for the current user in a specific programme. Available to all Lava roles.
+ */
+dashboardRouter.get(
+  '/my-programmes/:programmeId/progress',
+  requireAnyLavaRole([...executiveRoles, 'Dealer', 'ASP', 'Trainer'] as any[]),
+  asyncHandler(getProgrammeProgressHandler),
 );
 
 export default dashboardRouter;
