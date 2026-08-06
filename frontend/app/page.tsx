@@ -15,6 +15,8 @@ import TabEvidence from '../components/TabEvidence';
 import TabPartCosts from '../components/TabPartCosts';
 import TabProfile from '../components/TabProfile';
 import TabActivities from '../components/TabActivities';
+import TabTraining from '../components/TabTraining';
+import TabTrainingRules from '../components/TabTrainingRules';
 import { DASHBOARD_DEFINITIONS } from '../constants/definitions';
 
 export default function UnifiedMockupDashboard() {
@@ -438,6 +440,10 @@ export default function UnifiedMockupDashboard() {
             fmtINR={fmtINR}
           />
         )}
+
+        {activeTab === 'training' && <TabTraining />}
+
+        {activeTab === 'training-rules' && <TabTrainingRules />}
 
         {activeTab === 'profile' && (
           <TabProfile user={user} />

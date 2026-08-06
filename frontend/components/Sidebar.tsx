@@ -50,6 +50,13 @@ export default function Sidebar({ activeTab, setActiveTab, nominatedCount, handl
       icon: BookOpen,
       badge: nominatedCount > 0 ? nominatedCount : undefined,
     },
+    { id: 'training', label: 'Training', icon: BookOpen },
+    {
+      id: 'training-rules',
+      label: 'Training Rules',
+      icon: Settings,
+      roles: ['Admin', 'MD', 'ServiceHead'],
+    },
     { id: 'ins', label: 'Insights', icon: TrendingUp },
     { id: 'eved', label: 'Evidence & Hit-List', icon: ShieldAlert },
     {

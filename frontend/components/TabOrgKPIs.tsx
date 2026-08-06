@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TableSummaryRow } from './ui/Table';
 import { DASHBOARD_DEFINITIONS } from '../constants/definitions';
 import { MODEL_SEGMENT_DATA_BY_MONTH } from '../constants/modelSegmentDataDynamic';
@@ -41,6 +41,23 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
   const [cpcAsmRepair, setCpcAsmRepair] = useState<string | null>(null);
   const [cpcBusmRepl, setCpcBusmRepl] = useState<string | null>(null);
   const [cpcAsmRepl, setCpcAsmRepl] = useState<string | null>(null);
+
+  // Training compliance — fetched from /api/v1/dashboard/training-status
+  // keyed by lowercase-trimmed name for case-insensitive lookup.
+  const [trainingByName, setTrainingByName] = useState<Map<string, number>>(new Map());
+
+  useEffect(() => {
+    fetch('/api/v1/dashboard/training-status')
+      .then((r) => r.json())
+      .then((d) => {
+        const m = new Map<string, number>();
+        (d?.result?.rows ?? []).forEach((row: any) => {
+          m.set(row.name.trim().toLowerCase(), row.completionPct);
+        });
+        setTrainingByName(m);
+      })
+      .catch(() => setTrainingByName(new Map()));
+  }, []);
 
   // Reset ASM selection when BUSM selection changes (Overall Regional Performance Scorecards)
   const handleOvBusmClick = (name: string | null) => {
@@ -581,6 +598,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                   <TableHead style={{ textAlign: 'right' }}>NPS % (Rank)</TableHead>
                   <TableHead style={{ textAlign: 'right' }}>Diagnostics Acc. (Rank)</TableHead>
                   <TableHead style={{ textAlign: 'right' }}>CAG Scorecard (Rank)</TableHead>
+                  <TableHead style={{ textAlign: 'right' }}>Training %</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -646,6 +664,9 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                           </span>
                         )}
                       </TableCell>
+                      <TableCell style={{ textAlign: 'right', fontWeight: 600, color: (() => { const pct = trainingByName.get(r.name?.trim().toLowerCase() ?? ''); return pct !== undefined ? (pct >= 80 ? '#16a34a' : pct >= 50 ? '#d97706' : '#dc2626') : '#94a3b8'; })() }}>
+                        {(() => { const pct = trainingByName.get(r.name?.trim().toLowerCase() ?? ''); return pct !== undefined ? `${pct}%` : '—'; })()}
+                      </TableCell>
                     </TableRow>
                   );
                 })}
@@ -658,6 +679,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                 <TableCell style={{ textAlign: 'right' }}>{nationalSummary.nps}%</TableCell>
                 <TableCell style={{ textAlign: 'right' }}>{nationalSummary.diag}%</TableCell>
                 <TableCell style={{ textAlign: 'right' }}>{nationalSummary.cag}%</TableCell>
+                <TableCell style={{ textAlign: 'right' }}>—</TableCell>
               </TableSummaryRow>
             </Table>
           )}
@@ -729,12 +751,13 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                     <TableHead style={{ textAlign: 'right' }}>NPS % (Rank)</TableHead>
                     <TableHead style={{ textAlign: 'right' }}>Diagnostics Acc. (Rank)</TableHead>
                     <TableHead style={{ textAlign: 'right' }}>CAG Scorecard (Rank)</TableHead>
+                    <TableHead style={{ textAlign: 'right' }}>Training %</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                     {filteredAsmList.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={8} style={{ padding: '20px', textAlign: 'center', color: 'var(--text-tertiary)' }}>
+                      <TableCell colSpan={9} style={{ padding: '20px', textAlign: 'center', color: 'var(--text-tertiary)' }}>
                         No ASMs found for selected filter.
                       </TableCell>
                     </TableRow>
@@ -802,6 +825,9 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                               </span>
                             )}
                           </TableCell>
+                          <TableCell style={{ textAlign: 'right', fontWeight: 600, color: (() => { const pct = trainingByName.get(r.name?.trim().toLowerCase() ?? ''); return pct !== undefined ? (pct >= 80 ? '#16a34a' : pct >= 50 ? '#d97706' : '#dc2626') : '#94a3b8'; })() }}>
+                            {(() => { const pct = trainingByName.get(r.name?.trim().toLowerCase() ?? ''); return pct !== undefined ? `${pct}%` : '—'; })()}
+                          </TableCell>
                         </TableRow>
                       );
                     })
@@ -819,6 +845,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
                         <TableCell style={{ textAlign: 'right' }}>{selectedBusmObj ? selectedBusmObj.nps : asmAvgNps}%</TableCell>
                         <TableCell style={{ textAlign: 'right' }}>{selectedBusmObj ? selectedBusmObj.diag : asmAvgDiag}%</TableCell>
                         <TableCell style={{ textAlign: 'right' }}>{selectedBusmObj ? selectedBusmObj.cag : asmAvgCag}%</TableCell>
+                        <TableCell style={{ textAlign: 'right' }}>—</TableCell>
                       </TableSummaryRow>
                     );
                   })()}
