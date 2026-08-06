@@ -3,7 +3,7 @@ import { getExecutiveDashboard, getDealerDashboard, getFullDashboardData } from 
 import { getCachedDashboard, setCachedDashboard } from '../services/cache.service';
 import { createAuditLog } from './audit.controller';
 import logger from '../configs/logger.config';
-import { deriveScopeFilter } from '../helpers/scope';
+import { deriveScopeFilter, isAdminTier } from '../helpers/scope';
 
 
 /**
@@ -85,6 +85,14 @@ export async function getDealerDashboardHandler(req: Request, res: Response): Pr
   }
 
   const aspName = aspNameRaw;
+
+  const u = req.user;
+  const isScopedAsp = u?.lava_role === 'ASP' || u?.lava_role === 'Dealer';
+  if (isScopedAsp && !isAdminTier(u) && (u as any)?.lava_scope?.aspName !== aspName) {
+    res.status(403).json({ message: 'Forbidden: you may only view your own service centre.' });
+    return;
+  }
+
   const cacheKey = `dashboard:dealer:${aspName.replace(/\s+/g, '_')}`;
 
   try {

@@ -42,18 +42,14 @@ dashboardRouter.get(
  * Returns performance snapshots, anomaly incident count breakdowns, and
  * a complete list of flagged workorders for a specific Service Centre (ASP).
  *
- * TODO (Phase 3): Dealer/ASP roles are intentionally NOT granted here yet.
- * The JWT carries no scope claim identifying which ASP a Dealer/ASP user
- * belongs to (see express.d.ts / jwt.config.ts) — without it there is no way
- * to verify a Dealer/ASP account is requesting *their own* aspName rather than
- * an arbitrary one, which would let any Dealer/ASP account view any other
- * service centre's data via the URL param (IDOR). Add a `lava_scope.aspName`
- * (or serviceCentreId) claim to the shared JWT first, then re-add Dealer/ASP
- * here with a `req.user.lava_scope.aspName === aspName` check.
+ * Dealer/ASP users are allowed; getDealerDashboardHandler enforces an
+ * ownership check — a Dealer/ASP may only view the aspName that matches
+ * their JWT lava_scope.aspName claim (IDOR protection). Admin-tier users
+ * bypass the ownership check and can view any service centre.
  */
 dashboardRouter.get(
   '/dealer/:aspName',
-  requireAnyLavaRole(executiveRoles),
+  requireAnyLavaRole([...executiveRoles, 'Dealer', 'ASP'] as any[]),
   asyncHandler(getDealerDashboardHandler)
 );
 
