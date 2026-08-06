@@ -3,6 +3,11 @@ import {
   getExecutiveDashboardHandler,
   getDealerDashboardHandler,
   getFullDashboardDataHandler,
+  getTrainingStatusHandler,
+  getTrainingRulesHandler,
+  createTrainingRuleHandler,
+  deleteTrainingRuleHandler,
+  manualAssignHandler,
 } from '../controllers/dashboard.controller';
 import { asyncHandler } from '../configs/async.config';
 import { requireAnyLavaRole } from '../middlewares/rbac.middleware';
@@ -71,5 +76,58 @@ dashboardRouter.get('/region/:id', requireAnyLavaRole(executiveRoles), (req: Req
 dashboardRouter.get('/technician/:id', requireAnyLavaRole(executiveRoles), (req: Request, res: Response) => {
   res.status(501).json({ message: `Individual Technician ID dashboard not yet implemented.` });
 });
+
+// Training proxy routes — forwarded to ZenLearn PathwaysBackend over internal network
+const adminRoles: any[] = ['Admin', 'MD', 'ServiceHead'];
+
+/**
+ * GET /api/v1/dashboard/training-status
+ * Scope-filtered training completion data. Open to all Lava roles; scope enforced in handler.
+ */
+dashboardRouter.get(
+  '/training-status',
+  requireAnyLavaRole([...executiveRoles, 'Dealer', 'ASP', 'Trainer'] as any[]),
+  asyncHandler(getTrainingStatusHandler),
+);
+
+/**
+ * GET /api/v1/dashboard/training-rules
+ * Lists active ZenLearn assignment rules. Admin-tier only.
+ */
+dashboardRouter.get(
+  '/training-rules',
+  requireAnyLavaRole(adminRoles),
+  asyncHandler(getTrainingRulesHandler),
+);
+
+/**
+ * POST /api/v1/dashboard/training-rules
+ * Creates a new assignment rule in ZenLearn. Admin-tier only.
+ */
+dashboardRouter.post(
+  '/training-rules',
+  requireAnyLavaRole(adminRoles),
+  asyncHandler(createTrainingRuleHandler),
+);
+
+/**
+ * DELETE /api/v1/dashboard/training-rules/:id
+ * Deletes an assignment rule in ZenLearn. Admin-tier only.
+ */
+dashboardRouter.delete(
+  '/training-rules/:id',
+  requireAnyLavaRole(adminRoles),
+  asyncHandler(deleteTrainingRuleHandler),
+);
+
+/**
+ * POST /api/v1/dashboard/training-assign
+ * Manually assigns a training programme to a user. Admin-tier only.
+ */
+dashboardRouter.post(
+  '/training-assign',
+  requireAnyLavaRole(adminRoles),
+  asyncHandler(manualAssignHandler),
+);
 
 export default dashboardRouter;

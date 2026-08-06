@@ -4,6 +4,13 @@ import { getCachedDashboard, setCachedDashboard } from '../services/cache.servic
 import { createAuditLog } from './audit.controller';
 import logger from '../configs/logger.config';
 import { deriveScopeFilter, isAdminTier } from '../helpers/scope';
+import {
+  fetchTrainingStatus,
+  fetchTrainingRules,
+  createTrainingRule,
+  deleteTrainingRule,
+  manualAssignTraining,
+} from '../services/lavaTraining.service';
 
 
 /**
@@ -185,4 +192,66 @@ export async function getFullDashboardDataHandler(req: Request, res: Response): 
       error: error instanceof Error ? error.message : String(error),
     });
   }
+}
+
+/**
+ * Training Status Handler
+ *
+ * GET /api/v1/dashboard/training-status
+ * Query params: busmName, asmName (scope-filtered per caller's role)
+ */
+export async function getTrainingStatusHandler(req: Request, res: Response): Promise<void> {
+  const requested = {
+    busmName: (req.query.busmName as string) || 'All',
+    asmName: (req.query.asmName as string) || 'All',
+  };
+  const scoped = deriveScopeFilter(req.user, requested);
+  const rows = await fetchTrainingStatus({ busmName: scoped.busmName, asmName: scoped.asmName });
+  res.success({ code: 200, message: 'Training status', result: { rows } });
+}
+
+/**
+ * Training Rules Handler
+ *
+ * GET /api/v1/dashboard/training-rules
+ */
+export async function getTrainingRulesHandler(_req: Request, res: Response): Promise<void> {
+  const rules = await fetchTrainingRules();
+  res.success({ code: 200, message: 'Assignment rules', result: { rules } });
+}
+
+/**
+ * Create Training Rule Handler
+ *
+ * POST /api/v1/dashboard/training-rules
+ */
+export async function createTrainingRuleHandler(req: Request, res: Response): Promise<void> {
+  const token = req.cookies?.token ?? (req.headers.authorization?.replace('Bearer ', '') ?? '');
+  const rule = await createTrainingRule(req.body, token);
+  if (!rule) { res.status(502).json({ message: 'Failed to create rule upstream' }); return; }
+  res.success({ code: 201, message: 'Rule created', result: { rule } });
+}
+
+/**
+ * Delete Training Rule Handler
+ *
+ * DELETE /api/v1/dashboard/training-rules/:id
+ */
+export async function deleteTrainingRuleHandler(req: Request, res: Response): Promise<void> {
+  const token = req.cookies?.token ?? (req.headers.authorization?.replace('Bearer ', '') ?? '');
+  const ok = await deleteTrainingRule(req.params['id'] as string, token);
+  if (!ok) { res.status(502).json({ message: 'Failed to delete rule upstream' }); return; }
+  res.status(204).send();
+}
+
+/**
+ * Manual Assign Training Handler
+ *
+ * POST /api/v1/dashboard/training-assign
+ */
+export async function manualAssignHandler(req: Request, res: Response): Promise<void> {
+  const token = req.cookies?.token ?? (req.headers.authorization?.replace('Bearer ', '') ?? '');
+  const ok = await manualAssignTraining(req.body, token);
+  if (!ok) { res.status(502).json({ message: 'Failed to create assignment upstream' }); return; }
+  res.success({ code: 201, message: 'Assignment created' });
 }
