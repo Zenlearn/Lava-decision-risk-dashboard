@@ -12,7 +12,8 @@ export interface ScopeFilter {
 export function isAdminTier(user: ReqUser): boolean {
   if (!user) return false;
   if (user.is_super_admin || user.is_admin || user.is_department_manager) return true;
-  return ['Admin', 'MD', 'ServiceHead', 'RegionalHead'].includes((user as any).lava_role ?? '');
+  const role = user.org_role ?? (user as any).lava_role ?? '';
+  return ['Admin', 'MD', 'ServiceHead', 'RegionalHead'].includes(role);
 }
 
 /**
@@ -34,8 +35,8 @@ export function deriveScopeFilter(
     };
   }
 
-  const scope = (user as any)?.lava_scope ?? {};
-  const role = (user as any)?.lava_role as string | undefined;
+  const scope = user?.org_scope ?? (user as any)?.lava_scope ?? {};
+  const role = (user?.org_role ?? (user as any)?.lava_role) as string | undefined;
 
   if (role === 'BUSM' && scope.busmName) {
     return {

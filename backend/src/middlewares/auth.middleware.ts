@@ -67,13 +67,22 @@ export class AuthMiddleware {
 				is_super_admin: payload['is_super_admin'] as boolean | undefined,
 				is_department_manager: payload['is_department_manager'] as boolean | undefined,
 				organization_id: payload['organization_id'] as string | undefined,
-				lava_role: payload['lava_role'] as string | undefined,
-				lava_scope: payload['lava_scope'] as {
-					busmName?: string;
-					asmName?: string;
-					serviceCentreId?: string;
-					aspName?: string;
-				} | undefined,
+				// Support both new `org_role`/`org_scope` (re-issued tokens) and legacy
+			// `lava_role`/`lava_scope` (existing sessions) so users don't get logged out.
+			org_role: (payload['org_role'] ?? payload['lava_role']) as string | undefined,
+			org_scope: (payload['org_scope'] ?? payload['lava_scope']) as {
+				busmName?: string;
+				asmName?: string;
+				serviceCentreId?: string;
+				aspName?: string;
+			} | undefined,
+			lava_role: payload['lava_role'] as string | undefined,
+			lava_scope: payload['lava_scope'] as {
+				busmName?: string;
+				asmName?: string;
+				serviceCentreId?: string;
+				aspName?: string;
+			} | undefined,
 				iat: payload.iat,
 				exp: payload.exp,
 			};

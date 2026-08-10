@@ -24,9 +24,23 @@ interface LavaAuthenticatedUser {
 	is_super_admin?: boolean;
 	is_department_manager?: boolean;
 	organization_id?: string;
-	/** Lava-specific role override (Phase 3) — if present, used for Lava RBAC instead of `role` */
+	/**
+	 * Org role — generic RBAC role for any org using ZenLearn.
+	 * For Lava: 'Admin' | 'MD' | 'ServiceHead' | 'RegionalHead' | 'BUSM' | 'ASM' | 'ASP' | 'Dealer' | 'Trainer'
+	 * Populated from JWT `org_role` claim (or legacy `lava_role` for existing sessions).
+	 */
+	org_role?: string;
+	/** Org scope — identifies the organisational slice a user may access */
+	org_scope?: {
+		busmName?: string;
+		asmName?: string;
+		serviceCentreId?: string;
+		aspName?: string;
+		[key: string]: string | undefined;
+	};
+	/** @deprecated Use org_role. Kept for backward compat during token transition. */
 	lava_role?: string;
-	/** Lava scope claims — identifies the organisational scope a Lava user operates in */
+	/** @deprecated Use org_scope. Kept for backward compat during token transition. */
 	lava_scope?: {
 		busmName?: string;
 		asmName?: string;
