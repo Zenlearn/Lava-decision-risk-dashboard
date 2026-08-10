@@ -4,10 +4,11 @@ import React, { useEffect, useState, useCallback } from 'react';
 const S3_BASE = 'https://zenlearnmedia.s3.ap-south-1.amazonaws.com/';
 const MICRO_BASE = 'https://m.zenlearn.ai';
 
-/** If `time` is a bare number ("34"), append " min". Leaves "~43 min" untouched. */
-function formatTime(t?: string | null): string {
-  if (!t) return '';
-  return /^\d+$/.test(t.trim()) ? `${t.trim()} min` : t;
+/** If `time` is a bare number or numeric string ("34"), appends " min". Leaves "~43 min" untouched. */
+function formatTime(t?: string | number | null): string {
+  if (t == null || t === '') return '';
+  const s = String(t).trim();
+  return /^\d+$/.test(s) ? `${s} min` : s;
 }
 
 /**
