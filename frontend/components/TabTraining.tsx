@@ -1,6 +1,9 @@
 'use client';
 import React, { useEffect, useState, useCallback } from 'react';
 
+const S3_BASE = 'https://zenlearnmedia.s3.ap-south-1.amazonaws.com/';
+const MICRO_BASE = 'https://m.zenlearn.ai';
+
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
@@ -113,23 +116,29 @@ function ProgressDrawer({ programmeId }: { programmeId: string }) {
           </tr>
         </thead>
         <tbody>
-          {modules.map((m) => (
-            <tr key={m.id} style={{ borderBottom: '1px solid #f3f4f6' }}>
-              <td style={{ padding: '8px 8px', color: '#9ca3af', width: 28 }}>{m.serial}</td>
-              <td style={{ padding: '8px 8px' }}>{m.title}</td>
-              <td style={{ textAlign: 'center', padding: '8px 8px' }}>
-                <StatusBadge status={m.status} />
-              </td>
-              <td style={{ textAlign: 'center', padding: '8px 8px', color: '#374151' }}>
-                {m.status === 'not_attempted' ? '—' : `${m.score}%`}
-              </td>
-            </tr>
-          ))}
+          {modules.map((m) => {
+            const moduleUrl = `${MICRO_BASE}/programme/${programmeId}/${m.serial - 1}`;
+            return (
+              <tr key={m.id}
+                style={{ borderBottom: '1px solid #f3f4f6', cursor: 'pointer' }}
+                onClick={() => window.open(moduleUrl, '_blank', 'noopener,noreferrer')}
+              >
+                <td style={{ padding: '8px 8px', color: '#9ca3af', width: 28 }}>{m.serial}</td>
+                <td style={{ padding: '8px 8px', color: '#2563eb', textDecoration: 'underline' }}>{m.title}</td>
+                <td style={{ textAlign: 'center', padding: '8px 8px' }}>
+                  <StatusBadge status={m.status} />
+                </td>
+                <td style={{ textAlign: 'center', padding: '8px 8px', color: '#374151' }}>
+                  {m.status === 'not_attempted' ? '—' : `${m.score}%`}
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
       <div style={{ marginTop: 14, textAlign: 'right' }}>
         <a
-          href={`https://m.zenlearn.ai/programmes/${programmeId}`}
+          href={`${MICRO_BASE}/programme/${programmeId}`}
           target="_blank"
           rel="noopener noreferrer"
           style={{
@@ -181,8 +190,9 @@ function ProgrammeCard({ item }: { item: ProgrammeAssignment }) {
       <div style={{ position: 'relative', height: 140, background: '#e5e7eb', flexShrink: 0 }}>
         {program.thumbnail ? (
           <img
-            src={program.thumbnail}
+            src={`${S3_BASE}${program.thumbnail}`}
             alt={program.title}
+            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
             style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
           />
         ) : (
