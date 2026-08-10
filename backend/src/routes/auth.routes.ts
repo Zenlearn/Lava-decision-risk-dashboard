@@ -204,6 +204,36 @@ authRouter.post(
 );
 
 /**
+ * GET /api/v1/auth/sso-url?next={path}
+ *
+ * Returns a one-time SSO redirect URL for m.zenlearn.ai. The Lava frontend
+ * calls this, opens the returned URL in a new tab, which hits Micro's /sso
+ * route handler — that sets the token cookie and redirects to the target path.
+ *
+ * The HttpOnly `token` cookie is only readable server-side, so the frontend
+ * cannot embed the JWT directly; this endpoint mediates the handoff.
+ *
+ * Security: `next` is validated to start with `/` to prevent open redirect.
+ * Token in URL is a known trade-off (logged); the Micro /sso route immediately
+ * redirects to a clean URL so the token doesn't linger in browser history.
+ */
+authRouter.get(
+	'/sso-url',
+	AuthMiddleware.authMiddleware,
+	(req: Request, res: Response): void => {
+		const token = req.cookies?.token ?? '';
+		if (!token) {
+			res.status(401).json({ message: 'No active session cookie found' });
+			return;
+		}
+		const rawNext = (req.query.next as string) ?? '/';
+		const safePath = rawNext.startsWith('/') ? rawNext : '/';
+		const ssoUrl = `https://m.zenlearn.ai/sso?token=${encodeURIComponent(token)}&next=${encodeURIComponent(safePath)}`;
+		res.status(200).json({ result: { url: ssoUrl } });
+	},
+);
+
+/**
  * GET /api/v1/auth/me
  *
  * Returns the authenticated caller's identity and Lava RBAC fields.

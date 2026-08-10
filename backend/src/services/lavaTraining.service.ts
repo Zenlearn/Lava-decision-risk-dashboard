@@ -9,7 +9,8 @@ async function zlFetch(path: string, opts?: RequestInit): Promise<any | null> {
   try {
     const r = await fetch(`${zenlearnBase()}${path}`, opts);
     if (!r.ok) {
-      logger.warn('ZenLearn upstream non-OK', { path, status: r.status });
+      const body = await r.text().catch(() => '');
+      logger.warn('ZenLearn upstream non-OK', { path, status: r.status, body: body.slice(0, 300) });
       return null;
     }
     return r.json();

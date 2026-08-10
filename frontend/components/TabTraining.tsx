@@ -4,6 +4,39 @@ import React, { useEffect, useState, useCallback } from 'react';
 const S3_BASE = 'https://zenlearnmedia.s3.ap-south-1.amazonaws.com/';
 const MICRO_BASE = 'https://m.zenlearn.ai';
 
+/** If `time` is a bare number ("34"), append " min". Leaves "~43 min" untouched. */
+function formatTime(t?: string | null): string {
+  if (!t) return '';
+  return /^\d+$/.test(t.trim()) ? `${t.trim()} min` : t;
+}
+
+/**
+ * Opens a Micro path via SSO token exchange so users from lava.zenlearn.ai
+ * don't need to log in again on m.zenlearn.ai.
+ *
+ * Opens a blank tab immediately (synchronous, inside the click handler) so
+ * popup blockers don't interfere, then sets its URL once the SSO URL is ready.
+ */
+async function openInZenLearn(path: string): Promise<void> {
+  const newTab = window.open('', '_blank');
+  if (!newTab) {
+    // Popup blocked — graceful fallback
+    window.location.href = `${MICRO_BASE}${path}`;
+    return;
+  }
+  try {
+    const res = await fetch(`/api/v1/auth/sso-url?next=${encodeURIComponent(path)}`);
+    if (res.ok) {
+      const d = await res.json();
+      if (d?.result?.url) {
+        newTab.location.href = d.result.url;
+        return;
+      }
+    }
+  } catch { /* fall through */ }
+  newTab.location.href = `${MICRO_BASE}${path}`;
+}
+
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
@@ -76,15 +109,19 @@ function StatusBadge({ status }: { status: ModuleProgress['status'] }) {
 // Progress drawer (lazy-loaded on first open)
 // ---------------------------------------------------------------------------
 
-function ProgressDrawer({ programmeId }: { programmeId: string }) {
+function ProgressDrawer({ programmeId, moduleCount }: { programmeId: string; moduleCount: number }) {
   const [modules, setModules] = useState<ModuleProgress[] | null>(null);
+  const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch(`/api/v1/dashboard/my-programmes/${programmeId}/progress`)
-      .then((r) => r.json())
-      .then((d) => setModules(d?.result?.modules ?? []))
-      .catch(() => setModules([]))
+      .then((r) => {
+        if (!r.ok) { setError(true); return null; }
+        return r.json();
+      })
+      .then((d) => { if (d) setModules(d?.result?.modules ?? []); })
+      .catch(() => setError(true))
       .finally(() => setLoading(false));
   }, [programmeId]);
 
@@ -96,10 +133,32 @@ function ProgressDrawer({ programmeId }: { programmeId: string }) {
     );
   }
 
+  if (error) {
+    return (
+      <div style={{ padding: '16px 20px', fontSize: 13, color: '#9ca3af', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <span>Progress unavailable right now.</span>
+        <button
+          onClick={() => openInZenLearn(`/programme/${programmeId}`)}
+          style={{ fontSize: 13, color: '#2563eb', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 500, padding: 0 }}
+        >
+          Open in ZenLearn →
+        </button>
+      </div>
+    );
+  }
+
   if (!modules || modules.length === 0) {
     return (
-      <div style={{ padding: '16px 20px', fontSize: 13, color: '#6b7280' }}>
-        No modules found for this programme.
+      <div style={{ padding: '16px 20px', fontSize: 13, color: '#9ca3af', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <span>{moduleCount > 0 ? `${moduleCount} modules — start in ZenLearn to record progress.` : 'No modules found for this programme.'}</span>
+        {moduleCount > 0 && (
+          <button
+            onClick={() => openInZenLearn(`/programme/${programmeId}`)}
+            style={{ fontSize: 13, color: '#2563eb', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 500, padding: 0 }}
+          >
+            Open in ZenLearn →
+          </button>
+        )}
       </div>
     );
   }
@@ -116,40 +175,30 @@ function ProgressDrawer({ programmeId }: { programmeId: string }) {
           </tr>
         </thead>
         <tbody>
-          {modules.map((m) => {
-            const moduleUrl = `${MICRO_BASE}/programme/${programmeId}/${m.serial - 1}`;
-            return (
-              <tr key={m.id}
-                style={{ borderBottom: '1px solid #f3f4f6', cursor: 'pointer' }}
-                onClick={() => window.open(moduleUrl, '_blank', 'noopener,noreferrer')}
-              >
-                <td style={{ padding: '8px 8px', color: '#9ca3af', width: 28 }}>{m.serial}</td>
-                <td style={{ padding: '8px 8px', color: '#2563eb', textDecoration: 'underline' }}>{m.title}</td>
-                <td style={{ textAlign: 'center', padding: '8px 8px' }}>
-                  <StatusBadge status={m.status} />
-                </td>
-                <td style={{ textAlign: 'center', padding: '8px 8px', color: '#374151' }}>
-                  {m.status === 'not_attempted' ? '—' : `${m.score}%`}
-                </td>
-              </tr>
-            );
-          })}
+          {modules.map((m) => (
+            <tr key={m.id}
+              style={{ borderBottom: '1px solid #f3f4f6', cursor: 'pointer' }}
+              onClick={() => openInZenLearn(`/programme/${programmeId}/${m.serial - 1}`)}
+            >
+              <td style={{ padding: '8px 8px', color: '#9ca3af', width: 28 }}>{m.serial}</td>
+              <td style={{ padding: '8px 8px', color: '#2563eb', textDecoration: 'underline' }}>{m.title}</td>
+              <td style={{ textAlign: 'center', padding: '8px 8px' }}>
+                <StatusBadge status={m.status} />
+              </td>
+              <td style={{ textAlign: 'center', padding: '8px 8px', color: '#374151' }}>
+                {m.status === 'not_attempted' ? '—' : `${m.score}%`}
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
       <div style={{ marginTop: 14, textAlign: 'right' }}>
-        <a
-          href={`${MICRO_BASE}/programme/${programmeId}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            fontSize: 13,
-            color: '#2563eb',
-            textDecoration: 'none',
-            fontWeight: 500,
-          }}
+        <button
+          onClick={() => openInZenLearn(`/programme/${programmeId}`)}
+          style={{ fontSize: 13, color: '#2563eb', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 500, padding: 0 }}
         >
           Open in ZenLearn →
-        </a>
+        </button>
       </div>
     </div>
   );
@@ -232,7 +281,7 @@ function ProgrammeCard({ item }: { item: ProgrammeAssignment }) {
         <div style={{ marginTop: 'auto', paddingTop: 8, display: 'flex', alignItems: 'center', gap: 10, fontSize: 12, color: '#9ca3af' }}>
           <span>{program._count.modules} modules</span>
           <span>·</span>
-          <span>{program.time}</span>
+          <span>{formatTime(program.time)}</span>
           {program.difficulty && (
             <>
               <span>·</span>
@@ -265,7 +314,7 @@ function ProgrammeCard({ item }: { item: ProgrammeAssignment }) {
           style={{ borderTop: '1px solid #e5e7eb', background: '#fafafa' }}
           onClick={(e) => e.stopPropagation()}
         >
-          <ProgressDrawer programmeId={program.id} />
+          <ProgressDrawer programmeId={program.id} moduleCount={program._count.modules} />
         </div>
       )}
     </div>
