@@ -1,5 +1,6 @@
 'use client';
 import React, { useEffect, useState, useCallback } from 'react';
+import { apiFetch } from '../lib/apiFetch';
 
 interface Rule {
   id: string;
@@ -24,7 +25,7 @@ export default function TabTrainingRules() {
   const loadRules = useCallback(async () => {
     setLoading(true);
     try {
-      const r = await fetch('/api/v1/dashboard/training-rules');
+      const r = await apiFetch('/api/v1/dashboard/training-rules');
       const d = await r.json();
       setRules(d?.result?.rules ?? []);
     } catch {
@@ -44,7 +45,7 @@ export default function TabTrainingRules() {
     setBusy(true);
     setMsg('');
     try {
-      const r = await fetch('/api/v1/dashboard/training-rules', {
+      const r = await apiFetch('/api/v1/dashboard/training-rules', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ lava_role: newRole, programme_id: newProgId.trim(), programme_title: newProgTitle.trim() }),
@@ -66,7 +67,7 @@ export default function TabTrainingRules() {
     setBusy(true);
     setMsg('');
     try {
-      await fetch(`/api/v1/dashboard/training-rules/${id}`, { method: 'DELETE' });
+      await apiFetch(`/api/v1/dashboard/training-rules/${id}`, { method: 'DELETE' });
       setMsg('Rule deleted.');
       await loadRules();
     } catch {
@@ -84,7 +85,7 @@ export default function TabTrainingRules() {
     setBusy(true);
     setMsg('');
     try {
-      const r = await fetch('/api/v1/dashboard/training-assign', {
+      const r = await apiFetch('/api/v1/dashboard/training-assign', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user_id: assignUserId.trim(), programme_id: assignProgId.trim() }),

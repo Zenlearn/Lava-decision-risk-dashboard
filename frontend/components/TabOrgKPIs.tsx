@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { apiFetch } from '../lib/apiFetch';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TableSummaryRow } from './ui/Table';
 import { DASHBOARD_DEFINITIONS } from '../constants/definitions';
 import { MODEL_SEGMENT_DATA_BY_MONTH } from '../constants/modelSegmentDataDynamic';
@@ -47,7 +48,7 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
   const [trainingByName, setTrainingByName] = useState<Map<string, number>>(new Map());
 
   useEffect(() => {
-    fetch('/api/v1/dashboard/training-status')
+    apiFetch('/api/v1/dashboard/training-status')
       .then((r) => r.json())
       .then((d) => {
         const m = new Map<string, number>();

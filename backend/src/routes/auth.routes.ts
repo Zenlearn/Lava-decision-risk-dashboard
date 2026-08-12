@@ -54,6 +54,19 @@ function extractTokenFromSetCookie(headers: Headers): string | null {
 	return null;
 }
 
+function extractRefreshTokenFromSetCookie(headers: Headers): string | null {
+	const cookieStrings: string[] =
+		typeof (headers as any).getSetCookie === 'function'
+			? (headers as any).getSetCookie()
+			: [headers.get('set-cookie') ?? ''];
+
+	for (const cookieString of cookieStrings) {
+		const match = cookieString.match(/(?:^|;\s*)refresh_token=([^;]+)/i);
+		if (match?.[1]) return match[1];
+	}
+	return null;
+}
+
 /**
  * Re-issues the extracted JWT as our own HttpOnly cookie on the Lava backend's
  * response. Because the browser only ever talks to the frontend's own origin
@@ -67,6 +80,16 @@ function issueTokenCookie(res: Response, token: string): void {
 		secure: process.env.NODE_ENV === 'production',
 		sameSite: 'lax',
 		maxAge: TOKEN_COOKIE_MAX_AGE_MS,
+		path: '/',
+	});
+}
+
+function issueRefreshTokenCookie(res: Response, token: string): void {
+	res.cookie('refresh_token', token, {
+		httpOnly: true,
+		secure: process.env.NODE_ENV === 'production',
+		sameSite: 'lax',
+		maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
 		path: '/',
 	});
 }
@@ -101,9 +124,11 @@ authRouter.post('/sign-in', async (req: Request, res: Response): Promise<void> =
 		// Extract it and re-issue as our own first-party HttpOnly cookie; never
 		// forward the raw token into the JSON body (client JS doesn't need it).
 		const jwtToken = extractTokenFromSetCookie(upstreamResponse.headers);
+		const refreshToken = extractRefreshTokenFromSetCookie(upstreamResponse.headers);
 
 		if (jwtToken && upstreamResponse.ok) {
 			issueTokenCookie(res, jwtToken);
+			if (refreshToken) issueRefreshTokenCookie(res, refreshToken);
 			logger.info('Auth proxy: token extracted from Set-Cookie and re-issued as first-party cookie');
 		} else if (upstreamResponse.ok && !jwtToken) {
 			logger.warn('Auth proxy: login succeeded but no token found in Set-Cookie header');
@@ -140,9 +165,11 @@ authRouter.post('/login', async (req: Request, res: Response): Promise<void> => 
 		const data = await upstreamResponse.json() as any;
 
 		const jwtToken = extractTokenFromSetCookie(upstreamResponse.headers);
+		const refreshToken = extractRefreshTokenFromSetCookie(upstreamResponse.headers);
 
 		if (jwtToken && upstreamResponse.ok) {
 			issueTokenCookie(res, jwtToken);
+			if (refreshToken) issueRefreshTokenCookie(res, refreshToken);
 		}
 
 		res.status(upstreamResponse.status).json(data);
@@ -168,7 +195,50 @@ authRouter.post('/login', async (req: Request, res: Response): Promise<void> => 
  */
 authRouter.post('/sign-out', (_req: Request, res: Response): void => {
 	res.clearCookie('token', { path: '/' });
+	res.clearCookie('refresh_token', { path: '/' });
 	res.status(200).json({ message: 'Signed out' });
+});
+
+/**
+ * POST /api/v1/auth/refresh
+ *
+ * Proxies a token refresh to PathwaysBackend using the stored refresh_token cookie.
+ * On success, re-issues a fresh access token cookie so the session continues
+ * beyond the 1h access token lifetime without requiring a full re-login.
+ */
+authRouter.post('/refresh', async (req: Request, res: Response): Promise<void> => {
+	const refreshToken = req.cookies?.refresh_token;
+	if (!refreshToken) {
+		res.status(401).json({ message: 'No refresh token' });
+		return;
+	}
+	try {
+		const upstreamResponse = await fetch(`${PATHWAYS_BACKEND_URL}/auth/generate-token`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Cookie: `refresh_token=${refreshToken}`,
+			},
+		});
+		if (!upstreamResponse.ok) {
+			res.clearCookie('token', { path: '/' });
+			res.clearCookie('refresh_token', { path: '/' });
+			res.status(401).json({ message: 'Session expired. Please sign in again.' });
+			return;
+		}
+		const jwtToken = extractTokenFromSetCookie(upstreamResponse.headers);
+		const newRefreshToken = extractRefreshTokenFromSetCookie(upstreamResponse.headers);
+		if (jwtToken) {
+			issueTokenCookie(res, jwtToken);
+			if (newRefreshToken) issueRefreshTokenCookie(res, newRefreshToken);
+			logger.info('Auth proxy: access token refreshed');
+		}
+		const data = await upstreamResponse.json().catch(() => ({}));
+		res.status(200).json(data);
+	} catch (err: any) {
+		logger.error('Auth proxy: token refresh failed', { error: err.message });
+		res.status(503).json({ message: 'Authentication service temporarily unavailable.' });
+	}
 });
 
 /**

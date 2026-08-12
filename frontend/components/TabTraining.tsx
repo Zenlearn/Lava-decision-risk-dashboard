@@ -1,5 +1,6 @@
 'use client';
 import React, { useEffect, useState, useCallback } from 'react';
+import { apiFetch } from '../lib/apiFetch';
 
 const S3_BASE = 'https://zenlearnmedia.s3.ap-south-1.amazonaws.com/';
 const MICRO_BASE = 'https://m.zenlearn.ai';
@@ -116,7 +117,7 @@ function ProgressDrawer({ programmeId, moduleCount }: { programmeId: string; mod
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`/api/v1/dashboard/my-programmes/${programmeId}/progress`)
+    apiFetch(`/api/v1/dashboard/my-programmes/${programmeId}/progress`)
       .then((r) => {
         if (!r.ok) { setError(true); return null; }
         return r.json();
@@ -336,13 +337,13 @@ export default function TabTraining() {
   const [complianceLoading, setComplianceLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/v1/dashboard/my-programmes')
+    apiFetch('/api/v1/dashboard/my-programmes')
       .then((r) => r.json())
       .then((d) => setAssignments(d?.result?.assignments ?? []))
       .catch(() => setAssignments([]))
       .finally(() => setProgrammeLoading(false));
 
-    fetch('/api/v1/dashboard/training-status')
+    apiFetch('/api/v1/dashboard/training-status')
       .then((r) => r.json())
       .then((d) => setRows(d?.result?.rows ?? []))
       .catch(() => setRows([]))
