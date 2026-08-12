@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { apiFetch } from "../lib/apiFetch";
 import { Clock } from "lucide-react";
 import { motion, Variants } from "framer-motion";
 
@@ -44,7 +45,7 @@ export default function TabActivities() {
 
   const fetchActivities = async () => {
     try {
-      const response = await fetch("/api/v1/analytics/activities", {
+      const response = await apiFetch("/api/v1/analytics/activities", {
         headers: {
           "Content-Type": "application/json",
           // The proxy should automatically attach the token cookie
@@ -78,7 +79,7 @@ export default function TabActivities() {
 
   const handleSuspiciousLogins = async (activity: Activity) => {
     try {
-      await fetch("/api/v1/user/login/suspicious", {
+      await apiFetch("/api/v1/user/login/suspicious", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

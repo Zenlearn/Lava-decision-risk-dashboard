@@ -18,6 +18,7 @@ import TabActivities from '../components/TabActivities';
 import TabTraining from '../components/TabTraining';
 import TabTrainingRules from '../components/TabTrainingRules';
 import { DASHBOARD_DEFINITIONS } from '../constants/definitions';
+import { apiFetch } from '../lib/apiFetch';
 
 export default function UnifiedMockupDashboard() {
   const router = useRouter();
@@ -94,7 +95,7 @@ export default function UnifiedMockupDashboard() {
 
     // Fetch the authenticated user's Lava role so the sidebar can gate items.
     // Failure is non-fatal — the sidebar falls back to showing all items.
-    fetch('/api/v1/auth/me')
+    apiFetch('/api/v1/auth/me')
       .then((r) => r.json())
       .then((d) => setRole(d?.result?.lava_role))
       .catch(() => setRole(undefined));
@@ -106,7 +107,7 @@ export default function UnifiedMockupDashboard() {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch('/api/v1/dashboard/full-data');
+      const res = await apiFetch('/api/v1/dashboard/full-data');
       const payload = await res.json();
       
       if (res.status === 401) {
