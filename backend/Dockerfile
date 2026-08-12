@@ -1,4 +1,4 @@
-FROM node:20.18.1-slim
+FROM node:22-slim
 
 # Install OpenSSL — required by Prisma on slim images
 RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
