@@ -1,5 +1,5 @@
 /**
- * Next.js Edge Middleware — Lava Decision Risk Frontend
+ * Next.js Proxy — Lava Decision Risk Frontend
  *
  * Runs on every request before the page renders.
  * Provides a lightweight redirect gate: if a protected route is accessed
@@ -16,10 +16,10 @@
  * Security note: Presence of the `token` cookie is checked here, not its validity.
  * Full JWT verification happens on the backend API for every protected API call.
  * The `token` cookie is HttpOnly — not accessible to JavaScript.
- *
- * Adapted from Micro/middleware.ts — same cookie-gate pattern.
  */
 import { NextRequest, NextResponse } from 'next/server';
+
+export const runtime = 'nodejs';
 
 const PUBLIC_PATHS = new Set([
 	'/signin',
