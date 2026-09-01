@@ -277,8 +277,8 @@ function SignInForm() {
 
             <p style={{ fontSize: '11px', color: '#6b7280', textAlign: 'center', lineHeight: '1.4', margin: 0 }}>
               By proceeding, you are indicating that you have read and that you agree to our{' '}
-              <a href="#" style={{ color: '#2563eb', textDecoration: 'none' }}>terms of use</a> and{' '}
-              <a href="#" style={{ color: '#2563eb', textDecoration: 'none' }}>privacy notice</a>.
+              <a href="https://m.zenlearn.ai/terms-and-conditions" target="_blank" rel="noopener noreferrer" style={{ color: '#2563eb', textDecoration: 'none' }}>terms of use</a> and{' '}
+              <a href="https://m.zenlearn.ai/privacy-notice" target="_blank" rel="noopener noreferrer" style={{ color: '#2563eb', textDecoration: 'none' }}>privacy notice</a>.
             </p>
 
             <button

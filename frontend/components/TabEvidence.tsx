@@ -3,8 +3,6 @@ import React, { useState } from 'react';
 interface TabEvidenceProps {
   data: any;
   uniqueMonths: string[];
-  webhookStatus: string;
-  handleSlackPush: () => void;
   evF: {
     flag: string;
     busm: string;
@@ -19,8 +17,6 @@ interface TabEvidenceProps {
 export default function TabEvidence({
   data,
   uniqueMonths,
-  webhookStatus,
-  handleSlackPush,
   evF,
   setEvF
 }: TabEvidenceProps) {

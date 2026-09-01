@@ -55,9 +55,6 @@ export default function UnifiedMockupDashboard() {
     search: '',
   });
 
-  // Slack Mock web hook notification mock state
-  const [webhookStatus, setWebhookStatus] = useState<'idle' | 'sending' | 'success'>('idle');
-
   // Custom assumed parts/travel costs configurations state
   const [costs, setCosts] = useState({
     pcba: 1800,
@@ -168,12 +165,6 @@ export default function UnifiedMockupDashboard() {
     }
     localStorage.removeItem('lava_user');
     router.push('/signin');
-  };
-
-  const handleSlackPush = () => {
-    // NOTE: Slack integration is not yet wired up. Alert the user so they
-    // are not misled into thinking a real notification was sent.
-    alert('Slack integration is not yet configured. Please contact your administrator to set up the webhook URL.');
   };
 
   // Jumps to Evidence pre-filtered to actor and flag
@@ -423,8 +414,6 @@ export default function UnifiedMockupDashboard() {
           <TabEvidence
             data={data}
             uniqueMonths={uniqueMonths}
-            webhookStatus={webhookStatus}
-            handleSlackPush={handleSlackPush}
             evF={evF}
             setEvF={setEvF}
           />
