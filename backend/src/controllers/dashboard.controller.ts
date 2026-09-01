@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
-import { getExecutiveDashboard, getDealerDashboard, getFullDashboardData } from '../services/dashboard.service';
+import { getExecutiveDashboard, getDealerDashboard, getFullDashboardData, getRegionDashboard, getTechnicianDashboard } from '../services/dashboard.service';
 import { getCachedDashboard, setCachedDashboard } from '../services/cache.service';
 import { createAuditLog } from './audit.controller';
 import logger from '../configs/logger.config';
-import { deriveScopeFilter, isAdminTier } from '../helpers/scope';
+import { deriveScopeFilter, isAdminTier, canAccessRegion, canAccessTechnician } from '../helpers/scope';
+import prisma from '../configs/prisma.config';
 import {
   fetchTrainingStatus,
   fetchTrainingRules,
@@ -132,6 +133,137 @@ export async function getDealerDashboardHandler(req: Request, res: Response): Pr
     res.error({
       code: 500,
       message: `Failed to compute dashboard analytics for service centre "${aspName}".`,
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
+}
+
+/**
+ * Region (BUSM) Dashboard Handler
+ *
+ * GET /api/v1/dashboard/region/:id
+ *
+ * Admin tiers may view any region. A BUSM may only view the region matching
+ * their own JWT scope. ASM/ASP are not permitted here at all — a region view
+ * exposes every ASM and ASP beneath it, wider than an ASM's own mapped ASPs.
+ */
+export async function getRegionDashboardHandler(req: Request, res: Response): Promise<void> {
+  const regionIdRaw = req.params['id'];
+  if (!regionIdRaw || typeof regionIdRaw !== 'string') {
+    res.error({ code: 400, message: 'Region id parameter is required and must be a string.' });
+    return;
+  }
+  const regionId = regionIdRaw;
+
+  const region = await prisma.region.findUnique({ where: { id: regionId }, select: { id: true, name: true } });
+  if (!region) {
+    res.error({ code: 404, message: `Region with id "${regionId}" not found.` });
+    return;
+  }
+
+  if (!canAccessRegion(req.user, region.name)) {
+    res.status(403).json({ message: 'Forbidden: you may only view your own region.' });
+    return;
+  }
+
+  const cacheKey = `dashboard:region:${regionId}`;
+
+  try {
+    const cachedData = await getCachedDashboard(cacheKey);
+    if (cachedData) {
+      res.success({ code: 200, message: `Region dashboard for "${region.name}" loaded from cache`, result: cachedData });
+      return;
+    }
+
+    const freshData = await getRegionDashboard(regionId);
+    await setCachedDashboard(cacheKey, freshData, freshData.importId);
+
+    if (req.user) {
+      await createAuditLog({
+        userId: req.user.id,
+        action: 'DASHBOARD_VIEW',
+        resourceType: 'RegionDashboard',
+        metadata: { regionId, regionName: region.name },
+        ipAddress: req.ip,
+      });
+    }
+
+    res.success({ code: 200, message: `Region dashboard for "${region.name}" computed successfully`, result: freshData });
+  } catch (error) {
+    logger.error('Error in getRegionDashboardHandler', { error, regionId });
+    res.error({
+      code: 500,
+      message: `Failed to compute dashboard analytics for region "${region.name}".`,
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
+}
+
+/**
+ * Technician Dashboard Handler
+ *
+ * GET /api/v1/dashboard/technician/:id
+ *
+ * Admin tiers may view any technician. BUSM may view any technician in
+ * their region; ASM any technician under their own dealer (their mapped
+ * ASPs); ASP/Dealer only technicians at their own service centre.
+ */
+export async function getTechnicianDashboardHandler(req: Request, res: Response): Promise<void> {
+  const technicianIdRaw = req.params['id'];
+  if (!technicianIdRaw || typeof technicianIdRaw !== 'string') {
+    res.error({ code: 400, message: 'Technician id parameter is required and must be a string.' });
+    return;
+  }
+  const technicianId = technicianIdRaw;
+
+  const technician = await prisma.technician.findUnique({
+    where: { id: technicianId },
+    select: {
+      id: true,
+      name: true,
+      serviceCentre: {
+        select: {
+          name: true,
+          dealer: { select: { name: true, region: { select: { name: true } } } },
+        },
+      },
+    },
+  });
+
+  if (!technician) {
+    res.error({ code: 404, message: `Technician with id "${technicianId}" not found.` });
+    return;
+  }
+
+  const location = {
+    busmName: technician.serviceCentre.dealer.region.name,
+    asmName:  technician.serviceCentre.dealer.name,
+    aspName:  technician.serviceCentre.name,
+  };
+
+  if (!canAccessTechnician(req.user, location)) {
+    res.status(403).json({ message: 'Forbidden: you may only view technicians within your own scope.' });
+    return;
+  }
+
+  const cacheKey = `dashboard:technician:${technicianId}`;
+
+  try {
+    const cachedData = await getCachedDashboard(cacheKey);
+    if (cachedData) {
+      res.success({ code: 200, message: `Technician snapshot for "${technician.name}" loaded from cache`, result: cachedData });
+      return;
+    }
+
+    const freshData = await getTechnicianDashboard(technicianId);
+    await setCachedDashboard(cacheKey, freshData, freshData.importId);
+
+    res.success({ code: 200, message: `Technician snapshot for "${technician.name}" computed successfully`, result: freshData });
+  } catch (error) {
+    logger.error('Error in getTechnicianDashboardHandler', { error, technicianId });
+    res.error({
+      code: 500,
+      message: `Failed to compute dashboard analytics for technician "${technician.name}".`,
       error: error instanceof Error ? error.message : String(error),
     });
   }

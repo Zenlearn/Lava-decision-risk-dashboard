@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { deriveScopeFilter, isAdminTier } from '../scope';
+import { deriveScopeFilter, isAdminTier, canAccessRegion, canAccessTechnician } from '../scope';
 
 describe('isAdminTier', () => {
   it('returns true for is_super_admin', () => {
@@ -60,5 +60,76 @@ describe('deriveScopeFilter', () => {
     const u: any = { lava_role: 'UnknownRole' };
     const result = deriveScopeFilter(u, requested);
     expect(result.busmName).toBe('__none__');
+  });
+});
+
+describe('canAccessRegion', () => {
+  it('admin tier can access any region', () => {
+    const u: any = { lava_role: 'MD' };
+    expect(canAccessRegion(u, 'Sukhbir Singh')).toBe(true);
+  });
+
+  it('BUSM can access their own region', () => {
+    const u: any = { lava_role: 'BUSM', lava_scope: { busmName: 'Sukhbir Singh' } };
+    expect(canAccessRegion(u, 'Sukhbir Singh')).toBe(true);
+  });
+
+  it('BUSM cannot access a different region', () => {
+    const u: any = { lava_role: 'BUSM', lava_scope: { busmName: 'Sukhbir Singh' } };
+    expect(canAccessRegion(u, 'Rajesh Limbachia')).toBe(false);
+  });
+
+  it('ASM cannot access any region view (wider than their mapped ASPs)', () => {
+    const u: any = { lava_role: 'ASM', lava_scope: { busmName: 'Sukhbir Singh', asmName: 'Ramesh K' } };
+    expect(canAccessRegion(u, 'Sukhbir Singh')).toBe(false);
+  });
+
+  it('ASP cannot access any region view', () => {
+    const u: any = { lava_role: 'ASP', lava_scope: { busmName: 'B', asmName: 'A', aspName: 'X' } };
+    expect(canAccessRegion(u, 'B')).toBe(false);
+  });
+});
+
+describe('canAccessTechnician', () => {
+  const location = { busmName: 'Sukhbir Singh', asmName: 'Ramesh K', aspName: 'SHAHID COMMUNICATION' };
+
+  it('admin tier can access any technician', () => {
+    const u: any = { lava_role: 'MD' };
+    expect(canAccessTechnician(u, location)).toBe(true);
+  });
+
+  it('BUSM can access a technician in their own region', () => {
+    const u: any = { lava_role: 'BUSM', lava_scope: { busmName: 'Sukhbir Singh' } };
+    expect(canAccessTechnician(u, location)).toBe(true);
+  });
+
+  it('BUSM cannot access a technician in a different region', () => {
+    const u: any = { lava_role: 'BUSM', lava_scope: { busmName: 'Rajesh Limbachia' } };
+    expect(canAccessTechnician(u, location)).toBe(false);
+  });
+
+  it('ASM can access a technician under their own dealer', () => {
+    const u: any = { lava_role: 'ASM', lava_scope: { busmName: 'Sukhbir Singh', asmName: 'Ramesh K' } };
+    expect(canAccessTechnician(u, location)).toBe(true);
+  });
+
+  it('ASM cannot access a technician under a different ASM (a different ASP not mapped to them)', () => {
+    const u: any = { lava_role: 'ASM', lava_scope: { busmName: 'Sukhbir Singh', asmName: 'Other ASM' } };
+    expect(canAccessTechnician(u, location)).toBe(false);
+  });
+
+  it('ASP can access a technician at their own service centre', () => {
+    const u: any = { lava_role: 'ASP', lava_scope: { busmName: 'B', asmName: 'A', aspName: 'SHAHID COMMUNICATION' } };
+    expect(canAccessTechnician(u, location)).toBe(true);
+  });
+
+  it('ASP cannot access a technician at a different service centre', () => {
+    const u: any = { lava_role: 'ASP', lava_scope: { busmName: 'B', asmName: 'A', aspName: 'Other ASP' } };
+    expect(canAccessTechnician(u, location)).toBe(false);
+  });
+
+  it('unknown/unscoped role is denied', () => {
+    const u: any = { lava_role: 'UnknownRole' };
+    expect(canAccessTechnician(u, location)).toBe(false);
   });
 });

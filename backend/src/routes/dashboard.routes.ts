@@ -1,7 +1,9 @@
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
 import {
   getExecutiveDashboardHandler,
   getDealerDashboardHandler,
+  getRegionDashboardHandler,
+  getTechnicianDashboardHandler,
   getFullDashboardDataHandler,
   getTrainingStatusHandler,
   getTrainingRulesHandler,
@@ -62,22 +64,31 @@ dashboardRouter.get(
 
 /**
  * GET /api/v1/dashboard/region/:id
- * (Optional Phase 2 stub — executive view filters cover region-level BUSM scoping)
+ *
+ * Returns the same aggregate payload as /executive, scoped to one Region.
+ * Only admin tiers and the owning BUSM may view it (see canAccessRegion) —
+ * ASM is deliberately excluded from the role list: a region view exposes
+ * every ASM/ASP beneath it, wider than an ASM's own mapped ASPs.
  */
-dashboardRouter.get('/region/:id', requireAnyLavaRole(executiveRoles), (req: Request, res: Response) => {
-  res.status(501).json({ message: `Scoped Region ID dashboard not yet implemented. Use /executive with busmName filter.` });
-});
+dashboardRouter.get(
+  '/region/:id',
+  requireAnyLavaRole(['Admin', 'MD', 'ServiceHead', 'RegionalHead', 'BUSM'] as any[]),
+  asyncHandler(getRegionDashboardHandler)
+);
 
 /**
  * GET /api/v1/dashboard/technician/:id
- * (Phase 2 stub)
  *
- * TODO (Phase 3): same scope-claim gap as /dealer/:aspName above — Dealer/ASP
- * excluded until the JWT carries a verifiable ownership claim.
+ * Returns per-technician work order metrics. Admin tiers, BUSM, ASM, and
+ * Dealer/ASP are all allowed in; getTechnicianDashboardHandler enforces
+ * ownership via canAccessTechnician (BUSM: own region, ASM: own dealer,
+ * ASP/Dealer: own service centre only) — IDOR protection.
  */
-dashboardRouter.get('/technician/:id', requireAnyLavaRole(executiveRoles), (req: Request, res: Response) => {
-  res.status(501).json({ message: `Individual Technician ID dashboard not yet implemented.` });
-});
+dashboardRouter.get(
+  '/technician/:id',
+  requireAnyLavaRole([...executiveRoles, 'Dealer', 'ASP'] as any[]),
+  asyncHandler(getTechnicianDashboardHandler)
+);
 
 // Training proxy routes — forwarded to ZenLearn PathwaysBackend over internal network
 const adminRoles: any[] = ['Admin', 'MD', 'ServiceHead'];

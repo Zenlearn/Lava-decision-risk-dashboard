@@ -63,3 +63,36 @@ export function deriveScopeFilter(
   // Unknown/unscoped role → most restrictive: no data.
   return { busmName: '__none__', asmName: '__none__' };
 }
+
+/**
+ * Ownership check for a single Region (BUSM) resource — used by
+ * /dashboard/region/:id. Only admin tiers and the BUSM who owns that region
+ * may view it; ASM/ASP are excluded because a region view exposes every ASM
+ * and ASP beneath it, which is wider than an ASM's own mapped ASPs.
+ */
+export function canAccessRegion(user: ReqUser, regionName: string): boolean {
+  if (isAdminTier(user)) return true;
+  const scope = user?.org_scope ?? (user as any)?.lava_scope ?? {};
+  const role = (user?.org_role ?? (user as any)?.lava_role) as string | undefined;
+  return role === 'BUSM' && scope.busmName === regionName;
+}
+
+/**
+ * Ownership check for a single Technician resource — used by
+ * /dashboard/technician/:id. Mirrors the org hierarchy rule: BUSM sees
+ * anyone under their region, ASM sees anyone under their own dealer (their
+ * mapped ASPs), ASP/Dealer sees only their own service centre.
+ */
+export function canAccessTechnician(
+  user: ReqUser,
+  location: { busmName: string; asmName: string; aspName: string },
+): boolean {
+  if (isAdminTier(user)) return true;
+  const scope = user?.org_scope ?? (user as any)?.lava_scope ?? {};
+  const role = (user?.org_role ?? (user as any)?.lava_role) as string | undefined;
+
+  if (role === 'BUSM') return scope.busmName === location.busmName;
+  if (role === 'ASM') return scope.busmName === location.busmName && scope.asmName === location.asmName;
+  if (role === 'ASP' || role === 'Dealer') return scope.aspName === location.aspName;
+  return false;
+}

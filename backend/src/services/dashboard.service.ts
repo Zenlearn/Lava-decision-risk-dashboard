@@ -379,6 +379,155 @@ export async function getDealerDashboard(aspName: string): Promise<DealerDashboa
   };
 }
 
+export interface RegionDashboardData extends ExecutiveDashboardData {
+  regionId:   string;
+  regionName: string;
+}
+
+/**
+ * Fetch Region (BUSM) Dashboard Data
+ *
+ * Same aggregation as getExecutiveDashboard, scoped to a single Region by ID
+ * — resolves the region's name and reuses the existing busmName filter path
+ * (all ServiceCentre/WorkOrder/AspMetricRollup queries are already
+ * name-keyed, so there is no separate ID-based query path to maintain).
+ */
+export async function getRegionDashboard(regionId: string): Promise<RegionDashboardData> {
+  const region = await prisma.region.findUnique({ where: { id: regionId }, select: { id: true, name: true } });
+  if (!region) {
+    throw new Error(`Region with id "${regionId}" not found`);
+  }
+
+  const data = await getExecutiveDashboard({ busmName: region.name });
+  return { ...data, regionId: region.id, regionName: region.name };
+}
+
+export interface TechnicianDashboardData {
+  importId:          string | null;
+  technicianId:      string;
+  technicianName:    string;
+  aspName:           string;
+  asmName:           string;
+  busmName:          string;
+  totalWorkOrders:   number;
+  totalAnomalies:    number;
+  incidentSummary: {
+    repeatImei:      number;
+    doa:             number;
+    suspiciousPhone: number;
+  };
+  flaggedWorkOrders: HitListPreviewItem[];
+}
+
+/**
+ * Fetch Technician Dashboard Data
+ *
+ * Aggregates WorkOrders for one Technician. Unlike ASP-level dashboards,
+ * there is no AspMetricRollup at technician granularity (Skill/Audit/Process
+ * scores are only ever computed per-ASP-month, see rules/engine.ts) — this
+ * intentionally omits those averages rather than fabricate them.
+ * WorkOrder.technicianId is optional on the schema, so older imports that
+ * never populated it will simply show 0 work orders for every technician.
+ */
+export async function getTechnicianDashboard(technicianId: string): Promise<TechnicianDashboardData> {
+  const technician = await prisma.technician.findUnique({
+    where: { id: technicianId },
+    select: {
+      id: true,
+      name: true,
+      serviceCentre: {
+        select: {
+          name: true,
+          dealer: { select: { name: true, region: { select: { name: true } } } },
+        },
+      },
+    },
+  });
+
+  if (!technician) {
+    throw new Error(`Technician with id "${technicianId}" not found`);
+  }
+
+  const aspName = technician.serviceCentre.name;
+  const asmName = technician.serviceCentre.dealer.name;
+  const busmName = technician.serviceCentre.dealer.region.name;
+
+  const latestImport = await getLatestImportId();
+  if (!latestImport) {
+    return {
+      importId: null,
+      technicianId: technician.id,
+      technicianName: technician.name,
+      aspName,
+      asmName,
+      busmName,
+      totalWorkOrders: 0,
+      totalAnomalies: 0,
+      incidentSummary: { repeatImei: 0, doa: 0, suspiciousPhone: 0 },
+      flaggedWorkOrders: [],
+    };
+  }
+
+  const importId = latestImport.id;
+  const workOrders = await prisma.workOrder.findMany({
+    where: { importId, technicianId },
+    include: { riskFlags: true, serviceCentre: true },
+  });
+
+  const filteredWos = workOrders.filter((wo) => {
+    const raw = wo.rawData as any;
+    const modelType = String(
+      raw[FIELD_MAP.modelType] || raw['Model type'] || raw['Model Type'] || ''
+    ).trim().toLowerCase();
+    return modelType.includes('smart') || modelType.includes('tablet');
+  });
+
+  const totalWorkOrders = filteredWos.length;
+  const totalAnomalies = filteredWos.reduce((sum, w) => sum + (w.totalAnomalies || 0), 0);
+
+  const repeatImeiCount = filteredWos.filter((w) => w.riskFlags.some((rf) => rf.ruleKey === 'repeatImei')).length;
+  const doaCount = filteredWos.filter((w) => w.riskFlags.some((rf) => rf.ruleKey === 'doa')).length;
+  const suspiciousPhoneCount = filteredWos.filter((w) => w.riskFlags.some((rf) => rf.ruleKey === 'suspiciousPhone')).length;
+
+  const flaggedWosRaw = filteredWos.filter((w) => (w.totalAnomalies || 0) > 0);
+  flaggedWosRaw.sort((a, b) => (b.totalAnomalies || 0) - (a.totalAnomalies || 0));
+
+  const flaggedWorkOrders: HitListPreviewItem[] = flaggedWosRaw.map((wo) => {
+    const rawData = wo.rawData as Record<string, unknown>;
+    return {
+      id:             wo.id,
+      workorder:      String(rawData[FIELD_MAP.workorder] ?? wo.id),
+      aspName:        wo.serviceCentre.name,
+      customerCity:   '',
+      imei:           String(rawData[FIELD_MAP.imei] ?? ''),
+      symptomDesc:    String(rawData[FIELD_MAP.symptomDesc] ?? ''),
+      totalAnomalies: wo.totalAnomalies ?? 0,
+      flags: {
+        repeatImei:      wo.riskFlags.some((rf) => rf.ruleKey === 'repeatImei'),
+        doa:             wo.riskFlags.some((rf) => rf.ruleKey === 'doa'),
+        suspiciousPhone: wo.riskFlags.some((rf) => rf.ruleKey === 'suspiciousPhone'),
+      },
+    };
+  });
+
+  return {
+    importId,
+    technicianId: technician.id,
+    technicianName: technician.name,
+    aspName,
+    asmName,
+    busmName,
+    totalWorkOrders,
+    totalAnomalies,
+    incidentSummary: {
+      repeatImei:      repeatImeiCount,
+      doa:             doaCount,
+      suspiciousPhone: suspiciousPhoneCount,
+    },
+    flaggedWorkOrders,
+  };
+}
+
 /**
  * Calculates standard deviation.
  */
