@@ -20,6 +20,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - default
 
   lava-api:
     build: .
@@ -32,6 +34,14 @@ services:
     depends_on:
       redis:
         condition: service_healthy
+    networks:
+      - default
+      - zenlearn-internal
+
+networks:
+  default:
+  zenlearn-internal:
+    external: true
 
 volumes:
   lava-redis-data:
