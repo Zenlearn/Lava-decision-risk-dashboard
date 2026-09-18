@@ -1,28 +1,8 @@
 services:
-  postgres:
-    image: postgres:16-alpine
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: postgres
-      # Sourced from the server-local .env (see DEPLOYMENT.md) — never hardcode
-      # a real password into this committed file. Docker Compose reads .env
-      # in this same directory automatically for ${...} substitution here,
-      # separate from the app container's own env_file: below.
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env}
-      POSTGRES_DB: lava
-    ports:
-      # Host port 5433, not 5432 — defensive against anything else on the box
-      # (this VM already runs PathwaysBackend + MongoDB tooling). Internal
-      # container port stays 5432; Lava's own app reaches it via the Docker
-      # network as "postgres:5432" regardless of the host-side mapping.
-      - "5433:5432"
-    volumes:
-      - lava-postgres-data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+  # postgres service removed — DB now hosted externally on Neon (free managed
+  # Postgres), same pattern as PathwaysBackend/Meridian using MongoDB Atlas.
+  # Survives this instance being deleted, unlike the old self-hosted volume.
+  # See DATABASE_URL in .env for the Neon connection string.
 
   redis:
     image: redis:7-alpine
@@ -50,11 +30,8 @@ services:
     ports:
       - "3010:3010"
     depends_on:
-      postgres:
-        condition: service_healthy
       redis:
         condition: service_healthy
 
 volumes:
-  lava-postgres-data:
   lava-redis-data:
