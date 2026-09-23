@@ -114,8 +114,9 @@ export async function processImport(
 
   // Apply Universal Filter Scope: exclude Feature Phones, keeping strictly Smart & Tablet models
   mappedRows = mappedRows.filter((r) => {
+    const raw = (r._raw ?? {}) as Record<string, unknown>;
     const modelType = String(
-      r[FIELD_MAP.modelType] || r['Model type'] || r['Model Type'] || ''
+      r.modelType || raw['Model type'] || raw['Model Type'] || ''
     ).trim().toLowerCase();
     return modelType.includes('smart') || modelType.includes('tablet');
   });
