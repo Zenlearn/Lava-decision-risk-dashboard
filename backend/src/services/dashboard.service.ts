@@ -2594,6 +2594,7 @@ export async function getFullDashboardData(filters?: {
       busmFeaturePhone: buildNpsBreakdown(fpRows, (r) => r.busmName),
       asmAll: withBusm(buildNpsBreakdown(monthRows, (r) => r.asmName)),
       asmSmartTablet: withBusm(buildNpsBreakdown(stRows, (r) => r.asmName)),
+      asmFeaturePhone: withBusm(buildNpsBreakdown(fpRows, (r) => r.asmName)),
       aspAll: withAsm(buildNpsBreakdown(monthRows, (r) => r.aspName)),
       aspSmartTablet: withAsm(buildNpsBreakdown(stRows, (r) => r.aspName)),
       dsatByBusm: computeDsatBreakdown(monthRows, (r) => r.busmName),
