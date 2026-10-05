@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { RefreshCw, LogOut, UploadCloud } from 'lucide-react';
+import { RefreshCw, UploadCloud } from 'lucide-react';
 
 // Import split subcomponents
 import Sidebar from '../components/Sidebar';
@@ -322,12 +322,9 @@ export default function UnifiedMockupDashboard() {
 
   // Extract variables for easier markup layout mapping
   const latestKPI = data.kpi.months[data.kpi.months.length - 1];
-  const previousKPI = data.kpi.months[data.kpi.months.length - 2];
 
   // Leakage values based on cost configurations
   const leakCur = getLeakLive(latestKPI);
-  const leakPrev = getLeakLive(previousKPI);
-  const leakDelta = leakCur - leakPrev;
   const annualLeakRunRate = leakCur * 12;
 
   return (
@@ -359,11 +356,7 @@ export default function UnifiedMockupDashboard() {
           <TabDashboard
             data={data}
             isMounted={isMounted}
-            leakCur={leakCur}
-            leakDelta={leakDelta}
-            annualLeakRunRate={annualLeakRunRate}
             latestKPI={latestKPI}
-            previousKPI={previousKPI}
             fmtINR={fmtINR}
             fmtPct={fmtPct}
           />

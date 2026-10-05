@@ -1,5 +1,4 @@
 import prisma from '../configs/prisma.config';
-import logger from '../configs/logger.config';
 import { FIELD_MAP, TARGET_MONTHS } from '../configs/fieldMap.config';
 import { fetchNpsRows, groupNpsBy, summarizeNps, computeDsatBreakdown, rankByNps, NpsRawRow } from './npsAggregation.service';
 
@@ -760,13 +759,11 @@ export async function getFullDashboardData(filters?: {
   const processedRows = workOrders.map((wo, index) => {
     const raw = wo.rawData as any;
     const imei = String(raw[FIELD_MAP.imei] || '').trim();
-    const phone = String(raw[FIELD_MAP.phone] || '').trim();
     
     const asp = wo.serviceCentre.name;
     const asm = wo.serviceCentre.dealer.name;
     const busm = wo.serviceCentre.dealer.region.name;
     const model = String(raw[FIELD_MAP.model] || '');
-    const modelType = String(raw[FIELD_MAP.modelType] || raw['Model type'] || raw['Model Type'] || '').trim();
     const symptomRaw = String(raw[FIELD_MAP.symptomDesc] || '');
     const rawActionStr = String(raw['Action Code Desc'] || raw['Action Taken'] || '').trim();
     const actionRaw = rawActionStr !== '' ? rawActionStr : 'UNSPECIFIED / NOT RECORDED';
@@ -2064,7 +2061,6 @@ export async function getFullDashboardData(filters?: {
 
     const busmList = Array.from(busmMap.entries()).map(([busmName, busmRows]) => {
       const wo = busmRows.length;
-      const bounceCount = busmRows.filter((r) => r.isBounce).length;
       const mismatchBouncedCount = busmRows.filter((r) => r.isMismatchBounced).length;
 
       const tatRows = busmRows.filter((r) => r.tat !== null);
@@ -2216,7 +2212,6 @@ export async function getFullDashboardData(filters?: {
     const asmList = Array.from(asmMap.entries()).map(([asmName, obj]) => {
       const asmRows = obj.rows;
       const wo = asmRows.length;
-      const bounceCount = asmRows.filter((r) => r.isBounce).length;
       const mismatchBouncedCount = asmRows.filter((r) => r.isMismatchBounced).length;
 
       const tatRows = asmRows.filter((r) => r.tat !== null);
@@ -2426,7 +2421,6 @@ export async function getFullDashboardData(filters?: {
 
     // National Summary Row
     const totalWo = rows.length;
-    const totalBounce = rows.filter((r) => r.isBounce).length;
     const totalMismatchBounced = rows.filter((r) => r.isMismatchBounced).length;
 
     const totalTatRows = rows.filter((r) => r.tat !== null);
@@ -2559,11 +2553,10 @@ export async function getFullDashboardData(filters?: {
   };
 
   // NPS insights — real per-BUSM/ASM breakdowns (All Devices / Smart & Tablet
-  // Only / Feature Phone Only), device-category summary, and DSAT reason
-  // breakdown, all sourced from the real NpsSurveyRecord dataset. Replaces
-  // the frozen-on-June static arrays previously hardcoded in the frontend
-  // (spBusmData, spAsmData, busmNpsData, asmNpsData, dsatBusmData,
-  // deviceCategoryNps, fpBusmData).
+  // Only / Feature Phone Only) and DSAT reason breakdown, all sourced from
+  // the real NpsSurveyRecord dataset. Replaces the frozen-on-June static
+  // arrays previously hardcoded in the frontend (spBusmData, spAsmData,
+  // busmNpsData, asmNpsData, dsatBusmData, fpBusmData).
   const npsMonths = [...new Set(npsRows.map((r) => r.month))].filter((m) => m !== 'Unknown');
   const buildNpsBreakdown = (rows: NpsRawRow[], keyFn: (r: NpsRawRow) => string) => {
     const summaries = groupNpsBy(rows, keyFn);
@@ -2598,11 +2591,6 @@ export async function getFullDashboardData(filters?: {
       aspAll: withAsm(buildNpsBreakdown(monthRows, (r) => r.aspName)),
       aspSmartTablet: withAsm(buildNpsBreakdown(stRows, (r) => r.aspName)),
       dsatByBusm: computeDsatBreakdown(monthRows, (r) => r.busmName),
-      deviceCategorySummary: [
-        { cat: 'Feature Phone', ...summarizeNps(fpRows) },
-        { cat: 'Smart & Tablet', ...summarizeNps(stRows) },
-        { cat: 'Overall Combined', ...summarizeNps(monthRows) },
-      ].filter((c) => c.sent !== undefined),
     };
   });
   const npsInsights = {

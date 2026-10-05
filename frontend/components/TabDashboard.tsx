@@ -9,11 +9,7 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TableSum
 interface TabDashboardProps {
   data: any;
   isMounted: boolean;
-  leakCur: number;
-  leakDelta: number;
-  annualLeakRunRate: number;
   latestKPI: any;
-  previousKPI: any;
   fmtINR: (v: number) => string;
   fmtPct: (v: number) => string;
 }
@@ -21,11 +17,7 @@ interface TabDashboardProps {
 export default function TabDashboard({
   data,
   isMounted,
-  leakCur: initialLeakCur,
-  leakDelta: initialLeakDelta,
-  annualLeakRunRate: initialAnnualLeakRunRate,
   latestKPI: initialLatestKPI,
-  previousKPI: initialPreviousKPI,
   fmtINR,
   fmtPct
 }: TabDashboardProps) {
@@ -97,7 +89,6 @@ export default function TabDashboard({
   const currentTatDist = currentKPI?.tatDistribution || [];
   const currentNpsDist = currentKPI?.npsDistribution || [];
   const hasNpsData = currentKPI?.hasNpsData !== false;
-  const prevTatDist = prevKPI?.tatDistribution || [];
 
   // Real leakage-driver derivation — sorted from the same breakdown table
   // rendered below, never a hardcoded component name/percentage.
@@ -766,7 +757,7 @@ export default function TabDashboard({
                     <YAxis tickLine={false} style={{ fontSize: '11px', fill: '#64748b' }} />
                     <Tooltip formatter={(val: any) => [`${val.toLocaleString('en-IN')} work orders`, 'Quantity']} />
                     <Bar dataKey="quantity" name="Work Orders" radius={[6, 6, 0, 0]}>
-                      {currentTatDist.map((entry: any, index: number) => {
+                      {currentTatDist.map((_entry: any, index: number) => {
                         const colors = ['#10b981', '#f59e0b', '#ef4444'];
                         return <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />;
                       })}
@@ -916,7 +907,7 @@ export default function TabDashboard({
                     <YAxis tickLine={false} style={{ fontSize: '11px', fill: '#64748b' }} />
                     <Tooltip formatter={(val: any) => [`${val.toLocaleString('en-IN')} survey responses`, 'Quantity']} />
                     <Bar dataKey="quantity" name="Responses" radius={[6, 6, 0, 0]}>
-                      {currentNpsDist.map((entry: any, index: number) => {
+                      {currentNpsDist.map((_entry: any, index: number) => {
                         const colors = ['#10b981', '#34d399', '#f59e0b', '#f97316', '#ef4444'];
                         return <Cell key={`cell-nps-${index}`} fill={colors[index % colors.length]} />;
                       })}

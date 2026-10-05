@@ -54,7 +54,6 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
 
   const allAspsList: any[] = activeHome?.top_asps || [];
   const uniqueBusms = Array.from(new Set(allAspsList.map((r) => r.busm))).filter(Boolean).sort();
-  const uniqueAsms = Array.from(new Set(allAspsList.map((r) => r.asm))).filter(Boolean).sort();
 
   // Handle BUSM Change (Cascading filter rule)
   const handleBusmChange = (newBusm: string) => {
@@ -279,217 +278,233 @@ export default function TabInsights({ data, costs, fmtINR }: TabInsightsProps) {
 
       {/* TABLE 1: SUMMARY BY BUSM AND ASM (NEW TABLE ABOVE ASP TABLE) */}
       <div className="card-mock" style={{ marginTop: '16px', padding: '16px' }}>
-        <div style={{ marginBottom: '10px', borderBottom: '1px solid #f1f5f9', paddingBottom: '8px' }}>
+        <div
+          onClick={() => toggleTable('busmAsmSummary')}
+          style={{ display: 'flex', alignItems: 'center', marginBottom: collapsedTables.busmAsmSummary ? 0 : '10px', borderBottom: collapsedTables.busmAsmSummary ? 'none' : '1px solid #f1f5f9', paddingBottom: collapsedTables.busmAsmSummary ? 0 : '8px', cursor: 'pointer', userSelect: 'none' }}
+        >
+          {renderHeaderArrow('busmAsmSummary')}
           <h3 style={{ fontSize: '14.5px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
             Summary of Doorstep Board Swaps by BUSM &amp; Supervisor (ASM)
           </h3>
         </div>
 
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', lineHeight: '1.3' }}>
-            <thead>
-              <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.03em' }}>
-                <th style={{ padding: '8px 8px', textAlign: 'left', whiteSpace: 'nowrap' }}>BUSM</th>
-                <th style={{ padding: '8px 8px', textAlign: 'left', whiteSpace: 'nowrap' }}>Supervisor (ASM)</th>
-                <th style={{ padding: '8px 8px', textAlign: 'right', whiteSpace: 'nowrap' }}>Total Calls</th>
-                <th style={{ padding: '8px 8px', textAlign: 'right', whiteSpace: 'nowrap' }}>Total Board Swaps</th>
-                <th style={{ padding: '8px 8px', textAlign: 'right', whiteSpace: 'nowrap' }}>Same-Day Swaps</th>
-                <th style={{ padding: '8px 8px', textAlign: 'right', whiteSpace: 'nowrap' }}>% Same-Day / Swaps</th>
-                <th style={{ padding: '8px 8px', textAlign: 'right', whiteSpace: 'nowrap' }}>% Same-Day / Total Calls</th>
-              </tr>
-            </thead>
-            <tbody>
-              {busmAsmSummaryList.length === 0 ? (
-                <tr>
-                  <td colSpan={7} style={{ padding: '16px', textAlign: 'center', color: '#64748b' }}>
-                    No summary data found for selected filters.
-                  </td>
-                </tr>
-              ) : (
-                <>
-                  {busmAsmSummaryList.map((r: any, i: number) => (
-                    <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                      <td style={{ padding: '7px 8px', textAlign: 'left', fontWeight: 600, color: '#1e293b' }}>{r.busm}</td>
-                      <td style={{ padding: '7px 8px', textAlign: 'left', color: '#475569' }}>{r.asm}</td>
-                      <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 600, color: '#475569' }}>
-                        {(r.totalCalls || 0).toLocaleString('en-IN')}
-                      </td>
-                      <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 800, color: '#0f172a' }}>
-                        {(r.n || 0).toLocaleString('en-IN')}
-                      </td>
-                      <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 700, color: '#2563eb' }}>
-                        {(r.sameDayCount || 0).toLocaleString('en-IN')}
-                      </td>
-                      <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 800 }}>
-                        <span style={{
-                          padding: '2px 5px',
-                          borderRadius: '4px',
-                          fontSize: '11px',
-                          background: (r.sameDayPct || 0) > 30 ? '#fef2f2' : '#f0fdf4',
-                          color: (r.sameDayPct || 0) > 30 ? '#dc2626' : '#16a34a',
-                          border: `1px solid ${(r.sameDayPct || 0) > 30 ? '#fecaca' : '#bbf7d0'}`,
-                        }}>
-                          {(r.sameDayPct ?? 0).toFixed(1)}%
-                        </span>
-                      </td>
-                      <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 800 }}>
-                        <span style={{
-                          padding: '2px 5px',
-                          borderRadius: '4px',
-                          fontSize: '11px',
-                          background: (r.sameDayToCallsPct || 0) > 15 ? '#fff7ed' : '#f8fafc',
-                          color: (r.sameDayToCallsPct || 0) > 15 ? '#c2410c' : '#0f172a',
-                          border: `1px solid ${(r.sameDayToCallsPct || 0) > 15 ? '#ffedd5' : '#e2e8f0'}`,
-                        }}>
-                          {(r.sameDayToCallsPct ?? 0).toFixed(1)}%
-                        </span>
+        {!collapsedTables.busmAsmSummary && (
+          <>
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', lineHeight: '1.3' }}>
+                <thead>
+                  <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.03em' }}>
+                    <th style={{ padding: '8px 8px', textAlign: 'left', whiteSpace: 'nowrap' }}>BUSM</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'left', whiteSpace: 'nowrap' }}>Supervisor (ASM)</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'right', whiteSpace: 'nowrap' }}>Total Calls</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'right', whiteSpace: 'nowrap' }}>Total Board Swaps</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'right', whiteSpace: 'nowrap' }}>Same-Day Swaps</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'right', whiteSpace: 'nowrap' }}>% Same-Day / Swaps</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'right', whiteSpace: 'nowrap' }}>% Same-Day / Total Calls</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {busmAsmSummaryList.length === 0 ? (
+                    <tr>
+                      <td colSpan={7} style={{ padding: '16px', textAlign: 'center', color: '#64748b' }}>
+                        No summary data found for selected filters.
                       </td>
                     </tr>
-                  ))}
-                  {/* Highlighted Total Summary Row */}
-                  {(() => {
-                    const totalCallsSum = busmAsmSummaryList.reduce((sum, r) => sum + (r.totalCalls || 0), 0);
-                    const totalSwapsSum = busmAsmSummaryList.reduce((sum, r) => sum + (r.n || 0), 0);
-                    const sameDaySwapsSum = busmAsmSummaryList.reduce((sum, r) => sum + (r.sameDayCount || 0), 0);
-                    const avgSameDayPct = totalSwapsSum > 0 ? Number(((sameDaySwapsSum / totalSwapsSum) * 100).toFixed(1)) : 0;
-                    const avgSameDayToCallsPct = totalCallsSum > 0 ? Number(((sameDaySwapsSum / totalCallsSum) * 100).toFixed(1)) : 0;
-                    return (
-                      <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
-                        <td style={{ padding: '9px 8px', textAlign: 'left', color: '#0f172a', background: '#f1f5f9', fontWeight: 800 }}>TOTAL / ALL REGIONS</td>
-                        <td style={{ padding: '9px 8px', textAlign: 'left', color: '#64748b' }}>Summary Aggregate</td>
-                        <td style={{ padding: '9px 8px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>{totalCallsSum.toLocaleString('en-IN')}</td>
-                        <td style={{ padding: '9px 8px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>{totalSwapsSum.toLocaleString('en-IN')}</td>
-                        <td style={{ padding: '9px 8px', textAlign: 'right', color: '#2563eb', fontWeight: 800 }}>{sameDaySwapsSum.toLocaleString('en-IN')}</td>
-                        <td style={{ padding: '9px 8px', textAlign: 'right' }}>
-                          <span style={{ padding: '3px 7px', borderRadius: '4px', fontSize: '11.5px', background: '#ecfdf5', color: '#047857', border: '1px solid #a7f3d0', fontWeight: 800 }}>
-                            {avgSameDayPct}%
-                          </span>
-                        </td>
-                        <td style={{ padding: '9px 8px', textAlign: 'right' }}>
-                          <span style={{ padding: '3px 7px', borderRadius: '4px', fontSize: '11.5px', background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', fontWeight: 800 }}>
-                            {avgSameDayToCallsPct}%
-                          </span>
-                        </td>
-                      </tr>
-                    );
-                  })()}
-                </>
-              )}
-            </tbody>
-          </table>
-        </div>
+                  ) : (
+                    <>
+                      {busmAsmSummaryList.map((r: any, i: number) => (
+                        <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                          <td style={{ padding: '7px 8px', textAlign: 'left', fontWeight: 600, color: '#1e293b' }}>{r.busm}</td>
+                          <td style={{ padding: '7px 8px', textAlign: 'left', color: '#475569' }}>{r.asm}</td>
+                          <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 600, color: '#475569' }}>
+                            {(r.totalCalls || 0).toLocaleString('en-IN')}
+                          </td>
+                          <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 800, color: '#0f172a' }}>
+                            {(r.n || 0).toLocaleString('en-IN')}
+                          </td>
+                          <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 700, color: '#2563eb' }}>
+                            {(r.sameDayCount || 0).toLocaleString('en-IN')}
+                          </td>
+                          <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 800 }}>
+                            <span style={{
+                              padding: '2px 5px',
+                              borderRadius: '4px',
+                              fontSize: '11px',
+                              background: (r.sameDayPct || 0) > 30 ? '#fef2f2' : '#f0fdf4',
+                              color: (r.sameDayPct || 0) > 30 ? '#dc2626' : '#16a34a',
+                              border: `1px solid ${(r.sameDayPct || 0) > 30 ? '#fecaca' : '#bbf7d0'}`,
+                            }}>
+                              {(r.sameDayPct ?? 0).toFixed(1)}%
+                            </span>
+                          </td>
+                          <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 800 }}>
+                            <span style={{
+                              padding: '2px 5px',
+                              borderRadius: '4px',
+                              fontSize: '11px',
+                              background: (r.sameDayToCallsPct || 0) > 15 ? '#fff7ed' : '#f8fafc',
+                              color: (r.sameDayToCallsPct || 0) > 15 ? '#c2410c' : '#0f172a',
+                              border: `1px solid ${(r.sameDayToCallsPct || 0) > 15 ? '#ffedd5' : '#e2e8f0'}`,
+                            }}>
+                              {(r.sameDayToCallsPct ?? 0).toFixed(1)}%
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                      {/* Highlighted Total Summary Row */}
+                      {(() => {
+                        const totalCallsSum = busmAsmSummaryList.reduce((sum, r) => sum + (r.totalCalls || 0), 0);
+                        const totalSwapsSum = busmAsmSummaryList.reduce((sum, r) => sum + (r.n || 0), 0);
+                        const sameDaySwapsSum = busmAsmSummaryList.reduce((sum, r) => sum + (r.sameDayCount || 0), 0);
+                        const avgSameDayPct = totalSwapsSum > 0 ? Number(((sameDaySwapsSum / totalSwapsSum) * 100).toFixed(1)) : 0;
+                        const avgSameDayToCallsPct = totalCallsSum > 0 ? Number(((sameDaySwapsSum / totalCallsSum) * 100).toFixed(1)) : 0;
+                        return (
+                          <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
+                            <td style={{ padding: '9px 8px', textAlign: 'left', color: '#0f172a', background: '#f1f5f9', fontWeight: 800 }}>TOTAL / ALL REGIONS</td>
+                            <td style={{ padding: '9px 8px', textAlign: 'left', color: '#64748b' }}>Summary Aggregate</td>
+                            <td style={{ padding: '9px 8px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>{totalCallsSum.toLocaleString('en-IN')}</td>
+                            <td style={{ padding: '9px 8px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>{totalSwapsSum.toLocaleString('en-IN')}</td>
+                            <td style={{ padding: '9px 8px', textAlign: 'right', color: '#2563eb', fontWeight: 800 }}>{sameDaySwapsSum.toLocaleString('en-IN')}</td>
+                            <td style={{ padding: '9px 8px', textAlign: 'right' }}>
+                              <span style={{ padding: '3px 7px', borderRadius: '4px', fontSize: '11.5px', background: '#ecfdf5', color: '#047857', border: '1px solid #a7f3d0', fontWeight: 800 }}>
+                                {avgSameDayPct}%
+                              </span>
+                            </td>
+                            <td style={{ padding: '9px 8px', textAlign: 'right' }}>
+                              <span style={{ padding: '3px 7px', borderRadius: '4px', fontSize: '11.5px', background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', fontWeight: 800 }}>
+                                {avgSameDayToCallsPct}%
+                              </span>
+                            </td>
+                          </tr>
+                        );
+                      })()}
+                    </>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
       </div>
 
       {/* TABLE 2: TOP ASPS WITH DOORSTEP BOARD-LEVEL SWAPS */}
       <div className="card-mock" style={{ marginTop: '16px', padding: '16px' }}>
-        <div style={{ marginBottom: '10px', borderBottom: '1px solid #f1f5f9', paddingBottom: '8px' }}>
+        <div
+          onClick={() => toggleTable('topAsps')}
+          style={{ display: 'flex', alignItems: 'center', marginBottom: collapsedTables.topAsps ? 0 : '10px', borderBottom: collapsedTables.topAsps ? 'none' : '1px solid #f1f5f9', paddingBottom: collapsedTables.topAsps ? 0 : '8px', cursor: 'pointer', userSelect: 'none' }}
+        >
+          {renderHeaderArrow('topAsps')}
           <h3 style={{ fontSize: '14.5px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
             Top ASPs with Doorstep Board-level Swaps
           </h3>
         </div>
 
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', lineHeight: '1.3' }}>
-            <thead>
-              <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.03em' }}>
-                <th style={{ padding: '8px 8px', textAlign: 'left', whiteSpace: 'nowrap' }}>ASP Code</th>
-                <th style={{ padding: '8px 8px', textAlign: 'left', whiteSpace: 'nowrap' }}>ASP Name</th>
-                <th style={{ padding: '8px 8px', textAlign: 'left', whiteSpace: 'nowrap' }}>Supervisor (ASM)</th>
-                <th style={{ padding: '8px 8px', textAlign: 'left', whiteSpace: 'nowrap' }}>BUSM</th>
-                <th style={{ padding: '8px 8px', textAlign: 'right', whiteSpace: 'nowrap' }}>Total Calls</th>
-                <th style={{ padding: '8px 8px', textAlign: 'right', whiteSpace: 'nowrap' }}>Total Board Swaps</th>
-                <th style={{ padding: '8px 8px', textAlign: 'right', whiteSpace: 'nowrap' }}>Same-Day Swaps</th>
-                <th style={{ padding: '8px 8px', textAlign: 'right', whiteSpace: 'nowrap' }}>% Same-Day / Swaps</th>
-                <th style={{ padding: '8px 8px', textAlign: 'right', whiteSpace: 'nowrap' }}>% Same-Day / Total Calls</th>
-              </tr>
-            </thead>
-            <tbody>
-              {top10Asps.length === 0 ? (
-                <tr>
-                  <td colSpan={9} style={{ padding: '16px', textAlign: 'center', color: '#64748b' }}>
-                    No ASPs found matching selected filters.
-                  </td>
-                </tr>
-              ) : (
-                <>
-                  {top10Asps.map((r: any, i: number) => (
-                    <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                      <td style={{ padding: '7px 8px', textAlign: 'left', fontWeight: 600, color: '#475569', fontFamily: 'monospace' }}>{r.code || '-'}</td>
-                      <td style={{ padding: '7px 8px', textAlign: 'left', fontWeight: 600, color: '#1e293b' }}>{r.asp}</td>
-                      <td style={{ padding: '7px 8px', textAlign: 'left', color: '#475569' }}>{r.asm || '-'}</td>
-                      <td style={{ padding: '7px 8px', textAlign: 'left', color: '#475569' }}>{r.busm || '-'}</td>
-                      <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 600, color: '#475569' }}>
-                        {(r.totalCalls || 0).toLocaleString('en-IN')}
-                      </td>
-                      <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 800, color: '#0f172a' }}>
-                        {(r.n || 0).toLocaleString('en-IN')}
-                      </td>
-                      <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 700, color: '#2563eb' }}>
-                        {(r.sameDayCount || 0).toLocaleString('en-IN')}
-                      </td>
-                      <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 800 }}>
-                        <span style={{
-                          padding: '2px 5px',
-                          borderRadius: '4px',
-                          fontSize: '11px',
-                          background: (r.sameDayPct || 0) > 30 ? '#fef2f2' : '#f0fdf4',
-                          color: (r.sameDayPct || 0) > 30 ? '#dc2626' : '#16a34a',
-                          border: `1px solid ${(r.sameDayPct || 0) > 30 ? '#fecaca' : '#bbf7d0'}`,
-                        }}>
-                          {(r.sameDayPct ?? 0).toFixed(1)}%
-                        </span>
-                      </td>
-                      <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 800 }}>
-                        <span style={{
-                          padding: '2px 5px',
-                          borderRadius: '4px',
-                          fontSize: '11px',
-                          background: (r.sameDayToCallsPct || 0) > 15 ? '#fff7ed' : '#f8fafc',
-                          color: (r.sameDayToCallsPct || 0) > 15 ? '#c2410c' : '#0f172a',
-                          border: `1px solid ${(r.sameDayToCallsPct || 0) > 15 ? '#ffedd5' : '#e2e8f0'}`,
-                        }}>
-                          {(r.sameDayToCallsPct ?? 0).toFixed(1)}%
-                        </span>
+        {!collapsedTables.topAsps && (
+          <>
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', lineHeight: '1.3' }}>
+                <thead>
+                  <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc', color: '#475569', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.03em' }}>
+                    <th style={{ padding: '8px 8px', textAlign: 'left', whiteSpace: 'nowrap' }}>ASP Code</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'left', whiteSpace: 'nowrap' }}>ASP Name</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'left', whiteSpace: 'nowrap' }}>Supervisor (ASM)</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'left', whiteSpace: 'nowrap' }}>BUSM</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'right', whiteSpace: 'nowrap' }}>Total Calls</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'right', whiteSpace: 'nowrap' }}>Total Board Swaps</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'right', whiteSpace: 'nowrap' }}>Same-Day Swaps</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'right', whiteSpace: 'nowrap' }}>% Same-Day / Swaps</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'right', whiteSpace: 'nowrap' }}>% Same-Day / Total Calls</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {top10Asps.length === 0 ? (
+                    <tr>
+                      <td colSpan={9} style={{ padding: '16px', textAlign: 'center', color: '#64748b' }}>
+                        No ASPs found matching selected filters.
                       </td>
                     </tr>
-                  ))}
-                  {/* Highlighted Total Summary Row for Top ASPs */}
-                  {(() => {
-                    const topAspCallsSum = top10Asps.reduce((sum, r) => sum + (r.totalCalls || 0), 0);
-                    const topAspSwapsSum = top10Asps.reduce((sum, r) => sum + (r.n || 0), 0);
-                    const topAspSameDaySum = top10Asps.reduce((sum, r) => sum + (r.sameDayCount || 0), 0);
-                    const topAspSameDayPct = topAspSwapsSum > 0 ? Number(((topAspSameDaySum / topAspSwapsSum) * 100).toFixed(1)) : 0;
-                    const topAspSameDayToCallsPct = topAspCallsSum > 0 ? Number(((topAspSameDaySum / topAspCallsSum) * 100).toFixed(1)) : 0;
-                    return (
-                      <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
-                        <td style={{ padding: '9px 8px', textAlign: 'left', color: '#0f172a', fontFamily: 'monospace', background: '#f1f5f9', fontWeight: 800 }}>TOTAL</td>
-                        <td style={{ padding: '9px 8px', textAlign: 'left', color: '#0f172a', fontWeight: 800 }}>Top 10 ASPs Aggregate</td>
-                        <td style={{ padding: '9px 8px', textAlign: 'left', color: '#64748b' }}>-</td>
-                        <td style={{ padding: '9px 8px', textAlign: 'left', color: '#64748b' }}>-</td>
-                        <td style={{ padding: '9px 8px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>{topAspCallsSum.toLocaleString('en-IN')}</td>
-                        <td style={{ padding: '9px 8px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>{topAspSwapsSum.toLocaleString('en-IN')}</td>
-                        <td style={{ padding: '9px 8px', textAlign: 'right', color: '#2563eb', fontWeight: 800 }}>{topAspSameDaySum.toLocaleString('en-IN')}</td>
-                        <td style={{ padding: '9px 8px', textAlign: 'right' }}>
-                          <span style={{ padding: '3px 7px', borderRadius: '4px', fontSize: '11.5px', background: '#ecfdf5', color: '#047857', border: '1px solid #a7f3d0', fontWeight: 800 }}>
-                            {topAspSameDayPct}%
-                          </span>
-                        </td>
-                        <td style={{ padding: '9px 8px', textAlign: 'right' }}>
-                          <span style={{ padding: '3px 7px', borderRadius: '4px', fontSize: '11.5px', background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', fontWeight: 800 }}>
-                            {topAspSameDayToCallsPct}%
-                          </span>
-                        </td>
-                      </tr>
-                    );
-                  })()}
-                </>
-              )}
-            </tbody>
-          </table>
-        </div>
-        <div className="note-mock" style={{ marginTop: '10px', fontSize: '11.5px', color: '#64748b' }}>
-          Pull files for these outlying service centers from the Evidence Logs first. Verify motherboard/display billings against parts-return batches. Same-Day Doorstep Swaps represent jobs where Creation Date and Delivery Date are identical.
-        </div>
+                  ) : (
+                    <>
+                      {top10Asps.map((r: any, i: number) => (
+                        <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                          <td style={{ padding: '7px 8px', textAlign: 'left', fontWeight: 600, color: '#475569', fontFamily: 'monospace' }}>{r.code || '-'}</td>
+                          <td style={{ padding: '7px 8px', textAlign: 'left', fontWeight: 600, color: '#1e293b' }}>{r.asp}</td>
+                          <td style={{ padding: '7px 8px', textAlign: 'left', color: '#475569' }}>{r.asm || '-'}</td>
+                          <td style={{ padding: '7px 8px', textAlign: 'left', color: '#475569' }}>{r.busm || '-'}</td>
+                          <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 600, color: '#475569' }}>
+                            {(r.totalCalls || 0).toLocaleString('en-IN')}
+                          </td>
+                          <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 800, color: '#0f172a' }}>
+                            {(r.n || 0).toLocaleString('en-IN')}
+                          </td>
+                          <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 700, color: '#2563eb' }}>
+                            {(r.sameDayCount || 0).toLocaleString('en-IN')}
+                          </td>
+                          <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 800 }}>
+                            <span style={{
+                              padding: '2px 5px',
+                              borderRadius: '4px',
+                              fontSize: '11px',
+                              background: (r.sameDayPct || 0) > 30 ? '#fef2f2' : '#f0fdf4',
+                              color: (r.sameDayPct || 0) > 30 ? '#dc2626' : '#16a34a',
+                              border: `1px solid ${(r.sameDayPct || 0) > 30 ? '#fecaca' : '#bbf7d0'}`,
+                            }}>
+                              {(r.sameDayPct ?? 0).toFixed(1)}%
+                            </span>
+                          </td>
+                          <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 800 }}>
+                            <span style={{
+                              padding: '2px 5px',
+                              borderRadius: '4px',
+                              fontSize: '11px',
+                              background: (r.sameDayToCallsPct || 0) > 15 ? '#fff7ed' : '#f8fafc',
+                              color: (r.sameDayToCallsPct || 0) > 15 ? '#c2410c' : '#0f172a',
+                              border: `1px solid ${(r.sameDayToCallsPct || 0) > 15 ? '#ffedd5' : '#e2e8f0'}`,
+                            }}>
+                              {(r.sameDayToCallsPct ?? 0).toFixed(1)}%
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                      {/* Highlighted Total Summary Row for Top ASPs */}
+                      {(() => {
+                        const topAspCallsSum = top10Asps.reduce((sum, r) => sum + (r.totalCalls || 0), 0);
+                        const topAspSwapsSum = top10Asps.reduce((sum, r) => sum + (r.n || 0), 0);
+                        const topAspSameDaySum = top10Asps.reduce((sum, r) => sum + (r.sameDayCount || 0), 0);
+                        const topAspSameDayPct = topAspSwapsSum > 0 ? Number(((topAspSameDaySum / topAspSwapsSum) * 100).toFixed(1)) : 0;
+                        const topAspSameDayToCallsPct = topAspCallsSum > 0 ? Number(((topAspSameDaySum / topAspCallsSum) * 100).toFixed(1)) : 0;
+                        return (
+                          <tr style={{ borderTop: '2.5px solid #0f172a', background: '#f8fafc', fontWeight: 800 }}>
+                            <td style={{ padding: '9px 8px', textAlign: 'left', color: '#0f172a', fontFamily: 'monospace', background: '#f1f5f9', fontWeight: 800 }}>TOTAL</td>
+                            <td style={{ padding: '9px 8px', textAlign: 'left', color: '#0f172a', fontWeight: 800 }}>Top 10 ASPs Aggregate</td>
+                            <td style={{ padding: '9px 8px', textAlign: 'left', color: '#64748b' }}>-</td>
+                            <td style={{ padding: '9px 8px', textAlign: 'left', color: '#64748b' }}>-</td>
+                            <td style={{ padding: '9px 8px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>{topAspCallsSum.toLocaleString('en-IN')}</td>
+                            <td style={{ padding: '9px 8px', textAlign: 'right', color: '#0f172a', fontWeight: 800 }}>{topAspSwapsSum.toLocaleString('en-IN')}</td>
+                            <td style={{ padding: '9px 8px', textAlign: 'right', color: '#2563eb', fontWeight: 800 }}>{topAspSameDaySum.toLocaleString('en-IN')}</td>
+                            <td style={{ padding: '9px 8px', textAlign: 'right' }}>
+                              <span style={{ padding: '3px 7px', borderRadius: '4px', fontSize: '11.5px', background: '#ecfdf5', color: '#047857', border: '1px solid #a7f3d0', fontWeight: 800 }}>
+                                {topAspSameDayPct}%
+                              </span>
+                            </td>
+                            <td style={{ padding: '9px 8px', textAlign: 'right' }}>
+                              <span style={{ padding: '3px 7px', borderRadius: '4px', fontSize: '11.5px', background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', fontWeight: 800 }}>
+                                {topAspSameDayToCallsPct}%
+                              </span>
+                            </td>
+                          </tr>
+                        );
+                      })()}
+                    </>
+                  )}
+                </tbody>
+              </table>
+            </div>
+            <div className="note-mock" style={{ marginTop: '10px', fontSize: '11.5px', color: '#64748b' }}>
+              Pull files for these outlying service centers from the Evidence Logs first. Verify motherboard/display billings against parts-return batches. Same-Day Doorstep Swaps represent jobs where Creation Date and Delivery Date are identical.
+            </div>
+          </>
+        )}
       </div>
 
       {/* TABLE 2: INSIGHTS: AFFECTED MODEL SERIES AND ACTION CODES (MOVED BELOW TABLE 1) */}

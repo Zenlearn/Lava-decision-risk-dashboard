@@ -20,10 +20,8 @@ interface TabPartCostsProps {
 
 export default function TabPartCosts({
   costs,
-  handleCostChange,
   latestKPI,
   kpiMonths = [],
-  leakCur,
   annualLeakRunRate,
   fmtINR
 }: TabPartCostsProps) {
@@ -187,7 +185,7 @@ export default function TabPartCosts({
                   </th>
                 </tr>
                 <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f1f5f9', color: '#64748b', fontSize: '11px', textTransform: 'uppercase' }}>
-                  {activeCols.map((col, idx) => (
+                  {activeCols.map((_col, idx) => (
                     <React.Fragment key={`sub-hdr-${idx}`}>
                       <th style={{ padding: '6px 8px', textAlign: 'center' }}>Qty</th>
                       <th style={{ padding: '6px 8px', textAlign: 'right', borderRight: '1px solid #e2e8f0' }}>Cost (₹)</th>
