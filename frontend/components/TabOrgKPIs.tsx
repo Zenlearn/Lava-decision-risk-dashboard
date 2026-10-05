@@ -33,15 +33,12 @@ export default function TabOrgKPIs({ data }: TabOrgKPIsProps) {
   const [msTatBusmRow, setMsTatBusmRow] = useState<string | null>(null);
   const [msTatAsmRow, setMsTatAsmRow] = useState<string | null>(null);
   const [collapsedTables, setCollapsedTables] = useState<Record<string, boolean>>({});
-  const [segmentFilter, setSegmentFilter] = useState<string>('All');
   const modelTypeFilter: string = 'Smart & Tablet';  // Section 1 NPS uses busmSmartTablet — informational label, not a selectable filter
   const [tatWarrantyFilter, setTatWarrantyFilter] = useState<'inWarranty' | 'overall'>('inWarranty');
 
   // CPC Drilldown State
   const [cpcBusmRepair, setCpcBusmRepair] = useState<string | null>(null);
   const [cpcAsmRepair, setCpcAsmRepair] = useState<string | null>(null);
-  const [cpcBusmRepl, setCpcBusmRepl] = useState<string | null>(null);
-  const [cpcAsmRepl, setCpcAsmRepl] = useState<string | null>(null);
 
   // Training compliance — fetched from /api/v1/dashboard/training-status
   // keyed by lowercase-trimmed name for case-insensitive lookup.
@@ -366,17 +363,6 @@ export default function TabOrgKPIs({ data }: TabOrgKPIsProps) {
   // survey dataset's "Detractor Calling" reason column.
   const dsatBusmData = npsMonthData.dsatByBusm || [];
 
-  // Real device-category NPS summary (Feature Phone / Smart & Tablet / Overall
-  // Combined), from the same dataset's device-category field.
-  const deviceCategoryNps = (npsMonthData.deviceCategorySummary || []).map((c: any) => ({
-    cat: c.cat,
-    surveys: c.sent,
-    d: `${c.detractorPct}%`,
-    p: `${c.passivePct}%`,
-    pr: `${c.promoterPct}%`,
-    nps: `${c.npsScore}%`,
-  }));
-
   // Real Feature-Phone-only BUSM NPS breakdown.
   const fpBusmData = toDisplayNps(npsMonthData.busmFeaturePhone, true);
   const fpAsmData = toDisplayNps(npsMonthData.asmFeaturePhone, false);
@@ -518,11 +504,6 @@ export default function TabOrgKPIs({ data }: TabOrgKPIsProps) {
             1. Overall Regional Performance Scorecards
           </span>
           <div style={{ display: 'flex', gap: '6px', marginLeft: '8px', flexWrap: 'wrap' }}>
-            {segmentFilter !== 'All' && (
-              <span style={{ padding: '2px 10px', borderRadius: '12px', background: '#fee2e2', color: '#dc2626', fontSize: '11.5px', fontWeight: 700, border: '1px solid #fca5a5' }}>
-                Segment: {segmentFilter}
-              </span>
-            )}
             <span style={{ padding: '2px 10px', borderRadius: '12px', background: '#dbeafe', color: '#1d4ed8', fontSize: '11.5px', fontWeight: 700, border: '1px solid #93c5fd' }}>
               NPS: {modelTypeFilter} devices
             </span>
@@ -1679,13 +1660,8 @@ export default function TabOrgKPIs({ data }: TabOrgKPIsProps) {
                 <span style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>
                   4. NPS Performance &amp; Customer Satisfaction Dashboard
                 </span>
-                {(segmentFilter !== 'All' || modelTypeFilter !== 'All') && (
+                {modelTypeFilter !== 'All' && (
                   <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                    {segmentFilter !== 'All' && (
-                      <span style={{ padding: '2px 10px', borderRadius: '12px', background: '#fee2e2', color: '#dc2626', fontSize: '11.5px', fontWeight: 700, border: '1px solid #fca5a5' }}>
-                        Segment: {segmentFilter}
-                      </span>
-                    )}
                     {modelTypeFilter !== 'All' && (
                       <span style={{ padding: '2px 10px', borderRadius: '12px', background: '#dbeafe', color: '#1d4ed8', fontSize: '11.5px', fontWeight: 700, border: '1px solid #93c5fd' }}>
                         Model: {modelTypeFilter}
@@ -2166,13 +2142,8 @@ export default function TabOrgKPIs({ data }: TabOrgKPIsProps) {
             <span style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>
               5. TAT &amp; Turnaround Speed Dashboard
             </span>
-            {(segmentFilter !== 'All' || modelTypeFilter !== 'All') && (
+            {modelTypeFilter !== 'All' && (
               <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                {segmentFilter !== 'All' && (
-                  <span style={{ padding: '2px 10px', borderRadius: '12px', background: '#fee2e2', color: '#dc2626', fontSize: '11.5px', fontWeight: 700, border: '1px solid #fca5a5' }}>
-                    Segment: {segmentFilter}
-                  </span>
-                )}
                 {modelTypeFilter !== 'All' && (
                   <span style={{ padding: '2px 10px', borderRadius: '12px', background: '#dbeafe', color: '#1d4ed8', fontSize: '11.5px', fontWeight: 700, border: '1px solid #93c5fd' }}>
                     Model: {modelTypeFilter}

@@ -9,11 +9,7 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TableSum
 interface TabDashboardProps {
   data: any;
   isMounted: boolean;
-  leakCur: number;
-  leakDelta: number;
-  annualLeakRunRate: number;
   latestKPI: any;
-  previousKPI: any;
   fmtINR: (v: number) => string;
   fmtPct: (v: number) => string;
 }
@@ -21,11 +17,7 @@ interface TabDashboardProps {
 export default function TabDashboard({
   data,
   isMounted,
-  leakCur: initialLeakCur,
-  leakDelta: initialLeakDelta,
-  annualLeakRunRate: initialAnnualLeakRunRate,
   latestKPI: initialLatestKPI,
-  previousKPI: initialPreviousKPI,
   fmtINR,
   fmtPct
 }: TabDashboardProps) {
