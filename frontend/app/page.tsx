@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { RefreshCw, LogOut, UploadCloud } from 'lucide-react';
+import { RefreshCw, UploadCloud } from 'lucide-react';
 
 // Import split subcomponents
 import Sidebar from '../components/Sidebar';

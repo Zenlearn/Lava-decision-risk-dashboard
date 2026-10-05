@@ -1,8 +1,8 @@
 import React from 'react';
 import {
   LayoutDashboard, ShieldAlert,
-  CheckCircle, LogOut, FileSpreadsheet,
-  Settings, BookOpen, AlertCircle, TrendingUp, User, Activity, Clock
+  CheckCircle, LogOut,
+  Settings, BookOpen, TrendingUp, User, Activity, Clock
 } from 'lucide-react';
 
 interface NavItem {

@@ -11,7 +11,7 @@ interface TabOrgKPIsProps {
   fmtPct: (v: number) => string;
 }
 
-export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
+export default function TabOrgKPIs({ data }: TabOrgKPIsProps) {
   const [viewMode, setViewMode] = useState<'overall' | 'modelSegment'>('overall');
   const [deviceFilter, setDeviceFilter] = useState<'smart' | 'all'>('smart');
   const [selectedMonth, setSelectedMonth] = useState<string>('Jun');
@@ -168,7 +168,6 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
   // allocation that split a static ASP list's national/BUSM distribution
   // proportionally, with no basis in that ASP's own actual work orders.
   const tatRawAspList: any[] = (tatOrgKpi.asps || []).filter((a: any) => a.name && !a.name.toLowerCase().includes('unknown') && a.asm && !a.asm.toLowerCase().includes('unknown'));
-  const tatRawNational: any = tatOrgKpi.national || {};
   // Live CPC/SAH datasets derived from backend (replaces frozen static files)
   // Fields: repair_count/avg/total, repl_count/avg/total, combined_total, sahBreakdown
   // are now returned by computeOrgKpiTable() on every BUSM/ASM/national row.
@@ -298,7 +297,6 @@ export default function TabOrgKPIs({ data, fmtINR, fmtPct }: TabOrgKPIsProps) {
     : allAsmList;
 
   // Calculate summary totals for filtered ASMs
-  const asmTotalWo = filteredAsmList.reduce((sum, a) => sum + (a.wo || 0), 0);
   const asmAvgTat = filteredAsmList.length > 0 ? Math.round((filteredAsmList.reduce((sum, a) => sum + (a.tat || 0), 0) / filteredAsmList.length) * 10) / 10 : 0;
   const asmAvgCpc = filteredAsmList.length > 0 ? Math.round(filteredAsmList.reduce((sum, a) => sum + (a.cpc || 0), 0) / filteredAsmList.length) : 0;
   const asmAvgSah = filteredAsmList.length > 0 ? Math.round((filteredAsmList.reduce((sum, a) => sum + (a.sah || 0), 0) / filteredAsmList.length) * 10) / 10 : 0;
